@@ -1,0 +1,173 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<meta name="mobileoptimized" content="0"/>
+		<title>ZDD AD 战术鸟帆布腰带ZS-F7</title>
+		<meta name="description" content="ZDD AD 我们只推荐同类产品在高中低三个价位段里的物超所值之作" />
+  		<meta name="Keywords" content="物超所值,物有所值,性价比高,ZDD AD" />
+		<link rel="shortcut icon" href="/cw/image/logo.jpg" type="image/x-icon" />
+		<style type="text/css">
+			html{overflow-x:hidden;}
+			body{font:15px arial;color:#bbb;text-align:left;background:#000;margin:0px;}
+			.smallrounded{
+				cursor:pointer;
+				overflow:hidden;
+				background:#008B8B;
+				font:17px Arial;
+				color:#000;
+				border:0px;
+				border-radius:20px;
+				width:40px;
+				height:40px;
+			}
+			.smallrounded div{
+				display:table-cell;
+				width:40px;
+				height:40px;
+				vertical-align:middle;
+				text-align:center;
+			}
+
+			.small{
+				overflow:hidden;
+				font:17px Arial;
+				color:#bbb;
+				border:0px;
+				width:40px;
+				height:40px;
+			}
+			.small div{
+				display:table-cell;
+				width:40px;
+				height:40px;
+				vertical-align:middle;
+				text-align:center;
+			}
+		</style>
+		<script type="text/javascript" src="/cw/3rdjs/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript">
+			var dataurl = "http://getzdd.com/ci";
+			//var dataurl = "http://localhost:8080/ci";
+			$(document).ready(function(){
+				$(".gifs").click(function(){
+					$(this).attr("src",$(this).attr("gifsrc"));
+				});
+				
+				$("#formlikes").bind("click",function(){
+					var ajaxlike = $.ajax({
+						url:dataurl+'/cnt',  
+					　　	timeout : 5000, 
+					　　	type : 'post',  
+					　　	data :{target:"adzjaylikes",increase:"increase"}, 
+					　　	dataType:'json',
+					　　	success:function(data){ 
+							if (data.status=="yes"){
+								$("#formlikes").unbind("click");
+								$("#likes").html(data.cnt);
+								$("#formlikes").removeClass("smallrounded");
+								$("#formlikes").addClass("small");
+							}
+					　　	},
+					　　	complete : function(XMLHttpRequest,status){
+							if (status!="success"){
+								ajaxlike.abort();
+							}
+					　　	}
+					});
+				});
+
+				var ajaxlikes = $.ajax({
+					url:dataurl+'/cnt',  
+				　　	timeout : 5000, 
+				　　	type : 'post',  
+				　　	data :{target:"adzjaylikes"}, 
+				　　	dataType:'json',
+				　　	success:function(data){ 
+						if (data.status=="yes"){
+							$("#likes").html(data.cnt);
+						}
+				　　	},
+				　　	complete : function(XMLHttpRequest,status){
+						if (status!="success"){
+							ajaxlikes.abort();
+						}
+				　　	}
+				});
+
+				var ajaxusers = $.ajax({
+					url:dataurl+'/cnt',  
+				　　	timeout : 5000, 
+				　　	type : 'post',  
+				　　	data :{target:"adzjay",increase:"increase"}, 
+				　　	dataType:'json',
+				　　	success:function(data){ 
+						if (data.status=="yes"){
+							$("#users").html(data.cnt);
+						}
+				　　	},
+				　　	complete : function(XMLHttpRequest,status){
+						if (status!="success"){
+							ajaxusers.abort();
+						}
+				　　	}
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div style="width:100%;float:left;"><img src="image/2/top.jpg" width="100%"/></div>
+		<div style="width:100%;padding-top:20px;float:left;">
+		卓荦不羁形容一个人因卓越而不受拘束，用来形容我再恰当也不过。不是我不谦虚，而是我的卓越设计着实让系上我的人不受拘束。
+		</div>
+		<div style="width:100%;padding-top:20px;float:left;">
+		前后都可以自由无极调节的扣头，让你无需担心带身过长或者你飘忽不定的腰围。我的卓越更体现在无需任何工具就可以轻松调节后端带身位置甚至更换带身。
+		</div>
+		<div style="width:20%;float:left;"><img src="image/2/1.jpg" width="100%"/></div>
+		<div style="width:20%;float:left;"><img src="image/2/2.jpg" width="100%"/></div>
+		<div style="width:20%;float:left;"><img src="image/2/3.jpg" width="100%"/></div>
+		<div style="width:20%;float:left;"><img src="image/2/4.jpg" width="100%"/></div>
+		<div style="width:20%;float:left;"><img src="image/2/5.jpg" width="100%"/></div>
+		<div style="width:100%;float:left;"><img src="image/2/6.jpg" width="100%"/></div>
+		
+		<div style="width:50%;padding-top:20px;float:left;">
+		尼龙带身和赛钢塑料扣头造就了百分百无金属的我，除了能保护金属过敏的你，还能让你更安静的通过安检。再加上3.8厘米左右的带身宽度，给你紧而不勒的轻盈感。
+		</div>
+		<div style="width:50%;float:left;padding-top:20px;"><img src="image/2/right.jpg" width="100%"/></div>
+		
+		<div style="width:100%;padding-top:20px;float:left;">
+		无标设计，内敛低调，让韬光养晦的你不受品牌拘束。
+		</div>
+		<div style="width:100%;float:left;"><img src="image/2/bottom.jpg" width="100%"/></div>
+		
+		<div style="width:100%;padding-top:20px;float:left;">
+		我就是卓荦不羁的战术鸟帆布腰带ZS-F7。
+		</div>
+		
+		<div style="width:50%;float:left;">
+			<div class="small" style="float:left;">
+				<div>
+				👀
+				</div>
+			</div>
+			<div class="small" style="float:left;">
+				<div id="users">
+				</div>
+			</div>
+		</div>
+
+		<div style="width:50%;float:left;">
+			<div id="formlikes" class="smallrounded" style="float:left;">
+				<div id="iconlikes">
+				👍
+				</div>
+			</div>
+			<div class="small" style="float:left;">
+				<div id="likes">
+				</div>
+			</div>
+		</div>
+		<a style="color:#bbb;text-decoration:none;" target="blank" href="0.htm"><div style="float:left;margin-top:20px;margin-bottom:20px;">MORE advertised by mchange@outlook.com</div></a>
+		<div style="font-size:9px;width:100%;text-align:right;color:#999;float:left;">© 02/09/2018-2090 mchange@outlook.com 沪ICP备18004230号</div>
+	</body>
+</html>	

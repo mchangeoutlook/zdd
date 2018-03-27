@@ -1,0 +1,168 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<meta name="mobileoptimized" content="0"/>
+		<title>ZDD AD 安卓智能手机一加5</title>
+		<meta name="description" content="ZDD AD 我们只推荐同类产品在高中低三个价位段里的物超所值之作" />
+  		<meta name="Keywords" content="物超所值,物有所值,性价比高,ZDD AD" />
+		<link rel="shortcut icon" href="/cw/image/logo.jpg" type="image/x-icon" />
+		<style type="text/css">
+			html{overflow-x:hidden;}
+			body{font:15px arial;color:#bbb;text-align:left;background:#000;margin:0px;}
+			.smallrounded{
+				cursor:pointer;
+				overflow:hidden;
+				background:#008B8B;
+				font:17px Arial;
+				color:#000;
+				border:0px;
+				border-radius:20px;
+				width:40px;
+				height:40px;
+			}
+			.smallrounded div{
+				display:table-cell;
+				width:40px;
+				height:40px;
+				vertical-align:middle;
+				text-align:center;
+			}
+
+			.small{
+				overflow:hidden;
+				font:17px Arial;
+				color:#bbb;
+				border:0px;
+				width:40px;
+				height:40px;
+			}
+			.small div{
+				display:table-cell;
+				width:40px;
+				height:40px;
+				vertical-align:middle;
+				text-align:center;
+			}
+		</style>
+		<script type="text/javascript" src="/cw/3rdjs/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript">
+			var dataurl = "http://getzdd.com/ci";
+			//var dataurl = "http://localhost:8080/ci";
+			$(document).ready(function(){
+				$(".gifs").click(function(){
+					$(this).attr("src",$(this).attr("gifsrc"));
+				});
+				
+				$("#formlikes").bind("click",function(){
+					var ajaxlike = $.ajax({
+						url:dataurl+'/cnt',  
+					　　	timeout : 5000, 
+					　　	type : 'post',  
+					　　	data :{target:"adonepluslikes",increase:"increase"}, 
+					　　	dataType:'json',
+					　　	success:function(data){ 
+							if (data.status=="yes"){
+								$("#formlikes").unbind("click");
+								$("#likes").html(data.cnt);
+								$("#formlikes").removeClass("smallrounded");
+								$("#formlikes").addClass("small");
+							}
+					　　	},
+					　　	complete : function(XMLHttpRequest,status){
+							if (status!="success"){
+								ajaxlike.abort();
+							}
+					　　	}
+					});
+				});
+
+				var ajaxlikes = $.ajax({
+					url:dataurl+'/cnt',  
+				　　	timeout : 5000, 
+				　　	type : 'post',  
+				　　	data :{target:"adonepluslikes"}, 
+				　　	dataType:'json',
+				　　	success:function(data){ 
+						if (data.status=="yes"){
+							$("#likes").html(data.cnt);
+						}
+				　　	},
+				　　	complete : function(XMLHttpRequest,status){
+						if (status!="success"){
+							ajaxlikes.abort();
+						}
+				　　	}
+				});
+
+				var ajaxusers = $.ajax({
+					url:dataurl+'/cnt',  
+				　　	timeout : 5000, 
+				　　	type : 'post',  
+				　　	data :{target:"adoneplus",increase:"increase"}, 
+				　　	dataType:'json',
+				　　	success:function(data){ 
+						if (data.status=="yes"){
+							$("#users").html(data.cnt);
+						}
+				　　	},
+				　　	complete : function(XMLHttpRequest,status){
+						if (status!="success"){
+							ajaxusers.abort();
+						}
+				　　	}
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div style="width:50%;float:left;"><img src="image/4/top1.jpg" width="100%"/></div>
+		<div style="width:50%;float:left;"><img src="image/4/top2.jpg" width="100%"/></div>
+		<div style="width:100%;padding-top:20px;float:left;">
+		我如此大巧若拙，以至于众人熟视无睹。
+		</div>
+		<div style="width:60%;padding-top:20px;float:left;">
+		大巧一：国内的我出厂默认氢OS操作系统，但是你也可以从 <a href="http://downloads.oneplus.net" style="color:#ddd;text-decoration:none;" target="blank">http://downloads.oneplus.net</a> 选择我的硬件版本对应的几乎就是原生安卓的官方氧OS操作系统。除非你完全不出国，否则，即使是一次出国旅游，你就会对无微不至的谷歌服务恋恋不舍。
+		</div>
+		<div style="width:40%;float:left;padding-top:20px;"><img src="image/4/right.jpg" width="100%"/></div>
+		
+		<div style="width:100%;padding-top:20px;float:left;">
+		大巧二：为了充分利用我的oled屏幕显示黑色不发光的优点，官方系统自带暗色主题和阅读模式，延长续航的同时减少蓝光辐射保护你的明眸。
+		</div>
+		<div style="width:50%;float:left;"><img src="image/4/os1.jpg" width="100%"/></div>
+		<div style="width:50%;float:left;"><img src="image/4/os2.jpg" width="100%"/></div>
+		
+		<div style="width:100%;padding-top:20px;float:left;">
+		大巧三：与时俱进的世界顶级硬件和几乎就是原生的极简操作系统带给你淋漓尽致的畅快感。
+		</div>
+		<div style="width:100%;padding-top:20px;float:left;">
+		我就是大巧若拙的安卓智能手机一加5。
+		</div>
+		
+		<div style="width:50%;float:left;">
+			<div class="small" style="float:left;">
+				<div>
+				👀
+				</div>
+			</div>
+			<div class="small" style="float:left;">
+				<div id="users">
+				</div>
+			</div>
+		</div>
+
+		<div style="width:50%;float:left;">
+			<div id="formlikes" class="smallrounded" style="float:left;">
+				<div id="iconlikes">
+				👍
+				</div>
+			</div>
+			<div class="small" style="float:left;">
+				<div id="likes">
+				</div>
+			</div>
+		</div>
+		<a style="color:#bbb;text-decoration:none;" target="blank" href="0.htm"><div style="float:left;width:100%;margin-top:20px;margin-bottom:20px;">MORE advertised by mchange@outlook.com</div></a>
+		<div style="font-size:9px;width:100%;text-align:right;color:#999;float:left;">© 02/09/2018-2090 mchange@outlook.com 沪ICP备18004230号</div>
+	</body>
+</html>	

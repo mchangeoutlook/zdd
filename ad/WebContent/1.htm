@@ -1,0 +1,179 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<meta name="mobileoptimized" content="0"/>
+		<title>ZDD AD 双立人蝉翼指甲刀</title>
+		<meta name="description" content="ZDD AD 我们只推荐同类产品在高中低三个价位段里的物超所值之作" />
+  		<meta name="Keywords" content="物超所值,物有所值,性价比高,ZDD AD" />
+		<link rel="shortcut icon" href="/cw/image/logo.jpg" type="image/x-icon" />
+		<style type="text/css">
+			html{overflow-x:hidden;}
+			body{font:15px arial;color:#bbb;text-align:left;background:#000;margin:0px;}
+			.smallrounded{
+				cursor:pointer;
+				overflow:hidden;
+				background:#008B8B;
+				font:17px Arial;
+				color:#000;
+				border:0px;
+				border-radius:20px;
+				width:40px;
+				height:40px;
+			}
+			.smallrounded div{
+				display:table-cell;
+				width:40px;
+				height:40px;
+				vertical-align:middle;
+				text-align:center;
+			}
+
+			.small{
+				overflow:hidden;
+				font:17px Arial;
+				color:#bbb;
+				border:0px;
+				width:40px;
+				height:40px;
+			}
+			.small div{
+				display:table-cell;
+				width:40px;
+				height:40px;
+				vertical-align:middle;
+				text-align:center;
+			}
+		</style>
+		<script type="text/javascript" src="/cw/3rdjs/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript">
+			var dataurl = "http://getzdd.com/ci";
+			//var dataurl = "http://localhost:8080/ci";
+			$(document).ready(function(){
+				$(".gifs").click(function(){
+					$(this).attr("src",$(this).attr("gifsrc"));
+				});
+				
+				$("#formlikes").bind("click",function(){
+					var ajaxlike = $.ajax({
+						url:dataurl+'/cnt',  
+					　　	timeout : 5000, 
+					　　	type : 'post',  
+					　　	data :{target:"adtwinslikes",increase:"increase"}, 
+					　　	dataType:'json',
+					　　	success:function(data){ 
+							if (data.status=="yes"){
+								$("#formlikes").unbind("click");
+								$("#likes").html(data.cnt);
+								$("#formlikes").removeClass("smallrounded");
+								$("#formlikes").addClass("small");
+							}
+					　　	},
+					　　	complete : function(XMLHttpRequest,status){
+							if (status!="success"){
+								ajaxlike.abort();
+							}
+					　　	}
+					});
+				});
+
+				var ajaxlikes = $.ajax({
+					url:dataurl+'/cnt',  
+				　　	timeout : 5000, 
+				　　	type : 'post',  
+				　　	data :{target:"adtwinslikes"}, 
+				　　	dataType:'json',
+				　　	success:function(data){ 
+						if (data.status=="yes"){
+							$("#likes").html(data.cnt);
+						}
+				　　	},
+				　　	complete : function(XMLHttpRequest,status){
+						if (status!="success"){
+							ajaxlikes.abort();
+						}
+				　　	}
+				});
+
+				var ajaxusers = $.ajax({
+					url:dataurl+'/cnt',  
+				　　	timeout : 5000, 
+				　　	type : 'post',  
+				　　	data :{target:"adtwins",increase:"increase"}, 
+				　　	dataType:'json',
+				　　	success:function(data){ 
+						if (data.status=="yes"){
+							$("#users").html(data.cnt);
+						}
+				　　	},
+				　　	complete : function(XMLHttpRequest,status){
+						if (status!="success"){
+							ajaxusers.abort();
+						}
+				　　	}
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div style="width:50%;float:left;"><img src="image/1/mainclosed.jpg" width="100%"/></div>
+		<div style="width:50%;float:left;"><img src="image/1/mainopened.jpg" width="100%"/></div>
+		<div style="width:100%;padding-top:20px;float:left;">
+		我最大的特点就是善刀而藏。
+		</div>
+		<div style="width:100%;padding-top:20px;float:left;">
+		每次修剪完指甲，你都可以用以下方式为我清洁或者消毒，避免刃口内侧藏污纳垢，有效杜绝病毒传染。从此你的家里不用为你的手指甲和脚趾甲各配一把指甲刀，也不用忍受指甲刀刃口内侧的不明污垢，更不用纠结如何清洁。
+		</div>
+		<div style="width:50%;float:left;"><img src="image/1/wash.jpg" width="100%"/></div>
+		<div style="width:50%;float:left;"><img src="image/1/sterilize.jpg" width="100%"/></div>
+
+		<div style="width:100%;padding-top:20px;float:left;">
+		我的特别之处来自我的特别关节，这种大开口关节，不但容易清洁，还可以剪裁比指甲厚得多的可裁剪之物，或者打开后用单刃口刮蹭指甲上沾染的顽垢。
+		</div>
+		<div style="width:100%;float:left;"><img src="image/1/design.jpg" width="100%"/></div>
+		
+		<div style="width:100%;padding-top:20px;float:left;">
+		我虽只是一把指甲刀，但不缺乏纤薄的设计和独特的使用步骤。(点击下面的图片观看动画演示)
+		</div>
+		<img src="image/1/open.gif" style="display:none;"/>
+        <img src="image/1/close.gif" style="display:none;"/>
+		<div style="width:50%;float:left;cursor:pointer;"><img class="gifs" gifsrc="image/1/open.gif" src="image/1/open.jpg" width="100%"/><div style="margin-top:-20px;">GIF</div></div>
+		<div style="width:50%;float:left;cursor:pointer;"><img class="gifs" gifsrc="image/1/close.gif" src="image/1/close.jpg" width="100%"/><div style="margin-top:-20px;">GIF</div></div>
+		
+		<div style="width:100%;padding-top:20px;float:left;">
+		纤薄身形之下锋芒毕露，捏片尾部太过尖锐导致大拇指下压时手感不佳。人无完人，我作为指甲刀也不例外，希望我的后代能够多打磨一下，收敛锋芒，方能赢得更多的亲睐。
+		</div>
+		<div style="width:50%;float:left;"><img src="image/1/sharp.jpg" width="100%"/></div>
+		<div style="width:50%;float:left;"><img src="image/1/sharpsample.jpg" width="100%"/></div>
+
+		<div style="width:100%;padding-top:20px;float:left;">
+		我就是善刀而藏的双立人蝉翼指甲刀，可以陪你一生的指甲刀。
+		</div>
+		
+		<div style="width:50%;float:left;">
+			<div class="small" style="float:left;">
+				<div>
+				👀
+				</div>
+			</div>
+			<div class="small" style="float:left;">
+				<div id="users">
+				</div>
+			</div>
+		</div>
+
+		<div style="width:50%;float:left;">
+			<div id="formlikes" class="smallrounded" style="float:left;">
+				<div id="iconlikes">
+				👍
+				</div>
+			</div>
+			<div class="small" style="float:left;">
+				<div id="likes">
+				</div>
+			</div>
+		</div>
+		<a style="color:#bbb;text-decoration:none;" target="blank" href="0.htm"><div style="float:left;width:100%;margin-top:20px;margin-bottom:20px;">MORE advertised by mchange@outlook.com</div></a>
+		<div style="font-size:9px;width:100%;text-align:right;color:#999;float:left;">© 02/09/2018-2090 mchange@outlook.com 沪ICP备18004230号</div>
+	</body>
+</html>	
