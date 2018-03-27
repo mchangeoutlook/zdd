@@ -1,0 +1,910 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<meta name="mobileoptimized" content="0"/>
+		<title id="thetitle">甘瞪眼</title>
+		<meta name="description" content="甘瞪眼 老少皆宜,打发时间的联网游戏" />
+  		<meta name="Keywords" content="老少皆宜,打发时间,联网游戏,甘瞪眼,干瞪眼" />
+  		<link rel="shortcut icon" href="image/logo.jpg" type="image/x-icon" />
+		<style type="text/css">
+			.roundcard{
+				cursor:pointer;
+				background:#008B8B;
+				border:0px;
+				color:#000;
+				border-radius:5px;
+				width:60px;
+				height:70px;
+				margin-left:2px;
+				margin-right:2px;
+			}
+			.roundcard div{
+				display:table-cell;
+				width:60px;
+				height:70px;
+				vertical-align:middle;
+				text-align:center;
+			}
+
+			.selroundcard{
+				cursor:pointer;
+				background:#008B8B;
+				border:0px;
+				color:#000;
+				border-radius:5px;
+				width:60px;
+				height:70px;
+				margin-top:-20px;
+				margin-left:2px;
+				margin-right:2px;
+			}
+			.selroundcard div{
+				display:table-cell;
+				width:60px;
+				height:70px;
+				vertical-align:middle;
+				text-align:center;
+			}
+			
+			.unroundcard{
+				border:0px;
+				width:64px;
+				height:70px;
+				color:#bbb;
+			}
+			.unroundcard div{
+				display:table-cell;
+				width:64px;
+				height:70px;
+				vertical-align:middle;
+				text-align:center;
+			}
+			
+			.bigcenterounded{
+				margin:auto;
+				cursor:pointer;
+				overflow:hidden;
+				background:#008B8B;
+				font:50px Arial;
+				color:#000;
+				border:0px;
+				border-radius:35px;
+				width:70px;
+				height:70px;
+			}
+			.bigcenterounded div{
+				display:table-cell;
+				width:70px;
+				height:70px;
+				vertical-align:middle;
+				text-align:center;
+			}
+
+			.mediumrounded{
+				cursor:pointer;
+				overflow:hidden;
+				background:#008B8B;
+				font:17px Arial;
+				color:#000;
+				border:0px;
+				border-radius:20px;
+				width:40px;
+				height:40px;
+			}
+			.mediumrounded div{
+				display:table-cell;
+				width:40px;
+				height:40px;
+				vertical-align:middle;
+				text-align:center;
+			}
+
+			.smallrounded{
+				cursor:pointer;
+				overflow:hidden;
+				background:#008B8B;
+				font:15px Arial;
+				color:#000;
+				border:0px;
+				border-radius:15px;
+				width:30px;
+				height:30px;
+			}
+			.smallrounded div{
+				display:table-cell;
+				width:30px;
+				height:30px;
+				vertical-align:middle;
+				text-align:center;
+			}
+			
+			.me{
+				color:#228B22;
+			}
+
+			.autoplay{
+				color:#666;
+			}
+			
+			.player{
+				width:46px;
+				height:70px;
+				font:17px Arial;
+				float:left;
+				text-align:left;
+				white-space:nowrap;
+				overflow-x:scroll;
+				margin-right:4px;
+			}
+			.player div{
+				display:table-cell;
+				width:46px;
+				height:70px;
+				vertical-align:middle;
+				text-align:left;
+			}
+
+		</style>
+		<script type="text/javascript" src="/cw/3rdjs/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="/cw/3rdjs/qrcode.min.js"></script>
+		<script type="text/javascript" src="/cw/myjs/core.js"></script>
+		<script type="text/javascript">
+			
+			var autotimer = null;
+			
+			function submitplaygame(){
+				post(pedataurl+'/ic',
+					{
+				　　		judgeid:localStorage.getItem("pejudgeid"),
+						playerid:localStorage.getItem("peplayerid"),
+						cardvalues:JSON.parse($("#playgame").attr("cardvalues")),
+						playervalues:JSON.parse($("#playgame").attr("playervalues"))
+					}, 
+					function(data){
+						if (data.result==0){
+			　　				$("#msg").html("👀");
+			　　			}
+					},
+					"playgame",
+					submitplaygame
+				);
+			}
+			function clickplaygame(){
+				var nobosses = [];
+				var bosses=[];
+				$(".selroundcard").each(function(){
+					if ($(this).attr("val")=="14"||$(this).attr("val")=="15"){
+						bosses.push(parseInt($(this).attr("val")));
+					} else {
+						nobosses.push(parseInt($(this).attr("val")));
+					}
+				});
+				
+				if (nobosses.length==0&&bosses.length==1){
+					$("#msg").html("蓝瘦香菇，请重选");
+					$("#msg").css("color","#DC143C");
+					$("#playform").hide();
+					return;
+				}
+				if (bosses.length==0){
+					var distance = -1;
+					for (var i=0;i<nobosses.length;i++){
+						if (i<nobosses.length-1){
+							if (distance==-1){
+								distance = nobosses[i+1]-nobosses[i];
+							}
+							if (distance!=0&&distance!=1||distance!=nobosses[i+1]-nobosses[i]||distance==1&&(nobosses.length==2||nobosses[nobosses.length-1]==13)){
+								$("#msg").html("蓝瘦香菇，请重选");
+								$("#msg").css("color","#DC143C");
+								$("#playform").hide();
+								return;
+							}
+						}
+					}
+				} else if (bosses.length>0&&nobosses.length>0){
+					var cardvalsarr = [];
+					var playervalsarr = [];
+					var hasame = 0;
+					var hasdiff = 0;
+					var toaddboss = 0;
+					for (var i=0;i<nobosses.length;i++){
+						if (i<nobosses.length-1){
+							if (nobosses[i+1]!=nobosses[i]){
+								hasdiff=1;
+							} else {
+								hasame = 1;
+							}
+							toaddboss += nobosses[i+1]-nobosses[i]-1;
+						}
+					}
+					if (hasame==0&&hasdiff==0){
+						var cardvals = [];
+						var playervals = [];
+						for (var i=0;i<nobosses.length;i++){
+							cardvals.push(nobosses[i]);
+							playervals.push(nobosses[i]);
+						}
+						for (var i=0;i<bosses.length;i++){
+							cardvals.push(bosses[i]);
+							playervals.push(nobosses[0]);
+						}
+						cardvalsarr.push(cardvals);
+						playervalsarr.push(playervals);
+						if (bosses.length==2){
+							if (nobosses[0]>2&&nobosses[0]<13){
+								cardvals = [];
+								playervals = [];
+								cardvals.push(bosses[0]);
+								cardvals.push(bosses[1]);
+								cardvals.push(nobosses[0]);
+								playervals.push(nobosses[0]-2);
+								playervals.push(nobosses[0]-1);
+								playervals.push(nobosses[0]);
+								cardvalsarr.push(cardvals);
+								playervalsarr.push(playervals);
+							}
+							if (nobosses[0]!=1&&nobosses[0]<12){
+								cardvals = [];
+								playervals = [];
+								cardvals.push(bosses[0]);
+								cardvals.push(nobosses[0]);
+								cardvals.push(bosses[1]);
+								playervals.push(nobosses[0]-1);
+								playervals.push(nobosses[0]);
+								playervals.push(nobosses[0]+1);
+								cardvalsarr.push(cardvals);
+								playervalsarr.push(playervals);
+							}
+							if (nobosses[0]<11){
+								cardvals = [];
+								playervals = [];
+								cardvals.push(nobosses[0]);
+								cardvals.push(bosses[0]);
+								cardvals.push(bosses[1]);
+								playervals.push(nobosses[0]);
+								playervals.push(nobosses[0]+1);
+								playervals.push(nobosses[0]+2);
+								cardvalsarr.push(cardvals);
+								playervalsarr.push(playervals);
+							}
+						}
+					} else if (hasame==1&&hasdiff==0){
+						if (nobosses.length+bosses.length>4){
+							$("#msg").html("蓝瘦香菇，请重选");
+							$("#msg").css("color","#DC143C");
+							$("#playform").hide();
+							return;
+						}
+						var cardvals = [];
+						var playervals = [];
+						for (var i=0;i<nobosses.length;i++){
+							cardvals.push(nobosses[i]);
+							playervals.push(nobosses[i]);
+						}
+						for (var i=0;i<bosses.length;i++){
+							cardvals.push(bosses[i]);
+							playervals.push(nobosses[0]);
+						}
+						cardvalsarr.push(cardvals);
+						playervalsarr.push(playervals);
+					} else {
+						if (hasdiff==1&&hasame==1||toaddboss>bosses.length||nobosses[nobosses.length-1]==13){
+							$("#msg").html("蓝瘦香菇，请重选");
+							$("#msg").css("color","#DC143C");
+							$("#playform").hide();
+							return;
+						}
+						var cardvals = [];
+						var playervals = [];
+						for (var i=0;i<nobosses.length;i++){
+							cardvals.push(nobosses[i]);
+							playervals.push(nobosses[i]);
+							if (i<nobosses.length-1){
+								for (var j=1;j<nobosses[i+1]-nobosses[i];j++){
+									var boss = bosses.pop();
+									cardvals.push(boss);
+									playervals.push(nobosses[i]+j);
+								}
+							}
+						}
+						
+						if (bosses.length==0){
+							cardvalsarr.push(cardvals);
+							playervalsarr.push(playervals);
+						} else if (bosses.length==1){
+							if (nobosses[0]>1){
+								cardvals.unshift(bosses[0]);
+								playervals.unshift(nobosses[0]-1);
+								if (playervals[playervals.length-1]!=13){
+									cardvalsarr.push(JSON.parse(JSON.stringify(cardvals)));
+									playervalsarr.push(JSON.parse(JSON.stringify(playervals)));
+								}
+								cardvals.shift();
+								playervals.shift();
+							}
+							if (nobosses[nobosses.length-1]<12){
+								cardvals.push(bosses[0]);
+								playervals.push(nobosses[nobosses.length-1]+1);
+								if (playervals[playervals.length-1]!=13){
+									cardvalsarr.push(cardvals);
+									playervalsarr.push(playervals);
+								}
+							}
+						} else {
+							if (nobosses[0]>2){
+								cardvals.unshift(bosses[0]);
+								cardvals.unshift(bosses[1]);
+								playervals.unshift(nobosses[0]-1);
+								playervals.unshift(nobosses[0]-2);
+								if (playervals[playervals.length-1]!=13){
+									cardvalsarr.push(JSON.parse(JSON.stringify(cardvals)));
+									playervalsarr.push(JSON.parse(JSON.stringify(playervals)));
+								}
+								cardvals.shift();
+								cardvals.shift();
+								playervals.shift();
+								playervals.shift();
+							}
+							if (nobosses[0]!=1&&nobosses[nobosses.length-1]!=13){
+								cardvals.unshift(bosses[0]);
+								playervals.unshift(nobosses[0]-1);
+								cardvals.push(bosses[1]);
+								playervals.push(nobosses[nobosses.length-1]+1);
+								if (playervals[playervals.length-1]!=13){
+									cardvalsarr.push(JSON.parse(JSON.stringify(cardvals)));
+									playervalsarr.push(JSON.parse(JSON.stringify(playervals)));
+								}
+								cardvals.shift();
+								cardvals.pop();
+								playervals.shift();
+								playervals.pop();
+							}
+							if (nobosses[nobosses.length-1]<12){
+								cardvals.push(bosses[0]);
+								cardvals.push(bosses[1]);
+								playervals.push(nobosses[nobosses.length-1]+1);
+								playervals.push(nobosses[nobosses.length-1]+2);
+								if (playervals[playervals.length-1]!=13){
+									cardvalsarr.push(cardvals);
+									playervalsarr.push(playervals);
+								}
+							}
+							
+						}
+					}
+					if (cardvalsarr.length==0){
+						$("#msg").html("蓝瘦香菇，请重选");
+						$("#msg").css("color","#DC143C");
+						$("#playform").hide();
+						return;
+					}
+					if (cardvalsarr.length==1){
+						$(this).attr("cardvalues",JSON.stringify(cardvalsarr[0]));
+						$(this).attr("playervalues",JSON.stringify(playervalsarr[0]));
+						submitplaygame();
+						return;
+					}
+					if (cardvalsarr.length>1){
+						$("#choices").children().remove();
+						$("#playform").hide();
+						for (var i=0;i<cardvalsarr.length;i++){
+							var disvals = "";
+							var pvals = playervalsarr[i];
+							for (var j = 0; j<pvals.length;j++){
+								disvals = disvals + " "+convert(pvals[j]);
+							}
+							$("#choices").append($("<div class='choice' style='cursor:pointer;width:100%;text-align:center;font-size:30px;border:0px;' cardvalues='"+JSON.stringify(cardvalsarr[i])+"' playervalues='"+JSON.stringify(playervalsarr[i])+"'>"+disvals+"</div>").click(function(){
+								$(".choice").each(function(){
+									if ($(this).html().indexOf("✅")==0){
+										$(this).html($(this).html().substring(1));
+									}
+								});
+								$(this).html("✅"+$(this).html());
+								$("#playgame").attr("cardvalues",$(this).attr("cardvalues"));
+								$("#playgame").attr("playervalues",$(this).attr("playervalues"));
+								$("#playgame").unbind("click");
+								$("#playgame").one("click",submitplaygame);
+								$("#playform").show();
+								$("#msg").html("请点 ^ 确认出牌");
+							}));
+						}
+						$("#msg").html("请选择你要的组合");
+						$("#msg").css("color","#228B22");
+						return;
+					}
+				}
+				if (bosses.length==2&&nobosses.length==0){
+					$(this).attr("cardvalues",JSON.stringify(bosses));
+					$(this).attr("playervalues",JSON.stringify(bosses));
+				} else {
+					$(this).attr("cardvalues",JSON.stringify(nobosses));
+					$(this).attr("playervalues",JSON.stringify(nobosses));
+				}
+				submitplaygame();
+			}
+			
+			function init(){
+				$("#notice").unbind("click");
+				$("#notice").bind("click",function(){
+					if ($(this).attr("canplay")=="no"){
+						$(this).attr("canplay","yes");
+						notice.play();
+						textnotice.play();
+						$(this).html("<div>🔊</div>");
+					} else {
+						$(this).html("<div>🔇</div>");
+						$(this).attr("canplay","no");
+					}
+				});
+				$("#talkto").unbind("click");
+				$("#talkto").bind("click",function(){
+					if ($.trim($("#talk").val())==""||$("#talk").attr("placeholder")=="发送中..."){
+						return;
+					}
+					$("#talk").attr("oldph",$("#talk").attr("placeholder"));
+					$("#talk").attr("placeholder","发送中...");
+					var tosend = $("#talk").val();
+					$("#talk").val("");
+					post(msgurl+'/sd',{
+				　　		groupid:"pe",
+			　　			sessionid:localStorage.getItem("pejudgeid"),
+		　　				senderid:localStorage.getItem("peplayerid"),
+				　　		msg:tosend
+					},function(data){$("#talk").attr("placeholder",$("#talk").attr("oldph"));});
+				});
+				
+				$("#passgame").click(function(){
+					
+					$("#playgame").attr("cardvalues","[]");
+					$("#playgame").attr("playervalues","[]");
+					
+					submitplaygame();
+				});
+				var newjudgeid = "";
+				if (window.location.hash.length==33){
+					newjudgeid =window.location.hash.substring(1,33);
+				} 
+				if (newjudgeid!=""&&(localStorage.getItem("pejudgeid")==null||newjudgeid!=localStorage.getItem("pejudgeid"))){
+					var datajson = {judgeid:newjudgeid};
+					post(pedataurl+'/gi',datajson,function(data){
+						refreshplayers(data.players);
+						refreshincards(data.judge.incards);
+						$("#joinform").remove();
+						if (data.judge.round!=0){
+							$("#talk").remove();
+							$("#talkto").remove();
+							return;
+						}
+						$("#msg").html("加入 "+data.players[0].nick+" 甘瞪眼");
+						$("body").append("<div id='joinform' style='position:fixed;top:145px;width:100%;'>"+
+							"<div style='font-size:20px;width:260px;height:30px;margin:auto;'>"+
+								"<div id='allget0' style='float:left;width:50%;text-align:center;'>&nbsp;</div>"+
+								"<div style='float:left;width:50%;text-align:left;'>一人补牌</div>"+
+							"</div>"+
+							"<div style='font-size:20px;width:260px;height:30px;margin:auto;'>"+
+								"<div id='allget1' style='float:left;width:50%;text-align:center;'>&nbsp;</div>"+
+								"<div style='float:left;width:50%;text-align:left;'>每人补牌</div>"+
+							"</div>"+
+							"<input id='nick' maxlength='10' style='width:260px;height:40px;font-size:20px;margin:5px;' placeholder='输入昵称加入'/>"+
+							"<div id='joingame' class='bigcenterounded'>"+
+								"<div>&gt;</div>"+
+							"</div>"+
+						"</div>");
+						$("#allget"+data.judge.settingallget).html("☑️");
+						if (localStorage.getItem("penick")!=null){
+							$("#nick").val(localStorage.getItem("penick"));
+						}
+						var clickjoingame = function(){
+							post(pedataurl+'/sg',{
+								nick:$("#nick").val(),
+								judgeid:newjudgeid
+							},function(data){
+								localStorage.setItem("pejudgeid",data.judgeid);
+								localStorage.setItem("peplayerid",data.playerid);
+								$("#joinform").remove();
+								post(commonurl+'/cnt',{target:"petotal",increase:"increase"});
+								longpollcheck();
+							},"joingame",clickjoingame);
+						};
+						$("#joingame").one("click",clickjoingame);
+					});
+					return;
+				}
+				var datajson = {judgeid:localStorage.getItem("pejudgeid")};
+				if (localStorage.getItem("peplayerid")!=null){
+					datajson.playerid=localStorage.getItem("peplayerid");
+				}
+				post(pedataurl+'/gi',datajson,function(data){
+					refreshplayers(data.players);
+					refreshincards(data.judge.incards);
+					if (data.judge.round==0&&$(".me").attr("index")==data.judge.nextplayerindex){
+						$("#inviteform").remove();
+						$("#msg").html("扫描二维码，加入一起嗨");
+						$("body").append("<div id='inviteform' style='position:fixed;top:145px;width:100%;height:280px;'>"+
+											"<div id='invite' style='margin:auto;width:280px;height:280px;'></div>"+
+										"</div>");
+						var qrcode = new QRCode("invite", {
+						    text: window.location.href,
+						    width: 280,
+						    height:280,
+						    colorDark : "#000000",
+						    colorLight : "#bbb",
+						    correctLevel : QRCode.CorrectLevel.H
+						});
+					}
+					prepareaction(data);
+					longpollcheck();
+				});
+			}
+			
+			function lpchcallback(data){
+				refreshplayers(data.players);
+				refreshincards(data.judge.incards);
+				prepareaction(data);
+			}
+			
+			function refreshplayers(players){
+				$("#players").css("width",players.length*50+"px");
+				for (var i=0;i<players.length;i++){
+					if (!$("#player"+players[i].index).is(":visible")){
+						$("#players").append($("<div id='player"+players[i].index+
+								"' index='"+players[i].index+"' class='player'></div>"));
+					}
+					if (players[i].nick){
+						$("#player"+players[i].index).attr("nick",players[i].nick);
+					}
+					
+					if (players[i].losts){
+						$("#player"+players[i].index).attr("losts",players[i].losts);
+					} else {
+						$("#player"+players[i].index).attr("losts","0");
+					}
+					
+					if (players[i].rest){
+						$("#player"+players[i].index).attr("rest",players[i].rest);
+					} else {
+						$("#player"+players[i].index).attr("rest","0");
+					}
+					
+					if (players[i].meindex==players[i].index&&!$("#player"+players[i].index).hasClass("me")){
+						$("#player"+players[i].index).addClass("me");
+						localStorage.setItem("penick",players[i].nick);
+					}
+					
+					if (players[i].autoplay==1&&!$("#player"+players[i].index).hasClass("autoplay")){
+						$("#player"+players[i].index).addClass("autoplay");
+					} else if (players[i].autoplay==0&&$("#player"+players[i].index).hasClass("autoplay")){
+						$("#player"+players[i].index).removeClass("autoplay");
+					}
+				
+					if (players[i].meplay==players[i].index){
+						$("#player"+players[i].index).css("border-bottom","2px #008B8B solid");
+					} else{
+						$("#player"+players[i].index).css("border-bottom","0px");
+					}
+				
+					$("#player"+players[i].index).html("<div>"+$("#player"+players[i].index).attr("rest")+"张<br>"+
+							$("#player"+players[i].index).attr("nick")+"<br>"+
+							$("#player"+players[i].index).attr("losts")+"</div>");
+				}
+				if ($("#player0").length){
+					$("#thetitle").html($("#player0").attr("nick")+" 甘瞪眼");
+				}
+				if ($(".me").attr("index")&&players[parseInt($(".me").attr("index"))].cards){
+					refreshmycards(players[parseInt($(".me").attr("index"))].addedcardindex, players[parseInt($(".me").attr("index"))].cards);
+				}
+				
+			}
+			
+			function refreshincards(incards){
+				var lastplayerindex = -1;
+				var lastcardvalue = "";
+				if ($("#lastincard").length){
+					lastplayerindex = parseInt($("#lastincard").attr("playerindex"));
+					lastcardvalue = $("#lastincard").attr("cardval");
+				}
+				$("#choices").children().remove();
+				$("#incards").children().remove();
+				for (var i=0;i<incards.length;i++){
+					var incard="";
+					var hasboss = 0;
+					for (var j=0;j<incards[i].cardvalues.length;j++){
+						incard=incard+""+convert(incards[i].cardvalues[j]);
+						if (incards[i].cardvalues[j]==14||incards[i].cardvalues[j]==15){
+							hasboss = 1;
+						}
+					}
+					if (incards[i].twoboss!=1&&hasboss==1){
+						incard=incard+"(";
+						for (var j=0;j<incards[i].cardvalues.length;j++){
+							incard=incard+""+convert(incards[i].minplayervalue+incards[i].type*j);
+						}
+						incard=incard+")";
+					}
+					if (i==incards.length-1){
+						if (lastplayerindex==incards[i].playerindex&&JSON.stringify(incards[i].cardvalues)==lastcardvalue){
+							$("#incards").append($("<div><div id='lastincard' class='incard' style='font-size:40px;white-space:nowrap;' cardval='"+JSON.stringify(incards[i].cardvalues)+"' playerindex='"+incards[i].playerindex+"'>"+incard+"</div><div id='lastincardnick' style='font-size:15px;margin-top:-10px;'>"+incards[i].nick+"</div></div>"));
+						} else {
+							$("#incards").append($("<div><div id='lastincard' class='incard' style='white-space:nowrap;display:none;font-size:10px;' cardval='"+JSON.stringify(incards[i].cardvalues)+"' playerindex='"+incards[i].playerindex+"'>"+incard+"</div><div id='lastincardnick' style='display:none;font-size:5px;margin-top:-10px;'>"+incards[i].nick+"</div></div>"));
+							$( "#lastincard" ).animate( {opacity:"show","fontSize":"40px"},1000);
+							$( "#lastincardnick" ).animate( {opacity:"show","fontSize":"15px"},1000);
+						}
+					} else {
+						$("#incards").append($("<div><div class='incard' style='font-size:40px;white-space:nowrap;' playerindex='"+incards[i].playerindex+"'>"+incard+"</div><div style='font-size:15px;margin-top:-10px;'>"+incards[i].nick+"</div></div>"));
+					}
+				}
+			}
+
+			function refreshmycards(added, cards){
+				$("#mycards").css("width",cards.length*64+"px");
+				if (cards.length==0){
+					$("#mycards").children().remove();
+				} else {
+					$(".mycards").each(function(i){
+						if (i>=cards.length){
+							$(this).remove();
+						}
+					});
+					var ismycardsempty = false;
+					var style = "";
+					if ($("#mycards").children().length==0){
+						ismycardsempty = true;
+						style="font-size:10px;display:none;width:12px;height:14px;";
+					}
+					for (var i=0;i<cards.length;i++){
+						if (!$("#mycard"+i).length){
+							$("#mycards").append($("<div id='mycard"+i+
+							"' class='mycards unroundcard' style='float:left;"+style+"'></div>"));
+							$("#mycard"+i).click(function(){
+								if ($(this).hasClass("roundcard")){
+									$(this).toggleClass("selroundcard");
+									$("#choices").children().remove();
+									$("#playgame").unbind("click");
+									$("#playgame").attr("cardvalues","");
+									$("#playgame").attr("playervalues","");
+									if ($(".selroundcard").length>0){
+										$("#playform").show();
+										$("#playgame").one("click",clickplaygame);
+									} else {
+										$("#playform").hide();
+									}
+								}
+							});
+						}
+						$("#mycard"+i).attr("val",cards[i]);
+						$("#mycard"+i).html("<div>"+convert(cards[i])+"</div>");
+						if (!ismycardsempty&&added ==i){
+							$("#mycard"+i).css("font-size","10px");
+							$("#mycard"+i).css("display","none");
+							$("#mycard"+i).css("width","12px");
+							$("#mycard"+i).css("height","14px");
+						}
+					}
+					if (ismycardsempty){
+						animatemycard(0);
+					} else if (added !=-1){
+						$( "#mycard"+added ).animate( {opacity:"show","width":"60px","height":"70px","fontSize":"50px"},1000);
+					}
+				}
+			}
+
+			function animatemycard(i){
+				if ($( "#mycard"+i ).length){
+					if ((i+1)*64>$("#mycardsform").width()){
+						$("#mycardsform").animate({scrollLeft: $("#mycardsform").width()}, 1000);
+					}
+					$( "#mycard"+i ).animate( {opacity:"show","width":"60px","height":"70px","fontSize":"50px"},200,function(){
+						animatemycard(i+1);
+					});
+				}
+			}
+			
+			function prepareaction(data){
+				$("#topmsg").html("甘瞪眼(剩"+data.judge.restcards+"张)");
+				if (data.judge.restcards==0){
+					$("#topmsg").css("color","#DC143C");
+				} else {
+					$("#topmsg").css("color","#bbb");
+				}
+				
+				if (autotimer!=null){
+					window.clearTimeout(autotimer);
+					sessionStorage.removeItem("countdown");
+				}
+				
+				$("#playform").hide();
+				$("#passgame").hide();
+				$("#startform").remove();
+				$("#choices").children().remove();
+				if (data.judge.round!=0&&data.judge.round%10==0){
+					$("#talk").attr("placeholder",data.judge.round+"局 皮皮虾，我们走");
+				} else {
+					$("#talk").attr("placeholder",data.judge.round+"局对话");
+				}
+				$("#msg").css("color","#bbb");
+				$("#passgame").hide();
+				if (data.judge.started==0){
+					if (data.players.length>1){
+						$(".mycards").addClass("unroundcard");
+						$(".mycards").removeClass("roundcard");
+						$(".mycards").removeClass("selroundcard");
+						if ($(".me").attr("index")==data.judge.nextplayerindex){
+							if (data.judge.round==0){
+								$("#msg").html("请在10分钟内发牌");
+							} else {
+								$("#msg").html((data.judge.round+1)+"局开始，请发牌");
+								if (sessionStorage.getItem("countdown")!=null){
+									countdown(parseInt(sessionStorage.getItem("countdown")));
+								} else {
+									if (data.judge.autoin>20){
+										autotimer = window.setTimeout(function(){countdown(21);},(data.judge.autoin-20)*1000);
+									} else if (data.judge.autoin>0){
+										countdown(data.judge.autoin);
+									}
+								}
+							}
+							$("#startform").remove();
+							var bottom = 100;
+							if (data.judge.round==0){
+								bottom = 20;
+							}
+							$("body").append("<div id='startform' style='position:fixed;width:100%;height:70px;bottom:"+bottom+"px;'>"+
+												"<div id='startgame' class='bigcenterounded'>"+
+												"<div>&gt;</div>"+
+											"</div></div>");
+							var clickstartgame = function(){
+								post(pedataurl+'/sg',{
+							　　		judgeid:localStorage.getItem("pejudgeid"),
+									playerid:localStorage.getItem("peplayerid")
+								},function(data){
+									$("#startform").remove();
+									$("#inviteform").remove();
+								});
+							};
+							$("#startgame").one("click",clickstartgame);
+							if ($("#notice").attr("canplay")=="yes"){
+								notice.play();
+							}
+						} else {
+							$("#msg").html((data.judge.round+1)+"局开始，等待 "+$("#player"+data.judge.nextplayerindex).attr("nick")+" 发牌");
+						}
+					}
+				} else {//started == 1
+					if (parseInt($(".me").attr("index"))==data.judge.nextplayerindex){
+						$("#msg").html("请出牌");
+						$(".mycards").addClass("roundcard");
+						$(".mycards").removeClass("unroundcard");
+						$(".mycards").removeClass("selroundcard");
+						if ($("#incards").children().length!=0&&parseInt($("#lastincard").attr("playerindex"))!=data.judge.nextplayerindex){
+							$("#passgame").show();
+						} else {
+							$("#msg").html("为你打call，请继续出牌");
+							$("#msg").css("color","#228B22");
+						}
+						if ($("#notice").attr("canplay")=="yes"){
+							notice.play();
+						}
+						if (sessionStorage.getItem("countdown")!=null){
+							countdown(parseInt(sessionStorage.getItem("countdown")));
+						} else {
+							if (data.judge.autoin>20){
+								autotimer = window.setTimeout(function(){countdown(21);},(data.judge.autoin-20)*1000);
+							} else if (data.judge.autoin>0){
+								countdown(data.judge.autoin);
+							}
+						}
+					} else {
+						$("#msg").html("等待 "+$("#player"+data.judge.nextplayerindex).attr("nick")+" 出牌");
+						$(".mycards").addClass("unroundcard");
+						$(".mycards").removeClass("roundcard");
+						$(".mycards").removeClass("selroundcard");
+					}
+				}				
+			}
+			
+			$(document).ready(function(){
+				init();
+			});
+			
+			function countdown(rest){
+				$("#msg").html(rest+"秒后自动处理");
+				$("#msg").css("color","#DC143C");
+				if (rest > 0){
+					autotimer = window.setTimeout(function(){countdown(rest-1);},1000);
+					sessionStorage.setItem("countdown",rest);
+				} else {
+					$("#msg").css("color","#bbb");
+					if (autotimer!=null){
+						window.clearTimeout(autotimer);
+						sessionStorage.removeItem("countdown");
+					}
+				}
+			}
+			function convert(cardval){
+				var cardisplay = cardval;
+				if (cardval<=8){
+					cardisplay = cardval+2;
+				} else
+				if (cardval==9){
+					cardisplay = "J";
+				} else 
+				if (cardval==10){
+					cardisplay = "Q";
+				} else
+				if (cardval==11){
+					cardisplay = "K";
+				} else
+				if (cardval==12){
+					cardisplay = "A";
+				} else
+				if (cardval==13){
+					cardisplay = "2";
+				} else
+				if (cardval==14){
+					cardisplay = "👑";
+				} else
+				if (cardval==15){
+					cardisplay = "👑";
+				}
+				
+				return cardisplay;
+			}
+		</script>
+	</head>
+	<body style="position:fixed;top:0px;right:0px;left:0px;bottom:0px;overflow:hidden;font:50px Arial;color:#bbb;text-align:center;background:#000;margin:0px;">
+		
+		<div style="position:fixed;left:0px;top:0px;right:0px;height:30px;width:100%;">
+			<a href="/ad/0.htm" style="color:#bbb;text-decoration:none;" target="blank">
+				<div class="smallrounded" style="float:left;">
+					<div>AD</div>
+				</div>
+			</a>		
+			<div id="topmsg" style="float:left;margin-left:2px;white-space:nowrap;font-size:15px;overflow:hidden;text-align:left;line-height:30px;">甘瞪眼</div>
+			<div style="position:absolute;right:0px;">
+				<input id="talk" maxlength="20" style="display:none;margin:2px;float:left;width:160px;height:26px;font-size:17px;background:#ccc;border:0px;" placeholder="0局对话"/>
+				<div id="talkto" class="smallrounded" style="display:none;float:left;">
+					<div>💬</div>
+				</div>
+			</div>
+		</div>
+
+		<div style="position:fixed;left:0px;top:31px;right:0px;height:72px;width:100%;">
+			<div style="top:0px;left:0px;right:0px;border:0px;height:72px;overflow-x:scroll;overflow-y:hidden;">
+				<div id="players" style="width:100%;height:72px;border:0px;text-align:left;">
+				</div>
+			</div>
+		</div>
+		
+		<div style="position:fixed;left:0px;top:105px;right:0px;height:40px;width:100%;">
+			<div id="notice" class="mediumrounded" canplay="no" style="float:left;">
+				<div>🔇</div>
+			</div>
+			<div id="msg" style="float:left;font-size:15px;line-height:40px;margin-left:2px;"></div>
+			<div id="passgame" class="mediumrounded" style="display:none;float:right;">
+				<div>👀</div>
+			</div>
+		</div>
+		
+		<div style="position:fixed;top:145px;left:0px;right:0px;width:100%;height:140px;border:0px;overflow-x:hidden;overflow-y:scroll;">
+			<div id="incards" style="width:100%;height:140px;border:0px;">
+			</div>
+		</div>
+
+		<div id="choices" style="position:fixed;top:266px;left:0px;right:0px;width:100%;bottom:183px;border:0px;overflow-x:hidden;overflow-y:scroll;">
+		</div>
+
+		<div id="playform" style="position:fixed;display:none;width:100%;height:70px;bottom:112px;">
+			<div id="playgame" class="bigcenterounded">
+				<div>^</div>
+			</div>
+		</div>
+						
+		<div id="mycardsform" style="position:fixed;bottom:10px;left:0px;right:0px;border:0px;height:100px;overflow-x:scroll;overflow-y:hidden;">
+			<div id="mycards" style="padding-top:20px;width:100%;height:70px;border:0px;">
+			</div>
+		</div>
+		
+		<div style="font-size:9px;position:fixed;width:100%;bottom:0px;text-align:right;color:#999;">© 02/09/2018-2090 mchange@outlook.com 沪ICP备18004230号</div>
+	</body>
+</html>	
