@@ -58,8 +58,7 @@ public class Acount implements Filter {
 			result.put("status", "no");
 			result.put("reason", e.getMessage());
 			res.getWriter().write(new ObjectMapper().writeValueAsString(result));
-		}
-				
+		}	
     }
 	
 }
