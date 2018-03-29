@@ -9,7 +9,10 @@ var msgurl = "http://getzdd.com/cm";
 			
 var notice = new Audio("/cw/audio/play.aac");
 var textnotice = new Audio("/cw/audio/text.aac");
-
+var vibrateSupport = "vibrate" in navigator  
+if (vibrateSupport) { 
+    navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;  
+}  
 function post(url, datajson, yescallback,clickid,clickfunction){
 	if (clickid){
 		$("#"+clickid).unbind("click");

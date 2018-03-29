@@ -765,6 +765,10 @@
 							$("#startgame").one("click",clickstartgame);
 							if ($("#notice").attr("canplay")=="yes"){
 								notice.play();
+							} else {
+								if (vibrateSupport) {
+									navigator.vibrate(700);
+								}
 							}
 						} else {
 							$("#msg").html((data.judge.round+1)+"局开始，等待 "+$("#player"+data.judge.nextplayerindex).attr("nick")+" 发牌");
@@ -784,6 +788,10 @@
 						}
 						if ($("#notice").attr("canplay")=="yes"){
 							notice.play();
+						} else {
+							if (vibrateSupport) {
+								navigator.vibrate(700);
+							}
 						}
 						if (sessionStorage.getItem("countdown")!=null){
 							countdown(parseInt(sessionStorage.getItem("countdown")));
