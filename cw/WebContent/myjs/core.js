@@ -9,7 +9,6 @@ var msgurl = "http://getzdd.com/cm";
 			
 var notice = new Audio("/cw/audio/play.aac");
 var textnotice = new Audio("/cw/audio/text.aac");
-
 function post(url, datajson, yescallback,clickid,clickfunction){
 	if (clickid){
 		$("#"+clickid).unbind("click");
