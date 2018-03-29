@@ -1,11 +1,11 @@
-//var pedataurl = "http://getzdd.com/pei";
-//var tendataurl = "http://getzdd.com/teni";
-//var commonurl = "http://getzdd.com/ci";
-//var msgurl = "http://getzdd.com/cm";
-var pedataurl = "http://localhost:8080/pei";
-var tendataurl = "http://localhost:8080/teni";
-var commonurl = "http://localhost:8080/ci";
-var msgurl = "http://localhost:8080/cm";
+var pedataurl = "http://getzdd.com/pei";
+var tendataurl = "http://getzdd.com/teni";
+var commonurl = "http://getzdd.com/ci";
+var msgurl = "http://getzdd.com/cm";
+//var pedataurl = "http://localhost:8080/pei";
+//var tendataurl = "http://localhost:8080/teni";
+//var commonurl = "http://localhost:8080/ci";
+//var msgurl = "http://localhost:8080/cm";
 			
 var notice = new Audio("/cw/audio/play.aac");
 var textnotice = new Audio("/cw/audio/text.aac");
@@ -43,6 +43,9 @@ function post(url, datajson, yescallback,clickid,clickfunction){
 				}
 				if (data.reason=="duplicatenick"){
 					$("#msg").html("有人抢了你的昵称，请换一个吧");
+					if (clickid&&clickfunction){
+						$("#"+clickid).one("click",clickfunction);
+					}
 					return;
 				}
 				$("#msg").html("请刷新页面("+data.reason+")");
