@@ -31,7 +31,7 @@ public class Bjudge implements Filter {
 			result.put("status", "yes");
 			
 			Judge j = Judgepool.IDJUDGE.get(judgeid);
-			j.judge(playerid, cardindex);
+			j.judge(playerid, cardindex, req.getParameter("calcform"));
 			
 			res.getWriter().write(new ObjectMapper().writeValueAsString(result));
 		}catch(Exception e) {

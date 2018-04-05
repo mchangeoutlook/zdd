@@ -108,31 +108,25 @@
 				
 				if (localStorage.getItem("game10advance")!=null){
 					$("#advance0").html("&nbsp;");
-					$("#advance1").html("coming soon");
+					$("#advance1").html("&nbsp;");
+					$("#advance2").html("&nbsp;");
 					$("#advance"+localStorage.getItem("game10advance")).html("✅");
 					$("#desc").html($("#descadvance"+localStorage.getItem("game10advance")).html());
-					if (localStorage.getItem("game10advance")=="0"){
-						$("#creategame").attr("settingadvance","");
-					} else {
-						$("#creategame").attr("settingadvance","settingadvance");
-					}
+					$("#creategame").attr("settingadvance",localStorage.getItem("game10advance"));
 				} else {
 					$("#desc").html($("#descadvance0").html());
 				}
 				
 				var clickadvance=function(){
 					$("#advance0").html("&nbsp;");
-					$("#advance1").html("coming soon");
+					$("#advance1").html("&nbsp;");
+					$("#advance2").html("&nbsp;");
 					$("#desc").html($(this).html());
-					if ($(this).attr("settingadvance")==""){
-						$("#advance0").html("✅");
-					} else {
-						$("#advance1").html("✅");
-					}
+					$("#advance"+$(this).attr("settingadvance")).html("✅");
 					$("#creategame").attr("settingadvance",$(this).attr("settingadvance"));
 				};
 				$(".advance").unbind("click");
-				//$(".advance").bind("click",clickadvance);
+				$(".advance").bind("click",clickadvance);
 				
 				var clickcreategame=function(){
 					if ($("#continueform").is(":visible")){
@@ -151,8 +145,10 @@
 							post(commonurl+"/cnt",{target:"game10total",increase:"increase"});
 							if ($("#advance0").html()!="&nbsp;"){
 								localStorage.setItem("game10advance","0");
-							} else {
+							} else if ($("#advance1").html()!="&nbsp;") {
 								localStorage.setItem("game10advance","1");
+							} else {
+								localStorage.setItem("game10advance","2");
 							}
 							$("#createform").remove();
 							$("#msg").remove();
@@ -193,13 +189,17 @@
 				</div>
 				<div style="font-size:20px;width:260px;height:30px;margin:auto;">
 					<div id="advance0" style="float:left;width:50%;text-align:center;">✅️</div>
-					<div id="descadvance0" class="advance" settingadvance="" style="float:left;width:50%;text-align:left;cursor:pointer;">➕=10</div>
+					<div id="descadvance0" class="advance" settingadvance="0" style="float:left;width:50%;text-align:left;cursor:pointer;">➕=10</div>
 				</div>
 				<div style="font-size:20px;width:260px;height:30px;margin:auto;">
-					<div id="advance1" style="float:left;width:50%;text-align:center;">coming soon</div>
-					<div id="descadvance1" class="advance" settingadvance="settingadvance" style="float:left;width:50%;text-align:left;cursor:pointer;">➕➖✖️➗=10</div>
+					<div id="advance1" style="float:left;width:50%;text-align:center;">&nbsp;</div>
+					<div id="descadvance1" class="advance" settingadvance="1" style="float:left;width:50%;text-align:left;cursor:pointer;">➕➖=10</div>
 				</div>
-				<div id="creategame" settingadvance="" class="bigcenterounded">
+				<div style="font-size:20px;width:260px;height:30px;margin:auto;">
+					<div id="advance2" style="float:left;width:50%;text-align:center;">&nbsp;</div>
+					<div id="descadvance2" class="advance" settingadvance="2" style="float:left;width:50%;text-align:left;cursor:pointer;">➕➖✖️➗=10</div>
+				</div>
+				<div id="creategame" settingadvance="0" class="bigcenterounded">
 					<div>&gt;</div>
 				</div>
 			</div>

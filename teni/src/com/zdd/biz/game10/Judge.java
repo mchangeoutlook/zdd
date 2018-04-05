@@ -2,9 +2,11 @@ package com.zdd.biz.game10;
 
 import java.io.BufferedReader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +15,6 @@ import java.util.UUID;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import com.zdd.biz.game10.Longpollnotify;
 import com.zdd.biz.game10.Player;
@@ -29,7 +30,8 @@ public class Judge{
 	public Integer round = 0;
 	public Integer nextplayerindex = 0;
 	public Integer nextaction = 0;//0:dispatch;1:incard;2:judge;
-	public Integer settingadvance = 0;//0:+=10 1:+-*/=10
+	public Integer calcfromcardindex = -1;
+	public Integer settingadvance = 0;//0:+=10 1:+-=10 2:+-*/=10
 	
 	public boolean expire() {
 		return System.currentTimeMillis()-refreshtime>10*60*1000;
@@ -154,22 +156,48 @@ public class Judge{
 		incards.add(incard);
 		incard.index = incards.indexOf(incard);
 		int winstartindex=-1;
-		if (card >= 10) {
-			if (card == 10||card==14||card==15) {
-				winstartindex = 0;
+		if (settingadvance==0) {
+			if (card >= 10) {
+				if (card == 10||card==14||card==15) {
+					winstartindex = 0;
+				} else {
+					for (int i=0;i<incards.size()-1;i++) {
+						if (incards.get(i).value==card) {
+							winstartindex = i;
+							break;
+						}
+					}
+				}
 			} else {
 				for (int i=0;i<incards.size()-1;i++) {
-					if (incards.get(i).value==card) {
-						winstartindex = i;
+					if (incards.get(i).value<10&&prejudge(i)) {
+						winstartindex = -2;
 						break;
 					}
 				}
 			}
 		} else {
-			for (int i=0;i<incards.size()-1;i++) {
-				if (incards.get(i).value<10&&prejudge(i)) {
-					winstartindex = -2;
-					break;
+			if (card == 10||card==14||card==15) {
+				winstartindex = 0;
+			} else if (incards.size()>1) {
+				if (settingadvance==1) {
+					if (incards.get(0).value+incards.get(incards.size()-1).value==10||
+							Math.abs(incards.get(0).value-incards.get(incards.size()-1).value)==10) {
+						winstartindex = 0;
+					}
+				} else {
+					if (incards.get(0).value+incards.get(incards.size()-1).value==10||
+							Math.abs(incards.get(0).value-incards.get(incards.size()-1).value)==10||
+							incards.get(0).value*incards.get(incards.size()-1).value==10||
+							incards.get(0).value==incards.get(incards.size()-1).value*10||
+							incards.get(incards.size()-1).value==incards.get(0).value*10) {
+						winstartindex = 0;
+					}
+				}
+				if (winstartindex==-1) {
+					if (incards.size()>2) {
+						winstartindex = -2;
+					}
 				}
 			}
 		}
@@ -204,7 +232,7 @@ public class Judge{
 		return returnvalue;
 	}
 
-	public synchronized void judge(String playerid, Integer cardindex) throws Exception {
+	public synchronized void judge(String playerid, Integer cardindex, String form) throws Exception {
 		refreshtime = System.currentTimeMillis();
 		if (started==0) {
 			throw new Exception("notstarted");
@@ -212,12 +240,38 @@ public class Judge{
 		if (getplayer(playerid).index!=nextplayerindex||nextaction!=2){
 			throw new Exception("notyourturn");
 		}
-		
 		int winstartindex = -3;
-		if (cardindex>=0&&prejudge(cardindex)) {
-			winstartindex = cardindex;
-		} else if (cardindex<0){
-			winstartindex = -1;
+		if (cardindex<0) {
+			if (calcfromcardindex!=-1) {
+				winstartindex = -3;
+			} else {
+				winstartindex = -1;
+			}
+			calcfromcardindex=-1;
+		} else {
+			if (settingadvance==0) {
+				if (prejudge(cardindex)) {
+					winstartindex = cardindex;
+				}
+			} else {
+				if (calcfromcardindex==-1) {
+					if (hasvalidform(cardindex)) {
+						winstartindex = cardindex;
+					} else {
+						calcfromcardindex = cardindex;
+						winstartindex = -2;
+					}
+				} else if (calcfromcardindex==cardindex){
+					if (storeform(cardindex, form)) {
+						winstartindex = cardindex;
+						calcfromcardindex = -1;
+					} else {
+						winstartindex = -2;
+					}
+				} else {
+					throw new Exception("wrongcalcindex");
+				}
+			}
 		}
 		next(playerid, winstartindex);
 	}
@@ -265,15 +319,78 @@ public class Judge{
 		Longpollnotify.donotify(this, Longpollnotify.ACTION_INCARD, null);
 	}
 	
-	public static void main(String[] s) throws Exception {
-		 ScriptEngineManager factory = new ScriptEngineManager();  
-		// create a JavaScript engine  
-		ScriptEngine engine = factory.getEngineByName("JavaScript");  
-		// evaluate JavaScript code from String  
-		Object a= engine.eval("(1+2)*(3-1)*4/2");
-		System.out.println(a.toString());
-		System.out.println(",8,,9,,10,,13,,".matches(".*(,9,).*(,11,).*"));
-		
+	private static final Path formsfolder = Paths.get("tenforms");
+	private boolean hasvalidform(Integer fromcardindex) throws Exception {
+		boolean returnvalue = false;
+		Path folder = formsfolder.resolve(String.valueOf(settingadvance));
+		if (Files.exists(formfile(folder, fromcardindex))) {
+			Files.createDirectories(folder);
+			List<Integer> ops = new ArrayList<Integer>();
+			for (int i = fromcardindex+1;i<incards.size()-1;i++) {
+				ops.add(incards.get(i).value);
+			}
+			Collections.sort(ops);
+			String tofind = "";
+			for (Integer i:ops) {
+				tofind +=","+i+",";
+			}
+			BufferedReader br = Files.newBufferedReader(formfile(folder, fromcardindex));
+			try {
+				String line = br.readLine();
+				while(line!=null) {
+					if (tofind.matches(line)) {
+						returnvalue = true;
+						break;
+					}
+					line = br.readLine();
+				}	
+			}finally {
+				br.close();
+			}
+		}
+		return returnvalue;
 	}
 	
+	private static final ScriptEngineManager factory = new ScriptEngineManager();  
+	private static final ScriptEngine engine = factory.getEngineByName("JavaScript");  
+	private boolean storeform(Integer fromcardindex, String form) throws Exception {
+		boolean returnvalue = false;
+		if (settingadvance==1&&!form.contains("*")&&!form.contains("/")||settingadvance==2) {
+			if ("10".equals(engine.eval(form).toString())&&
+					form.contains(String.valueOf(incards.get(fromcardindex).value))&&
+					form.contains(String.valueOf(incards.get(incards.size()-1).value))) {
+				form = form.replaceFirst(String.valueOf(incards.get(fromcardindex).value), "");
+				form = form.replaceFirst(String.valueOf(incards.get(incards.size()-1).value), "");
+				List<Integer> op = new ArrayList<Integer>();
+				for (int i=fromcardindex+1;i<incards.size()-1;i++) {
+					if (form.contains(String.valueOf(incards.get(i).value))) {
+						op.add(incards.get(i).value);
+						form = form.replaceFirst(String.valueOf(incards.get(i).value), "");
+					}
+				}
+				if (!form.matches(".*[0-9].*")&&!op.isEmpty()) {
+					Path folder = formsfolder.resolve(String.valueOf(settingadvance));
+					Files.createDirectories(folder);
+					Collections.sort(op);
+					String tostore = ".*";
+					for (Integer i:op) {
+						tostore+="(,"+i+",).*";
+					}
+					Files.write(formfile(folder, fromcardindex), (tostore+System.lineSeparator()).getBytes("UTF-8"), 
+							StandardOpenOption.CREATE,StandardOpenOption.APPEND);
+					returnvalue = true;
+				}
+				
+			}
+		}
+		return returnvalue;
+	}
+	
+	private Path formfile(Path folder, Integer fromcardindex) {
+		String file = String.valueOf(incards.get(fromcardindex).value)+"_"+String.valueOf(incards.get(incards.size()-1).value);
+		if (incards.get(fromcardindex).value>incards.get(incards.size()-1).value) {
+			file = String.valueOf(incards.get(incards.size()-1).value)+"_"+String.valueOf(incards.get(fromcardindex).value);
+		}
+		return folder.resolve(file);
+	}
 }

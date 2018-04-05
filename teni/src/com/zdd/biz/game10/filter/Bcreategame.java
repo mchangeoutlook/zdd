@@ -27,8 +27,11 @@ public class Bcreategame implements Filter {
         		Map<String, String> result = new HashMap<String, String>();
 			result.put("status", "yes");
 			Judge j = new Judge();
-			if (req.getParameter("settingadvance")!=null&&!req.getParameter("settingadvance").trim().isEmpty()) {
-				j.settingadvance=1;
+			j.settingadvance = 0;
+			if ("1".equals(req.getParameter("settingadvance"))) {
+				j.settingadvance = 1;
+			} else if ("2".equals(req.getParameter("settingadvance"))) {
+				j.settingadvance = 2;
 			}
 			String playerid = j.joinordispatchcard(null, req.getParameter("nick"));
     		 	Judgepool.IDJUDGE.put(j.id, j);

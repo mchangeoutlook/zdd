@@ -48,6 +48,28 @@
 				text-align:center;
 			}
 
+			.roundopcard{
+				cursor:pointer;
+				background:#008B8B;
+				border:0px;
+				color:#000;
+				border-radius:5px;
+				width:60px;
+				height:66px;
+				margin-left:2px;
+				margin-right:2px;
+				margin-top:2px;
+				margin-bottom:2px;
+				line-height:70px;
+			}
+			.roundopcard div{
+				display:table-cell;
+				width:60px;
+				height:66px;
+				vertical-align:middle;
+				text-align:center;
+			}
+
 			.selroundcard{
 				cursor:pointer;
 				background:#008B8B;
@@ -245,17 +267,22 @@
 											"</div>"+
 											"<div style='font-size:20px;width:260px;height:30px;margin:auto;'>"+
 												"<div id='advance0' style='float:left;width:50%;text-align:center;'>&nbsp;</div>"+
-												"<div id='descadvance0' class='advance' settingadvance='' style='float:left;width:50%;text-align:left;cursor:pointer;'>➕=10</div>"+
+												"<div id='descadvance0' style='float:left;width:50%;text-align:left;'>➕=10</div>"+
 											"</div>"+
 											"<div style='font-size:20px;width:260px;height:30px;margin:auto;'>"+
-												"<div id='advance1' style='float:left;width:50%;text-align:center;'>coming soon</div>"+
-												"<div id='descadvance1' class='advance' settingadvance='settingadvance' style='float:left;width:50%;text-align:left;cursor:pointer;'>➕➖✖️➗=10</div>"+
+												"<div id='advance1' style='float:left;width:50%;text-align:center;'>&nbsp;</div>"+
+												"<div id='descadvance1' style='float:left;width:50%;text-align:left;'>➕➖=10</div>"+
 											"</div>"+
+											"<div style='font-size:20px;width:260px;height:30px;margin:auto;'>"+
+											"<div id='advance2' style='float:left;width:50%;text-align:center;'>&nbsp;</div>"+
+											"<div id='descadvance2' style='float:left;width:50%;text-align:left;'>➕➖✖️➗=10</div>"+
+										"</div>"+
 											"<div id='joingame' class='bigcenterounded'>"+
 												"<div>&gt;</div>"+
 											"</div>"+
 										"</div>");
 						$("#msg").html("加入 "+data.players[0].nick+" "+$("#descadvance"+data.judge.settingadvance).html());
+						$("#desc").html($("#descadvance"+data.judge.settingadvance).html());
 						$("#advance"+data.judge.settingadvance).html("☑️");
 						if (localStorage.getItem("game10nick")!=null){
 							$("#nick").val(localStorage.getItem("game10nick"));
@@ -305,6 +332,7 @@
 			}
 			
 			function lpchcallback(data){
+				sessionStorage.setItem("settingadvance",data.judge.settingadvance);
 				refreshplayers(data.players);
 				refreshincards(data.judge.incards);
 				prepareaction(data);
@@ -350,8 +378,10 @@
 							$("#player"+players[i].index).attr("wins")+"</div>");
 				}
 				if ($("#player0").length){
-					if (sessionStorage.getItem("settingadvance")=="1"){
+					if (sessionStorage.getItem("settingadvance")=="2"){
 						$("#thetitle").html($("#player0").attr("nick")+" ➕➖✖️➗=10");
+					} else if (sessionStorage.getItem("settingadvance")=="1"){ 
+						$("#thetitle").html($("#player0").attr("nick")+" ➕➖=10");
 					} else {
 						$("#thetitle").html($("#player0").attr("nick")+" ➕=10");
 					}
@@ -372,7 +402,7 @@
 				for (var i=0;i<incards.length;i++){
 					$("#incards").append("<div style='font:17px Arial;text-align:right;line-height:70px;width:50%;float:left;'>"+incards[i].nick+"</div>");
 					$("#incards").append("<div id='incard"+incards[i].index+"' index='"+incards[i].index+"' style='text-align:left;float:left;' val='"+incards[i].value+"' class='unroundcard'><div>"+convert(incards[i].value)+"</div></div>");
-					if (incards[i].value<10){
+					if (incards[i].value<10||"1"==sessionStorage.getItem("settingadvance")||"2"==sessionStorage.getItem("settingadvance")){
 						$("#incard"+incards[i].index).addClass("incards");
 						var clicktojudge = function(){
 							if ($(this).hasClass("roundincard")){
@@ -458,8 +488,10 @@
 			}
 			
 			function prepareaction(data){
-				if (data.judge.settingadvance==1){
+				if (data.judge.settingadvance==2){
 					$("#topmsg").html("➕➖✖️➗=10");
+				} else if (data.judge.settingadvance==1){
+					$("#topmsg").html("➕➖=10");
 				} else {
 					$("#topmsg").html("➕=10");
 				}
@@ -467,6 +499,7 @@
 				$("#playform").hide();
 				$("#passgame").hide();
 				$("#startform").remove();
+				$("#calcdiv").remove();
 				$("#msg").css("color","#bbb");
 				
 				if (data.judge.round!=0&&data.judge.round%10==0){
@@ -516,14 +549,26 @@
 				} else {//started == 1
 					if (parseInt($(".me").attr("index"))==data.judge.nextplayerindex){
 						if (data.judge.nextaction==2){
-							$("#msg").html("请在10分钟内选择?+(?)+"+$(".incardslast").attr("val")+"=10");
+							if (data.judge.settingadvance==2){
+								$("#msg").html("请在10分钟内选择?➕➖✖️➗(?)➕➖✖️➗"+$(".incardslast").attr("val")+"=10");
+							} else if (data.judge.settingadvance==1){
+								$("#msg").html("请在10分钟内选择?➕➖(?)➕➖"+$(".incardslast").attr("val")+"=10");
+							} else {
+								$("#msg").html("请在10分钟内选择?+(?)+"+$(".incardslast").attr("val")+"=10");
+							}
 							$("#passgame").show();
-							$(".incards").addClass("roundincard");
-							$(".incards").removeClass("unroundcard");
-							$("#passgame").show();
-							$(".mycards").removeClass("roundcard");
-							$(".mycards").addClass("unroundcard");
-							$(".mycards").removeClass("selroundcard");
+							if (data.judge.calcfromcardindex==-1){
+								$(".incards").addClass("roundincard");
+								$(".incards").removeClass("unroundcard");
+								$(".mycards").removeClass("roundcard");
+								$(".mycards").addClass("unroundcard");
+								$(".mycards").removeClass("selroundcard");
+							} else {
+								sessionStorage.setItem("data.judge.calcfromcardindex",data.judge.calcfromcardindex);
+								sessionStorage.setItem("data.judge.incards",JSON.stringify(data.judge.incards));
+								sessionStorage.setItem("data.judge.settingadvance",data.judge.settingadvance);
+								showcalc();
+							}
 						} else {
 							$("#msg").html("请在10分钟内出牌");
 							$(".incards").removeClass("roundincard");
@@ -561,6 +606,118 @@
 						$(".mycards").removeClass("selroundcard");
 					}
 				}				
+			}
+			
+			function showcalc(){
+				var calcfromindex = parseInt(sessionStorage.getItem("data.judge.calcfromcardindex"));
+				var settingadvance = parseInt(sessionStorage.getItem("data.judge.settingadvance"));
+				var incards = JSON.parse(sessionStorage.getItem("data.judge.incards"));
+				$("#calcdiv").remove();
+				$("body").append("<div id='calcdiv' style='position:absolute;left:0px;right:0px;top:125px;bottom:15px;background-color:black;'></div>");
+				$("#calcdiv").append("<div style='position:absolute;width:40px;line-height:140px;font-size:15px;left:0px;top:71px;border-bottom:1px #bbb solid;'>必选</div>");
+				$("#calcdiv").append("<div id='calcform' style='position:absolute;left:40px;right:0px;top:0px;height:70px;overflow-y:hidden;overflow-x:scroll;'></div>");
+				$("#calcdiv").append("<div id='newcalc' style='position:absolute;left:40px;right:0px;top:70px;height:70px;overflow-y:hidden;overflow-x:scroll;'></div>");
+				$("#calcdiv").append("<div id='firstlast' style='position:absolute;left:40px;right:0px;top:140px;height:71px;overflow-y:hidden;overflow-x:scroll;border-bottom:1px #bbb solid;'></div>");
+				$("#calcdiv").append("<div style='position:absolute;top:211px;left:0px;bottom:70px;line-height:70px;width:40px;font-size:15px;'>可选</div>");
+				$("#calcdiv").append("<div id='opcards' style='position:absolute;top:213px;right:0px;text-align:left;left:40px;bottom:70px;overflow-x:hidden;overflow-y:scroll;'></div>");
+				$("#calcdiv").append("<div id='recalc' style='position:absolute;bottom:0px;left:0px;height:64px;line-height:64px;width:40px;font-size:15px;border:3px #008B8B solid;border-radius:10px;cursor:pointer;'>重算</div>");
+				$("#calcdiv").append("<div id='ops' style='position:absolute;bottom:0px;right:0px;left:46px;text-align:center;height:70px;overflow-y:hidden;overflow-x:scroll;'></div>");
+				$("#calcdiv").append("<div id='finalform' style='display:none;'></div>");
+				
+				$("#firstlast").append("<div style='float:left;' form='"+incards[calcfromindex].value+"' val='"+incards[calcfromindex].value+"' class='firstlast unroundcard'><div>"+incards[calcfromindex].value+"</div></div>");
+				$("#firstlast").append("<div style='float:left;' form='"+incards[incards.length-1].value+"' val='"+incards[incards.length-1].value+"' class='firstlast unroundcard'><div>"+incards[incards.length-1].value+"</div></div>");
+				
+				for (var i=calcfromindex+1;i<incards.length-1;i++){
+					$("#opcards").append("<div style='float:left;' form='"+incards[i].value+"' val='"+incards[i].value+"' class='opcards unroundcard'><div>"+incards[i].value+"</div></div>");
+				}
+				
+				$("#ops").append("<div style='float:left;' val='+' class='ops unroundcard'><div>➕</div></div>");
+				$("#ops").append("<div style='float:left;' val='-' class='ops unroundcard'><div>➖</div></div>");
+				if (settingadvance==2){
+					$("#ops").append("<div style='float:left;' val='*' class='ops unroundcard'><div>✖️</div></div>");
+					$("#ops").append("<div style='float:left;' val='/' class='ops unroundcard'><div>➗</div></div>");
+				}
+				var clickops = function(){
+					if ($(this).hasClass("roundopcard")){
+						$(".roundopcard").addClass("unroundcard");
+						$(".roundopcard").removeClass("roundopcard");
+						$("#calcform").html($("#calcform").html()+$(this).attr("val"));
+						$("#finalform").html($("#finalform").html()+$(this).attr("val"));
+						$(".firstlast").addClass("roundopcard");
+						$(".opcards").addClass("roundopcard");
+						$(".newcalc").addClass("roundopcard");
+						$(".roundopcard").removeClass("unroundcard");
+						if ($(this).attr("val")=="/"){
+							$(".roundopcard").each(function(){
+								if ($(this).attr("val")=="0"){
+									$(this).removeClass("roundopcard");
+									$(this).addClass("unroundcard");
+								}
+							});
+						}
+						$(".firstlast").one("click",clickcard);
+						$(".opcards").one("click",clickcard);
+						$(".newcalc").one("click",clickcard);
+					}
+				};
+				var clickcard = function(){
+					if ($(this).hasClass("roundopcard")){
+						$(".roundopcard").addClass("unroundcard");
+						$(".roundopcard").removeClass("roundopcard");
+						var val = $(this).attr("val");
+						var form = $(this).attr("form");
+						$(this).remove();
+						if ($("#calcform").html()==""){
+							$("#calcform").html(val);
+							$("#finalform").html(form);
+							$(".ops").addClass("roundopcard");
+							$(".roundopcard").removeClass("unroundcard");
+							$(".ops").one("click",clickops);
+						} else {
+							$("#calcform").html($("#calcform").html()+val);
+							$("#finalform").html($("#finalform").html()+form);
+							var result = Math.round(eval("("+$("#calcform").html()+")"));
+							if (result==10&&$("#firstlast").html()==""&&$("#newcalc").html()==""){
+								post(tendataurl+'/ju',{
+							　　		incardindex:parseInt(sessionStorage.getItem("data.judge.calcfromcardindex")),
+						　　			judgeid:localStorage.getItem("game10judgeid"),
+									playerid:localStorage.getItem("game10playerid"),
+									calcform:$("#finalform").html()
+								});
+							} else {
+								if (result<0){
+									$("#newcalc").append("<div style='float:left;' form='("+$("#finalform").html()+")' val='("+result+")' class='newcalc unroundcard lastnewcalc'><div>"+result+"</div></div>");
+								} else {
+									$("#newcalc").append("<div style='float:left;' form='("+$("#finalform").html()+")' val='"+result+"' class='newcalc unroundcard lastnewcalc'><div>"+result+"</div></div>");
+								}
+								$("#calcform").html($("#calcform").html()+"=");
+								$(".lastnewcalc").css("fontSize","10px");
+								$(".lastnewcalc").animate( {"fontSize":"50px"},1000,function(){
+									$(this).removeClass("lastnewcalc");
+									$("#calcform").html("");
+									$(".firstlast").addClass("roundopcard");
+									$(".opcards").addClass("roundopcard");
+									$(".newcalc").addClass("roundopcard");
+									$(".roundopcard").removeClass("unroundcard");
+									$(".firstlast").one("click",clickcard);
+									$(".opcards").one("click",clickcard);
+									$(".newcalc").one("click",clickcard);
+								});
+								
+							}
+						}
+					}
+				};
+				$(".firstlast").addClass("roundopcard");
+				$(".opcards").addClass("roundopcard");
+				$(".newcalc").addClass("roundopcard");
+				$(".roundopcard").removeClass("unroundcard");
+				$(".firstlast").one("click",clickcard);
+				$(".opcards").one("click",clickcard);
+				$(".newcalc").one("click",clickcard);
+				$("#recalc").click(function(){
+					showcalc();
+				});
 			}
 			
 			$(document).ready(function(){
@@ -620,11 +777,11 @@
 		</div>
 		
 		<div style="position:fixed;left:0px;top:85px;right:0px;height:40px;width:100%;">
-			<div id="notice" class="mediumrounded" canplay="no" style="float:left;">
+			<div id="notice" class="mediumrounded" canplay="no" style="position:absolute;top:0px;left:0px;">
 				<div>🔇</div>
 			</div>
-			<div id="msg" style="float:left;font-size:15px;line-height:40px;margin-left:2px;"></div>
-			<div id="passgame" class="mediumrounded" style="display:none;float:right;">
+			<div id="msg" style="position:absolute;top:0px;left:40px;text-align:left;white-space:nowrap;overflow-x:scroll;overflow-y:hidden;right:40px;font-size:15px;line-height:40px;margin-left:2px;"></div>
+			<div id="passgame" class="mediumrounded" style="position:absolute;top:0px;right:0px;display:none;">
 				<div>X</div>
 			</div>
 		</div>
