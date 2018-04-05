@@ -15,7 +15,6 @@ import java.util.UUID;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-
 import com.zdd.biz.game10.Longpollnotify;
 import com.zdd.biz.game10.Player;
 
@@ -356,7 +355,7 @@ public class Judge{
 	private boolean storeform(Integer fromcardindex, String form) throws Exception {
 		boolean returnvalue = false;
 		if (settingadvance==1&&!form.contains("*")&&!form.contains("/")||settingadvance==2) {
-			if ("10".equals(engine.eval(form).toString())&&
+			if (10==Math.round(Double.parseDouble(engine.eval(form).toString()))&&
 					form.contains(String.valueOf(incards.get(fromcardindex).value))&&
 					form.contains(String.valueOf(incards.get(incards.size()-1).value))) {
 				form = form.replaceFirst(String.valueOf(incards.get(fromcardindex).value), "");
@@ -393,4 +392,5 @@ public class Judge{
 		}
 		return folder.resolve(file);
 	}
+	
 }

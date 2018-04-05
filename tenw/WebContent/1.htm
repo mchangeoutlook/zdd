@@ -262,8 +262,8 @@
 						}
 						$("body").append("<div id='joinform' style='position:fixed;top:125px;width:100%;'>"+
 											"<input id='nick' maxlength='10' style='width:260px;height:40px;font-size:20px;margin:5px;' placeholder='输入昵称加入'/>"+
-											"<div style='font-size:17px;width:280px;margin:auto;'>"+
-											"10分钟不出牌则牌局失效，得分荡然无存，如果你出的牌和你选的牌以及之间的牌<font id='desc'></font>，你就可以将它们和它们之间的牌收入囊中，选错扣1分，祝智勇双全的你好运！"+
+											"<div style='font-size:17px;width:310px;margin:auto;'>"+
+											"等待超过10分钟则牌局失效，得分友尽<br>如果你出的牌和你选的牌以及之间任意张牌<font id='desc'></font>，你就可以将你选的牌和之后的所有牌收入囊中，选错扣1分<br>祝智勇双全的你好运！"+
 											"</div>"+
 											"<div style='font-size:20px;width:260px;height:30px;margin:auto;'>"+
 												"<div id='advance0' style='float:left;width:50%;text-align:center;'>&nbsp;</div>"+
@@ -550,11 +550,11 @@
 					if (parseInt($(".me").attr("index"))==data.judge.nextplayerindex){
 						if (data.judge.nextaction==2){
 							if (data.judge.settingadvance==2){
-								$("#msg").html("请在10分钟内选择?➕➖✖️➗(?)➕➖✖️➗"+$(".incardslast").attr("val")+"=10");
+								$("#msg").html("10分钟内&nbsp;?➕➖✖️➗(?)➕➖✖️➗"+$(".incardslast").attr("val")+"=10");
 							} else if (data.judge.settingadvance==1){
-								$("#msg").html("请在10分钟内选择?➕➖(?)➕➖"+$(".incardslast").attr("val")+"=10");
+								$("#msg").html("10分钟内&nbsp;?➕➖(?)➕➖"+$(".incardslast").attr("val")+"=10");
 							} else {
-								$("#msg").html("请在10分钟内选择?+(?)+"+$(".incardslast").attr("val")+"=10");
+								$("#msg").html("10分钟内&nbsp;?+(?)+"+$(".incardslast").attr("val")+"=10");
 							}
 							$("#passgame").show();
 							if (data.judge.calcfromcardindex==-1){
@@ -622,13 +622,12 @@
 				$("#calcdiv").append("<div id='opcards' style='position:absolute;top:213px;right:0px;text-align:left;left:40px;bottom:70px;overflow-x:hidden;overflow-y:scroll;'></div>");
 				$("#calcdiv").append("<div id='recalc' style='position:absolute;bottom:0px;left:0px;height:64px;line-height:64px;width:40px;font-size:15px;border:3px #008B8B solid;border-radius:10px;cursor:pointer;'>重算</div>");
 				$("#calcdiv").append("<div id='ops' style='position:absolute;bottom:0px;right:0px;left:46px;text-align:center;height:70px;overflow-y:hidden;overflow-x:scroll;'></div>");
-				$("#calcdiv").append("<div id='finalform' style='display:none;'></div>");
 				
-				$("#firstlast").append("<div style='float:left;' form='"+incards[calcfromindex].value+"' val='"+incards[calcfromindex].value+"' class='firstlast unroundcard'><div>"+incards[calcfromindex].value+"</div></div>");
-				$("#firstlast").append("<div style='float:left;' form='"+incards[incards.length-1].value+"' val='"+incards[incards.length-1].value+"' class='firstlast unroundcard'><div>"+incards[incards.length-1].value+"</div></div>");
+				$("#firstlast").append("<div style='float:left;' val='"+incards[calcfromindex].value+"' class='firstlast unroundcard'><div>"+incards[calcfromindex].value+"</div></div>");
+				$("#firstlast").append("<div style='float:left;' val='"+incards[incards.length-1].value+"' class='firstlast unroundcard'><div>"+incards[incards.length-1].value+"</div></div>");
 				
 				for (var i=calcfromindex+1;i<incards.length-1;i++){
-					$("#opcards").append("<div style='float:left;' form='"+incards[i].value+"' val='"+incards[i].value+"' class='opcards unroundcard'><div>"+incards[i].value+"</div></div>");
+					$("#opcards").append("<div style='float:left;' val='"+incards[i].value+"' class='opcards unroundcard'><div>"+incards[i].value+"</div></div>");
 				}
 				
 				$("#ops").append("<div style='float:left;' val='+' class='ops unroundcard'><div>➕</div></div>");
@@ -642,18 +641,30 @@
 						$(".roundopcard").addClass("unroundcard");
 						$(".roundopcard").removeClass("roundopcard");
 						$("#calcform").html($("#calcform").html()+$(this).attr("val"));
-						$("#finalform").html($("#finalform").html()+$(this).attr("val"));
-						$(".firstlast").addClass("roundopcard");
-						$(".opcards").addClass("roundopcard");
-						$(".newcalc").addClass("roundopcard");
-						$(".roundopcard").removeClass("unroundcard");
 						if ($(this).attr("val")=="/"){
-							$(".roundopcard").each(function(){
-								if ($(this).attr("val")=="0"){
-									$(this).removeClass("roundopcard");
-									$(this).addClass("unroundcard");
+							$(".firstlast").each(function(){
+								if ($(this).attr("val")!="0"){
+									$(this).addClass("roundopcard");
+									$(this).removeClass("unroundcard");
 								}
 							});
+							$(".opcards").each(function(){
+								if ($(this).attr("val")!="0"){
+									$(this).addClass("roundopcard");
+									$(this).removeClass("unroundcard");
+								}
+							});
+							$(".newcalc").each(function(){
+								if ($(this).attr("val")!="0"){
+									$(this).addClass("roundopcard");
+									$(this).removeClass("unroundcard");
+								}
+							});
+						} else {
+							$(".firstlast").addClass("roundopcard");
+							$(".opcards").addClass("roundopcard");
+							$(".newcalc").addClass("roundopcard");
+							$(".roundopcard").removeClass("unroundcard");
 						}
 						$(".firstlast").one("click",clickcard);
 						$(".opcards").one("click",clickcard);
@@ -665,31 +676,27 @@
 						$(".roundopcard").addClass("unroundcard");
 						$(".roundopcard").removeClass("roundopcard");
 						var val = $(this).attr("val");
-						var form = $(this).attr("form");
 						$(this).remove();
 						if ($("#calcform").html()==""){
 							$("#calcform").html(val);
-							$("#finalform").html(form);
 							$(".ops").addClass("roundopcard");
 							$(".roundopcard").removeClass("unroundcard");
 							$(".ops").one("click",clickops);
 						} else {
 							$("#calcform").html($("#calcform").html()+val);
-							$("#finalform").html($("#finalform").html()+form);
 							var result = Math.round(eval("("+$("#calcform").html()+")"));
 							if (result==10&&$("#firstlast").html()==""&&$("#newcalc").html()==""){
 								post(tendataurl+'/ju',{
 							　　		incardindex:parseInt(sessionStorage.getItem("data.judge.calcfromcardindex")),
 						　　			judgeid:localStorage.getItem("game10judgeid"),
 									playerid:localStorage.getItem("game10playerid"),
-									calcform:$("#finalform").html()
+									calcform:$("#calcform").html()
 								});
 							} else {
-								if (result<0){
-									$("#newcalc").append("<div style='float:left;' form='("+$("#finalform").html()+")' val='("+result+")' class='newcalc unroundcard lastnewcalc'><div>"+result+"</div></div>");
-								} else {
-									$("#newcalc").append("<div style='float:left;' form='("+$("#finalform").html()+")' val='"+result+"' class='newcalc unroundcard lastnewcalc'><div>"+result+"</div></div>");
+								if (result!=eval("("+$("#calcform").html()+")")){
+									result = $("#calcform").html();
 								}
+								$("#newcalc").append("<div style='float:left;overflow-y:hidden;overflow-x:scroll;' val='("+$("#calcform").html()+")' class='newcalc unroundcard lastnewcalc'><div style='white-space:nowrap;'>"+result+"</div></div>");
 								$("#calcform").html($("#calcform").html()+"=");
 								$(".lastnewcalc").css("fontSize","10px");
 								$(".lastnewcalc").animate( {"fontSize":"50px"},1000,function(){
