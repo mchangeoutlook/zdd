@@ -110,6 +110,7 @@
 					$("#advance0").html("&nbsp;");
 					$("#advance1").html("&nbsp;");
 					$("#advance2").html("&nbsp;");
+					$("#advance3").html("&nbsp;");
 					$("#advance"+localStorage.getItem("game10advance")).html("✅");
 					$("#desc").html($("#descadvance"+localStorage.getItem("game10advance")).html());
 					$("#creategame").attr("settingadvance",localStorage.getItem("game10advance"));
@@ -121,6 +122,7 @@
 					$("#advance0").html("&nbsp;");
 					$("#advance1").html("&nbsp;");
 					$("#advance2").html("&nbsp;");
+					$("#advance3").html("&nbsp;");
 					$("#desc").html($(this).html());
 					$("#advance"+$(this).attr("settingadvance")).html("✅");
 					$("#creategame").attr("settingadvance",$(this).attr("settingadvance"));
@@ -147,8 +149,10 @@
 								localStorage.setItem("game10advance","0");
 							} else if ($("#advance1").html()!="&nbsp;") {
 								localStorage.setItem("game10advance","1");
-							} else {
+							} else if ($("#advance2").html()!="&nbsp;") {
 								localStorage.setItem("game10advance","2");
+							} else {
+								localStorage.setItem("game10advance","3");
 							}
 							$("#createform").remove();
 							$("#msg").remove();
@@ -197,7 +201,11 @@
 				</div>
 				<div style="font-size:20px;width:260px;height:30px;margin:auto;">
 					<div id="advance2" style="float:left;width:50%;text-align:center;">&nbsp;</div>
-					<div id="descadvance2" class="advance" settingadvance="2" style="float:left;width:50%;text-align:left;cursor:pointer;">➕➖✖️➗=10</div>
+					<div id="descadvance2" class="advance" settingadvance="2" style="float:left;width:50%;text-align:left;cursor:pointer;">➕➖✖️=10</div>
+				</div>
+				<div style="font-size:20px;width:260px;height:40px;margin:auto;">
+					<div id="advance3" style="float:left;width:50%;text-align:center;">&nbsp;</div>
+					<div id="descadvance3" class="advance" settingadvance="3" style="float:left;width:50%;text-align:left;cursor:pointer;">➕➖✖️➗=10</div>
 				</div>
 				<div id="creategame" settingadvance="0" class="bigcenterounded">
 					<div>&gt;</div>

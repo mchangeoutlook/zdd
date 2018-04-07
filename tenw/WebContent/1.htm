@@ -273,10 +273,14 @@
 												"<div id='advance1' style='float:left;width:50%;text-align:center;'>&nbsp;</div>"+
 												"<div id='descadvance1' style='float:left;width:50%;text-align:left;'>➕➖=10</div>"+
 											"</div>"+
-											"<div style='font-size:20px;width:260px;height:30px;margin:auto;'>"+
-											"<div id='advance2' style='float:left;width:50%;text-align:center;'>&nbsp;</div>"+
-											"<div id='descadvance2' style='float:left;width:50%;text-align:left;'>➕➖✖️➗=10</div>"+
-										"</div>"+
+												"<div style='font-size:20px;width:260px;height:30px;margin:auto;'>"+
+												"<div id='advance2' style='float:left;width:50%;text-align:center;'>&nbsp;</div>"+
+												"<div id='descadvance2' style='float:left;width:50%;text-align:left;'>➕➖✖️=10</div>"+
+											"</div>"+
+												"<div style='font-size:20px;width:260px;height:40px;margin:auto;'>"+
+												"<div id='advance3' style='float:left;width:50%;text-align:center;'>&nbsp;</div>"+
+												"<div id='descadvance3' style='float:left;width:50%;text-align:left;'>➕➖✖️➗=10</div>"+
+											"</div>"+
 											"<div id='joingame' class='bigcenterounded'>"+
 												"<div>&gt;</div>"+
 											"</div>"+
@@ -378,8 +382,10 @@
 							$("#player"+players[i].index).attr("wins")+"</div>");
 				}
 				if ($("#player0").length){
-					if (sessionStorage.getItem("settingadvance")=="2"){
+					if (sessionStorage.getItem("settingadvance")=="3"){
 						$("#thetitle").html($("#player0").attr("nick")+" ➕➖✖️➗=10");
+					} else if (sessionStorage.getItem("settingadvance")=="2"){
+						$("#thetitle").html($("#player0").attr("nick")+" ➕➖✖️=10");
 					} else if (sessionStorage.getItem("settingadvance")=="1"){ 
 						$("#thetitle").html($("#player0").attr("nick")+" ➕➖=10");
 					} else {
@@ -402,7 +408,7 @@
 				for (var i=0;i<incards.length;i++){
 					$("#incards").append("<div style='font:17px Arial;text-align:right;line-height:70px;width:50%;float:left;'>"+incards[i].nick+"</div>");
 					$("#incards").append("<div id='incard"+incards[i].index+"' index='"+incards[i].index+"' style='text-align:left;float:left;' val='"+incards[i].value+"' class='unroundcard'><div>"+convert(incards[i].value)+"</div></div>");
-					if (incards[i].value<10||"1"==sessionStorage.getItem("settingadvance")||"2"==sessionStorage.getItem("settingadvance")){
+					if (incards[i].value<10||"0"!=sessionStorage.getItem("settingadvance")){
 						$("#incard"+incards[i].index).addClass("incards");
 						var clicktojudge = function(){
 							if ($(this).hasClass("roundincard")){
@@ -488,8 +494,10 @@
 			}
 			
 			function prepareaction(data){
-				if (data.judge.settingadvance==2){
-					$("#topmsg").html("➕➖✖️➗=10");
+				if (data.judge.settingadvance==3){
+					$("#topmsg").html("➕➖✖️➗=10<span style='font-size:8px;'>四舍五入</span>");
+				} else if (data.judge.settingadvance==2){
+					$("#topmsg").html("➕➖✖️=10");
 				} else if (data.judge.settingadvance==1){
 					$("#topmsg").html("➕➖=10");
 				} else {
@@ -550,12 +558,14 @@
 				} else {//started == 1
 					if (parseInt($(".me").attr("index"))==data.judge.nextplayerindex){
 						if (data.judge.nextaction==2){
-							if (data.judge.settingadvance==2){
-								$("#msg").html("10分钟内&nbsp;?➕➖✖️➗(?)➕➖✖️➗"+$(".incardslast").attr("val")+"=10");
+							if (data.judge.settingadvance==3){
+								$("#msg").html("10分钟内选一张牌和"+convert($(".incardslast").attr("val"))+"以及之间的牌➕➖✖️➗=10");
+							} else if (data.judge.settingadvance==2){
+								$("#msg").html("10分钟内选一张牌和"+convert($(".incardslast").attr("val"))+"以及之间的牌➕➖✖️=10");
 							} else if (data.judge.settingadvance==1){
-								$("#msg").html("10分钟内&nbsp;?➕➖(?)➕➖"+$(".incardslast").attr("val")+"=10");
+								$("#msg").html("10分钟内选一张牌和"+convert($(".incardslast").attr("val"))+"以及之间的牌➕➖=10");
 							} else {
-								$("#msg").html("10分钟内&nbsp;?+(?)+"+$(".incardslast").attr("val")+"=10");
+								$("#msg").html("10分钟内选一张牌&nbsp;(+?)+"+$(".incardslast").attr("val")+"=10");
 							}
 							$("#passgame").show();
 							if (data.judge.calcfromcardindex==-1){
@@ -565,6 +575,13 @@
 								$(".mycards").addClass("unroundcard");
 								$(".mycards").removeClass("selroundcard");
 							} else {
+								if (data.judge.settingadvance==3){
+									$("#msg").html("10分钟内计算"+data.judge.incards[0].value+"和"+$(".incardslast").attr("val")+"以及可选牌➕➖✖️➗=10");
+								} else if (data.judge.settingadvance==2){
+									$("#msg").html("10分钟内计算"+data.judge.incards[0].value+"和"+$(".incardslast").attr("val")+"以及可选牌➕➖✖️=10");
+								} else if (data.judge.settingadvance==1){
+									$("#msg").html("10分钟内计算"+data.judge.incards[0].value+"和"+$(".incardslast").attr("val")+"以及可选牌➕➖=10");
+								}	
 								sessionStorage.setItem("data.judge.calcfromcardindex",data.judge.calcfromcardindex);
 								sessionStorage.setItem("data.judge.incards",JSON.stringify(data.judge.incards));
 								sessionStorage.setItem("data.judge.settingadvance",data.judge.settingadvance);
@@ -634,11 +651,15 @@
 				
 				$("#ops").append("<div style='float:left;' val='+' class='ops unroundcard'><div>➕</div></div>");
 				$("#ops").append("<div style='float:left;' val='-' class='ops unroundcard'><div>➖</div></div>");
-				if (settingadvance==2){
+				if (settingadvance==3){
 					$("#ops").css("width","256px");
 					$("#ops").append("<div style='float:left;' val='*' class='ops unroundcard'><div>✖️</div></div>");
 					$("#ops").append("<div style='float:left;' val='/' class='ops unroundcard'><div>➗</div></div>");
+				} else if (settingadvance==2){
+					$("#ops").css("width","192px");
+					$("#ops").append("<div style='float:left;' val='*' class='ops unroundcard'><div>✖️</div></div>");
 				}
+
 				var clickops = function(){
 					if ($(this).hasClass("roundopcard")){
 						$(".roundopcard").addClass("unroundcard");

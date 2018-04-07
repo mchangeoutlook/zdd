@@ -30,7 +30,7 @@ public class Judge{
 	public Integer nextplayerindex = 0;
 	public Integer nextaction = 0;//0:dispatch;1:incard;2:judge;
 	public Integer calcfromcardindex = -1;
-	public Integer settingadvance = 0;//0:+=10 1:+-=10 2:+-*/=10
+	public Integer settingadvance = 0;//0:+=10 1:+-=10 2:+-*=10 3:+-*/=10
 	
 	public boolean expire() {
 		return System.currentTimeMillis()-refreshtime>10*60*1000;
@@ -182,6 +182,12 @@ public class Judge{
 				if (settingadvance==1) {
 					if (incards.get(0).value+incards.get(incards.size()-1).value==10||
 							Math.abs(incards.get(0).value-incards.get(incards.size()-1).value)==10) {
+						winstartindex = 0;
+					}
+				} else if (settingadvance==2) {
+					if (incards.get(0).value+incards.get(incards.size()-1).value==10||
+							Math.abs(incards.get(0).value-incards.get(incards.size()-1).value)==10||
+							incards.get(0).value*incards.get(incards.size()-1).value==10) {
 						winstartindex = 0;
 					}
 				} else {
@@ -354,7 +360,8 @@ public class Judge{
 	private static final ScriptEngine engine = factory.getEngineByName("JavaScript");  
 	private boolean storeform(Integer fromcardindex, String form) throws Exception {
 		boolean returnvalue = false;
-		if (settingadvance==1&&!form.contains("*")&&!form.contains("/")||settingadvance==2) {
+		if (settingadvance==1&&!form.contains("*")&&!form.contains("/")||
+				settingadvance==2&&!form.contains("/")||settingadvance==3) {
 			if (10==Math.round(Double.parseDouble(engine.eval(form).toString()))&&
 					form.contains(String.valueOf(incards.get(fromcardindex).value))&&
 					form.contains(String.valueOf(incards.get(incards.size()-1).value))) {

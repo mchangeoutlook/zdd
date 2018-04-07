@@ -32,6 +32,8 @@ public class Bcreategame implements Filter {
 				j.settingadvance = 1;
 			} else if ("2".equals(req.getParameter("settingadvance"))) {
 				j.settingadvance = 2;
+			} else if ("3".equals(req.getParameter("settingadvance"))) {
+				j.settingadvance = 3;
 			}
 			String playerid = j.joinordispatchcard(null, req.getParameter("nick"));
     		 	Judgepool.IDJUDGE.put(j.id, j);
