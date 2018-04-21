@@ -1,18 +1,18 @@
-
+/*
 var urls={
 		"ten":"http://getzdd.com/teni",
 		"pe":"http://getzdd.com/pei",
 		"common":"http://getzdd.com/ci",
 		"msg":"http://getzdd.com/cm"
-};
-/*
+};*/
+
 var urls={
 		"ten":"http://localhost:8080/teni",
 		"pe":"http://localhost:8080/pei",
 		"common":"http://localhost:8080/ci",
 		"msg":"http://localhost:8080/cm"
 };
-*/
+
 var audios={
 		"uturn":[
 			"/cw/audio/notice0.m4a",
@@ -42,7 +42,7 @@ $(document).ready(function(){
 	}
 	$("body").append(
 		"<a href='/ad/0.htm' style='color:#bbb;text-decoration:none;' target='blank'>"+
-			"<div style='border-radius:15px;border:1px #000 solid;background:#008B8B;font:15px Arial;width:28px;height:28px;line-height:28px;color:#000;position:absolute;top:0px;left:0px;'>"+
+			"<div style='border-radius:15px;border:1px #000 solid;background:#008B8B;font:15px Arial;width:28px;height:28px;line-height:28px;color:#000;position:absolute;top:0px;left:0px;text-align:center;'>"+
 				"AD"+
 			"</div>"+
 		"</a>"
@@ -385,7 +385,7 @@ function longpollmsg(){
 	if (!$("#talk").length){
 		$("body").append(
 			"<input id='talk' maxlength='20' style='position:absolute;top:0px;right:30px;display:none;margin:2px;width:120px;height:26px;font-size:17px;background:#ccc;border:0px;' placeholder='0🥊'/>"+
-			"<div id='talkto' style='border-radius:15px;border:1px #000 solid;background:#008B8B;font:15px Arial;width:28px;height:28px;line-height:28px;color:#000;position:absolute;top:0px;right:0px;'>💬</div>"
+			"<div id='talkto' style='cursor:pointer;border-radius:15px;border:1px #000 solid;background:#008B8B;font:15px Arial;width:28px;height:28px;line-height:28px;color:#000;position:absolute;top:0px;right:0px;'>💬</div>"
 		);
 		$("#talkto").unbind("click");
 		$("#talkto").bind("click",function(){
@@ -419,8 +419,14 @@ function longpollmsg(){
 	　　	dataType:'json',
 	　　	success:function(data){ 
 　　			if (data.status=="yes"){
-				if (data.msgs.length!=0&&$("#notice").attr("canplay")=="yes"){
-					textnotice.play();
+				if (data.msgs.length!=0){
+					if ($("#notice").attr("canplay")=="yes"){
+						noticemsg.play();
+					} else {
+						if (vibrateSupport) {
+							navigator.vibrate(700);
+						}
+					}
 				}
 	　　			var height=[192,250];
 	　　			for (var i=0;i<data.msgs.length;i++){
