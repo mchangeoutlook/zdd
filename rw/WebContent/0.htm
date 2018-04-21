@@ -31,107 +31,40 @@
 			}
 		</style>
 		<script type="text/javascript" src="/cw/3rdjs/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="/cw/3rdjs/qrcode.min.js"></script>
+		<script type="text/javascript" src="/cw/myjs/core.js"></script>
 		<script type="text/javascript">
-			var commonurl = "http://getzdd.com/ci";
-			var game10url = "http://getzdd.com/teni";
-			var peurl = "http://getzdd.com/pei";
-			//var commonurl = "http://localhost:8080/ci";
-			//var game10url = "http://localhost:8080/teni";
-			//var peurl = "http://localhost:8080/pei";
 			$(document).ready(function(){
-				
-				var ajaxgame10total = $.ajax({
-					url:commonurl+'/cnt',  
-				　　	timeout : 5000, 
-				　　	type : 'post',  
-				　　	data :{target:"game10total"}, 
-				　　	dataType:'json',
-				　　	success:function(data){ 
-						if (data.status=="yes"){
-							$("#game10").attr("total",data.cnt);
-							$("#game10").html("=10 "+$("#game10").attr("current")+"/"+$("#game10").attr("total"));
-						}
-				　　	},
-				　　	complete : function(XMLHttpRequest,status){
-						if (status!="success"){
-							ajaxgame10total.abort();
-						}
-				　　	}
+				post(urls.common+"/cnt",{
+			　　		target:"tentotal"
+			  		},function(data){
+			  			$("#ten").attr("total",data.cnt);
+						$("#ten").html("=10 "+$("#ten").attr("current")+"/"+$("#ten").attr("total"));
 				});
-				var ajaxgame10current = $.ajax({
-					url:game10url+'/cnt',  
-				　　	timeout : 5000, 
-				　　	type : 'post',  
-				　　	data :{}, 
-				　　	dataType:'json',
-				　　	success:function(data){ 
-						if (data.status=="yes"){
-							$("#game10").attr("current",data.cnt);
-							$("#game10").html("=10 "+$("#game10").attr("current")+"/"+$("#game10").attr("total"));
-						}
-				　　	},
-				　　	complete : function(XMLHttpRequest,status){
-						if (status!="success"){
-							ajaxgame10current.abort();
-						}
-				　　	}
+				post(urls.ten+"/cnt",{},function(data){
+			  			$("#ten").attr("current",data.cnt);
+						$("#ten").html("=10 "+$("#ten").attr("current")+"/"+$("#ten").attr("total"));
 				});
-				var ajaxpetotal = $.ajax({
-					url:commonurl+'/cnt',  
-				　　	timeout : 5000, 
-				　　	type : 'post',  
-				　　	data :{target:"petotal"}, 
-				　　	dataType:'json',
-				　　	success:function(data){ 
-						if (data.status=="yes"){
-							$("#pe").attr("total",data.cnt);
-							$("#pe").html("甘瞪眼 "+$("#pe").attr("current")+"/"+$("#pe").attr("total"));
-						}
-				　　	},
-				　　	complete : function(XMLHttpRequest,status){
-						if (status!="success"){
-							ajaxpetotal.abort();
-						}
-				　　	}
+				post(urls.common+"/cnt",{target:"petotal"},function(data){
+		  			$("#pe").attr("total",data.cnt);
+					$("#pe").html("👀 "+$("#pe").attr("current")+"/"+$("#pe").attr("total"));
 				});
-				var ajaxpecurrent = $.ajax({
-					url:peurl+'/cnt',  
-				　　	timeout : 5000, 
-				　　	type : 'post',  
-				　　	data :{}, 
-				　　	dataType:'json',
-				　　	success:function(data){ 
-						if (data.status=="yes"){
-							$("#pe").attr("current",data.cnt);
-							$("#pe").html("甘瞪眼 "+$("#pe").attr("current")+"/"+$("#pe").attr("total"));
-						}
-				　　	},
-				　　	complete : function(XMLHttpRequest,status){
-						if (status!="success"){
-							ajaxpecurrent.abort();
-						}
-				　　	}
+				post(urls.pe+"/cnt",{},function(data){
+		  			$("#pe").attr("current",data.cnt);
+					$("#pe").html("👀 "+$("#pe").attr("current")+"/"+$("#pe").attr("total"));
 				});
 
 			});
 		</script>
 	</head>
 	<body>
-		<div style="position:fixed;left:0px;top:0px;right:0px;height:31px;width:100%;">
-			<a href="/ad/0.htm" style="color:#bbb;text-decoration:none;" target="blank">
-				<div class="smallrounded" style="float:left;">
-					<div>AD</div>
-				</div>
-			</a>	
-		</div>
 		<div style="width:50%;float:left;cursor:pointer;">
 			<a href="/tenw/0.htm" style="color:#bbb;text-decoration:none;" target="blank"><img src="/tenw/image/logo.jpg" width="100%"/></a>
-			<div id="game10" current="0" total="0" style="margin-top:-20px;"></div>
+			<div id="ten" current="0" total="0" style="margin-top:-20px;"></div>
 		</div>
 		<div style="width:50%;float:left;cursor:pointer;">
 			<a href="/pew/0.htm" style="color:#bbb;text-decoration:none;" target="blank"><img src="/pew/image/logo.jpg" width="100%"/></a>
 			<div id="pe" current="0" total="0" style="margin-top:-20px;"></div>
 		</div>
-		<div style="font-size:9px;position:fixed;left:0px;right:0px;bottom:0px;width:100%;text-align:right;color:#999;">© 02/09/2018-2090 mchange@outlook.com 沪ICP备18004230号</div>
 	</body>
 </html>	

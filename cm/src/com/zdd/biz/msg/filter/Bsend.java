@@ -34,6 +34,9 @@ public class Bsend implements Filter {
 		HttpServletRequest req = (HttpServletRequest)arg0;
 		HttpServletResponse res = (HttpServletResponse)arg1;
         try {
+	        	if (Runtime.getRuntime().totalMemory()/Runtime.getRuntime().maxMemory()>0.8) {
+	    			throw new Exception("full");
+	    		}
         		Path msgfolder = Paths.get("msg");
 			Files.createDirectories(msgfolder);
 			
@@ -78,9 +81,6 @@ public class Bsend implements Filter {
     					if (Msgpool.receiveridmsgs.get(receiverid)==null) {
     						Msgpool.receiveridmsgs.put(receiverid,new ArrayList<Msg>());
     					} 
-    					if (Msgpool.receiveridmsgs.get(receiverid).size()>10) {
-    						throw new Exception("toomanymsg");
-    					}
     					Msgpool.receiveridmsgs.get(receiverid).add(m);
     					Longpollnotify.donotify(receiverid);
     				}

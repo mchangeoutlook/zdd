@@ -24,6 +24,9 @@ public class Bcreategame implements Filter {
 		HttpServletRequest req = (HttpServletRequest)arg0;
 		HttpServletResponse res = (HttpServletResponse)arg1;
         try {
+        		if (Runtime.getRuntime().totalMemory()/Runtime.getRuntime().maxMemory()>0.8) {
+        			throw new Exception("full");
+        		}
         		Map<String, String> result = new HashMap<String, String>();
 			result.put("status", "yes");
 			Judge j = new Judge();

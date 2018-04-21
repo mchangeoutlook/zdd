@@ -24,6 +24,7 @@ public class Bstartgame implements Filter {
 		HttpServletRequest req = (HttpServletRequest)arg0;
 		HttpServletResponse res = (HttpServletResponse)arg1;
         try {
+	        
         		String judgeid = (String)req.getAttribute("judgeid");
         		String playerid = (String)req.getAttribute("playerid");
         		
@@ -34,6 +35,9 @@ public class Bstartgame implements Filter {
 			if (playerid!=null) {
 				j.joinordispatchcard(playerid, null);
 			} else {
+				if (Runtime.getRuntime().totalMemory()/Runtime.getRuntime().maxMemory()>0.8) {
+		    			throw new Exception("full");
+		    		}
 				result.put("playerid", j.joinordispatchcard(null, req.getParameter("nick")));
 				result.put("judgeid",judgeid);
 			}

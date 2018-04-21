@@ -4,8 +4,8 @@
 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 		<meta name="mobileoptimized" content="0"/>
 		<title>=10</title>
-		<meta name="description" content="=10 老少皆宜,打发时间的联网游戏" />
-  		<meta name="Keywords" content="老少皆宜,打发时间,联网游戏,算10,=10,+=10,+-*/=10" />
+		<meta name="description" content="+-*/=10,加减乘除=10,老少皆宜,打发时间,联网游戏" />
+  		<meta name="Keywords" content="+-*/=10,加减乘除=10,老少皆宜,打发时间,联网游戏" />
   
 		<link rel="shortcut icon" href="image/logo.jpg" type="image/x-icon" />
 		<style type="text/css">
@@ -69,29 +69,30 @@
 			
 		</style>
 		<script type="text/javascript" src="/cw/3rdjs/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="/cw/3rdjs/qrcode.min.js"></script>
 		<script type="text/javascript" src="/cw/myjs/core.js"></script>
 		<script type="text/javascript">
 			function init(){
-				if (localStorage.getItem("game10nick")!=null){
-					$("#nick").val(localStorage.getItem("game10nick"));
+				if (localStorage.getItem(game+"nick")!=null){
+					$("#nick").val(localStorage.getItem(game+"nick"));
 				}
-				post(commonurl+'/cnt',{target:"game10total"}, function(data){
+				post(urls.common+'/cnt',{target:game+"total"}, function(data){
 					$("#users").attr("total",data.cnt);
 					$("#users").html($("#users").attr("current")+"/"+$("#users").attr("total")+" =10");
-					post(tendataurl+'/cnt',{}, function(data){
+					post(urls[game]+'/cnt',{}, function(data){
 						$("#users").attr("current",data.cnt);
 						$("#users").html($("#users").attr("current")+"/"+$("#users").attr("total")+" =10");
-						if (localStorage.getItem("game10judgeid")!=null){
-							var datajson = {judgeid:localStorage.getItem("game10judgeid")};
-							if (localStorage.getItem("game10playerid")!=null){
-								datajson.playerid=localStorage.getItem("game10playerid");
+						if (localStorage.getItem(game+"judgeid")!=null){
+							var datajson = {judgeid:localStorage.getItem(game+"judgeid")};
+							if (localStorage.getItem(game+"playerid")!=null){
+								datajson.playerid=localStorage.getItem(game+"playerid");
 							}
-							post(tendataurl+"/gi",datajson, function(data){
+							post(urls[game]+"/gi",datajson, function(data){
 								if (data.players&&data.players.length!=0){
 									var nick = data.players[0].nick;
-									$("#exist").html("继续 "+nick+" "+$("#descadvance"+data.judge.settingadvance).html());
+									$("#exist").html("👉 "+nick+" "+$("#descadvance"+data.judge.settingadvance).html());
 									$("#exist").fadeIn(1000);
-									$("#creategame").attr("confirm","确定放弃 "+nick+" "+$("#descadvance"+data.judge.settingadvance).html()+"？");
+									$("#creategame").attr("confirm","X "+nick+" "+$("#descadvance"+data.judge.settingadvance).html()+"？");
 									$("#continueform").fadeIn(1000);
 								}
 								
@@ -101,21 +102,18 @@
 				});
 				
 				var clickcontinuegame=function(){
-					window.location.href="1.htm#"+localStorage.getItem("game10judgeid");
+					window.location.href="1.htm#"+localStorage.getItem(game+"judgeid");
 				};
 				$("#continuegame").unbind("click");
 				$("#continuegame").bind("click",clickcontinuegame);
 				
-				if (localStorage.getItem("game10advance")!=null){
+				if (localStorage.getItem(game+"advance")!=null){
 					$("#advance0").html("&nbsp;");
 					$("#advance1").html("&nbsp;");
 					$("#advance2").html("&nbsp;");
 					$("#advance3").html("&nbsp;");
-					$("#advance"+localStorage.getItem("game10advance")).html("✅");
-					$("#desc").html($("#descadvance"+localStorage.getItem("game10advance")).html());
-					$("#creategame").attr("settingadvance",localStorage.getItem("game10advance"));
-				} else {
-					$("#desc").html($("#descadvance0").html());
+					$("#advance"+localStorage.getItem(game+"advance")).html("✅");
+					$("#creategame").attr("settingadvance",localStorage.getItem(game+"advance"));
 				}
 				
 				var clickadvance=function(){
@@ -123,7 +121,6 @@
 					$("#advance1").html("&nbsp;");
 					$("#advance2").html("&nbsp;");
 					$("#advance3").html("&nbsp;");
-					$("#desc").html($(this).html());
 					$("#advance"+$(this).attr("settingadvance")).html("✅");
 					$("#creategame").attr("settingadvance",$(this).attr("settingadvance"));
 				};
@@ -138,21 +135,21 @@
 							return;
 						}
 					}
-					post(tendataurl+"/cg",{
+					post(urls[game]+"/cg",{
 				　　		nick:$("#nick").val(),
 				　　		settingadvance:$(this).attr("settingadvance")
 				  		},function(data){
-				  			localStorage.setItem("game10judgeid",data.judgeid);
-							localStorage.setItem("game10playerid",data.playerid);
-							post(commonurl+"/cnt",{target:"game10total",increase:"increase"});
+				  			localStorage.setItem(game+"judgeid",data.judgeid);
+							localStorage.setItem(game+"playerid",data.playerid);
+							post(urls.common+"/cnt",{target:game+"total",increase:"increase"});
 							if ($("#advance0").html()!="&nbsp;"){
-								localStorage.setItem("game10advance","0");
+								localStorage.setItem(game+"advance","0");
 							} else if ($("#advance1").html()!="&nbsp;") {
-								localStorage.setItem("game10advance","1");
+								localStorage.setItem(game+"advance","1");
 							} else if ($("#advance2").html()!="&nbsp;") {
-								localStorage.setItem("game10advance","2");
+								localStorage.setItem(game+"advance","2");
 							} else {
-								localStorage.setItem("game10advance","3");
+								localStorage.setItem(game+"advance","3");
 							}
 							$("#createform").remove();
 							$("#msg").remove();
@@ -169,28 +166,19 @@
 		</script>
 	</head>
 	<body style="position:fixed;top:0px;right:0px;left:0px;bottom:0px;overflow:hidden;font:50px Arial;color:#bbb;text-align:center;background:#000;margin:0px;">
-		<div style="position:fixed;left:0px;top:0px;right:0px;height:31px;width:100%;border-bottom:1px #777 solid;">
-			<a href="/ad/0.htm" style="color:#bbb;text-decoration:none;" target="blank">
-				<div class="smallrounded" style="float:left;">
-					<div>AD</div>
-				</div>
-			</a>		
-			<div id="users" current="0" total="0" style="float:left;margin-left:2px;white-space:nowrap;font-size:17px;text-align:left;line-height:30px;"></div>
+		<div id="users" current="0" total="0" style="position:fixed;white-space:nowrap;left:60px;top:0px;right:0px;height:31px;font-size:17px;text-align:left;line-height:30px;">
 		</div>
 		
 		<div style="position:fixed;left:0px;right:0px;top:57px;bottom:15px;width:100%;">
 			<div id="continueform" style="display:none;width:100%;border-bottom:1px #228B22 solid;margin-bottom:10px;">
 				<div id="continuegame" class="bigcenterounded">
-					<div>&lt;</div>
+					<div>👈️</div>
 				</div>
 				<div id="exist" style="font-size:17px;"></div>
 			</div>
 			<div id="msg" style="color:#DC143C;font-size:17px;white-space:nowrap;width:100%;height:30px;margin:auto;"></div>
 			<div id="createform" style="width:100%;">
-				<input id="nick" maxlength="10" style="width:260px;height:40px;font-size:20px;margin:5px;" placeholder="输入昵称开局"/>
-				<div style="font-size:17px;width:310px;margin:auto;">
-				等待超过10分钟则牌局失效，得分友尽<br>如果你出的牌和你选的牌以及之间任意张牌<font id='desc'></font>，你就可以将你选的牌和之后的所有牌收入囊中，选错扣1分<br>祝智勇双全的你好运！
-				</div>
+				<input id="nick" maxlength="10" style="width:260px;height:40px;font-size:20px;margin:5px;" placeholder="👤"/>
 				<div style="font-size:20px;width:260px;height:30px;margin:auto;">
 					<div id="advance0" style="float:left;width:50%;text-align:center;">✅️</div>
 					<div id="descadvance0" class="advance" settingadvance="0" style="float:left;width:50%;text-align:left;cursor:pointer;">➕=10</div>
@@ -208,11 +196,10 @@
 					<div id="descadvance3" class="advance" settingadvance="3" style="float:left;width:50%;text-align:left;cursor:pointer;">➕➖✖️➗=10</div>
 				</div>
 				<div id="creategame" settingadvance="0" class="bigcenterounded">
-					<div>&gt;</div>
+					<div>👉</div>
 				</div>
 			</div>
 		
 		</div>
-		<div style="font-size:9px;position:fixed;left:0px;right:0px;bottom:0px;width:100%;text-align:right;color:#999;">© 02/09/2018-2090 mchange@outlook.com 沪ICP备18004230号</div>
 	</body>
 </html>	

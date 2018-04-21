@@ -3,9 +3,9 @@
 		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 		<meta name="mobileoptimized" content="0"/>
-		<title>甘瞪眼</title>
-		<meta name="description" content="甘瞪眼 老少皆宜,打发时间的联网游戏" />
-  		<meta name="Keywords" content="老少皆宜,打发时间,联网游戏,甘瞪眼,干瞪眼" />
+		<title>👀</title>
+		<meta name="description" content="👀,甘瞪眼,老少皆宜,打发时间,联网游戏" />
+  		<meta name="Keywords" content="👀,甘瞪眼,老少皆宜,打发时间,联网游戏" />
   
 		<link rel="shortcut icon" href="image/logo.jpg" type="image/x-icon" />
 		<style type="text/css">
@@ -69,29 +69,30 @@
 			
 		</style>
 		<script type="text/javascript" src="/cw/3rdjs/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="/cw/3rdjs/qrcode.min.js"></script>
 		<script type="text/javascript" src="/cw/myjs/core.js"></script>
 		<script type="text/javascript">
 			function init(){
-				if (localStorage.getItem("penick")!=null){
-					$("#nick").val(localStorage.getItem("penick"));
+				if (localStorage.getItem(game+"nick")!=null){
+					$("#nick").val(localStorage.getItem(game+"nick"));
 				}
-				post(commonurl+'/cnt',{target:"petotal"}, function(data){
+				post(urls.common+'/cnt',{target:game+"total"}, function(data){
 					$("#users").attr("total",data.cnt);
-					$("#users").html($("#users").attr("current")+"/"+$("#users").attr("total")+" 甘瞪眼");
-					post(pedataurl+'/cnt',{}, function(data){
+					$("#users").html($("#users").attr("current")+"/"+$("#users").attr("total")+" 👀");
+					post(urls[game]+'/cnt',{}, function(data){
 						$("#users").attr("current",data.cnt);
-						$("#users").html($("#users").attr("current")+"/"+$("#users").attr("total")+" 甘瞪眼");
-						if (localStorage.getItem("pejudgeid")!=null){
-							var datajson = {judgeid:localStorage.getItem("pejudgeid")};
-							if (localStorage.getItem("peplayerid")!=null){
-								datajson.playerid=localStorage.getItem("peplayerid");
+						$("#users").html($("#users").attr("current")+"/"+$("#users").attr("total")+" 👀");
+						if (localStorage.getItem(game+"judgeid")!=null){
+							var datajson = {judgeid:localStorage.getItem(game+"judgeid")};
+							if (localStorage.getItem(game+"playerid")!=null){
+								datajson.playerid=localStorage.getItem(game+"playerid");
 							}
-							post(pedataurl+"/gi",datajson, function(data){
+							post(urls[game]+"/gi",datajson, function(data){
 								if (data.players&&data.players.length!=0){
 									var nick = data.players[0].nick;
-									$("#exist").html("继续 "+nick+" 甘瞪眼");
+									$("#exist").html("👉 "+nick+" 👀");
 									$("#exist").fadeIn(1000);
-									$("#creategame").attr("confirm","确定放弃 "+nick+" 甘瞪眼？");
+									$("#creategame").attr("confirm","X "+nick+" 👀？");
 									$("#continueform").fadeIn(1000);
 								}
 								
@@ -101,16 +102,16 @@
 				});
 				
 				var clickcontinuegame=function(){
-					window.location.href="1.htm#"+localStorage.getItem("pejudgeid");
+					window.location.href="1.htm#"+localStorage.getItem(game+"judgeid");
 				};
 				$("#continuegame").unbind("click");
 				$("#continuegame").bind("click",clickcontinuegame);
 				
-				if (localStorage.getItem("peallget")!=null){
+				if (localStorage.getItem(game+"allget")!=null){
 					$("#allget0").html("&nbsp;");
 					$("#allget1").html("&nbsp;");
-					$("#allget"+localStorage.getItem("peallget")).html("✅");
-					if (localStorage.getItem("peallget")=="0"){
+					$("#allget"+localStorage.getItem(game+"allget")).html("✅");
+					if (localStorage.getItem(game+"allget")=="0"){
 						$("#creategame").attr("settingallget","");
 					} else {
 						$("#creategame").attr("settingallget","settingallget");
@@ -138,17 +139,17 @@
 							return;
 						}
 					}
-					post(pedataurl+"/cg",{
+					post(urls[game]+"/cg",{
 				　　		nick:$("#nick").val(),
 				　　		settingallget:$(this).attr("settingallget")
 				  		},function(data){
-				  			localStorage.setItem("pejudgeid",data.judgeid);
-							localStorage.setItem("peplayerid",data.playerid);
-							post(commonurl+"/cnt",{target:"petotal",increase:"increase"});
+				  			localStorage.setItem(game+"judgeid",data.judgeid);
+							localStorage.setItem(game+"playerid",data.playerid);
+							post(urls.common+"/cnt",{target:game+"total",increase:"increase"});
 							if ($("#allget0").html()!="&nbsp;"){
-								localStorage.setItem("peallget","0");
+								localStorage.setItem(game+"allget","0");
 							} else {
-								localStorage.setItem("peallget","1");
+								localStorage.setItem(game+"allget","1");
 							}
 							$("#createform").remove();
 							$("#msg").remove();
@@ -165,39 +166,32 @@
 		</script>
 	</head>
 	<body style="position:fixed;top:0px;right:0px;left:0px;bottom:0px;overflow:hidden;font:50px Arial;color:#bbb;text-align:center;background:#000;margin:0px;">
-		<div style="position:fixed;left:0px;top:0px;right:0px;height:31px;width:100%;border-bottom:1px #777 solid;">
-			<a href="/ad/0.htm" style="color:#bbb;text-decoration:none;" target="blank">
-				<div class="smallrounded" style="float:left;">
-					<div>AD</div>
-				</div>
-			</a>		
-			<div id="users" current="0" total="0" style="float:left;margin-left:2px;white-space:nowrap;font-size:17px;text-align:left;line-height:30px;"></div>
+		<div id="users" current="0" total="0" style="position:fixed;white-space:nowrap;left:60px;top:0px;right:0px;height:31px;font-size:17px;text-align:left;line-height:30px;">
 		</div>
 		
 		<div style="position:fixed;left:0px;right:0px;top:57px;bottom:15px;width:100%;">
 			<div id="continueform" style="display:none;width:100%;border-bottom:1px #228B22 solid;margin-bottom:10px;">
 				<div id="continuegame" class="bigcenterounded">
-					<div>&lt;</div>
+					<div>👈</div>
 				</div>
 				<div id="exist" style="font-size:17px;"></div>
 			</div>
 			<div id="msg" style="color:#DC143C;font-size:17px;white-space:nowrap;width:100%;height:30px;margin:auto;"></div>
 			<div id="createform" style="width:100%;">
-				<input id="nick" maxlength="10" style="width:260px;height:40px;font-size:20px;margin:5px;" placeholder="输入昵称开局"/>
+				<input id="nick" maxlength="10" style="width:260px;height:40px;font-size:20px;margin:5px;" placeholder="👤"/>
 				<div style="font-size:20px;width:260px;height:30px;margin:auto;">
 					<div id="allget0" style="float:left;width:50%;text-align:center;">✅️</div>
-					<div class="allget" settingallget="" style="float:left;width:50%;text-align:left;cursor:pointer;">一人补牌</div>
+					<div class="allget" settingallget="" style="float:left;width:50%;text-align:left;cursor:pointer;">🃏</div>
 				</div>
 				<div style="font-size:20px;width:260px;height:30px;margin:auto;">
 					<div id="allget1" style="float:left;width:50%;text-align:center;">&nbsp;</div>
-					<div class="allget" settingallget="settingallget" style="float:left;width:50%;text-align:left;cursor:pointer;">每人补牌</div>
+					<div class="allget" settingallget="settingallget" style="float:left;width:50%;text-align:left;cursor:pointer;">🃏🃏🃏</div>
 				</div>
 				<div id="creategame" settingallget="" settingdouble="" class="bigcenterounded">
-					<div>&gt;</div>
+					<div>👉</div>
 				</div>
 			</div>
 		
 		</div>
-		<div style="font-size:9px;position:fixed;left:0px;right:0px;bottom:0px;width:100%;text-align:right;color:#999;">© 02/09/2018-2090 mchange@outlook.com 沪ICP备18004230号</div>
 	</body>
 </html>	
