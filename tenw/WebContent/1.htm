@@ -236,13 +236,13 @@
 											"</div>"+
 										"</div>");
 						if (sessionStorage.getItem("settingadvance")=="3"){
-							$("#msg").html("👉 "+data.players[0].nick+" ➕➖✖️➗=10");
+							$("#msg").html("👉 "+data.players[0].nick+" <font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕➖✖️➗</font>=10");
 						} else if (sessionStorage.getItem("settingadvance")=="2"){
-							$("#msg").html("👉 "+data.players[0].nick+" ➕➖✖️=10");
+							$("#msg").html("👉 "+data.players[0].nick+" <font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕➖✖️</font>=10");
 						} else if (sessionStorage.getItem("settingadvance")=="1"){ 
-							$("#msg").html("👉 "+data.players[0].nick+" ➕➖=10");
+							$("#msg").html("👉 "+data.players[0].nick+" <font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕➖</font>=10");
 						} else {
-							$("#msg").html("👉 "+data.players[0].nick+" ➕=10");
+							$("#msg").html("👉 "+data.players[0].nick+" <font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕</font>=10");
 						}
 						if (localStorage.getItem(game+"nick")!=null){
 							$("#nick").val(localStorage.getItem(game+"nick"));
@@ -436,13 +436,13 @@
 			
 			function prepareaction(data){
 				if (data.judge.settingadvance==3){
-					$("#topmsg").html("➕➖✖️➗=10");
+					$("#topmsg").html("<font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕➖✖️➗</font>=10");
 				} else if (data.judge.settingadvance==2){
-					$("#topmsg").html("➕➖✖️=10");
+					$("#topmsg").html("<font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕➖✖️</font>=10");
 				} else if (data.judge.settingadvance==1){
-					$("#topmsg").html("➕➖=10");
+					$("#topmsg").html("<font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕➖</font>=10");
 				} else {
-					$("#topmsg").html("➕=10");
+					$("#topmsg").html("<font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕</font>=10");
 				}
 				
 				$("#playform").hide();
@@ -555,15 +555,15 @@
 					$("#opcards").append("<div style='float:left;' val='"+incards[i].value+"' class='opcards unroundcard'><div>"+incards[i].value+"</div></div>");
 				}
 				
-				$("#ops").append("<div style='float:left;' val='+' class='ops unroundcard'><div>➕</div></div>");
-				$("#ops").append("<div style='float:left;' val='-' class='ops unroundcard'><div>➖</div></div>");
+				$("#ops").append("<div style='float:left;' val='+' class='ops unroundcard'><div><font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕</font></div></div>");
+				$("#ops").append("<div style='float:left;' val='-' class='ops unroundcard'><div><font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➖</font></div></div>");
 				if (settingadvance==3){
 					$("#ops").css("width","256px");
-					$("#ops").append("<div style='float:left;' val='*' class='ops unroundcard'><div>✖️</div></div>");
-					$("#ops").append("<div style='float:left;' val='/' class='ops unroundcard'><div>➗</div></div>");
+					$("#ops").append("<div style='float:left;' val='*' class='ops unroundcard'><div><font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>✖️</font>️</div></div>");
+					$("#ops").append("<div style='float:left;' val='/' class='ops unroundcard'><div><font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➗</font></div></div>");
 				} else if (settingadvance==2){
 					$("#ops").css("width","192px");
-					$("#ops").append("<div style='float:left;' val='*' class='ops unroundcard'><div>✖️</div></div>");
+					$("#ops").append("<div style='float:left;' val='*' class='ops unroundcard'><div><font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>✖️</font></div></div>");
 				}
 
 				var clickops = function(){
