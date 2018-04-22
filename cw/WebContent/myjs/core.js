@@ -383,7 +383,7 @@ function longpollmsg(){
 	}
 	if (!$("#talk").length){
 		$("body").append(
-			"<input id='talk' maxlength='20' style='position:absolute;top:0px;right:30px;display:none;margin:2px;width:120px;height:26px;font-size:17px;background:#ccc;border:0px;' placeholder='0🥊'/>"+
+			"<input id='talk' maxlength='20' style='position:absolute;top:0px;right:30px;display:none;margin:2px;width:120px;height:26px;font-size:15px;background:#ccc;border:0px;' placeholder='0🥊'/>"+
 			"<div id='talkto' style='cursor:pointer;border-radius:15px;border:1px #000 solid;background:#008B8B;font:15px Arial;width:28px;height:28px;line-height:28px;color:#000;position:absolute;top:0px;right:0px;'>💬</div>"
 		);
 		$("#talkto").unbind("click");
