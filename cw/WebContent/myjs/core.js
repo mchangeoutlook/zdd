@@ -77,83 +77,106 @@ $(document).ready(function(){
 				"<div id='enruledesc' class='ruledesc' style='font-size:12px;position:absolute;display:none;border:1px #008B8B solid;width:288px;text-align:left;padding:5px;top:48px;left:0px;z-index:1;'></div>"+
 			"</div>"
 		);	
-		var commonzhdesc = "&gt;所有方形或圆形区域都可以点击。<br>"+
-			"&gt;👉: 开局，加入或发牌<br>"+
-			"&gt;👆️: 出牌<br>"+
-			"&gt;👈️: 返回当前局<br>"+
-			"&gt;👍: 得分了，为你打call<br>"+
-			"&gt;👎: 扣分了，蓝瘦香菇<br>"+
-			"&gt;👤: 请输入昵称<br>"+
-			"&gt;🕸😫: 网络异常，请检查网络连接<br>"+
-			"&gt;👤😫: 有人抢了你的昵称，请换一个吧<br>"+
-			"&gt;full⚙️😫: 服务器满员了，等有人退出了再来吧<br>"+
-			"&gt;started⚙️😫: 他们没等你就开始了，请另开一局<br>"+
-			"&gt;toomanyplayers⚙️😫: 玩家太多了，请另开一局<br>"+
-			"&gt;notyourturn⚙️😫: 没轮到你，请刷新页面<br>"+
-			"&gt;🔧: 系统维护期间，得分将无法保留，请提前结束，待维护完成后再来<br>"+
-			"&gt;🥊 ♨️: 玩了太多局，该休息一下，皮皮虾，我们走<br>"+
-			"&gt;🥊: 局<br>"+
-			"&gt;👀: 甘瞪眼<br>"+
-			"&gt;🃏: 一人补牌<br>"+
-			"&gt;🃏🃏🃏: 每人补牌<br>"+
-			"&gt;*: 必须参与计算<br>"+
-			"&gt;?: 可以参与计算，也可以不参与计算<br>"+
-			"&gt;O: 选择或者重新选择或者重新计算<br>"+
-			"&gt;X: 过，不扣分<br>"+
-			"&gt;-1: 过，扣1分";
-		var commonendesc = "&gt;所有方形或圆形区域都可以点击。<br>"+
-			"&gt;👉: 开局，加入或发牌<br>"+
-			"&gt;👆️: 出牌<br>"+
-			"&gt;👈️: 返回当前局<br>"+
-			"&gt;👍: 得分了，为你打call<br>"+
-			"&gt;👎: 扣分了，蓝瘦香菇<br>"+
-			"&gt;👤: 请输入昵称<br>"+
-			"&gt;🕸😫: 网络异常，请检查网络连接<br>"+
-			"&gt;👤😫: 有人抢了你的昵称，请换一个吧<br>"+
-			"&gt;full⚙️😫: 服务器满员了，等有人退出了再来吧<br>"+
-			"&gt;started⚙️😫: 他们没等你就开始了，请另开一局<br>"+
-			"&gt;toomanyplayers⚙️😫: 玩家太多了，请另开一局<br>"+
-			"&gt;notyourturn⚙️😫: 没轮到你，请刷新页面<br>"+
-			"&gt;🔧: 系统维护期间，得分将无法保留，请提前结束，待维护完成后再来<br>"+
-			"&gt;🥊 ♨️: 玩了太多局，该休息一下，皮皮虾，我们走<br>"+
-			"&gt;🥊: 局<br>"+
-			"&gt;👀: 甘瞪眼<br>"+
-			"&gt;🃏: 一人补牌<br>"+
-			"&gt;🃏🃏🃏: 每人补牌<br>"+
-			"&gt;*: 必须参与计算<br>"+
-			"&gt;?: 可以参与计算，也可以不参与计算<br>"+
-			"&gt;O: 选择或者重新选择或者重新计算<br>"+
-			"&gt;X: 过，不扣分<br>"+
-			"&gt;-1: 过，扣1分";
+		var commonzhdesc = "&gt; 所有方形或圆形区域都可以点击.<br>"+
+			"&gt; 👉: 开局, 加入或发牌.<br>"+
+			"&gt; 👆️: 出牌.<br>"+
+			"&gt; 👈️: 返回正在参与的局.<br>"+
+			"&gt; 👍: 得分了, 为你打call.<br>"+
+			"&gt; 👎: 扣分了, 蓝瘦香菇.<br>"+
+			"&gt; 👤: 请输入昵称.<br>"+
+			"&gt; 🕸😫: 网络异常, 请检查网络连接后刷新或重试.<br>"+
+			"&gt; 👤😫: 有人抢了你的昵称, 请换一个吧.<br>"+
+			"&gt; full⚙️😫: 服务器满员了, 等有人退出了再来吧.<br>"+
+			"&gt; started⚙️😫: 朋友们没等你就开始了, 请另开一局.<br>"+
+			"&gt; toomanyplayers⚙️😫: 玩家太多了, 请另开一局.<br>"+
+			"&gt; notyourturn⚙️😫: 没轮到你, 请刷新页面.<br>"+
+			"&gt; 🔧: 系统维护期间, 得分将无法保留, 请提前结束, 待维护完成后再来.<br>"+
+			"&gt; 🥊 🍵️: 玩了太多局, 该休息一下, 皮皮虾, 我们走.<br>"+
+			"&gt; 🥊: 局.";
+		var commonendesc = "&gt; All rectangle and circle areas are clickable.<br>"+
+			"&gt; 👉: Start game, join, deal.<br>"+
+			"&gt; 👆️: Play.<br>"+
+			"&gt; 👈️: Return to existing game.<br>"+
+			"&gt; 👍: Congratulations for getting points.<br>"+
+			"&gt; 👎: Never give up.<br>"+
+			"&gt; 👤: Input nick name.<br>"+
+			"&gt; 🕸😫: Network is unavailable, please check it and refresh or retry.<br>"+
+			"&gt; 👤😫: Duplicate nick name, please change one.<br>"+
+			"&gt; full⚙️😫: Server is busy, please come later.<br>"+
+			"&gt; started⚙️😫: Cannot join a started game, please start another game.<br>"+
+			"&gt; toomanyplayers⚙️😫: Too many players, please start another game.<br>"+
+			"&gt; notyourturn⚙️😫: Not your turn, please refresh the page.<br>"+
+			"&gt; 🔧: No credit is saved during server maintenance. Please finish the game before maintenance and come back after maintenance.<br>"+
+			"&gt; 🥊 🍵: You played long time, please take a break.<br>"+
+			"&gt; 🥊: Round.";
 		if (game=="pe"){
 			$("#zhruledesc").append(
-				"&gt;40秒不出牌则系统自动甘瞪眼<br>"+
-				"&gt;每局最多8位玩家<br>"+
-				"&gt;如果一副牌未分出胜负，则从已出牌里继续补牌<br>"+
-				"&gt;单张牌，跟出的牌为牌面大1的单张牌，或者2，或者炸弹，除炸弹外2最大。比如上家出3，只能跟出4或者2或者炸弹<br>"+
-				"&gt;两张相同的牌，跟出的牌为牌面大1的两张相同的牌，或者两张2，或者炸弹，除炸弹外两张2最大。比如上家出33，只能跟出44或者22或者炸弹<br>"+
-				"&gt;三张及以上不同的牌必须连续，跟出的牌为上家出的第二张牌开始的连续相同张数的牌，或者炸弹，最多连到A。比如上家出345，只能跟出456或者炸弹<br>"+
-				"&gt;三张及以上相同的牌即为炸弹，跟出的牌为牌面大的相同张数的炸弹，或者张数更多的任意大小的炸弹。比如上家出444，可跟出666或者3333<br>"+
-				"&gt;两张王是最大的炸弹<br>"+
-				"&gt;单张王或者两张王可与其它牌一起出，凑成两张相同的牌或者三张及以上连续的牌<br>"+
-				"&gt;记分少的为赢家，全关记分翻一倍，三张的炸弹翻一倍，四张和王炸翻两倍，同一局所有翻倍都是累积的<br>"+
+				"&gt; 40秒不出牌则系统自动甘瞪眼.<br>"+
+				"&gt; 每局最多8位玩家.<br>"+
+				"&gt; 轮流发牌.<br>"+
+				"&gt; 👀: 甘瞪眼.<br>"+
+				"&gt; 🃏: 一人补牌.<br>"+
+				"&gt; 🃏🃏🃏: 每人补牌.<br>"+
+				"&gt; 如果一副牌未分出胜负, 则从已出牌里继续补牌.<br>"+
+				"&gt; 三张或四张相同的牌即为炸弹, 两张👑是最大的炸弹, 跟出的牌只能是牌面大的相同张数的炸弹, 或者张数更多的任意大小的炸弹, 或者两张👑. 比如上家出444, 可跟出666或者3333或者两张👑.<br>"+
+				"&gt; 单张牌, 跟出的牌只能是牌面大1的单张牌, 或者2, 或者炸弹, 除炸弹外2最大. 比如最后出的牌是3，则只能跟出4或者2或者炸弹.<br>"+
+				"&gt; 两张相同的牌, 跟出的牌只能是牌面大1的两张相同的牌, 或者两张2, 或者炸弹, 除炸弹外两张2最大. 比如最后出的牌是33, 则只能跟出44或者22或者炸弹.<br>"+
+				"&gt; 三张或者更多不同的牌必须连续, 跟出的牌只能是最后出的第二张牌开始的连续相同张数的牌, 或者炸弹, 最大连到A. 比如最后出的牌是345, 则只能跟出456或者炸弹.<br>"+
+				"&gt; 单张👑或者两张👑可与其它牌一起出, 凑成两张相同的牌或者三张或者四张连续的牌或者炸弹.<br>"+
+				"&gt; 有一个玩家出完牌或者所有玩家都只剩一张牌，则结束一局.<br>"+
+				"&gt; 得分少的为赢家, 每局结束时玩家手里剩的牌数即为得分数, 剩一张牌不得分. 一局结束时未出一张牌的玩家得分翻一倍, 被三张的炸弹炸了则所有人的该局得分翻一倍, 被四张的炸弹和两张👑炸了则所有人的该局得分翻两倍, 同一局所有翻倍都是累积的. 比如, 手里剩3张牌，被三张和四张的炸弹炸了，则得分为24 (3X2X4).<br>"+
 				commonzhdesc
 			);	
 			$("#enruledesc").append(
-				">comingsoon<br>"+
+				"&gt; Auto pass in 40 seconds of inaction.<br>"+
+				"&gt; Max 8 players each game.<br>"+
+				"&gt; Deal in turn.<br>"+
+				"&gt; 👀: Pass.<br>"+
+				"&gt; 🃏: Add one card to one player.<br>"+
+				"&gt; 🃏🃏🃏: Add one card to every player.<br>"+
+				"&gt; Played cards are used to be added if no left cards available.<br>"+
+				"&gt; Three or four cards with same value are bombs. Two 👑 are the biggest bombs. Only bombs with bigger value or bigger number of cards or two 👑 can be played. For example, if previous player has played 444, you can play 666 or 3333 or two 👑.<br>"+
+				"&gt; Card 2 is the biggest single card. Only card with value 1 point bigger or card 2 or bombs can be played. For example, if previous player played 3, you can play 4 or 2 or bombs.<br>"+
+				"&gt; 22 are the biggest double cards. Only double cards with value 1 point bigger or 22 or bombs can be played. For example, if previous player played 33, you can play 43 or 22 or bombs.<br>"+
+				"&gt; Three or more cards in continuous order can be played. And only same number of continuous cards with the first card value 1 point bigger or bombs and be played. A is the last card in the sequence. For example, if previous player played 345, you can play 456 or bombs.<br>"+
+				"&gt; Single 👑 or double 👑 can be played with other cards to form double cards or continuous cards or bombs.<br>"+
+				"&gt; One round is finished after all cards of one player being played or all players have one card left.<br>"+
+				"&gt; Player with min credit is winner. Each player’s credit of one round is calculated using the number of cards left in each player. A Player’s credits of one round double if the player keeps all cards through the round. All players’ credits double if three cards bombs are used in the game, and quadruple if four cards bombs or double 👑 are used in the game. The penalties can be applied on top of each other in one game. For example, a player has 3 cards left, and three cards bombs and four cards bombs are used in the game, the player's credit of the round is 24 (3X2X4).<br>"+
 				commonendesc
 			);	
 		} else if (game=="ten"){
 			$("#zhruledesc").append(
-				"&gt;10分钟不发牌或不出牌则牌局失效，得分友尽<br>"+
-				"&gt;每局最多108位玩家<br>"+
-				"&gt;玩家出牌后如果系统提示选牌，则选择一张牌能与最后出的牌通过设定的运算符号计算得到10，计算过程中可增加选择的牌和最后出的牌之间的任意牌参与计算，如果选牌后无法算得10，则扣1分。如果选牌之前已经断定无法计算得到10，则可以不选牌，直接点击X表示放弃牌权<br>"+
-				"&gt;如果设定的运算符号为<font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕➖✖️➗</font>，而且最终的计算结果不是整数，则最终的结果四舍五入。中间结果不进行四舍五入，仍以小数继续计算<br>"+
-				"&gt;记分多的为赢家，吃牌数量在三张及以上，则奖励半数。比如吃3张牌得4分，吃4张牌得6分<br>"+
+				"&gt; 10分钟不发牌或不出牌则牌局失效, 得分友尽.<br>"+
+				"&gt; 每局最多108位玩家.<br>"+
+				"&gt; 每局得分高的发牌.<br>"+
+				"&gt; *: 必须参与计算.<br>"+
+				"&gt; ?: 可以参与计算, 也可以不参与计算.<br>"+
+				"&gt; O: 选择或者重新选择或者计算或者重新计算.<br>"+
+				"&gt; X: 过, 不扣分.<br>"+
+				"&gt; -1: 过, 扣1分.<br>"+
+				"&gt; 玩家出牌后如果系统提示选牌, 则选择一张牌能与你的出牌通过设定的运算符号计算得到10, 可在你选择的牌和你的出牌之间夹的牌里任意挑选一张或多张参与计算. 如果选牌后无法算得10, 则扣1分. 如果选牌之前已经断定无法计算得到10, 则可以不选牌, 直接点击X放弃牌权, 不扣分. AJQK分别为1, 11, 12, 13.<br>"+
+				"&gt; 任何情况下出10和👑都可以将所有已出的牌全部收入囊中.<br>"+
+				"&gt; 如果设定的运算符号为<font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕</font>, 则出JQK可将之前出的相同的牌后面的所有牌收入囊中. 比如按时间先后已出6Q85K97, 此时出Q则可收Q85K97Q, 出K可收K97K.<br>"+
+				"&gt; 如果设定的运算符号为<font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕➖✖️➗</font>, 而且最终的计算结果不是整数, 则最终的结果四舍五入.中间结果如果是小数，不进行四舍五入, 仍以小数参与计算.<br>"+
+				"&gt; 所有玩家的牌全部出完, 则结束一局.<br>"+
+				"&gt; 得分多的为赢家, 收牌数量在三张及以上, 则奖励半数. 比如收3张牌得4分, 收4张牌得6分.<br>"+
 				commonzhdesc
 			);	
 			$("#enruledesc").append(
-				">comingsoon<br>"+
+				"&gt; Game expires in 10 minutes if no action. No credit is saved.<br>"+
+				"&gt; Max 108 players each game.<br>"+
+				"&gt; Player with max credit deals.<br>"+
+				"&gt; *: Required to participate in the calculation.<br>"+
+				"&gt; ?: Optional to participate in the calculation.<br>"+
+				"&gt; O: Select, reselect, calculate, recalculate.<br>"+
+				"&gt; X: Pass with no credit being deducted.<br>"+
+				"&gt; -1: Pass with credit being deducted 1 point.<br>"+
+				"&gt; If required to select one card to play, select one played by others which can be calculated with the card you have played using specified operators to get to 10. Failing to do so, the player can add any card in between your card and your selected card to participate in the calculation. Credit is deducted one point if failing in getting to 10 after selecting card. Click X to pass without deducting credit. The values of AJQK are 1, 11, 12, 13.<br>"+
+				"&gt; 10 and 👑 can help to own all played cards.<br>"+
+				"&gt; If the specified operator is<font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕</font>, JQK can help to own played cards after same number. For example, if played cards are 6Q85K97, Q can own Q85K97Q, K can own K97K.<br>"+
+				"&gt; If the specified operator is<font style='text-shadow:#fff 1px 0 2px,#fff 0 1px 2px,#fff -1px 0 2px,#fff 0 -1px 2px;'>➕➖✖️➗</font>, the final calculation result is rounded. But the intermediate calculation result is not rounded.<br>"+
+				"&gt; One round is finished after all cards being played.<br>"+
+				"&gt; Player with max credit is winner. If one owns 3 and more cards, points with half of the number of owned cards are added to credit. For example, owning 3 cards get 4 points, owning 4 cards get 6 points.<br>"+
 				commonendesc
 			);	
 		}
@@ -246,7 +269,7 @@ function post(url, datajson, yescallback,clickid,clickfunction){
 					}
 				}
 				if (data.judge&&data.judge.round==0&&meindex==data.judge.nextplayerindex){
-					if (data.players.length==1){
+					if (data.players.length==1&&window.location.href.indexOf("/1.htm")!=-1){
 						$("#rule").fadeIn(300);
 					} else {
 						$("#rule").fadeOut(300);
@@ -332,7 +355,7 @@ function longpollcheck(){
 				}
 				if (data.judge.nextplayerindex==meindex){
 					if (data.judge.round==0){
-						if (data.players.length==1){
+						if (data.players.length==1&&window.location.href.indexOf("/1.htm")!=-1){
 							$("#rule").fadeIn(300);
 						} else {
 							$("#rule").fadeOut(300);
@@ -484,7 +507,7 @@ function shownotice(){
 }
 
 function checknotice(){
-	if (meindex!=-1){
+	if (meindex!=-1&&window.location.href.indexOf("/1.htm")!=-1){
 		noticeuturn.src=audios.uturn[meindex%audios.uturn.length];
 		noticemsg.src=audios.msg;
 		noticeuturn.addEventListener("canplaythrough", function () {
