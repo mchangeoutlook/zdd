@@ -90,7 +90,7 @@
 							post(urls[game]+"/gi",datajson, function(data){
 								if (data.players&&data.players.length!=0){
 									var nick = data.players[0].nick;
-									$("#exist").html("👉 "+nick+" "+$("#descadvance"+data.judge.settingadvance).html());
+									$("#exist").html(nick+" "+$("#descadvance"+data.judge.settingadvance).html()+" 👈");
 									$("#exist").fadeIn(1000);
 									$("#creategame").attr("confirm","X "+nick+" "+$("#descadvance"+data.judge.settingadvance).html()+"？");
 									$("#continueform").fadeIn(1000);

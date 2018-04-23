@@ -90,7 +90,7 @@
 							post(urls[game]+"/gi",datajson, function(data){
 								if (data.players&&data.players.length!=0){
 									var nick = data.players[0].nick;
-									$("#exist").html("👉 "+nick+" 👀");
+									$("#exist").html(nick+" 👀 👈");
 									$("#exist").fadeIn(1000);
 									$("#creategame").attr("confirm","X "+nick+" 👀？");
 									$("#continueform").fadeIn(1000);
