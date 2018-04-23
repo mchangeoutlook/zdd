@@ -78,10 +78,10 @@
 				}
 				post(urls.common+'/cnt',{target:game+"total"}, function(data){
 					$("#users").attr("total",data.cnt);
-					$("#users").html($("#users").attr("current")+"/"+$("#users").attr("total")+" =10");
+					$("#users").html("=10 "+$("#users").attr("current")+"/"+$("#users").attr("total"));
 					post(urls[game]+'/cnt',{}, function(data){
 						$("#users").attr("current",data.cnt);
-						$("#users").html($("#users").attr("current")+"/"+$("#users").attr("total")+" =10");
+						$("#users").html("=10 "+$("#users").attr("current")+"/"+$("#users").attr("total"));
 						if (localStorage.getItem(game+"judgeid")!=null){
 							var datajson = {judgeid:localStorage.getItem(game+"judgeid")};
 							if (localStorage.getItem(game+"playerid")!=null){
