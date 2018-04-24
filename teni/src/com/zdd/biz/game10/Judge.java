@@ -179,26 +179,7 @@ public class Judge{
 			if (card == 10||card==14||card==15) {
 				winstartindex = 0;
 			} else if (incards.size()>1) {
-				if (settingadvance==1) {
-					if (incards.get(0).value+incards.get(incards.size()-1).value==10||
-							Math.abs(incards.get(0).value-incards.get(incards.size()-1).value)==10) {
-						winstartindex = 0;
-					}
-				} else if (settingadvance==2) {
-					if (incards.get(0).value+incards.get(incards.size()-1).value==10||
-							Math.abs(incards.get(0).value-incards.get(incards.size()-1).value)==10||
-							incards.get(0).value*incards.get(incards.size()-1).value==10) {
-						winstartindex = 0;
-					}
-				} else {
-					if (incards.get(0).value+incards.get(incards.size()-1).value==10||
-							Math.abs(incards.get(0).value-incards.get(incards.size()-1).value)==10||
-							incards.get(0).value*incards.get(incards.size()-1).value==10||
-							incards.get(0).value==incards.get(incards.size()-1).value*10||
-							incards.get(incards.size()-1).value==incards.get(0).value*10) {
-						winstartindex = 0;
-					}
-				}
+				winstartindex = winstartindex(0);
 				if (winstartindex==-1) {
 					if (incards.size()>2) {
 						winstartindex = -2;
@@ -210,6 +191,31 @@ public class Judge{
 			restplayers--;
 		}
 		next(playerid, winstartindex);
+	}
+	
+	private int winstartindex(int cardindex) {
+		int winstartindex = -1;
+		if (settingadvance==1) {
+			if (incards.get(cardindex).value+incards.get(incards.size()-1).value==10||
+					Math.abs(incards.get(cardindex).value-incards.get(incards.size()-1).value)==10) {
+				winstartindex = cardindex;
+			}
+		} else if (settingadvance==2) {
+			if (incards.get(cardindex).value+incards.get(incards.size()-1).value==10||
+					Math.abs(incards.get(cardindex).value-incards.get(incards.size()-1).value)==10||
+					incards.get(cardindex).value*incards.get(incards.size()-1).value==10) {
+				winstartindex = cardindex;
+			}
+		} else {
+			if (incards.get(cardindex).value+incards.get(incards.size()-1).value==10||
+					Math.abs(incards.get(cardindex).value-incards.get(incards.size()-1).value)==10||
+					incards.get(cardindex).value*incards.get(incards.size()-1).value==10||
+					incards.get(cardindex).value==incards.get(incards.size()-1).value*10||
+					incards.get(incards.size()-1).value==incards.get(cardindex).value*10) {
+				winstartindex = cardindex;
+			}
+		}
+		return winstartindex;
 	}
 	
 	private boolean prejudge(Integer fromcardindex) {
@@ -260,7 +266,8 @@ public class Judge{
 				}
 			} else {
 				if (calcfromcardindex==-1) {
-					if (hasvalidform(cardindex)) {
+					int winstartindex2 = winstartindex(cardindex);
+					if (winstartindex2!=-1||hasvalidform(cardindex)) {
 						winstartindex = cardindex;
 					} else {
 						calcfromcardindex = cardindex;
