@@ -229,6 +229,8 @@ $(document).ready(function(){
 					$("#rule").fadeOut(300);
 				})
 			);
+	} else {
+		$("#zhcopyright").show();
 	}
 
 	sessionStorage.removeItem("startpollmsg");
