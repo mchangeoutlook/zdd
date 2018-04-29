@@ -535,4 +535,3 @@ function animatemsg(msgindex){
 		setTimeout(function(){animatemsg(msgindex)},3000);
 	}
 }
-
