@@ -455,7 +455,7 @@ function longpollmsg(){
 	　　			var height=[192,250];
 	　　			for (var i=0;i<data.msgs.length;i++){
 	　　				var left = $(window).width();
-	　　				var style="position:fixed;top:"+height[index%2]+"px;left:"+left+"px;color:#228B22;white-space:nowrap;font-size:20px;";
+	　　				var style="position:absolute;z-index:30000;top:"+height[index%2]+"px;left:"+left+"px;color:#228B22;white-space:nowrap;font-size:20px;";
 　　					$("body").append($("<font id='msg"+index+"' style='"+style+"'>"+data.msgs[i].sendernick+" ："+data.msgs[i].msg+"</font>"));
 			　　		index=index+1;
 	　　			}
