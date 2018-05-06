@@ -1,4 +1,4 @@
-package com.zdd.bdc.util;
+package com.zdd.bdc.ex;
 
 public interface Theserverprocess {
 	public void start(byte[] b) throws Exception;

@@ -1,4 +1,4 @@
-package com.zdd.bdc.util;
+package com.zdd.bdc.ex;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

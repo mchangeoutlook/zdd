@@ -1,4 +1,4 @@
-package com.zdd.bdc.util;
+package com.zdd.bdc.ex;
 
 public class Theservertest {
 	public static void main(String[] s) throws Exception {

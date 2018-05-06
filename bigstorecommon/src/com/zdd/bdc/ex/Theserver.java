@@ -1,4 +1,4 @@
-package com.zdd.bdc.util;
+package com.zdd.bdc.ex;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -69,7 +69,9 @@ public class Theserver {
 							}
 							
 							byte[] res = ti.end();
-							
+							if (res==null) {
+								res = new byte[0];
+							}
 							ByteBuffer writebb = ByteBuffer.allocate(11+res.length);
 							writebb.put(String.format ("%011d", res.length).getBytes());
 							writebb.put(res);
