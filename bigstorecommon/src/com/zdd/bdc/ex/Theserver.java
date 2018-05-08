@@ -77,9 +77,6 @@ public class Theserver {
 							writebb.put(res);
 							writebb.flip();
 							s.getChannel().write(writebb);
-							if (res.length!=0) {
-								s.getChannel().write(ByteBuffer.wrap(String.format ("%011d", 0).getBytes()));
-							}
 						}catch(Exception e){
 							StringBuffer sb = new StringBuffer();
 							for (StackTraceElement ste: e.getStackTrace()){
