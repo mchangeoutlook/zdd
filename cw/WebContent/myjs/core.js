@@ -232,7 +232,10 @@ $(document).ready(function(){
 	} else {
 		$("#zhcopyright").show();
 	}
-
+	if (window.location.href.indexOf("/1.htm")!=-1){
+		$("#invite").fadeIn(1000);
+		$("#invitehint").fadeIn(1000);
+	}
 	sessionStorage.removeItem("startpollmsg");
 	longpollmsg();	
 	animatemsg(0);
@@ -430,8 +433,6 @@ function longpollmsg(){
 	}
 	$("#talk").fadeIn(1000);
   	$("#talkto").fadeIn(1000);
-  	$("#invite").fadeIn(1000);
-	$("#invitehint").fadeIn(1000);
   	var receiverid = localStorage.getItem(game+"playerid");
 	$.ajax({
 		url:urls.msg+'/lpmsg',  
