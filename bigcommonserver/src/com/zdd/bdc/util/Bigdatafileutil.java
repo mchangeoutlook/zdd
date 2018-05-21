@@ -211,7 +211,7 @@ public class Bigdatafileutil {
 			}
 		}
 
-		if (Arrays.equals(bbkey.array(), bkey)) {
+		if (max>=0&&Arrays.equals(bbkey.array(), bkey)) {
 			returnvalue = position + 11;
 		}
 		return returnvalue;
