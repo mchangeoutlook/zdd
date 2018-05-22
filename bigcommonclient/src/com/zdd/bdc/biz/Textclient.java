@@ -1,42 +1,113 @@
 package com.zdd.bdc.biz;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.Vector;
 
 import com.zdd.bdc.ex.Theclient;
 import com.zdd.bdc.util.Objectutil;
 
 public class Textclient {
-	public static String create() throws Exception {
-		Map<String, List<Map<String, Object>>> a = new HashMap<String, List<Map<String, Object>>>();
-		Map<String, Object> aa = new HashMap<String, Object>();
-		aa.put("222", 2);
-		aa.put("333", "3");
-		List<Map<String, Object>> aaa = new ArrayList<Map<String, Object>>();
-		aaa.add(aa);
-		a.put("111", aaa);
-		byte[] res = Theclient.request("127.0.0.1", 9999, Objectutil.convert(a), null);
-		System.out.println(res.length);
-		
-		Map<String, Object> b = (Map<String, Object>)Objectutil.convert(res);
-		List<Object> c = (List<Object>)b.get("111");
-		System.out.println(((Map<String, Object>)c.get(0)).get("222"));
-		System.out.println(((Map<String, Object>)c.get(0)).get("333"));
-		return "";
+	
+	private String key = null;
+	private String ns = null;
+	private String tb = null;
+	private Map<String, String> cvs = null;
+	private Map<String, Integer> cvmaxs = null;
+	private Vector<String> cols = null;
+	
+	private Textclient(String namespace, String table) {
+		ns = namespace;
+		tb = table;
 	}
-	public static void delete() {
-		
+	
+	public static Textclient getinstance(String namespace, String table) {
+		return new Textclient(namespace, table);
 	}
-	public static void modify() {
-		
+	
+	public Textclient key(String existkey) {
+		key = existkey;
+		return this;
 	}
-	public static String search() {
-		return null;
+	
+	public Textclient columns(int numofcolumns) {
+		cols = new Vector<String>(numofcolumns);
+		return this;
 	}
-	public static long increment() {
-		return 0l;
+
+	public Textclient columnvalues(int numofcolumnvalues) {
+		cvs = new Hashtable<String, String>(numofcolumnvalues);
+		cvmaxs = new Hashtable<String, Integer>(numofcolumnvalues);
+		return this;
+	}
+	
+	public Textclient add(String column, String value, int max) throws Exception {
+		if (column.isEmpty()) {
+			throw new Exception("emptycol");
+		}
+		if (value.getBytes("UTF-8").length>max) {
+			throw new Exception("val>max");
+		}
+		cvs.put(column, value);
+		cvmaxs.put(column, max);
+		return this;
+	}
+	
+	public Textclient add(String column) throws Exception {
+		if (column.isEmpty()) {
+			throw new Exception("emptycol");
+		}
+		cols.add(column);
+		return this;
+	}
+	
+	public String create() throws Exception {
+		key = newkey();
+		Map<String, Object> params = new Hashtable<String, Object>(5);
+		params.put("key", key);
+		params.put("ns", ns);
+		params.put("tb", tb);
+		params.put("cvs", cvs);
+		params.put("cvmaxs", cvmaxs);
+		Theclient.request("192.168.3.56", 9999, Objectutil.convert(params), null);
+		return key;
+	}
+
+	public void delete() throws Exception {
+		if (key.getBytes("UTF-8").length!=40) {
+			throw new Exception("key40");
+		}
+		Map<String, Object> params = new Hashtable<String, Object>(4);
+		params.put("key", key);
+		params.put("ns", ns);
+		params.put("tb", tb);
+		params.put("cols", cols);
+		Theclient.request("192.168.3.56", 9999, Objectutil.convert(params), null);
+	}
+
+	public void modify() throws Exception {
+		if (key.getBytes("UTF-8").length!=40) {
+			throw new Exception("key40");
+		}
+		Map<String, Object> params = new Hashtable<String, Object>(4);
+		params.put("key", key);
+		params.put("ns", ns);
+		params.put("tb", tb);
+		params.put("cols", cols);
+		Theclient.request("192.168.3.56", 9999, Objectutil.convert(params), null);
+	}
+
+	private static String newkey() {
+		Calendar cal = Calendar.getInstance();
+		String key = new StringBuffer(UUID.randomUUID().toString().replaceAll("-", ""))
+				.insert(2, String.format("%02d", cal.get(Calendar.DATE)))
+				.insert(7, String.format("%02d", cal.get(Calendar.MONTH) + 1))
+				.insert(13, String.valueOf(cal.get(Calendar.YEAR))).toString();
+		return key;
 	}
 }

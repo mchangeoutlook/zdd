@@ -6,19 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.UUID;
 
 public class Bigdatafileutil {
-
-	public static String key() {
-		Calendar cal = Calendar.getInstance();
-		String key = new StringBuffer(UUID.randomUUID().toString().replaceAll("-", ""))
-				.insert(2, String.format("%02d", cal.get(Calendar.DATE)))
-				.insert(7, String.format("%02d", cal.get(Calendar.MONTH) + 1))
-				.insert(13, String.valueOf(cal.get(Calendar.YEAR))).toString();
-		return key;
-	}
 
 	public static byte[] read(String key, Path target) throws Exception {
 		byte[] returnvalue = null;
