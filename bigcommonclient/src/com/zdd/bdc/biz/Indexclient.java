@@ -9,7 +9,7 @@ import java.util.Vector;
 import com.zdd.bdc.ex.Theclient;
 import com.zdd.bdc.util.Objectutil;
 
-public class Textclient {
+public class Indexclient {
 	
 	private String key = null;
 	private String ns = null;
@@ -18,43 +18,34 @@ public class Textclient {
 	private Map<String, Integer> cvmaxs = null;
 	private Vector<String> cols = null;
 	
-	private Textclient(String namespace, String table) {
+	private Indexclient(String namespace, String table) {
 		ns = namespace;
 		tb = table;
 	}
 	
-	public static Textclient getinstance(String namespace, String table) {
-		return new Textclient(namespace, table);
+	public static Indexclient getinstance(String namespace, String table) {
+		return new Indexclient(namespace, table);
 	}
 	
-	public Textclient key(String existkey) {
+	public Indexclient key(String existkey) {
 		key = existkey;
 		return this;
 	}
 	
-	public Textclient columns(int numofcolumns) throws Exception {
-		if (numofcolumns==0) {
-			throw new Exception("cols0");
-		}
+	public Indexclient columns(int numofcolumns) {
 		cols = new Vector<String>(numofcolumns);
 		return this;
 	}
 
-	public Textclient columnvalues(int numofcolumnvalues) throws Exception {
-		if (numofcolumnvalues==0) {
-			throw new Exception("cols0");
-		}
+	public Indexclient columnvalues(int numofcolumnvalues) {
 		cvs = new Hashtable<String, String>(numofcolumnvalues);
 		cvmaxs = new Hashtable<String, Integer>(numofcolumnvalues);
 		return this;
 	}
 	
-	public Textclient add(String column, String value, int max) throws Exception {
+	public Indexclient add(String column, String value, int max) throws Exception {
 		if (column.isEmpty()) {
 			throw new Exception("emptycol");
-		}
-		if (max==0) {
-			throw new Exception("max0");	
 		}
 		if (value.getBytes("UTF-8").length>max) {
 			throw new Exception("val>max");
@@ -64,7 +55,7 @@ public class Textclient {
 		return this;
 	}
 	
-	public Textclient add(String column) throws Exception {
+	public Indexclient add(String column) throws Exception {
 		if (column.isEmpty()) {
 			throw new Exception("emptycol");
 		}
@@ -73,9 +64,6 @@ public class Textclient {
 	}
 	
 	public String create() throws Exception {
-		if (ns==null||tb==null||cvs.isEmpty()||cvmaxs.isEmpty()) {
-			throw new Exception(".columnvalues.add.create");
-		}
 		try {
 			key = newkey();
 			Map<String, Object> params = new Hashtable<String, Object>(5);
@@ -88,44 +76,22 @@ public class Textclient {
 			Theclient.request("192.168.3.56", 9999, Objectutil.convert(params), null);
 			return key;
 		}finally {
-			clear();
+			key = null;
+			ns = null;
+			tb = null;
+			if (cvs!=null) {
+				cvs.clear();
+			}
+			cvs = null;
+			if (cvmaxs!=null) {
+				cvmaxs.clear();
+			}
+			cvmaxs = null;
+			if (cols!=null) {
+				cols.clear();
+			}
+			cols = null;
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public Map<String,String> read() throws Exception {
-		if (key==null||ns==null||tb==null||cols.isEmpty()) {
-			throw new Exception(".key.columns.add.read");
-		}
-		try {
-			Map<String, Object> params = new Hashtable<String, Object>(5);
-			params.put("key", key);
-			params.put("action", "read");
-			params.put("ns", ns);
-			params.put("tb", tb);
-			params.put("cols", cols);
-			return (Map<String,String>)Objectutil.convert(Theclient.request("192.168.3.56", 9999, Objectutil.convert(params), null));
-		}finally {
-			clear();
-		}
-	}
-
-	private void clear() {
-		key = null;
-		ns = null;
-		tb = null;
-		if (cvs!=null) {
-			cvs.clear();
-		}
-		cvs = null;
-		if (cvmaxs!=null) {
-			cvmaxs.clear();
-		}
-		cvmaxs = null;
-		if (cols!=null) {
-			cols.clear();
-		}
-		cols = null;
 	}
 
 	public void delete() throws Exception {

@@ -226,6 +226,9 @@ public class Bigdatafileutil {
 
 	private static void write(Path target, long startposition, ByteBuffer bb) throws Exception {
 		if (startposition == -1) {
+			if (!Files.exists(target)&&target.getParent()!=null&&!Files.exists(target.getParent())) {
+				Files.createDirectories(target.getParent());
+			}
 			Files.write(target, bb.array(), StandardOpenOption.CREATE, StandardOpenOption.APPEND,
 					StandardOpenOption.SYNC);
 		} else {
