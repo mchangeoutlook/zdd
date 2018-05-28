@@ -1,5 +1,5 @@
 package com.zdd.bdc.config;
 
-public class Server {
+public class ConfigServer {
 
 }
