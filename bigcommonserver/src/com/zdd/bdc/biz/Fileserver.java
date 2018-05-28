@@ -18,6 +18,9 @@ public class Fileserver implements Theserverprocess {
 
 	@Override
 	public void process(byte[] b) throws Exception {
+		if (!Files.exists(targetpath)&&targetpath.getParent()!=null&&!Files.exists(targetpath.getParent())) {
+			Files.createDirectories(targetpath.getParent());
+		}
 		Files.write(targetpath, b, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 	}
 

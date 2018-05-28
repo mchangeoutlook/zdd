@@ -1,5 +1,7 @@
 package com.zdd.bdc.ex;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -78,12 +80,10 @@ public class Theserver {
 							writebb.flip();
 							s.getChannel().write(writebb);
 						}catch(Exception e){
-							StringBuffer sb = new StringBuffer();
-							for (StackTraceElement ste: e.getStackTrace()){
-								sb.append(ste.toString()+System.lineSeparator());
-							}
 							try{
-								byte[] res = sb.toString().getBytes("UTF-8");
+								StringWriter errors = new StringWriter();
+								e.printStackTrace(new PrintWriter(errors));
+								byte[] res = errors.toString().getBytes("UTF-8");
 								ByteBuffer writebb = ByteBuffer.allocate(11+res.length);
 								writebb.put(("-"+String.format ("%010d", res.length)).getBytes());
 								writebb.put(res);
