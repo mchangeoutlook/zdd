@@ -1,6 +1,7 @@
 package com.zdd.bdc.util;
 
 import java.io.BufferedReader;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -16,15 +17,23 @@ public class Bigindexfileutil {
 			throw new Exception("emptyindex");
 		}
 		Vector<String> keys = new Vector<String>(100);
-		BufferedReader br = Files.newBufferedReader(target, Charset.forName("UTF-8"));
-		String line = br.readLine();
-		while (line != null){
-			if (line.startsWith(URLEncoder.encode(index, "UTF-8")+"#")){
-				keys.add(line.split("#")[1]);
+		if (Files.exists(target)) {
+			BufferedReader br = null;
+			try {
+				br = Files.newBufferedReader(target, Charset.forName("UTF-8"));
+				String line = br.readLine();
+				while (line != null){
+					if (line.startsWith(URLEncoder.encode(index, "UTF-8")+"#")){
+						keys.add(URLDecoder.decode(line.split("#")[1],"UTF-8"));
+					}
+					line = br.readLine();
+				}
+			}finally {
+				if (br!=null) {
+					br.close();
+				}
 			}
-			line = br.readLine();
 		}
-		
 		return keys;
 	}
 	
@@ -35,7 +44,7 @@ public class Bigindexfileutil {
 		if (key.isEmpty()) {
 			throw new Exception("emptykey");
 		}
-		byte[] bline = (URLEncoder.encode(index, "UTF-8")+"#"+key+System.lineSeparator()).getBytes();
+		byte[] bline = (URLEncoder.encode(index, "UTF-8")+"#"+URLEncoder.encode(key, "UTF-8")+System.lineSeparator()).getBytes("UTF-8");
 		ByteBuffer bb = ByteBuffer.allocate(bline.length);
 		bb.put(bline);
 		write(target, bb);
@@ -49,7 +58,7 @@ public class Bigindexfileutil {
 			throw new Exception("emptykey");
 		}
 		if (read(index, target).isEmpty()) {
-			byte[] bline = (URLEncoder.encode(index, "UTF-8")+"#"+key+System.lineSeparator()).getBytes();
+			byte[] bline = (URLEncoder.encode(index, "UTF-8")+"#"+URLEncoder.encode(key, "UTF-8")+System.lineSeparator()).getBytes("UTF-8");
 			ByteBuffer bb = ByteBuffer.allocate(bline.length);
 			bb.put(bline);
 			write(target, bb);

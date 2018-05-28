@@ -49,18 +49,18 @@ public class Textclient {
 		return this;
 	}
 
-	public Textclient add(String column, String value, int max) {
+	public Textclient add4create(String column, String value, int max) {
 		cvs.put(column, value);
 		cvmaxs.put(column, max);
 		return this;
 	}
 
-	public Textclient add(String column, long amount)  {
+	public Textclient add4increment(String column, long amount)  {
 		cas.put(column, amount);
 		return this;
 	}
 
-	public Textclient add(String column, String value) {
+	public Textclient add4modify(String column, String value) {
 		if (value == null) {
 			value = "";
 		}
@@ -75,7 +75,7 @@ public class Textclient {
 
 	public String create() throws Exception {
 		if (cvs.isEmpty() || cvmaxs.isEmpty()) {
-			throw new Exception(".columnvalues.add.create");
+			throw new Exception(".columnvalues.add4create.create");
 		}
 		try {
 			key = newkey();
@@ -86,7 +86,7 @@ public class Textclient {
 			params.put("tb", tb);
 			params.put("cvs", cvs);
 			params.put("cvmaxs", cvmaxs);
-			Theclient.request("192.168.3.56", 9999, Objectutil.convert(params), null);
+			Theclient.request("localhost", 9999, Objectutil.convert(params), null);
 			return key;
 		} finally {
 			clear();
@@ -112,7 +112,7 @@ public class Textclient {
 
 	public String modify() throws Exception {
 		if (key == null || cvs.isEmpty()) {
-			throw new Exception(".columnvalues.add.modify");
+			throw new Exception(".columnvalues.add4modify.modify");
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);
@@ -150,7 +150,7 @@ public class Textclient {
 	@SuppressWarnings("unchecked")
 	public Map<String, Long> increment() throws Exception {
 		if (key == null || cas.isEmpty()) {
-			throw new Exception(".key.columns.add.increment");
+			throw new Exception(".key.columns.add4increment.increment");
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);

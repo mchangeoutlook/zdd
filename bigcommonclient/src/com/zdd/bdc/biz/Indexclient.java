@@ -1,6 +1,6 @@
 package com.zdd.bdc.biz;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
@@ -33,14 +33,14 @@ public class Indexclient {
 	}
 	public void create(String key, long pagenum) throws Exception {
 		try {
-			Map<String, Object> params = new Hashtable<String, Object>(5);
+			Map<String, Object> params = new HashMap<String, Object>(5);
 			params.put("key", key);
 			params.put("action", "create");
 			params.put("ns", ns);
 			params.put("index", index);
 			params.put("pagenum", pagenum);
 			params.put("filters", filters);
-			Theclient.request("192.168.3.56", 9999, Objectutil.convert(params), null);
+			Theclient.request("localhost", 9998, Objectutil.convert(params), null);
 		}finally {
 			clear();
 		}
@@ -48,41 +48,41 @@ public class Indexclient {
 
 	public void createunique(String key) throws Exception {
 		try {
-			Map<String, Object> params = new Hashtable<String, Object>(5);
+			Map<String, Object> params = new HashMap<String, Object>(5);
 			params.put("key", key);
 			params.put("action", "create");
 			params.put("ns", ns);
 			params.put("index", index);
 			params.put("filters", filters);
-			Theclient.request("192.168.3.56", 9999, Objectutil.convert(params), null);
+			Theclient.request("localhost", 9998, Objectutil.convert(params), null);
 		}finally {
 			clear();
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public Vector<String> read(String index, long pagenum) throws Exception {
+	public Vector<String> read(long pagenum) throws Exception {
 		try {
-			Map<String, Object> params = new Hashtable<String, Object>(5);
+			Map<String, Object> params = new HashMap<String, Object>(5);
 			params.put("index", index);
 			params.put("action", "read");
 			params.put("ns", ns);
 			params.put("pagenum", pagenum);
 			params.put("filters", filters);
-			return (Vector<String>)Objectutil.convert(Theclient.request("localhost", 9999, Objectutil.convert(params), null));
+			return (Vector<String>)Objectutil.convert(Theclient.request("localhost", 9998, Objectutil.convert(params), null));
 		}finally {
 			clear();
 		}
 	}
 
-	public String readunique(String index) throws Exception {
+	public String readunique() throws Exception {
 		try {
-			Map<String, Object> params = new Hashtable<String, Object>(5);
+			Map<String, Object> params = new HashMap<String, Object>(5);
 			params.put("index", index);
 			params.put("action", "read");
 			params.put("ns", ns);
 			params.put("filters", filters);
-			return (String)Objectutil.convert(Theclient.request("localhost", 9999, Objectutil.convert(params), null));
+			return (String)Objectutil.convert(Theclient.request("localhost", 9998, Objectutil.convert(params), null));
 		}finally {
 			clear();
 		}
