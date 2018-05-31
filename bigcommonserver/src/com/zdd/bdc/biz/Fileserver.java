@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Map;
 
 import com.zdd.bdc.ex.Theserverprocess;
 
@@ -14,6 +15,11 @@ public class Fileserver implements Theserverprocess {
 	@Override
 	public void start(byte[] b) throws Exception {
 		targetpath = Paths.get(new String(b,"UTF-8"));
+	}
+
+	@Override
+	public void init(Map<String, String> config) {
+
 	}
 
 	@Override

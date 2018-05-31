@@ -11,16 +11,38 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
+import com.zdd.bdc.biz.Configserver;
+import com.zdd.bdc.biz.Indexserver;
+import com.zdd.bdc.biz.Textserver;
+
 public class Theserver {
+	public static void startindexserverblocking(int port, int bigfilehash) throws Exception{
+		startblocking(port, bigfilehash, Indexserver.class);
+	}
 	
-	public static void startblocking(int port, final Class<?> c) throws Exception{
+	public static void starttextserverblocking(int port, int bigfilehash) throws Exception{
+		startblocking(port, bigfilehash, Textserver.class);
+	}
+	
+	public static void startconfigserverblocking(int port) throws Exception{
+		startblocking(port, 10, Configserver.class);
+	}
+	
+	
+	private static void startblocking(int port, int bigfilehash, final Class<?> c) throws Exception{
+		Theserverprocess test = null;
 		try{
-			c.asSubclass(Theserverprocess.class);
+			test = (Theserverprocess) c.getDeclaredConstructor().newInstance();
 		}catch(Exception e){
 			throw new Exception("not="+Theserverprocess.class.getSimpleName());
+		}
+		if (bigfilehash<10) {
+			throw new Exception("bigfilehash<10");
 		}
 		Selector acceptSelector = SelectorProvider.provider().openSelector();
 		ServerSocketChannel ssc = ServerSocketChannel.open();
@@ -29,7 +51,12 @@ public class Theserver {
 		ssc.socket().bind(isa);
 		ssc.register(acceptSelector,
 		                SelectionKey.OP_ACCEPT);
-		System.out.println(new Date()+ " "+ c.getName()+" listening port ["+port+"]");
+		
+		Map<String, String> config = new Hashtable<String, String>();
+		config.put("bigfilehash", String.valueOf(bigfilehash));
+		
+		System.out.println(new Date()+ " "+ test.getClass().getName()+" listening port ["+port+"]");
+		
 		while (acceptSelector.select() > 0) {
 			Set<SelectionKey> readyKeys = acceptSelector.selectedKeys();
 			Iterator<SelectionKey> i = readyKeys.iterator();
@@ -42,6 +69,7 @@ public class Theserver {
 					public void run() {
 						try{
 							Theserverprocess ti = (Theserverprocess) c.getDeclaredConstructor().newInstance();
+							ti.init(config);
 							ByteBuffer readbb = ByteBuffer.allocate(11);
 							s.getChannel().read(readbb);
 							Integer length = Integer.parseInt(new String(readbb.array()));

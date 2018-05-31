@@ -16,6 +16,13 @@ public class Indexserver implements Theserverprocess {
 	private Vector<String> readres = null;
 	private String unique = null;
 
+	private int bigfilehash = 1000;
+	
+	@Override
+	public void init(Map<String, String> config) {
+		bigfilehash = Integer.parseInt(config.get("bigfilehash"));
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void start(byte[] b) throws Exception {
@@ -26,11 +33,11 @@ public class Indexserver implements Theserverprocess {
 			String namespace = params.get("ns").toString();
 			Vector<String> filters = (Vector<String>) params.get("filters");
 			if (params.get("pagenum")==null) {
-				Path target = Indexserver.target(index, -1, filters, namespace);
+				Path target = target(index, -1, filters, namespace);
 				Bigindexfileutil.createunique(index, target, key);
 			} else {
 				long pagenum = Long.parseLong(params.get("pagenum").toString());
-				Path target = Indexserver.target(index, pagenum, filters, namespace);
+				Path target = target(index, pagenum, filters, namespace);
 				Bigindexfileutil.create(index, target, key);
 			}
 		} else if ("read".equals(params.get("action").toString())) {
@@ -38,11 +45,11 @@ public class Indexserver implements Theserverprocess {
 			String namespace = params.get("ns").toString();
 			Vector<String> filters = (Vector<String>) params.get("filters");
 			if (params.get("pagenum")==null) {
-				Path target = Indexserver.target(index, -1, filters, namespace);
+				Path target = target(index, -1, filters, namespace);
 				unique = Bigindexfileutil.read(index, target).get(0);
 			} else {
 				long pagenum = Long.parseLong(params.get("pagenum").toString());
-				Path target = Indexserver.target(index, pagenum, filters, namespace);
+				Path target = target(index, pagenum, filters, namespace);
 				readres = Bigindexfileutil.read(index, target);
 			}
 		} else {
@@ -66,7 +73,7 @@ public class Indexserver implements Theserverprocess {
 		return null;
 	}
 
-	private static Path target(String index, long pagenum, Vector<String> filters, String namespace) throws Exception {
+	private Path target(String index, long pagenum, Vector<String> filters, String namespace) throws Exception {
 		if (namespace.isEmpty()) {
 			throw new Exception("emptyns");
 		}
@@ -77,8 +84,7 @@ public class Indexserver implements Theserverprocess {
 				s += URLEncoder.encode(f, "UTF-8")+"#";
 			}
 		}
-		
-		return Paths.get("bigindex/" + URLEncoder.encode(namespace, "UTF-8")+"/" + pagenum + "#" + s + "/" + Math.abs(index.hashCode()) % 1000);
+		return Paths.get("bigindex/" + URLEncoder.encode(namespace, "UTF-8")+"/" + pagenum + "#" + s + "/" + Math.abs(index.hashCode()) % bigfilehash);
 	}
 
 }
