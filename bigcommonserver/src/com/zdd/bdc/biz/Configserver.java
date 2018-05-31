@@ -113,8 +113,8 @@ public class Configserver implements Theserverprocess {
 			Calendar c = Calendar.getInstance();
 			c.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(sortedconfigkeys[i].toString()));
 			c.add(Calendar.DATE, 1);
-			while (i + 1 < sortedconfigkeys.length
-					&& !new SimpleDateFormat("yyyy-MM-dd").format(c.getTime()).equals(sortedconfigkeys[i + 1].toString())) {
+			while (i + 1 < sortedconfigkeys.length && !new SimpleDateFormat("yyyy-MM-dd").format(c.getTime())
+					.equals(sortedconfigkeys[i + 1].toString())) {
 				confignsfileskeysvalues.get(namespace).get("bigdatagen").put(
 						new SimpleDateFormat("yyyy-MM-dd").format(c.getTime()),
 						confignsfileskeysvalues.get(namespace).get("bigdata").get(sortedconfigkeys[i].toString()));
@@ -128,7 +128,7 @@ public class Configserver implements Theserverprocess {
 					c.add(Calendar.DATE, 1);
 				}
 			}
-		}		
+		}
 	}
 
 	private Map<String, Map<String, Map<String, String>>> returnvalue = null;
