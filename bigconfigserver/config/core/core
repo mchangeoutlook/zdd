@@ -1,0 +1,3 @@
+configserverip#localhost
+configserverport#9999
+updateconfigcache.intervalseconds#30
