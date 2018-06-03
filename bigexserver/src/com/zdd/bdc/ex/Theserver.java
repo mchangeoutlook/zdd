@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class Theserver {	
 	
-	public static void startblocking(int port, StringBuffer pending, int bigfilehash, final Class<?> c) throws Exception{
+	public static void startblocking(String ip, int port, StringBuffer pending, int bigfilehash, final Class<?> c) throws Exception{
 		Theserverprocess test = null;
 		try{
 			test = (Theserverprocess) c.getDeclaredConstructor().newInstance();
@@ -39,10 +39,7 @@ public class Theserver {
 		Map<String, String> config = new Hashtable<String, String>();
 		config.put("bigfilehash", String.valueOf(bigfilehash));
 		
-		InetAddress iAddress = InetAddress.getLocalHost();
-		String currentIp = iAddress.getHostAddress();
-		
-		System.out.println(new Date()+ " "+ test.getClass().getName()+" listening port ["+port+"] on ip ["+currentIp+"]");
+		System.out.println(new Date()+ " "+ test.getClass().getName()+" listening port ["+port+"] on ip ["+ip+"]");
 		while (acceptSelector.select() > 0&&!"pending".equals(pending.toString())) {
 			Set<SelectionKey> readyKeys = acceptSelector.selectedKeys();
 			Iterator<SelectionKey> i = readyKeys.iterator();

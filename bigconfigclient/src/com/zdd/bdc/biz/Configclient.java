@@ -10,6 +10,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
+
 import com.zdd.bdc.ex.Theclient;
 import com.zdd.bdc.util.Objectutil;
 
@@ -21,18 +22,36 @@ public class Configclient {
 	static {
 		if (Files.exists(configfolder) && Files.isDirectory(configfolder)) {
 			try {
-				Files.walk(configfolder).filter(Files::isRegularFile).forEach(file -> {
-					String namespace = file.getParent().getFileName().toString();
+				Files.walk(configfolder).filter(Files::isRegularFile).forEach(pathfile -> {
+					
+					final StringBuffer ns = new StringBuffer();
+					try {
+						ns.append(URLDecoder.decode(pathfile.getParent().getFileName().toString(),"UTF-8"));
+					} catch (Exception e) {
+						System.out.println(new Date() + " ==== System exited due to below exception:");
+						e.printStackTrace();
+						System.exit(1);
+					}
+					String namespace = ns.toString();
+					final StringBuffer f = new StringBuffer();
+					try {
+						f.append(URLDecoder.decode(pathfile.getFileName().toString(),"UTF-8"));
+					} catch (Exception e) {
+						System.out.println(new Date() + " ==== System exited due to below exception:");
+						e.printStackTrace();
+						System.exit(1);
+					}
+					String file = f.toString();
 					if (confignsfileskeysvaluescache.get(namespace) == null) {
 						confignsfileskeysvaluescache.put(namespace, new Hashtable<String, Map<String, String>>());
 					}
 					try {
-						if (confignsfileskeysvaluescache.get(namespace).get(file.getFileName().toString()) == null) {
-							confignsfileskeysvaluescache.get(namespace).put(file.getFileName().toString(),
+						if (confignsfileskeysvaluescache.get(namespace).get(file) == null) {
+							confignsfileskeysvaluescache.get(namespace).put(file,
 									new Hashtable<String, String>());
 						}
 						
-						Files.lines(file, Charset.forName("UTF-8")).forEach(line -> {
+						Files.lines(pathfile, Charset.forName("UTF-8")).forEach(line -> {
 							if (line.indexOf("#") > 0) {
 								String encodedkey = line.substring(0, line.indexOf("#"));
 								String encodedvalue = "";
@@ -40,7 +59,7 @@ public class Configclient {
 									encodedvalue = line.substring(line.indexOf("#") + 1);
 								}
 								try {
-									confignsfileskeysvaluescache.get(namespace).get(file.getFileName().toString()).put(
+									confignsfileskeysvaluescache.get(namespace).get(file).put(
 											URLDecoder.decode(encodedkey, "UTF-8"),
 											URLDecoder.decode(encodedvalue, "UTF-8"));
 								} catch (Exception e) {
@@ -95,30 +114,35 @@ public class Configclient {
 											Objectutil.convert(params), null));
 							for (String namespace:res.keySet()) {
 								for (String file:res.get(namespace).keySet()) {
+									boolean changed = false;
 									for (String configkey:res.get(namespace).get(file).keySet()) {
 										if (!res.get(namespace).get(file).get(configkey).equals(confignsfileskeysvaluescache.get(namespace).get(file).get(configkey))) {
 											confignsfileskeysvaluescache.get(namespace).get(file).put(configkey,res.get(namespace).get(file).get(configkey));
+											changed = true;
 										}
 									}
-									Path target = target(namespace, file);
-									if (!Files.exists(target) && target.getParent() != null && !Files.exists(target.getParent())) {
-										Files.createDirectories(target.getParent());
-									}
-									Files.write(target, ("#Auto generated on " + new Date() + System.lineSeparator()).getBytes("UTF-8"),
-											StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.SYNC);
-
-									for (String configkey : confignsfileskeysvaluescache.get(namespace).get(file).keySet()) {
-										Files.write(target, (URLEncoder.encode(configkey, "UTF-8") + "#"
-												+ URLEncoder.encode(confignsfileskeysvaluescache.get(namespace).get(file).get(configkey),
-														"UTF-8")
-												+ System.lineSeparator()).getBytes("UTF-8"), StandardOpenOption.CREATE,
-												StandardOpenOption.APPEND, StandardOpenOption.SYNC);
+									if (changed) {
+										Path target = target(namespace, file);
+										if (!Files.exists(target) && target.getParent() != null && !Files.exists(target.getParent())) {
+											Files.createDirectories(target.getParent());
+										}
+										Files.write(target, ("#Auto generated on " + new Date() + System.lineSeparator()).getBytes("UTF-8"),
+												StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.SYNC);
+	
+										for (String configkey : confignsfileskeysvaluescache.get(namespace).get(file).keySet()) {
+											Files.write(target, (URLEncoder.encode(configkey, "UTF-8") + "#"
+													+ URLEncoder.encode(confignsfileskeysvaluescache.get(namespace).get(file).get(configkey),
+															"UTF-8")
+													+ System.lineSeparator()).getBytes("UTF-8"), StandardOpenOption.CREATE,
+													StandardOpenOption.APPEND, StandardOpenOption.SYNC);
+										}
 									}
 								}
 
 							}
 						} catch (Exception e) {
 							//do nothing
+							e.printStackTrace();
 						}
 					}
 				}
@@ -176,7 +200,7 @@ public class Configclient {
 								Objectutil.convert(params), null));
 				confignsfileskeysvaluescache.get(namespace).get(file).put(configkey,res.get(namespace).get(file).get(configkey));
 			} catch (Exception e) {
-				confignsfileskeysvaluescache.get(namespace).get(file).put(configkey,"");
+				return "";
 			}
 		} 
 		return confignsfileskeysvaluescache.get(namespace).get(file).get(configkey);

@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+
 import com.zdd.bdc.ex.Theserverprocess;
 import com.zdd.bdc.util.Objectutil;
 
@@ -25,14 +26,31 @@ public class Configserver implements Theserverprocess {
 	static {
 		if (Files.exists(configfolder) && Files.isDirectory(configfolder)) {
 			try {
-				Files.walk(configfolder).filter(Files::isRegularFile).forEach(file -> {
-					String namespace = file.getParent().getFileName().toString();
+				Files.walk(configfolder).filter(Files::isRegularFile).forEach(pathfile -> {
+					final StringBuffer ns = new StringBuffer();
+					try {
+						ns.append(URLDecoder.decode(pathfile.getParent().getFileName().toString(),"UTF-8"));
+					} catch (Exception e) {
+						System.out.println(new Date() + " ==== System exited due to below exception:");
+						e.printStackTrace();
+						System.exit(1);
+					}
+					String namespace = ns.toString();
 					if (confignsfileskeysvalues.get(namespace) == null) {
 						confignsfileskeysvalues.put(namespace, new Hashtable<String, Map<String, String>>());
 					}
 					try {
-						if (confignsfileskeysvalues.get(namespace).get(file.getFileName().toString()) == null) {
-							confignsfileskeysvalues.get(namespace).put(file.getFileName().toString(),
+						final StringBuffer f = new StringBuffer();
+						try {
+							f.append(URLDecoder.decode(pathfile.getFileName().toString(),"UTF-8"));
+						} catch (Exception e) {
+							System.out.println(new Date() + " ==== System exited due to below exception:");
+							e.printStackTrace();
+							System.exit(1);
+						}
+						String file = f.toString();
+						if (confignsfileskeysvalues.get(namespace).get(file) == null) {
+							confignsfileskeysvalues.get(namespace).put(file,
 									new Hashtable<String, String>());
 						}
 						if (confignsfileskeysvalues.get(namespace).get("bigindex") == null) {
@@ -48,7 +66,7 @@ public class Configserver implements Theserverprocess {
 							confignsfileskeysvalues.get(namespace).put("bigdatagen", new Hashtable<String, String>());
 						}
 
-						Files.lines(file, Charset.forName("UTF-8")).forEach(line -> {
+						Files.lines(pathfile, Charset.forName("UTF-8")).forEach(line -> {
 							if (line.indexOf("#") > 0) {
 								String encodedkey = line.substring(0, line.indexOf("#"));
 								String encodedvalue = "";
@@ -56,12 +74,12 @@ public class Configserver implements Theserverprocess {
 									encodedvalue = line.substring(line.indexOf("#") + 1);
 								}
 								try {
-									if ("bigindex".equals(file.getFileName().toString())) {
+									if ("bigindex".equals(file)) {
 										Configserver.populatebigindexgen(namespace,
 												URLDecoder.decode(encodedkey, "UTF-8"),
 												URLDecoder.decode(encodedvalue, "UTF-8"));
 									}
-									confignsfileskeysvalues.get(namespace).get(file.getFileName().toString()).put(
+									confignsfileskeysvalues.get(namespace).get(file).put(
 											URLDecoder.decode(encodedkey, "UTF-8"),
 											URLDecoder.decode(encodedvalue, "UTF-8"));
 								} catch (Exception e) {
@@ -90,9 +108,15 @@ public class Configserver implements Theserverprocess {
 	}
 
 	public static String read(String namespace, String file, String configkey) {
+		if (confignsfileskeysvalues.get(namespace) == null) {
+			return null;
+		}
+		if (confignsfileskeysvalues.get(namespace).get(file) == null) {
+			return null;
+		}
 		return confignsfileskeysvalues.get(namespace).get(file).get(configkey);
 	}
-	
+
 	private static void populatebigindexgen(String namespace, String configkey, String configvalue) throws Exception {
 		if (configkey.contains("-")) {
 			int start = Integer.parseInt(configkey.split("-")[0]);
@@ -143,47 +167,62 @@ public class Configserver implements Theserverprocess {
 		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(b);
 		returnvalue = (Map<String, Map<String, Map<String, String>>>) params.get("data");
 		if ("read".equals(params.get("action").toString())) {
-			for (String namespace : returnvalue.keySet()) {
-				for (String file : returnvalue.get(namespace).keySet()) {
-					for (String configkey : returnvalue.get(namespace).get(file).keySet()) {
-						if (confignsfileskeysvalues.get(namespace) != null) {
-							if (confignsfileskeysvalues.get(namespace).get(file) != null) {
-								if (file.equals("bigdata")) {
-									file = "bigdatagen";
-								} else if (file.equals("bigindex")) {
-									file = "bigindexgen";
-								}
-								if (confignsfileskeysvalues.get(namespace).get(file).get(configkey) != null) {
-									if (file.equals("bigdatagen")) {
-										returnvalue.get(namespace).get("bigdata").put(configkey,
-												confignsfileskeysvalues.get(namespace).get(file).get(configkey));
-									} else if (file.equals("bigindexgen")) {
-										returnvalue.get(namespace).get("bigindex").put(configkey,
-												confignsfileskeysvalues.get(namespace).get(file).get(configkey));
+			Object[] ns = returnvalue.keySet().toArray();
+			for (Object nsobj : ns) {
+				String namespace = nsobj.toString();
+				if (returnvalue.get(namespace) != null) {
+					Object[] files = returnvalue.get(namespace).keySet().toArray();
+					for (Object fileobj : files) {
+						String file = fileobj.toString();
+						if (returnvalue.get(namespace)!=null&&returnvalue.get(namespace).get(file) != null) {
+							Object[] configkeys = returnvalue.get(namespace).get(file).keySet().toArray();
+
+							for (Object configkeyobj : configkeys) {
+								String configkey = configkeyobj.toString();
+								if (confignsfileskeysvalues.get(namespace) != null) {
+									if (confignsfileskeysvalues.get(namespace).get(file) != null) {
+										if (file.equals("bigdata")) {
+											file = "bigdatagen";
+										} else if (file.equals("bigindex")) {
+											file = "bigindexgen";
+										}
+										if (confignsfileskeysvalues.get(namespace).get(file).get(configkey) != null) {
+											if (file.equals("bigdatagen")) {
+												returnvalue.get(namespace).get("bigdata").put(configkey,
+														confignsfileskeysvalues.get(namespace).get(file)
+																.get(configkey));
+											} else if (file.equals("bigindexgen")) {
+												returnvalue.get(namespace).get("bigindex").put(configkey,
+														confignsfileskeysvalues.get(namespace).get(file)
+																.get(configkey));
+											} else {
+												returnvalue.get(namespace).get(file).put(configkey,
+														confignsfileskeysvalues.get(namespace).get(file)
+																.get(configkey));
+											}
+										} else {
+											if (file.equals("bigdatagen")) {
+												Object[] temp = confignsfileskeysvalues.get(namespace).get("bigdata")
+														.keySet().toArray();
+												Arrays.sort(temp);
+												String value = confignsfileskeysvalues.get(namespace).get("bigdata")
+														.get(temp[temp.length - 1].toString());
+												returnvalue.get(namespace).get("bigdata").put(configkey, value);
+												confignsfileskeysvalues.get(namespace).get("bigdatagen").put(configkey,
+														value);
+											} else if (file.equals("bigindexgen")) {
+												returnvalue.get(namespace).get("bigindex").remove(configkey);
+											} else {
+												returnvalue.get(namespace).get(file).remove(configkey);
+											}
+										}
 									} else {
-										returnvalue.get(namespace).get(file).put(configkey,
-												confignsfileskeysvalues.get(namespace).get(file).get(configkey));
+										returnvalue.get(namespace).remove(file);
 									}
 								} else {
-									if (file.equals("bigdatagen")) {
-										Object[] temp = confignsfileskeysvalues.get(namespace).get("bigdata").keySet()
-												.toArray();
-										Arrays.sort(temp);
-										String value = confignsfileskeysvalues.get(namespace).get("bigdata")
-												.get(temp[temp.length - 1].toString());
-										returnvalue.get(namespace).get("bigdata").put(configkey, value);
-										confignsfileskeysvalues.get(namespace).get("bigdatagen").put(configkey, value);
-									} else if (file.equals("bigindexgen")) {
-										returnvalue.get(namespace).get("bigindex").remove(configkey);
-									} else {
-										returnvalue.get(namespace).get(file).remove(configkey);
-									}
+									returnvalue.remove(namespace);
 								}
-							} else {
-								returnvalue.get(namespace).remove(file);
 							}
-						} else {
-							returnvalue.remove(namespace);
 						}
 					}
 				}
