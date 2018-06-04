@@ -17,7 +17,7 @@ public class Indexserver implements Theserverprocess {
 	private String unique = null;
 
 	private int bigfilehash = 1000;
-	
+
 	@Override
 	public void init(Map<String, String> config) {
 		bigfilehash = Integer.parseInt(config.get("bigfilehash"));
@@ -32,7 +32,7 @@ public class Indexserver implements Theserverprocess {
 			String key = params.get("key").toString();
 			String namespace = params.get("ns").toString();
 			Vector<String> filters = (Vector<String>) params.get("filters");
-			if (params.get("pagenum")==null) {
+			if (params.get("pagenum") == null) {
 				Path target = target(index, -1, filters, namespace);
 				Bigindexfileutil.createunique(index, target, key);
 			} else {
@@ -44,7 +44,7 @@ public class Indexserver implements Theserverprocess {
 			String index = params.get("index").toString();
 			String namespace = params.get("ns").toString();
 			Vector<String> filters = (Vector<String>) params.get("filters");
-			if (params.get("pagenum")==null) {
+			if (params.get("pagenum") == null) {
 				Path target = target(index, -1, filters, namespace);
 				unique = Bigindexfileutil.read(index, target).get(0);
 			} else {
@@ -53,7 +53,7 @@ public class Indexserver implements Theserverprocess {
 				readres = Bigindexfileutil.read(index, target);
 			}
 		} else {
-			throw new Exception("notsupport-"+params.get("action"));
+			throw new Exception("notsupport-" + params.get("action"));
 		}
 	}
 
@@ -78,13 +78,14 @@ public class Indexserver implements Theserverprocess {
 			throw new Exception("emptyns");
 		}
 		String s = "";
-		if (filters!=null&&!filters.isEmpty()) {
+		if (filters != null && !filters.isEmpty()) {
 			Collections.sort(filters);
 			for (String f : filters) {
-				s += URLEncoder.encode(f, "UTF-8")+"#";
+				s += URLEncoder.encode(f, "UTF-8") + "#";
 			}
 		}
-		return Paths.get("bigindex/" + URLEncoder.encode(namespace, "UTF-8")+"/" + pagenum + "#" + s + "/" + Math.abs(index.hashCode()) % bigfilehash);
+		return Paths.get("bigindex/" + URLEncoder.encode(namespace, "UTF-8") + "/" + pagenum + "#" + s + "/"
+				+ Math.abs(index.hashCode()) % bigfilehash);
 	}
 
 }
