@@ -142,7 +142,6 @@ public class Configclient {
 							}
 						} catch (Exception e) {
 							//do nothing
-							e.printStackTrace();
 						}
 					}
 				}

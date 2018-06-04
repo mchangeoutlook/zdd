@@ -86,7 +86,7 @@ public class Textclient {
 			params.put("tb", tb);
 			params.put("cvs", cvs);
 			params.put("cvmaxs", cvmaxs);
-			Theclient.request(Configclient.getinstance("core", "core").read("textserverip"), 
+			Theclient.request(distribute(ns, key), 
 					Integer.parseInt(Configclient.getinstance("core", "core").read("textserverport")), Objectutil.convert(params), null);
 			return key;
 		} finally {
@@ -105,11 +105,18 @@ public class Textclient {
 			params.put("ns", ns);
 			params.put("tb", tb);
 			params.put("cols", cols);
-			Objectutil.convert(Theclient.request(Configclient.getinstance("core", "core").read("textserverip"), 
+			Objectutil.convert(Theclient.request(distribute(ns, key), 
 					Integer.parseInt(Configclient.getinstance("core", "core").read("textserverport")), Objectutil.convert(params), null));
 		} finally {
 			clear();
 		}
+	}
+	
+	private static String distribute(String namespace, String key) {
+		String configkey = key.substring(13,17)+"-"+key.substring(7,9)+"-"+key.substring(2,4);
+		String[] ips = Configclient.getinstance(namespace, "bigdata").read(configkey).split("#");
+		String ip = ips[Math.abs(key.hashCode())%ips.length];
+		return ip;
 	}
 
 	public String modify() throws Exception {
@@ -123,7 +130,7 @@ public class Textclient {
 			params.put("ns", ns);
 			params.put("tb", tb);
 			params.put("cvs", cvs);
-			Theclient.request(Configclient.getinstance("core", "core").read("textserverip"), 
+			Theclient.request(distribute(ns, key), 
 					Integer.parseInt(Configclient.getinstance("core", "core").read("textserverport")), Objectutil.convert(params), null);
 			return key;
 		} finally {
@@ -144,7 +151,7 @@ public class Textclient {
 			params.put("tb", tb);
 			params.put("cols", cols);
 			return (Map<String, String>) Objectutil
-					.convert(Theclient.request(Configclient.getinstance("core", "core").read("textserverip"), 
+					.convert(Theclient.request(distribute(ns, key), 
 							Integer.parseInt(Configclient.getinstance("core", "core").read("textserverport")), Objectutil.convert(params), null));
 		} finally {
 			clear();
@@ -164,7 +171,7 @@ public class Textclient {
 			params.put("tb", tb);
 			params.put("cas", cas);
 			return (Map<String, Long>) Objectutil
-					.convert(Theclient.request(Configclient.getinstance("core", "core").read("textserverip"), 
+					.convert(Theclient.request(distribute(ns, key), 
 							Integer.parseInt(Configclient.getinstance("core", "core").read("textserverport")), Objectutil.convert(params), null));
 		} finally {
 			clear();

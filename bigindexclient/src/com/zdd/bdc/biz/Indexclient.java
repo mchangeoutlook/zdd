@@ -8,20 +8,20 @@ import com.zdd.bdc.ex.Theclient;
 import com.zdd.bdc.util.Objectutil;
 
 public class Indexclient {
-	
+
 	private String index = null;
 	private String ns = null;
 	private Vector<String> filters = null;
-	
+
 	private Indexclient(String namespace, String theindex) {
 		ns = namespace;
 		index = theindex;
 	}
-	
+
 	public static Indexclient getinstance(String namespace, String index) {
 		return new Indexclient(namespace, index);
 	}
-	
+
 	public Indexclient filters(int numofilters) {
 		filters = new Vector<String>(numofilters);
 		return this;
@@ -31,6 +31,7 @@ public class Indexclient {
 		filters.add(filter);
 		return this;
 	}
+
 	public void create(String key, long pagenum) throws Exception {
 		try {
 			Map<String, Object> params = new HashMap<String, Object>(5);
@@ -40,9 +41,10 @@ public class Indexclient {
 			params.put("index", index);
 			params.put("pagenum", pagenum);
 			params.put("filters", filters);
-			Theclient.request(Configclient.getinstance("core", "core").read("indexserverip"), 
-					Integer.parseInt(Configclient.getinstance("core", "core").read("indexserverport")), Objectutil.convert(params), null);
-		}finally {
+			Theclient.request(distribute(ns, pagenum, index),
+					Integer.parseInt(Configclient.getinstance("core", "core").read("indexserverport")),
+					Objectutil.convert(params), null);
+		} finally {
 			clear();
 		}
 	}
@@ -55,9 +57,10 @@ public class Indexclient {
 			params.put("ns", ns);
 			params.put("index", index);
 			params.put("filters", filters);
-			Theclient.request(Configclient.getinstance("core", "core").read("indexserverip"), 
-					Integer.parseInt(Configclient.getinstance("core", "core").read("indexserverport")), Objectutil.convert(params), null);
-		}finally {
+			Theclient.request(distribute(ns, -1, index),
+					Integer.parseInt(Configclient.getinstance("core", "core").read("indexserverport")),
+					Objectutil.convert(params), null);
+		} finally {
 			clear();
 		}
 	}
@@ -71,9 +74,11 @@ public class Indexclient {
 			params.put("ns", ns);
 			params.put("pagenum", pagenum);
 			params.put("filters", filters);
-			return (Vector<String>)Objectutil.convert(Theclient.request(Configclient.getinstance("core", "core").read("indexserverip"), 
-					Integer.parseInt(Configclient.getinstance("core", "core").read("indexserverport")), Objectutil.convert(params), null));
-		}finally {
+			return (Vector<String>) Objectutil
+					.convert(Theclient.request(distribute(ns, pagenum, index),
+							Integer.parseInt(Configclient.getinstance("core", "core").read("indexserverport")),
+							Objectutil.convert(params), null));
+		} finally {
 			clear();
 		}
 	}
@@ -85,17 +90,26 @@ public class Indexclient {
 			params.put("action", "read");
 			params.put("ns", ns);
 			params.put("filters", filters);
-			return (String)Objectutil.convert(Theclient.request(Configclient.getinstance("core", "core").read("indexserverip"), 
-					Integer.parseInt(Configclient.getinstance("core", "core").read("indexserverport")), Objectutil.convert(params), null));
-		}finally {
+			return (String) Objectutil
+					.convert(Theclient.request(distribute(ns, -1, index),
+							Integer.parseInt(Configclient.getinstance("core", "core").read("indexserverport")),
+							Objectutil.convert(params), null));
+		} finally {
 			clear();
 		}
+	}
+
+	private static String distribute(String namespace, long pagenum, String index) {
+		String ip = Configclient.getinstance(namespace, "bigindex")
+				.read(String.valueOf(Math.abs((pagenum + index).hashCode())
+						% Integer.parseInt(Configclient.getinstance("core", "core").read("maxindexservers"))));
+		return ip;
 	}
 
 	private void clear() {
 		index = null;
 		ns = null;
-		if (filters!=null) {
+		if (filters != null) {
 			filters.clear();
 		}
 		filters = null;
