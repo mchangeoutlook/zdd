@@ -46,7 +46,11 @@ public class Indexserver implements Theserverprocess {
 			Vector<String> filters = (Vector<String>) params.get("filters");
 			if (params.get("pagenum") == null) {
 				Path target = target(index, -1, filters, namespace);
-				unique = Bigindexfileutil.read(index, target).get(0);
+				Vector<String> res = Bigindexfileutil.read(index, target);
+				unique = "";
+				if (!res.isEmpty()) {
+					unique = res.get(0);
+				}
 			} else {
 				long pagenum = Long.parseLong(params.get("pagenum").toString());
 				Path target = target(index, pagenum, filters, namespace);
