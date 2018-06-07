@@ -63,8 +63,8 @@ public class Account extends HttpServlet {
 						.add4create("outime", "", 20).create();
 				long logintimes = Textclient.getinstance("unicorn", "account").key(accountkey).columnamounts(1)
 						.add4increment("logintimes", 1).increment().get("logintimes");
-				Indexclient.getinstance("unicorn", accountkey).create(loginkey, logintimes / 100);
-
+				Indexclient.getinstance("unicorn", accountkey).filters(1).add("loginhistory").create(loginkey, logintimes / 100);
+				
 				returnvalue.put("state", 0);
 				returnvalue.put("loginkey", loginkey);
 			}
