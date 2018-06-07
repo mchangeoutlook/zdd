@@ -121,7 +121,7 @@ public class Textclient {
 
 	public String modify() throws Exception {
 		if (key == null || cvs.isEmpty()) {
-			throw new Exception(".columnvalues.add4modify.modify");
+			throw new Exception(".key.columnvalues.add4modify.modify");
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);

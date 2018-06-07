@@ -28,7 +28,7 @@ public class Account extends HttpServlet {
 		Map<String, Object> returnvalue = new HashMap<String, Object>();
 		try {
 			if (loginkey != null) {
-				Textclient.getinstance("unicorn", "login").columnvalues(4)
+				Textclient.getinstance("unicorn", "login").key(loginkey).columnvalues(1)
 						.add4modify("outime", String.valueOf(System.currentTimeMillis())).modify();
 				returnvalue.put("state", 0);
 				returnvalue.put("logout", "yes");
@@ -56,11 +56,12 @@ public class Account extends HttpServlet {
 					ipAddress = request.getRemoteAddr();
 				}
 
-				loginkey = Textclient.getinstance("unicorn", "login").columnvalues(4)
+				loginkey = Textclient.getinstance("unicorn", "login").columnvalues(5)
 						.add4create("accountkey", accountkey, 100).add4create("ip", ipAddress, 25)
 						.add4create("client", request.getHeader("User-Agent"), 1000)
-						.add4create("intime", String.valueOf(System.currentTimeMillis()), 20).create();
-				long logintimes = Textclient.getinstance("unicorn", "account").columnamounts(1)
+						.add4create("intime", String.valueOf(System.currentTimeMillis()), 20)
+						.add4create("outime", "", 20).create();
+				long logintimes = Textclient.getinstance("unicorn", "account").key(accountkey).columnamounts(1)
 						.add4increment("logintimes", 1).increment().get("logintimes");
 				Indexclient.getinstance("unicorn", accountkey).create(loginkey, logintimes / 100);
 
