@@ -35,7 +35,8 @@ public class Common implements Filter {
 			Map<String, Object> returnvalue = new HashMap<String, Object>();
 			try {
 				Map<String, String> loginstatus = Textclient.getinstance("unicorn", "login")
-						.key(req.getParameter("loginkey")).columns(3).add("lastactime").add("expiretime").add("outime").read();
+						.key(req.getParameter("loginkey")).columns(4).add("accountkey").add("lastactime").add("expiretime").add("outime").read();
+				System.out.println(loginstatus);
 				if (!"".equals(loginstatus.get("outime"))) {
 					throw new Exception("loggedout");
 				}
@@ -49,6 +50,7 @@ public class Common implements Filter {
 				}
 				Textclient.getinstance("unicorn", "login").key(req.getParameter("loginkey")).columnvalues(1)
 				.add4modify("lastactime", String.valueOf(System.currentTimeMillis())).modify();
+				req.setAttribute("accountkey", loginstatus.get("accountkey"));
 			} catch (Exception e) {
 				returnvalue.put("state", 1);
 				returnvalue.put("reason", e.getMessage());

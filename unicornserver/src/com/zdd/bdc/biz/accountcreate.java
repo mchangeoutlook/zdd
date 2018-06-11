@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,7 +25,6 @@ public class accountcreate implements Ibiz {
 		String passwd = request.getParameter("passwd");
 		String repasswd = request.getParameter("repasswd");
 		String loginkey = request.getParameter("loginkey");
-		String action = request.getParameter("action");
 		Map<String, Object> returnvalue = new HashMap<String, Object>();
 		try {
 			if (loginkey != null) {

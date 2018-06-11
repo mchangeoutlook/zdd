@@ -13,6 +13,9 @@ public class Theclient {
 		if (ins!=null&&(start==null||start.length==0)) {
 			throw new Exception("inputwithstart");
 		}
+		if (ip.trim().isEmpty()) {
+			throw new Exception("noip");
+		}
 		if (start==null) {
 			start = new byte[0];
 		}
