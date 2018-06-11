@@ -1,6 +1,8 @@
 package com.zdd.bdc.servlets;
-
+ 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,17 +12,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zdd.bdc.biz.Indexclient;
 import com.zdd.bdc.biz.Textclient;
-
+ 
 @SuppressWarnings("serial")
-@WebServlet("/a")
-public class Account extends HttpServlet {
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+@WebServlet("/n")
+public class Normal extends HttpServlet {
+	
+	protected void doPost(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
 		String login = request.getParameter("login");
 		String passwd = request.getParameter("passwd");
 		String repasswd = request.getParameter("repasswd");
@@ -71,8 +72,10 @@ public class Account extends HttpServlet {
 		} catch (Exception e) {
 			returnvalue.put("state", 1);
 			returnvalue.put("reason", e.getMessage());
+			StringWriter errors = new StringWriter();
+			e.printStackTrace(new PrintWriter(errors));
+			returnvalue.put("detail", errors.toString());
 		}
 		response.getWriter().print(new ObjectMapper().writeValueAsString(returnvalue));
-	}
-
+   }
 }

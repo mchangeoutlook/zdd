@@ -1,6 +1,10 @@
 package com.zdd.bdc.filters;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -10,6 +14,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zdd.bdc.biz.Configclient;
+import com.zdd.bdc.biz.Textclient;
 
 @WebFilter("/*")
 public class Common implements Filter {
@@ -23,6 +31,36 @@ public class Common implements Filter {
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("application/json");
 		res.setHeader("Access-Control-Allow-Origin","*");
+		if (req.getParameter("loginkey")!=null) {
+			Map<String, Object> returnvalue = new HashMap<String, Object>();
+			try {
+				Map<String, String> loginstatus = Textclient.getinstance("unicorn", "login")
+						.key(req.getParameter("loginkey")).columns(3).add("lastactime").add("expiretime").add("outime").read();
+				if (!"".equals(loginstatus.get("outime"))) {
+					throw new Exception("loggedout");
+				}
+				if (!"".equals(loginstatus.get("expiretime"))) {
+					throw new Exception("expired");
+				}
+				if (System.currentTimeMillis() - Long.parseLong(loginstatus.get("lastactime"))>Integer.parseInt(Configclient.getinstance("unicorn", "core").read("sessionexpireseconds"))*1000) {
+					Textclient.getinstance("unicorn", "login").key(req.getParameter("loginkey")).columnvalues(1)
+					.add4modify("expiretime", String.valueOf(System.currentTimeMillis())).modify();
+					throw new Exception("expired");
+				}
+				Textclient.getinstance("unicorn", "login").key(req.getParameter("loginkey")).columnvalues(1)
+				.add4modify("lastactime", String.valueOf(System.currentTimeMillis())).modify();
+			} catch (Exception e) {
+				returnvalue.put("state", 1);
+				returnvalue.put("reason", e.getMessage());
+				StringWriter errors = new StringWriter();
+				e.printStackTrace(new PrintWriter(errors));
+				returnvalue.put("detail", errors.toString());
+			}
+			if (!returnvalue.isEmpty()) {
+				res.getWriter().print(new ObjectMapper().writeValueAsString(returnvalue));
+				return;
+			}
+		}
 		arg2.doFilter(req, res);
 	}
 	

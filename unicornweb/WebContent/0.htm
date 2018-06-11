@@ -10,6 +10,33 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 
+		$.ajax({
+			type : "POST",
+			//enctype : 'multipart/form-data',
+			url : "/unicornserver/uf",
+			data : {"extraField":"asdfasdfa"},
+			processData : false,
+			contentType : false,
+			cache : false,
+			timeout : 600000,
+			dataType:'json',
+			success : function(data) {
+
+				$("#result").text(data);
+				console.log("SUCCESS : ", data);
+				$("#btnSubmit").prop("disabled", false);
+
+			},
+			error : function(e) {
+
+				$("#result").text(e.responseText);
+				console.log("ERROR : ", e);
+				$("#btnSubmit").prop("disabled", false);
+
+			}
+		});
+
+
 		$("#btnSubmit").click(function(event) {
 
 			//stop submit the form, we will post it manually.
@@ -29,7 +56,7 @@
 
 			$.ajax({
 				type : "POST",
-				enctype : 'multipart/form-data',
+				//enctype : 'multipart/form-data',
 				url : "/unicornserver/uf",
 				data : data,
 				processData : false,
