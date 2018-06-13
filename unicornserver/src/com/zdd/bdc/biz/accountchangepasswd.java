@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -17,7 +18,7 @@ import com.zdd.bdc.biz.Textclient;
 import com.zdd.bdc.util.Bizparams;
 import com.zdd.bdc.util.Ibiz;
 
-public class accountmodify implements Ibiz {
+public class accountchangepasswd implements Ibiz {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -94,23 +95,38 @@ public class accountmodify implements Ibiz {
 		response.getWriter().print(new ObjectMapper().writeValueAsString(returnvalue));
 	}
 
-
 	@Override
 	public Map<String, String> validrules() {
-		// TODO Auto-generated method stub
+		Map<String, String> returnvalue = new Hashtable<String, String>();
+		returnvalue.put("loginkey", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("login", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("passwd", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("repasswd", Ibiz.VALIDRULE_NOTEMPTY);
+		return returnvalue;
+	}
+
+	@Override
+	public String actioncode() {
 		return null;
 	}
 
 	@Override
-	public String auth(Bizparams bizp) {
-		// TODO Auto-generated method stub
+	public String auth(Bizparams bizp) throws Exception {
 		return null;
 	}
 
 	@Override
-	public Map<String, Object> process() {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<String, Object> process(Bizparams bizp) throws Exception {
+		if (!bizp.getext("repasswd").equals(bizp.getext("passwd"))){
+			throw new Exception("wrongpasswd");
+		}
+		Map<String, Object> returnvalue = new Hashtable<String, Object>();
+		String accountkey = Indexclient.getinstance("unicorn", bizp.getext("login")).filters(1).add("account").readunique();
+		MessageDigest md = MessageDigest.getInstance("MD5");
+		md.update(bizp.getext("passwd").getBytes());
+		String md5inputpasswd = new String(md.digest(), "UTF-8");
+		Textclient.getinstance("unicorn", "account").key(accountkey).columnvalues(1)
+		.add4modify("passwd", md5inputpasswd).modify();
+		return returnvalue;
 	}
-
 }

@@ -8,11 +8,13 @@ import java.util.Map;
 public class Bizparams {
 	private String logink = null;
 	private String accountk = null;
-	public Bizparams(String loginkey) throws Exception {
-		if (loginkey==null) {
-			throw new Exception("");
-		}
+	private String ipaddr = null;
+	private String ua = null;
+	public Bizparams(String loginkey, String accountkey, String ip, String useragent){
 		logink = loginkey;
+		accountk = accountkey;
+		ipaddr = ip;
+		ua = useragent;
 	}
 	private Map<String, String> textparams = new Hashtable<String, String>(20);
 	private Map<String, InputStream> fileparams = new Hashtable<String, InputStream>(20);
@@ -21,6 +23,12 @@ public class Bizparams {
 	}
 	public String getaccountkey() {
 		return accountk;
+	}
+	public String getip() {
+		return ipaddr;
+	}
+	public String getuseragent() {
+		return ua;
 	}
 	
 	public String getext(String name) {
@@ -45,16 +53,5 @@ public class Bizparams {
 			}
 		}
 		fileparams.clear();
-	}
-	public Map<String, String> valid(Map<String, String> rules) {
-		Map<String, String> returnvalue = new Hashtable<String, String>(rules.size());
-		for (String key:rules.keySet()) {
-			
-		}
-		return returnvalue;
-	}
-	public boolean auth(String resourceid, String action) {
-		
-		return true;
 	}
 }

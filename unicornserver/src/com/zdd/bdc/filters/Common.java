@@ -31,19 +31,23 @@ public class Common implements Filter {
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("application/json");
 		res.setHeader("Access-Control-Allow-Origin","*");
-		if (req.getParameter("loginkey")!=null) {
+		String ip = req.getHeader("X-FORWARDED-FOR");
+		if (ip == null) {
+			ip = req.getRemoteAddr();
+		}
+		req.setAttribute("ip", ip);
+		if (req.getParameter("loginkey")!=null&&!req.getParameter("loginkey").trim().isEmpty()) {
 			Map<String, Object> returnvalue = new HashMap<String, Object>();
 			try {
 				Map<String, String> loginstatus = Textclient.getinstance("unicorn", "login")
-						.key(req.getParameter("loginkey")).columns(4).add("accountkey").add("lastactime").add("expiretime").add("outime").read();
-				System.out.println(loginstatus);
+						.key(req.getParameter("loginkey")).columns(5).add("ip").add("accountkey").add("lastactime").add("expiretime").add("outime").read();
 				if (!"".equals(loginstatus.get("outime"))) {
 					throw new Exception("loggedout");
 				}
 				if (!"".equals(loginstatus.get("expiretime"))) {
 					throw new Exception("expired");
 				}
-				if (System.currentTimeMillis() - Long.parseLong(loginstatus.get("lastactime"))>Integer.parseInt(Configclient.getinstance("unicorn", "core").read("sessionexpireseconds"))*1000) {
+				if (!ip.equals(loginstatus.get("ip"))||System.currentTimeMillis() - Long.parseLong(loginstatus.get("lastactime"))>Integer.parseInt(Configclient.getinstance("unicorn", "core").read("sessionexpireseconds"))*1000) {
 					Textclient.getinstance("unicorn", "login").key(req.getParameter("loginkey")).columnvalues(1)
 					.add4modify("expiretime", String.valueOf(System.currentTimeMillis())).modify();
 					throw new Exception("expired");
