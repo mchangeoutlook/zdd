@@ -9,15 +9,13 @@ import com.zdd.bdc.biz.Textclient;
 import com.zdd.bdc.util.Bizparams;
 import com.zdd.bdc.util.Ibiz;
 
-public class accountchangepasswd implements Ibiz {
+public class companycreate implements Ibiz {
 
 	@Override
 	public Map<String, String> validrules() {
 		Map<String, String> returnvalue = new Hashtable<String, String>();
 		returnvalue.put("loginkey", Ibiz.VALIDRULE_NOTEMPTY);
-		returnvalue.put("login", Ibiz.VALIDRULE_NOTEMPTY);
-		returnvalue.put("passwd", Ibiz.VALIDRULE_NOTEMPTY);
-		returnvalue.put("repasswd", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("companyname", Ibiz.VALIDRULE_NOTEMPTY);
 		return returnvalue;
 	}
 
@@ -26,6 +24,7 @@ public class accountchangepasswd implements Ibiz {
 		return null;
 	}
 
+
 	@Override
 	public String auth(Bizparams bizp) throws Exception {
 		return null;
@@ -33,16 +32,17 @@ public class accountchangepasswd implements Ibiz {
 
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
-		if (!bizp.getext("repasswd").equals(bizp.getext("passwd"))){
-			throw new Exception("wrongpasswd");
+		if (!Indexclient.getinstance("unicorn", bizp.getext("companyname")).filters(1).add("company").readunique().isEmpty()){
+			throw new Exception("duplicate");
 		}
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		String accountkey = Indexclient.getinstance("unicorn", bizp.getext("login")).filters(1).add("account").readunique();
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		md.update(bizp.getext("passwd").getBytes());
-		String md5inputpasswd = new String(md.digest(), "UTF-8");
-		Textclient.getinstance("unicorn", "account").key(accountkey).columnvalues(1)
-		.add4modify("passwd", md5inputpasswd).modify();
+		String companykey = Textclient.getinstance("unicorn", "company").columnvalues(4)
+				.add4create("loginkey", bizp.getloginkey(), 100).add4create("admin", bizp.getaccountkey(), 100)
+				.add4create("name", bizp.getext("companyname"), 100).create();
+		Indexclient.getinstance("unicorn", bizp.getext("companyname")).filters(1).add("company").createunique(companykey);
+		
+		//TODO connect to employees
 		return returnvalue;
 	}
+
 }

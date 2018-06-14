@@ -36,6 +36,9 @@ public class accountcreate implements Ibiz {
 		if (!bizp.getext("repasswd").equals(bizp.getext("passwd"))){
 			throw new Exception("wrongpasswd");
 		}
+		if (!Indexclient.getinstance("unicorn", bizp.getext("login")).filters(1).add("account").readunique().isEmpty()){
+			throw new Exception("duplicate");
+		}
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
 		MessageDigest md = MessageDigest.getInstance("MD5");
 		md.update(bizp.getext("passwd").getBytes());
