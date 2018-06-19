@@ -41,6 +41,7 @@ public class companylist implements Ibiz {
 				String accountkey = employee.get("account");
 				String login = Textclient.getinstance("unicorn", "account").key(accountkey).columns(1)
 						.add("login").read().get("login");
+				comemployees.put("employeekey", comemployeekey);
 				comemployees.put("login", login);
 				comemployees.put("status", employee.get("status"));
 			}	
