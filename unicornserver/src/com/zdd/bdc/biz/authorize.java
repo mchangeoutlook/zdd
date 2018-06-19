@@ -35,6 +35,13 @@ public class authorize implements Ibiz {
 		Indexclient.getinstance("unicorn", accountkey+Ibiz.SPLITTER+resourceid).filters(1).add(actioncode).createunique(authkey);
 	}
 	
+	public static boolean authcheck(String accountkey, String resourceid, String actioncode) throws Exception {
+		String authcode = Textclient.getinstance("unicorn", "auth").key(Indexclient.getinstance("unicorn", accountkey+Ibiz.SPLITTER+resourceid).filters(1).add(actioncode).readunique()).columns(1).add("code").read().get("code");
+		if (actioncode.equals(authcode)) {
+			return true;
+		}
+		return false;
+	}
 	public static void unauth(String accountkey, String resourceid, String actioncode) throws Exception {
 		String authkey = Indexclient.getinstance("unicorn", accountkey+Ibiz.SPLITTER+resourceid).filters(1).add(actioncode).readunique();
 		Textclient.getinstance("unicorn", "auth").key(authkey).columnvalues(1).add4modify("code", "").modify();

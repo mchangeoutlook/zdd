@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zdd.bdc.biz.Indexclient;
 import com.zdd.bdc.biz.Textclient;
+import com.zdd.bdc.biz.authorize;
 
 public class Bizvalidauth {
 
@@ -24,7 +25,7 @@ public class Bizvalidauth {
 			if (validresult.isEmpty()) {
 				String resourceid = biz.auth(bizp);
 				String actioncode = biz.getClass().getSimpleName();
-				if (resourceid!=null&&actioncode!=null&&!Bizvalidauth.auth(resourceid, bizp, actioncode)) {
+				if (resourceid!=null&&actioncode!=null&&!authorize.authcheck(bizp.getaccountkey(), resourceid, actioncode)) {
 					returnvalue.put("state", 3);
 					returnvalue.put("reason", "denied");
 				}
@@ -82,11 +83,4 @@ public class Bizvalidauth {
 		return returnvalue;
 	}
 	
-	private static boolean auth(String resourceid, Bizparams bizp, String actioncode) throws Exception {
-		String authcode = Textclient.getinstance("unicorn", "auth").key(Indexclient.getinstance("unicorn", bizp.getaccountkey()+Ibiz.SPLITTER+resourceid).filters(1).add(actioncode).readunique()).columns(1).add("code").read().get("code");
-		if (actioncode.equals(authcode)) {
-			return true;
-		}
-		return false;
-	}
 }
