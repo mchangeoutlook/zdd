@@ -18,11 +18,6 @@ public class accountlogin implements Ibiz {
 	}
 
 	@Override
-	public String actioncode() {
-		return null;
-	}
-
-	@Override
 	public String auth(Bizparams bizp) throws Exception {
 		return null;
 	}

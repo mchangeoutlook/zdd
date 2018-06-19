@@ -22,11 +22,6 @@ public class accountchangepasswd implements Ibiz {
 	}
 
 	@Override
-	public String actioncode() {
-		return null;
-	}
-
-	@Override
 	public String auth(Bizparams bizp) throws Exception {
 		return null;
 	}

@@ -7,12 +7,13 @@ import com.zdd.bdc.biz.Textclient;
 import com.zdd.bdc.util.Bizparams;
 import com.zdd.bdc.util.Ibiz;
 
-public class accountlogout implements Ibiz {
+public class employeeapprove implements Ibiz {
 
 	@Override
 	public Map<String, String> validrules() {
 		Map<String, String> returnvalue = new Hashtable<String, String>();
 		returnvalue.put("loginkey", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("employeekey", Ibiz.VALIDRULE_NOTEMPTY);
 		return returnvalue;
 	}
 
@@ -24,10 +25,12 @@ public class accountlogout implements Ibiz {
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		Textclient.getinstance("unicorn", "login").key(bizp.getloginkey()).columnvalues(2)
-		.add4modify("lastactime", String.valueOf(System.currentTimeMillis()))
-		.add4modify("outime", String.valueOf(System.currentTimeMillis())).modify();
+		approve(bizp.getext("employeekey"));
 		return returnvalue;
+	}
+	
+	public static void approve(String employeekey) throws Exception {
+		Textclient.getinstance("unicorn", "employee").key(employeekey).columnvalues(1).add4modify("status", "2").modify();
 	}
 
 }

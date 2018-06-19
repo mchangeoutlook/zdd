@@ -23,7 +23,7 @@ public class Bizvalidauth {
 			Map<String, String> validresult = Bizvalidauth.valid(biz.validrules(), bizp);
 			if (validresult.isEmpty()) {
 				String resourceid = biz.auth(bizp);
-				String actioncode = biz.actioncode();
+				String actioncode = biz.getClass().getSimpleName();
 				if (resourceid!=null&&actioncode!=null&&!Bizvalidauth.auth(resourceid, bizp, actioncode)) {
 					returnvalue.put("state", 3);
 					returnvalue.put("reason", "denied");
@@ -83,7 +83,7 @@ public class Bizvalidauth {
 	}
 	
 	private static boolean auth(String resourceid, Bizparams bizp, String actioncode) throws Exception {
-		String authcode = Textclient.getinstance("unicorn", "auth").key(Indexclient.getinstance("unicorn", bizp.getaccountkey()+Ibiz.SPLITTER+resourceid).filters(1).add("auth").readunique()).columns(1).add("code").read().get("code");
+		String authcode = Textclient.getinstance("unicorn", "auth").key(Indexclient.getinstance("unicorn", bizp.getaccountkey()+Ibiz.SPLITTER+resourceid).filters(1).add(actioncode).readunique()).columns(1).add("code").read().get("code");
 		if (actioncode.equals(authcode)) {
 			return true;
 		}

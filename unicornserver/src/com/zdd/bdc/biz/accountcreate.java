@@ -21,18 +21,13 @@ public class accountcreate implements Ibiz {
 	}
 
 	@Override
-	public String actioncode() {
-		return null;
-	}
-
-
-	@Override
 	public String auth(Bizparams bizp) throws Exception {
 		return null;
 	}
 
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
+		System.out.println(bizp.getext("login"));
 		if (!bizp.getext("repasswd").equals(bizp.getext("passwd"))){
 			throw new Exception("wrongpasswd");
 		}

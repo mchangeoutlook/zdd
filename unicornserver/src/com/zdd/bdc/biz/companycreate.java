@@ -1,6 +1,5 @@
 package com.zdd.bdc.biz;
 
-import java.security.MessageDigest;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -20,12 +19,6 @@ public class companycreate implements Ibiz {
 	}
 
 	@Override
-	public String actioncode() {
-		return null;
-	}
-
-
-	@Override
 	public String auth(Bizparams bizp) throws Exception {
 		return null;
 	}
@@ -41,7 +34,9 @@ public class companycreate implements Ibiz {
 				.add4create("name", bizp.getext("companyname"), 100).create();
 		Indexclient.getinstance("unicorn", bizp.getext("companyname")).filters(1).add("company").createunique(companykey);
 		
-		//TODO connect to employees
+		String employeekey = employeeapply.apply(companykey, bizp.getaccountkey());
+		employeeapprove.approve(employeekey);
+		
 		return returnvalue;
 	}
 

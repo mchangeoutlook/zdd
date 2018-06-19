@@ -3,16 +3,15 @@ package com.zdd.bdc.biz;
 import java.util.Hashtable;
 import java.util.Map;
 
-import com.zdd.bdc.biz.Textclient;
 import com.zdd.bdc.util.Bizparams;
 import com.zdd.bdc.util.Ibiz;
 
-public class accountlogout implements Ibiz {
+public class companyfindone implements Ibiz {
 
 	@Override
 	public Map<String, String> validrules() {
 		Map<String, String> returnvalue = new Hashtable<String, String>();
-		returnvalue.put("loginkey", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("companyname", Ibiz.VALIDRULE_NOTEMPTY);
 		return returnvalue;
 	}
 
@@ -24,9 +23,9 @@ public class accountlogout implements Ibiz {
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		Textclient.getinstance("unicorn", "login").key(bizp.getloginkey()).columnvalues(2)
-		.add4modify("lastactime", String.valueOf(System.currentTimeMillis()))
-		.add4modify("outime", String.valueOf(System.currentTimeMillis())).modify();
+		
+		returnvalue.put("companykey", Indexclient.getinstance("unicorn", bizp.getext("companyname")).filters(1).add("company").readunique());
+		
 		return returnvalue;
 	}
 
