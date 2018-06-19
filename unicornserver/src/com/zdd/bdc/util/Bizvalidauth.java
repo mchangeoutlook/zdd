@@ -11,8 +11,6 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zdd.bdc.biz.Indexclient;
-import com.zdd.bdc.biz.Textclient;
 import com.zdd.bdc.biz.authorize;
 
 public class Bizvalidauth {
