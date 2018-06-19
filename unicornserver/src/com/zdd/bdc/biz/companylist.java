@@ -31,7 +31,8 @@ public class companylist implements Ibiz {
 			String companykey = Textclient.getinstance("unicorn", "employee").key(employeekey).columns(1).add("company").read().get("company");
 			String companyname = Textclient.getinstance("unicorn", "company").key(companykey).columns(1).add("name").read().get("name");
 			Map<String, Object> acompany = new Hashtable<String, Object>();
-			acompany.put("name", companyname);
+			acompany.put("companyname", companyname);
+			acompany.put("companykey", companykey);
 			
 			Vector<String> comemployeekeys = Indexclient.getinstance("unicorn", companykey).filters(1).add("employees").read(0);
 			Map<String, String> comemployees = new Hashtable<String, String>(comemployeekeys.size());

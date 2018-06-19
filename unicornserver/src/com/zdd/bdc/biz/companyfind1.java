@@ -6,7 +6,7 @@ import java.util.Map;
 import com.zdd.bdc.util.Bizparams;
 import com.zdd.bdc.util.Ibiz;
 
-public class companyfindone implements Ibiz {
+public class companyfind1 implements Ibiz {
 
 	@Override
 	public Map<String, String> validrules() {

@@ -37,6 +37,8 @@ public class companycreate implements Ibiz {
 		String employeekey = employeeapply.apply(companykey, bizp.getaccountkey());
 		employeeapprove.approve(employeekey);
 		
+		authorize.auth(bizp.getaccountkey(), companykey, "authorize");
+		
 		return returnvalue;
 	}
 

@@ -34,5 +34,11 @@ public class authorize implements Ibiz {
 		String authkey = Textclient.getinstance("unicorn", "auth").columnvalues(1).add4create("code", actioncode, 25).create();
 		Indexclient.getinstance("unicorn", accountkey+Ibiz.SPLITTER+resourceid).filters(1).add(actioncode).createunique(authkey);
 	}
+	
+	public static void unauth(String accountkey, String resourceid, String actioncode) throws Exception {
+		String authkey = Indexclient.getinstance("unicorn", accountkey+Ibiz.SPLITTER+resourceid).filters(1).add(actioncode).readunique();
+		Textclient.getinstance("unicorn", "auth").key(authkey).columnvalues(1).add4modify("code", "").modify();
+	}
+	
 
 }

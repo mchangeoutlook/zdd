@@ -14,12 +14,14 @@ public class employeeapprove implements Ibiz {
 		Map<String, String> returnvalue = new Hashtable<String, String>();
 		returnvalue.put("loginkey", Ibiz.VALIDRULE_NOTEMPTY);
 		returnvalue.put("employeekey", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("companykey", Ibiz.VALIDRULE_NOTEMPTY);
+		
 		return returnvalue;
 	}
 
 	@Override
 	public String auth(Bizparams bizp) throws Exception {
-		return null;
+		return bizp.getext("companykey");
 	}
 
 	@Override
