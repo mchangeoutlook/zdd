@@ -6,7 +6,7 @@ import java.util.Map;
 import com.zdd.bdc.util.Bizparams;
 import com.zdd.bdc.util.Ibiz;
 
-public class employeeapply implements Ibiz {
+public class comployeeapply implements Ibiz {
 
 	@Override
 	public Map<String, String> validrules() {
@@ -29,15 +29,15 @@ public class employeeapply implements Ibiz {
 	}
 	
 	public static String apply(String companykey, String accountkey) throws Exception {
-		String employeekey = Textclient.getinstance("unicorn", "employee").columnvalues(3).add4create("account", accountkey, 100).add4create("company", companykey, 100).add4create("status", "1", 1).create();
+		String comployeekey = Textclient.getinstance("unicorn", "comployee").columnvalues(3).add4create("account", accountkey, 100).add4create("company", companykey, 100).add4create("status", "1", 1).create();
 		
-		long numofemployees = Textclient.getinstance("unicorn", "company").key(companykey).columnamounts(1).add4increment("numofemployees", 1).increment().get("numofemployees");
-		Indexclient.getinstance("unicorn", companykey).filters(1).add("employees").create(employeekey, numofemployees / 100);
+		long numofcomployees = Textclient.getinstance("unicorn", "company").key(companykey).columnamounts(1).add4increment("numofcomployees", 1).increment().get("numofcomployees");
+		Indexclient.getinstance("unicorn", companykey).filters(1).add("comployees").create(comployeekey, numofcomployees / 100);
 		
 		long numofcompanies = Textclient.getinstance("unicorn", "account").key(accountkey).columnamounts(1).add4increment("numofcompanies", 1).increment().get("numofcompanies");
-		Indexclient.getinstance("unicorn", accountkey).filters(1).add("companies").create(employeekey, numofcompanies / 100);
+		Indexclient.getinstance("unicorn", accountkey).filters(1).add("companies").create(comployeekey, numofcompanies / 100);
 		
-		return employeekey;
+		return comployeekey;
 	}
 
 }

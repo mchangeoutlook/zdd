@@ -3,36 +3,30 @@ package com.zdd.bdc.biz;
 import java.util.Hashtable;
 import java.util.Map;
 
-import com.zdd.bdc.biz.Textclient;
 import com.zdd.bdc.util.Bizparams;
 import com.zdd.bdc.util.Ibiz;
 
-public class employeeapprove implements Ibiz {
+public class shopfind1 implements Ibiz {
 
 	@Override
 	public Map<String, String> validrules() {
 		Map<String, String> returnvalue = new Hashtable<String, String>();
-		returnvalue.put("loginkey", Ibiz.VALIDRULE_NOTEMPTY);
-		returnvalue.put("employeekey", Ibiz.VALIDRULE_NOTEMPTY);
-		returnvalue.put("companykey", Ibiz.VALIDRULE_NOTEMPTY);
-		
+		returnvalue.put("shopname", Ibiz.VALIDRULE_NOTEMPTY);
 		return returnvalue;
 	}
 
 	@Override
 	public String auth(Bizparams bizp) throws Exception {
-		return bizp.getext("companykey");
+		return null;
 	}
 
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		approve(bizp.getext("employeekey"));
+		
+		returnvalue.put("shopkey", Indexclient.getinstance("unicorn", bizp.getext("shopname")).filters(1).add("shop").readunique());
+		
 		return returnvalue;
-	}
-	
-	public static void approve(String employeekey) throws Exception {
-		Textclient.getinstance("unicorn", "employee").key(employeekey).columnvalues(1).add4modify("status", "2").modify();
 	}
 
 }
