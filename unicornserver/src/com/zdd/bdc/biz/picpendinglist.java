@@ -30,6 +30,7 @@ public class picpendinglist implements Ibiz {
 		if (Files.exists(imagependingfolder) && Files.isDirectory(imagependingfolder)) {
 			Files.walk(imagependingfolder).filter(Files::isRegularFile).forEach(pathfile -> {
 				System.out.println(pathfile);
+				
 			});
 		}
 		return returnvalue;
