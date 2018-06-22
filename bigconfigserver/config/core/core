@@ -9,3 +9,5 @@ textfilehash#1000
 indexserverport#9997
 indexfilehash#1000
 maxindexservers#10000
+
+fileserverport#9996

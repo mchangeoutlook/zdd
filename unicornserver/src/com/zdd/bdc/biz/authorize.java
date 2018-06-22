@@ -36,6 +36,9 @@ public class authorize implements Ibiz {
 	}
 	
 	public static boolean authcheck(String accountkey, String resourceid, String actioncode) throws Exception {
+		if (accountkey.equals(resourceid)) {
+			return true;
+		}
 		String authcode = Textclient.getinstance("unicorn", "auth").key(Indexclient.getinstance("unicorn", accountkey+Ibiz.SPLITTER+resourceid).filters(1).add(actioncode).readunique()).columns(1).add("code").read().get("code");
 		if (actioncode.equals(authcode)) {
 			return true;

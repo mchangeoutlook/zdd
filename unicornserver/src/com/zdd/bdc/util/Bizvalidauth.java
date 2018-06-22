@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zdd.bdc.biz.authorize;
+import com.zdd.util.Saysth;
 
 public class Bizvalidauth {
 
@@ -64,6 +65,8 @@ public class Bizvalidauth {
 					if (bizp.getfile(key)==null&&bizp.getext(key)==null||
 							bizp.getfile(key)==null&&bizp.getext(key)!=null&&bizp.getext(key).trim().isEmpty()) {
 						returnvalue.put(key, paramrules.get(key));
+					} else if (bizp.getext(key)!=null){
+						bizp.add(key, Saysth.sayhtml(bizp.getext(key), bizp.getext(key).length()));
 					}
 				} else if (paramrules.get(key)!=null&&paramrules.get(key).startsWith(Ibiz.VALIDRULE_MIN_MAX_PREFIX)) {
 					String[] minmax = paramrules.get(key).substring(Ibiz.VALIDRULE_MIN_MAX_PREFIX.length()).split(Ibiz.SPLITTER);

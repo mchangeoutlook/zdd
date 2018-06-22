@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 public class Bizparams {
 	private String logink = null;
@@ -36,6 +37,9 @@ public class Bizparams {
 	}
 	public InputStream getfile(String name) {
 		return fileparams.get(name);
+	}
+	public Set<String> getfilenames() {
+		return fileparams.keySet();
 	}
 	public void add(String name, String text) {
 		textparams.put(name, text);

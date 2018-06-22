@@ -82,6 +82,8 @@ public class Configserver implements Theserverprocess {
 									confignsfileskeysvalues.get(namespace).get(file).put(
 											URLDecoder.decode(encodedkey, "UTF-8"),
 											URLDecoder.decode(encodedvalue, "UTF-8"));
+									System.out.println("loaded ["+namespace+"]["+file+"]["+URLDecoder.decode(encodedkey, "UTF-8")+"]["+confignsfileskeysvalues.get(namespace).get(file).get(
+											URLDecoder.decode(encodedkey, "UTF-8"))+"]");
 								} catch (Exception e) {
 									System.out.println(new Date() + " ==== System exited due to below exception:");
 									e.printStackTrace();

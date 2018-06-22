@@ -10,29 +10,6 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 
-		$.ajax({
-			type : "POST",
-			//enctype : 'multipart/form-data',
-			url : "/unicornserver/n",
-			data : {"extraField":"asdfasdfa"},
-			timeout : 600000,
-			dataType:'json',
-			success : function(data) {
-
-				$("#result").text(data);
-				console.log("SUCCESS : ", data);
-				$("#btnSubmit").prop("disabled", false);
-
-			},
-			error : function(e) {
-
-				$("#result").text(e.responseText);
-				console.log("ERROR : ", e);
-				$("#btnSubmit").prop("disabled", false);
-
-			}
-		});
-
 
 		$("#btnSubmit").click(function(event) {
 
@@ -54,7 +31,7 @@
 			$.ajax({
 				type : "POST",
 				//enctype : 'multipart/form-data',
-				url : "/unicornserver/u",
+				url : "/unicornserver/u/picupload",
 				data : data,
 				processData : false,
 				contentType : false,
@@ -85,9 +62,10 @@
 </head>
 <body>
 	<form method="POST" enctype="multipart/form-data" id="fileUploadForm">
-		<input type="text" name="extraField" /><br />
-		<br /> <input type="file" name="files" /><br />
-		<br /> <input type="file" name="files" /><br />
+		<input type="text" name="loginkey" value="9f2296606cf082018dc74b4986e98f2cf0f92b60"/><br />
+		<input type="text" name="resourceid" value="a5221be066e372018e7f41aab6c354a41cb38551"/><br />
+		<br /> <input type="file" name="files1" /><br />
+		<br /> <input type="file" name="files2" /><br />
 		<br /> <input type="submit" value="Submit" id="btnSubmit" />
 	</form>
 </body>
