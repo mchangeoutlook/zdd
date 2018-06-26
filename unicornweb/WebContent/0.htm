@@ -1,67 +1,67 @@
 <html>
 <head>
-<meta http-equiv="Content-Type"
-	content="application/xhtml+xml; charset=utf-8" />
-<meta name="viewport"
-	content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<meta name="mobileoptimized" content="0" />
-<meta name="theme-color" content="#000"/>
-<meta name="msapplication-navbutton-color" content="#000" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="#000" />
-<title>Unicorn</title>
-<script type="text/javascript" src="/cw/3rdjs/jquery-3.3.1.min.js"></script>
-<script type="text/javascript">
-	$(document).ready(function() {
-
-
-		$("#btnSubmit").click(function(event) {
-
-			//stop submit the form, we will post it manually.
-			event.preventDefault();
-
-			// Get form
-			var form = $('#fileUploadForm')[0];
-
-			// Create an FormData object 
-			var data = new FormData(form);
-
-			// If you want to add an extra field for the FormData
-			data.append("CustomField", "This is some extra data, testing");
-
-			// disabled the submit button
-			$("#btnSubmit").prop("disabled", true);
-
-			$.ajax({
-				type : "POST",
-				//enctype : 'multipart/form-data',
-				url : "/unicornserver/u/picupload",
-				data : data,
-				processData : false,
-				contentType : false,
-				cache : false,
-				timeout : 600000,
-				dataType:'json',
-				success : function(data) {
-
-					$("#result").text(data);
-					console.log("SUCCESS : ", data);
-					$("#btnSubmit").prop("disabled", false);
-
-				},
-				error : function(e) {
-
-					$("#result").text(e.responseText);
-					console.log("ERROR : ", e);
-					$("#btnSubmit").prop("disabled", false);
-
-				}
+	<meta http-equiv="Content-Type"
+		content="application/xhtml+xml; charset=utf-8" />
+	<meta name="viewport"
+		content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="mobileoptimized" content="0" />
+	<meta name="theme-color" content="#000"/>
+	<meta name="msapplication-navbutton-color" content="#000" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="#000" />
+	<title>Unicorn</title>
+	<script type="text/javascript" src="/cw/3rdjs/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+	
+	
+			$("#btnSubmit").click(function(event) {
+	
+				//stop submit the form, we will post it manually.
+				event.preventDefault();
+	
+				// Get form
+				var form = $('#fileUploadForm')[0];
+	
+				// Create an FormData object 
+				var data = new FormData(form);
+	
+				// If you want to add an extra field for the FormData
+				data.append("CustomField", "This is some extra data, testing");
+	
+				// disabled the submit button
+				$("#btnSubmit").prop("disabled", true);
+	
+				$.ajax({
+					type : "POST",
+					//enctype : 'multipart/form-data',
+					url : "/unicornserver/u/picupload",
+					data : data,
+					processData : false,
+					contentType : false,
+					cache : false,
+					timeout : 600000,
+					dataType:'json',
+					success : function(data) {
+	
+						$("#result").text(data);
+						console.log("SUCCESS : ", data);
+						$("#btnSubmit").prop("disabled", false);
+	
+					},
+					error : function(e) {
+	
+						$("#result").text(e.responseText);
+						console.log("ERROR : ", e);
+						$("#btnSubmit").prop("disabled", false);
+	
+					}
+				});
+	
 			});
-
+	
 		});
-
-	});
-</script>
+	</script>
 
 </head>
 <body>
