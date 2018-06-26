@@ -26,7 +26,7 @@ public class picpendinglist implements Ibiz {
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		Path imagependingfolder = Paths.get(Configclient.getinstance("unicorn", "bigfile").read("filerootfolder")+"pending/");
+		Path imagependingfolder = Paths.get(Configclient.getinstance("unicorn", " bigfile").read("filerootfolder")+"pending/");
 		if (Files.exists(imagependingfolder) && Files.isDirectory(imagependingfolder)) {
 			Files.walk(imagependingfolder).filter(Files::isRegularFile).forEach(pathfile -> {
 				System.out.println(pathfile);
