@@ -37,7 +37,8 @@ public class shopcreate implements Ibiz {
 		String shoployeekey = shoployeeapply.apply(shopkey, bizp.getaccountkey());
 		shoployeeapprove.approve(shoployeekey);
 		
-		authorize.auth(bizp.getaccountkey(), shopkey, "authorize");
+		authorize.authassign(bizp.getaccountkey(), shopkey, "authorize");
+		authorize.authassign(bizp.getaccountkey(), shopkey, "picupload");
 		
 		return returnvalue;
 	}

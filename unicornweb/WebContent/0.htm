@@ -64,9 +64,17 @@
 	</script>
 
 </head>
-<body>
+<body style="position:fixed;top:0px;right:0px;left:0px;bottom:0px;overflow:hidden;font:18px Arial;color:#bbb;text-align:center;background:#000;margin:0px;">
+	<div id="loginform" style="display:none;background:#000;">
+		<input id="user" type="text" style="border:none;font:18px Arial;" placeholder="👤"/>
+		<input id="passwd" type="text"  placeholder="🔑"/>
+	</div>
+	<div id="repasswdform" style="display:none;">
+		帐号不存在，再次输入密码可创建新帐号
+		<input id="repasswd" type="text"  placeholder="🔑"/>
+	</div>
 	<form method="POST" enctype="multipart/form-data" id="fileUploadForm">
-		<input type="text" name="loginkey" value="9f2296606cf082018dc74b4986e98f2cf0f92b60"/><br />
+		<input type="text" name="loginkey" style="border:none;font:18px Arial;" value="9f2296606cf082018dc74b4986e98f2cf0f92b60"/><br /><br />
 		<input type="text" name="resourceid" value="a5221be066e372018e7f41aab6c354a41cb38551"/><br />
 		<br /> <input type="file" name="files1" /><br />
 		<br /> <input type="file" name="files2" /><br />

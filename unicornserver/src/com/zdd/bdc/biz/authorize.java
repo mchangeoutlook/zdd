@@ -26,22 +26,22 @@ public class authorize implements Ibiz {
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		auth(bizp.getext("targetaccountkey"), bizp.getext("targetresourceid"), bizp.getext("targetactioncode"));
+		authassign(bizp.getext("targetaccountkey"), bizp.getext("targetresourceid"), bizp.getext("targetactioncode"));
 		return returnvalue;
 	}
 	
-	public static void auth(String accountkey, String resourceid, String actioncode) throws Exception {
+	public static void authassign(String accountkey, String resourceid, String actioncode) throws Exception {
 		String authkey = Textclient.getinstance("unicorn", "auth").columnvalues(1).add4create("code", actioncode, 25).create();
 		Indexclient.getinstance("unicorn", accountkey+Ibiz.SPLITTER+resourceid).filters(1).add(actioncode).createunique(authkey);
 	}
 	
 	public static boolean authcheck(String accountkey, String resourceid, String actioncode) throws Exception {
-		if (accountkey.equals(resourceid)) {
-			return true;
-		}
-		String authcode = Textclient.getinstance("unicorn", "auth").key(Indexclient.getinstance("unicorn", accountkey+Ibiz.SPLITTER+resourceid).filters(1).add(actioncode).readunique()).columns(1).add("code").read().get("code");
-		if (actioncode.equals(authcode)) {
-			return true;
+		String authkey = Indexclient.getinstance("unicorn", accountkey+Ibiz.SPLITTER+resourceid).filters(1).add(actioncode).readunique();
+		if (authkey!=null&&authkey.length()==40) {
+			String authcode = Textclient.getinstance("unicorn", "auth").key(authkey).columns(1).add("code").read().get("code");
+			if (actioncode.equals(authcode)) {
+				return true;
+			}
 		}
 		return false;
 	}
