@@ -1,6 +1,8 @@
 package com.zdd.bdc.biz;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -25,11 +27,13 @@ public class prodlist implements Ibiz {
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		Vector<String> prodkeys = Indexclient.getinstance("unicorn", bizp.getext("shopkey")).filters(1).add("shoprods").read(0);
+		Vector<String> prodkeys = Indexclient.getinstance("unicorn", "ALL").filters(1).add("allprods").read(0);
+		List<Map<String, String>> prods = new ArrayList<Map<String, String>>();
 		for (String prodkey:prodkeys) {
-			
+			prods.add(Textclient.getinstance("unicorn", "prod").key(prodkey).columns(5)
+			.add("status").add("name").add("rp").add("headimg").add("contentimgs").read());
 		}
-		
+		returnvalue.put("prods", prods);
 		return returnvalue;
 	}
 	
