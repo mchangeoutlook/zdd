@@ -1,7 +1,10 @@
 package com.zdd.bdc.biz;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import com.zdd.bdc.util.Bizparams;
 import com.zdd.bdc.util.Ibiz;
@@ -24,21 +27,14 @@ public class shoprodlist implements Ibiz {
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		apply(bizp.getext("companykey"), bizp.getaccountkey());
+		Vector<String> prodkeys = Indexclient.getinstance("unicorn", bizp.getext("shopkey")).filters(1).add("shoprods").read(0);
+		List<Map<String, String>> prods = new ArrayList<Map<String, String>>();
+		for (String prodkey:prodkeys) {
+			prods.add(Textclient.getinstance("unicorn", "prod").key(prodkey).columns(5)
+			.add("status").add("name").add("rp").add("headimg").add("contentimgs").read());
+		}
+		returnvalue.put("prods", prods);
 		return returnvalue;
 	}
-	
-	public static String apply(String shopkey, String accountkey) throws Exception {
-		String shoployeekey = Textclient.getinstance("unicorn", "shoployee").columnvalues(3).add4create("account", accountkey, 100).add4create("shop", shopkey, 100).add4create("status", "1", 1).create();
-		
-		long numofshoployees = Textclient.getinstance("unicorn", "shop").key(shopkey).columnamounts(1).add4increment("numofshoployees", 1).increment().get("numofshoployees");
-		Indexclient.getinstance("unicorn", shopkey).filters(1).add("shoployees").create(shoployeekey, numofshoployees / 100);
-		
-		long numofshops = Textclient.getinstance("unicorn", "account").key(accountkey).columnamounts(1).add4increment("numofshops", 1).increment().get("numofshops");
-		Indexclient.getinstance("unicorn", accountkey).filters(1).add("shops").create(shoployeekey, numofshops / 100);
-		
-		return shoployeekey;
-	}
-
 	
 }

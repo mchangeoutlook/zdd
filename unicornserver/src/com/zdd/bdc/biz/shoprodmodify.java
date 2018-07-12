@@ -13,31 +13,30 @@ public class shoprodmodify implements Ibiz {
 		Map<String, String> returnvalue = new Hashtable<String, String>();
 		returnvalue.put("loginkey", Ibiz.VALIDRULE_NOTEMPTY);
 		returnvalue.put("shopkey", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("shoprodkey", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("headimg", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("contentimgs", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("prodname", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("prodrp", Ibiz.VALIDRULE_MIN_MAX_PREFIX+1+Ibiz.SPLITTER+1000000);
 		return returnvalue;
 	}
 
 	@Override
 	public String auth(Bizparams bizp) throws Exception {
-		return null;
+		return bizp.getext("shopkey");
 	}
 
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		apply(bizp.getext("companykey"), bizp.getaccountkey());
+		if (!Indexclient.getinstance("unicorn", bizp.getext("prodname")).filters(1).add("prod").readunique().isEmpty()){
+			throw new Exception("duplicate");
+		}
+		Textclient.getinstance("unicorn", "prod").key(bizp.getext("shoprodkey")).columnvalues(5)
+				.add4modify("status", "0")
+				.add4modify("name", bizp.getext("prodname")).add4modify("rp", bizp.getext("prodrp"))
+				.add4modify("headimg", bizp.getext("headimg")).add4modify("contentimgs", bizp.getext("contentimgs")).modify();
 		return returnvalue;
-	}
-	
-	public static String apply(String shopkey, String accountkey) throws Exception {
-		String shoployeekey = Textclient.getinstance("unicorn", "shoployee").columnvalues(3).add4create("account", accountkey, 100).add4create("shop", shopkey, 100).add4create("status", "1", 1).create();
-		
-		long numofshoployees = Textclient.getinstance("unicorn", "shop").key(shopkey).columnamounts(1).add4increment("numofshoployees", 1).increment().get("numofshoployees");
-		Indexclient.getinstance("unicorn", shopkey).filters(1).add("shoployees").create(shoployeekey, numofshoployees / 100);
-		
-		long numofshops = Textclient.getinstance("unicorn", "account").key(accountkey).columnamounts(1).add4increment("numofshops", 1).increment().get("numofshops");
-		Indexclient.getinstance("unicorn", accountkey).filters(1).add("shops").create(shoployeekey, numofshops / 100);
-		
-		return shoployeekey;
 	}
 
 }

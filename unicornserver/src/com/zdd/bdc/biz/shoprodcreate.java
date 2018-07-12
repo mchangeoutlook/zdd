@@ -32,8 +32,8 @@ public class shoprodcreate implements Ibiz {
 			throw new Exception("duplicate");
 		}
 		String prodkey = Textclient.getinstance("unicorn", "prod").columnvalues(7)
-				.add4create("loginkey", bizp.getloginkey(), 100).add4create("admin", bizp.getaccountkey(), 100)
-				.add4create("name", bizp.getext("prodname"), 100).add4create("rp", bizp.getext("prodrp"), 10).add4create("category", bizp.getext("categorykey"), 100)
+				.add4create("loginkey", bizp.getloginkey(), 100).add4create("admin", bizp.getaccountkey(), 100).add4create("status", "0", 10)
+				.add4create("name", bizp.getext("prodname"), 100).add4create("rp", bizp.getext("prodrp"), 10)
 				.add4create("headimg", bizp.getext("headimg"), 100).add4create("contentimgs", bizp.getext("contentimgs"), 1000).create();
 		Indexclient.getinstance("unicorn", bizp.getext("prodname")).filters(1).add("prod").createunique(prodkey);
 		
