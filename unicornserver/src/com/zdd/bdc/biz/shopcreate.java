@@ -39,6 +39,10 @@ public class shopcreate implements Ibiz {
 		
 		authorize.authassign(bizp.getaccountkey(), shopkey, "authorize");
 		authorize.authassign(bizp.getaccountkey(), shopkey, "picupload");
+		authorize.authassign(bizp.getaccountkey(), shopkey, "shoprodcreate");
+		authorize.authassign(bizp.getaccountkey(), shopkey, "shoprodmodify");
+		authorize.authassign(bizp.getaccountkey(), shopkey, "shoprodpending");
+		authorize.authassign(bizp.getaccountkey(), shopkey, "shoprodapprove");
 		
 		return returnvalue;
 	}

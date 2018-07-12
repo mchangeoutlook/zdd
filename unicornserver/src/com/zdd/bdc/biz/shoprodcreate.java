@@ -13,31 +13,38 @@ public class shoprodcreate implements Ibiz {
 		Map<String, String> returnvalue = new Hashtable<String, String>();
 		returnvalue.put("loginkey", Ibiz.VALIDRULE_NOTEMPTY);
 		returnvalue.put("shopkey", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("headimg", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("contentimgs", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("prodname", Ibiz.VALIDRULE_NOTEMPTY);
+		returnvalue.put("prodrp", Ibiz.VALIDRULE_MIN_MAX_PREFIX+1+Ibiz.SPLITTER+1000000);
 		return returnvalue;
 	}
 
 	@Override
 	public String auth(Bizparams bizp) throws Exception {
-		return null;
+		return bizp.getext("shopkey");
 	}
 
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		apply(bizp.getext("companykey"), bizp.getaccountkey());
+		if (!Indexclient.getinstance("unicorn", bizp.getext("prodname")).filters(1).add("prod").readunique().isEmpty()){
+			throw new Exception("duplicate");
+		}
+		String prodkey = Textclient.getinstance("unicorn", "prod").columnvalues(7)
+				.add4create("loginkey", bizp.getloginkey(), 100).add4create("admin", bizp.getaccountkey(), 100)
+				.add4create("name", bizp.getext("prodname"), 100).add4create("rp", bizp.getext("prodrp"), 10).add4create("category", bizp.getext("categorykey"), 100)
+				.add4create("headimg", bizp.getext("headimg"), 100).add4create("contentimgs", bizp.getext("contentimgs"), 1000).create();
+		Indexclient.getinstance("unicorn", bizp.getext("prodname")).filters(1).add("prod").createunique(prodkey);
+		
+		long numofshoprods = Textclient.getinstance("unicorn", "shop").key(bizp.getext("shopkey")).columnamounts(1).add4increment("numofshoprods", 1).increment().get("numofshoprods");
+		Indexclient.getinstance("unicorn", bizp.getext("shopkey")).filters(1).add("shoprods").create(prodkey, numofshoprods / 100);
+		
+		String abigkey = Indexclient.getinstance("unicorn", "abig").readunique();
+		long numofprods = Textclient.getinstance("unicorn", "abig").key(abigkey).columnamounts(1).add4increment("numofpros", 1).increment().get("numofpros");
+		Indexclient.getinstance("unicorn", "ALL").filters(1).add("allprods").create(prodkey, numofprods / 100);
+		
 		return returnvalue;
-	}
-	
-	public static String apply(String shopkey, String accountkey) throws Exception {
-		String shoployeekey = Textclient.getinstance("unicorn", "shoployee").columnvalues(3).add4create("account", accountkey, 100).add4create("shop", shopkey, 100).add4create("status", "1", 1).create();
-		
-		long numofshoployees = Textclient.getinstance("unicorn", "shop").key(shopkey).columnamounts(1).add4increment("numofshoployees", 1).increment().get("numofshoployees");
-		Indexclient.getinstance("unicorn", shopkey).filters(1).add("shoployees").create(shoployeekey, numofshoployees / 100);
-		
-		long numofshops = Textclient.getinstance("unicorn", "account").key(accountkey).columnamounts(1).add4increment("numofshops", 1).increment().get("numofshops");
-		Indexclient.getinstance("unicorn", accountkey).filters(1).add("shops").create(shoployeekey, numofshops / 100);
-		
-		return shoployeekey;
 	}
 
 }
