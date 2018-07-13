@@ -11,7 +11,6 @@ public class prodetail implements Ibiz {
 	@Override
 	public Map<String, String> validrules() {
 		Map<String, String> returnvalue = new Hashtable<String, String>();
-		returnvalue.put("loginkey", Ibiz.VALIDRULE_NOTEMPTY);
 		returnvalue.put("prodkey", Ibiz.VALIDRULE_NOTEMPTY);
 		return returnvalue;
 	}

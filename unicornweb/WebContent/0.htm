@@ -64,14 +64,21 @@
 	</script>
 
 </head>
-<body style="position:fixed;top:0px;right:0px;left:0px;bottom:0px;overflow:hidden;font:18px Arial;color:#bbb;text-align:center;background:#000;margin:0px;">
-	<div id="loginform" style="display:none;background:#000;">
-		<input id="user" type="text" style="border:none;font:18px Arial;" placeholder="👤"/>
-		<input id="passwd" type="text"  placeholder="🔑"/>
+<body style="position:fixed;top:0px;right:0px;left:0px;bottom:0px;overflow:hidden;font:16px Arial;color:#bbb;text-align:center;background:#000;margin:0px;">
+	<div id="home" style="position:absolute;z-index:10000;display:block;bottom:0px;left:50%;opacity:0.6;transform: translateX(-50%);font:35px Arial;">🏠</div>
+	<div id="account" style="position:absolute;z-index:10000;display:block;bottom:0px;right:0px;opacity:0.6;font:35px Arial;">👤</div>
+	<div id="createshop" style="position:absolute;z-index:10000;display:block;bottom:0px;right:0px;opacity:0.6;transform: translateX(-300%);font:35px Arial;">🏭</div>
+	<div id="createshoprod" style="position:absolute;z-index:10000;display:block;bottom:0px;right:0px;opacity:0.6;transform: translateX(-200%);font:35px Arial;">📦</div>
+	<div id="changepasswd" style="position:absolute;z-index:10000;display:block;bottom:0px;right:0px;opacity:0.6;transform: translateX(-100%);font:35px Arial;">🔑</div>
+	<div id="loginform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:block;background:#000;">
+		<input id="user" type="text" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(-100%); border:none;font:24px Arial;" placeholder="👤"/>
+		<input id="passwd" type="text"  style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(100%); border:none;font:24px Arial;" placeholder="🔑"/>
+		<input id="login" type="button" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(300%); border:none;font:18px Arial;" value="登录Login"/>
 	</div>
-	<div id="repasswdform" style="display:none;">
-		帐号不存在，再次输入密码可创建新帐号
-		<input id="repasswd" type="text"  placeholder="🔑"/>
+	<div id="repasswdform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+		<div style="position:absolute;top:50%;left:50%;width:100%;transform: translateX(-50%) translateY(-150%);">帐号不存在，再次输入密码可创建新帐号<br>Repeat the password to create new account</div>
+		<input id="repasswd" type="text" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(-50%); border:none;font:24px Arial;" placeholder="🔑"/>
+		<input id="create" type="button" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(100%); border:none;font:18px Arial;" value="创建Create"/>
 	</div>
 	<form method="POST" enctype="multipart/form-data" id="fileUploadForm">
 		<input type="text" name="loginkey" style="border:none;font:18px Arial;" value="9f2296606cf082018dc74b4986e98f2cf0f92b60"/><br /><br />

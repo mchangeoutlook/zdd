@@ -13,10 +13,7 @@ public class prodlist implements Ibiz {
 
 	@Override
 	public Map<String, String> validrules() {
-		Map<String, String> returnvalue = new Hashtable<String, String>();
-		returnvalue.put("loginkey", Ibiz.VALIDRULE_NOTEMPTY);
-		returnvalue.put("shopkey", Ibiz.VALIDRULE_NOTEMPTY);
-		return returnvalue;
+		return null;
 	}
 
 	@Override
