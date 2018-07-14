@@ -80,12 +80,31 @@
 		<input id="repasswd" type="text" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(-50%); border:none;font:24px Arial;" placeholder="🔑"/>
 		<input id="create" type="button" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(100%); border:none;font:18px Arial;" value="创建Create"/>
 	</div>
-	<form method="POST" enctype="multipart/form-data" id="fileUploadForm">
-		<input type="text" name="loginkey" style="border:none;font:18px Arial;" value="9f2296606cf082018dc74b4986e98f2cf0f92b60"/><br /><br />
-		<input type="text" name="resourceid" value="a5221be066e372018e7f41aab6c354a41cb38551"/><br />
-		<br /> <input type="file" name="files1" /><br />
-		<br /> <input type="file" name="files2" /><br />
-		<br /> <input type="submit" value="Submit" id="btnSubmit" />
-	</form>
+	<div id="changepasswdform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+		<input id="newpasswd" type="text" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(-100%); border:none;font:24px Arial;" placeholder="👤"/>
+		<input id="renewpasswd" type="text"  style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(100%); border:none;font:24px Arial;" placeholder="🔑"/>
+		<input id="changepasswd" type="button" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(300%); border:none;font:18px Arial;" value="修改Change"/>
+	</div>
+	<div id="shoplistform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+	</div>
+	<div id="shoprodlistform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+	</div>
+	<div id="createshopform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+	</div>
+	<div id="changeshoprodform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+	</div>
+	<div id="createshoprodform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+		<form method="POST" enctype="multipart/form-data" id="fileUploadForm">
+			<input type="text" name="loginkey" style="border:none;font:18px Arial;" value="9f2296606cf082018dc74b4986e98f2cf0f92b60"/><br /><br />
+			<input type="text" name="resourceid" value="a5221be066e372018e7f41aab6c354a41cb38551"/><br />
+			<br /> <input type="file" name="files1" /><br />
+			<br /> <input type="file" name="files2" /><br />
+			<br /> <input type="submit" value="Submit" id="btnSubmit" />
+		</form>
+	</div>
+	<div id="allprodlistform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+	</div>
+	<div id="prodetailform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+	</div>
 </body>
 </html>
