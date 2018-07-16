@@ -10,6 +10,22 @@
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="#000" />
 	<title>Unicorn</title>
+	<style type="text/css">
+		  .divlist {
+		    position:relative;
+		    float:left;
+		    width:50vw;
+		    height:50vw;
+		  }
+		@media (min-aspect-ratio: 1/1) {
+		  .divlist {
+		    position:relative;
+		    float:left;
+		    width:25vw;
+		    height:25vw;
+		  }
+		}
+	</style>
 	<script type="text/javascript" src="/cw/3rdjs/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -65,46 +81,95 @@
 
 </head>
 <body style="position:fixed;top:0px;right:0px;left:0px;bottom:0px;overflow:hidden;font:16px Arial;color:#bbb;text-align:center;background:#000;margin:0px;">
+
 	<div id="home" style="position:absolute;z-index:10000;display:block;bottom:0px;left:50%;opacity:0.6;transform: translateX(-50%);font:35px Arial;">🏠</div>
 	<div id="account" style="position:absolute;z-index:10000;display:block;bottom:0px;right:0px;opacity:0.6;font:35px Arial;">👤</div>
 	<div id="createshop" style="position:absolute;z-index:10000;display:block;bottom:0px;right:0px;opacity:0.6;transform: translateX(-300%);font:35px Arial;">🏭</div>
 	<div id="createshoprod" style="position:absolute;z-index:10000;display:block;bottom:0px;right:0px;opacity:0.6;transform: translateX(-200%);font:35px Arial;">📦</div>
 	<div id="changepasswd" style="position:absolute;z-index:10000;display:block;bottom:0px;right:0px;opacity:0.6;transform: translateX(-100%);font:35px Arial;">🔑</div>
+	
 	<div id="loginform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:block;background:#000;">
-		<input id="user" type="text" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(-100%); border:none;font:24px Arial;" placeholder="👤"/>
-		<input id="passwd" type="text"  style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(100%); border:none;font:24px Arial;" placeholder="🔑"/>
-		<input id="login" type="button" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(300%); border:none;font:18px Arial;" value="登录Login"/>
+		<input id="user" type="text" maxlength="33" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(-100%); border:none;font:24px Arial;" placeholder="👤"/>
+		<input id="passwd" type="password" maxlength="33" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(100%); border:none;font:24px Arial;" placeholder="🔑"/>
+		<input id="loginbtn" type="button" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(300%); border:none;font:18px Arial;" value="登录Login"/>
 	</div>
+	
 	<div id="repasswdform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
 		<div style="position:absolute;top:50%;left:50%;width:100%;transform: translateX(-50%) translateY(-150%);">帐号不存在，再次输入密码可创建新帐号<br>Repeat the password to create new account</div>
-		<input id="repasswd" type="text" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(-50%); border:none;font:24px Arial;" placeholder="🔑"/>
-		<input id="create" type="button" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(100%); border:none;font:18px Arial;" value="创建Create"/>
+		<input id="repasswd" type="password" maxlength="33" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(-50%); border:none;font:24px Arial;" placeholder="🔑"/>
+		<input id="createaccountbtn" type="button" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(100%); border:none;font:18px Arial;" value="新建Create"/>
 	</div>
+	
 	<div id="changepasswdform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
-		<input id="newpasswd" type="text" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(-100%); border:none;font:24px Arial;" placeholder="👤"/>
-		<input id="renewpasswd" type="text"  style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(100%); border:none;font:24px Arial;" placeholder="🔑"/>
-		<input id="changepasswd" type="button" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(300%); border:none;font:18px Arial;" value="修改Change"/>
+		<div id="createshopmsg" style="position:absolute;top:50%;left:50%;width:100%;transform: translateX(-50%) translateY(-200%);"></div>
+		<input id="passwdnew" type="password" maxlength="33" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(-100%); border:none;font:24px Arial;" placeholder="🔑"/>
+		<input id="repasswdnew" type="password"  maxlength="33" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(100%); border:none;font:24px Arial;" placeholder="🔑"/>
+		<input id="changepasswdbtn" type="button" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(300%); border:none;font:18px Arial;" value="修改Change"/>
 	</div>
-	<div id="shoplistform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+	
+	<div id="shoplistform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;overflow-x:hidden;overflow-y:auto;">
+	<div class="divlist">hello1</div>
+	<div class="divlist">hello2</div>
+	<div class="divlist">hello3</div>
+	<div class="divlist">hello4</div>
+	<div class="divlist">hello5</div>
+	<div class="divlist">hello6</div>
+	<div class="divlist">hello7</div>
+	<div class="divlist">hello8</div>
+	<div class="divlist">hello9</div>
+	<div class="divlist">hello10</div>
+	<div class="divlist">hello11</div>
+	<div class="divlist">hello12</div>
+	<div class="divlist">hello13</div>
+	<div class="divlist">hello14</div>
+	<div class="divlist">hello15</div>
 	</div>
-	<div id="shoprodlistform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+	
+	<div id="shoprodlistform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;overflow-x:hidden;overflow-y:auto;">
+	
 	</div>
+	
 	<div id="createshopform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+		<div id="createshopmsg" style="position:absolute;top:50%;left:50%;width:100%;transform: translateX(-50%) translateY(-200%);"></div>
+		<input id="shopname" type="text" maxlength="33" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(-100%); border:none;font:24px Arial;" placeholder="🏭"/>
+		<input id="createshopbtn" type="button" style="position:absolute;top:50%;left:50%;transform: translateX(-50%) translateY(50%); border:none;font:18px Arial;" value="新建Create"/>
 	</div>
+	
 	<div id="changeshoprodform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+	
 	</div>
-	<div id="createshoprodform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+	
+	<div id="createshoprodform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:block;background:#000;overflow-x:hidden;overflow-y:auto;">
+		<div id="createshoprodmsg" style="position:absolute;top:5px;left:50%;width:100%;transform: translateX(-50%);"></div>
+		<input id="prodname" type="text" maxlength="33" style="position:absolute;top:80px;right:10px; border:none;font:24px Arial;" placeholder="📦"/>
+		<input id="prodrp" type="text" maxlength="10" style="position:absolute;top:130px;right:10px; border:none;font:24px Arial;" placeholder="1000000"/>
+
 		<form method="POST" enctype="multipart/form-data" id="fileUploadForm">
-			<input type="text" name="loginkey" style="border:none;font:18px Arial;" value="9f2296606cf082018dc74b4986e98f2cf0f92b60"/><br /><br />
-			<input type="text" name="resourceid" value="a5221be066e372018e7f41aab6c354a41cb38551"/><br />
-			<br /> <input type="file" name="files1" /><br />
-			<br /> <input type="file" name="files2" /><br />
-			<br /> <input type="submit" value="Submit" id="btnSubmit" />
+			<input type="hidden" name="loginkey" value=""/>
+			<input type="hidden" name="resourceid" value=""/>
+			<div style="position:absolute;top:50px;left:10px;">主图 Head<input type="file" name="headimg"/></div>
+			<div style="position:absolute;top:180px;left:10px;">内容1 Content1<input type="file" name="content0"/></div>
+			<div style="position:absolute;top:230px;left:10px;">内容2 Content2<input type="file" name="content1"/></div>
+			<div style="position:absolute;top:280px;left:10px;">内容3 Content3<input type="file" name="content2"/></div>
+			<div style="position:absolute;top:330px;left:10px;">内容4 Content4<input type="file" name="content3"/></div>
+			<div style="position:absolute;top:380px;left:10px;">内容5 Content5<input type="file" name="content4"/></div>
+			<div style="position:absolute;top:430px;left:10px;">内容6 Content6<input type="file" name="content5"/></div>
+			<div style="position:absolute;top:480px;left:10px;">内容7 Content7<input type="file" name="content6"/></div>
+			<div style="position:absolute;top:530px;left:10px;">内容8 Content8<input type="file" name="content7"/></div>
+			<div style="position:absolute;top:580px;left:10px;">内容9 Content9<input type="file" name="content8"/></div>
 		</form>
+		
+		<input id="createshoprodbtn" type="button" style="position:absolute;top:630px;left:50%;transform: translateX(-50%); border:none;font:18px Arial;" value="新建Create"/>
+		<div style="position:absolute;top:700px;">&nbsp;</div>
 	</div>
+	
 	<div id="allprodlistform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+	
 	</div>
+	
 	<div id="prodetailform" class="hideall" style="position:absolute;top:0px;right:0px;left:0px;bottom:0px;display:none;background:#000;">
+	
 	</div>
+	
 </body>
 </html>
