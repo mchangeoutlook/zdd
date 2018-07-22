@@ -46,7 +46,11 @@ public class picupload implements Ibiz {
 				Fileclient.copyto(Configclient.getinstance("unicorn", "bigfile").read("fileserverip"), 
 						Integer.parseInt(Configclient.getinstance("core", "core").read("fileserverport")), 
 						targetfilepending, bizp.getfile(filename));
-				InputStream is = Files.newInputStream(Paths.get("/Users/mido/Downloads/test.jpeg"));
+				String reviewingfile = "reviewhead.png";
+				if (filename.contains("content")) {
+					reviewingfile = "reviewcontent.png";
+				}
+				InputStream is = Files.newInputStream(Paths.get(reviewingfile));
 				try {
 					Fileclient.copyto(Configclient.getinstance("unicorn", "bigfile").read("fileserverip"), 
 							Integer.parseInt(Configclient.getinstance("core", "core").read("fileserverport")), 

@@ -56,7 +56,7 @@ public class Common implements Filter {
 				.add4modify("lastactime", String.valueOf(System.currentTimeMillis())).modify();
 				req.setAttribute("accountkey", loginstatus.get("accountkey"));
 			} catch (Exception e) {
-				returnvalue.put("state", 1);
+				returnvalue.put("state", 4);
 				returnvalue.put("reason", e.getMessage());
 				StringWriter errors = new StringWriter();
 				e.printStackTrace(new PrintWriter(errors));

@@ -37,7 +37,9 @@ public class Upload extends HttpServlet {
 	    		    }
 	        }
 			if (contentdisp.contains("filename=")) {
-				bizp.add(name, part.getInputStream());
+				if (part.getSize()>0) {
+					bizp.add(name, part.getInputStream());
+				}
 			} else {
 				bizp.add(name, request.getParameter(name));
 			}

@@ -70,12 +70,20 @@ public class Bizvalidauth {
 					}
 				} else if (paramrules.get(key)!=null&&paramrules.get(key).startsWith(Ibiz.VALIDRULE_MIN_MAX_PREFIX)) {
 					String[] minmax = paramrules.get(key).substring(Ibiz.VALIDRULE_MIN_MAX_PREFIX.length()).split(Ibiz.SPLITTER);
-					if (Long.parseLong(bizp.getext(key))<Long.parseLong(minmax[0])||Long.parseLong(bizp.getext(key))>Long.parseLong(minmax[1])) {
+					try {
+						if (Long.parseLong(bizp.getext(key))<Long.parseLong(minmax[0])||Long.parseLong(bizp.getext(key))>Long.parseLong(minmax[1])) {
+							returnvalue.put(key, paramrules.get(key));
+						}
+					}catch(Exception e) {
 						returnvalue.put(key, paramrules.get(key));
 					}
 				} else  if (paramrules.get(key)!=null&&paramrules.get(key).startsWith(Ibiz.VALIDRULE_REGEX_PREFIX)) {
-					Pattern regex = Pattern.compile(paramrules.get(key).substring(Ibiz.VALIDRULE_REGEX_PREFIX.length()));
-					if (!regex.matcher(bizp.getext(key)).matches()) {
+					try {
+						Pattern regex = Pattern.compile(paramrules.get(key).substring(Ibiz.VALIDRULE_REGEX_PREFIX.length()));
+						if (!regex.matcher(bizp.getext(key)).matches()) {
+							returnvalue.put(key, paramrules.get(key));
+						}
+					}catch(Exception e) {
 						returnvalue.put(key, paramrules.get(key));
 					}
 				}

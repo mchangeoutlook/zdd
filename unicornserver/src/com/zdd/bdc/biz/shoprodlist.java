@@ -30,8 +30,10 @@ public class shoprodlist implements Ibiz {
 		Vector<String> prodkeys = Indexclient.getinstance("unicorn", bizp.getext("shopkey")).filters(1).add("shoprods").read(0);
 		List<Map<String, String>> prods = new ArrayList<Map<String, String>>();
 		for (String prodkey:prodkeys) {
-			prods.add(Textclient.getinstance("unicorn", "prod").key(prodkey).columns(5)
-			.add("status").add("name").add("rp").add("headimg").add("contentimgs").read());
+			Map<String, String> prod=Textclient.getinstance("unicorn", "prod").key(prodkey).columns(5)
+			.add("status").add("name").add("rp").add("headimg").add("contentimgs").read();
+			prod.put("prodkey", prodkey);
+			prods.add(prod);
 		}
 		returnvalue.put("prods", prods);
 		return returnvalue;
