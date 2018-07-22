@@ -56,7 +56,7 @@
 			　　	complete : function(XMLHttpRequest,status){
 			　　		if (status!="success"){
 						ajaxpost.abort();
-						alert("网络异常，请检查网络连接后重试！Network unavailable, please fix and try again!");
+						alert("网络异常或上传单张图片超100k！Network unavailable or uploading pic's size > 100k!");
 					}
 			　　	}
 			};
@@ -77,6 +77,7 @@
 			}
 			$("#msgloginform").html($("#msgloginform").attr("old"));
 			$(".hideall").hide();
+			$("#loginbtn").show();
 　　			$("#loginform").fadeIn(200);
 　　			localStorage.removeItem("loginkey");
 　　			$("#passwd").val("");
@@ -99,13 +100,57 @@
 		　　							$("#resourceidcreate").val($(this).attr("id"));
 		　　							showshoprodlistform($(this).attr("id"));
 		　　						}));
+		　　						$("#shoplistform").scrollTop(0);
 		　　					}
 		　　				}
-		　　				$("#shoplistform").scrollTop(0);
 	　　				} else {
 	　　					$("#createshop").click();
 	　　				}
 　　				}
+　　			});
+		}
+		
+		function showallprodlistform(){
+			$(".hideall").hide();
+　　			$("#allprodlistform").fadeIn(200);
+　　			bottombuttons("allprodlist");
+　　			var params = {};
+　　			post("n/prodlist",params,function(result){
+　　				if (result.data&&result.data.prods){
+	　　				var prods = result.data.prods;
+	　　				if (prods.length>0){
+		　　				for (var i=0;i<prods.length;i++){
+		　　					if ($("#"+prods[i].prodkey).html()==undefined&&prods[i].status==0){
+		　　							$("#allprodlistform").prepend($("<div id='"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
+		　　							showprodetailform($(this).attr("id"));
+		　　						}));
+		　　						$("#allprodlistform").scrollTop(0);
+		　　					}
+		　　				}
+	　　				}
+　　				}
+　　			});
+		}
+		
+		function showprodetailform(prodkey){
+			$(".hideall").hide();
+			$("#headimgview").children().remove();
+　　			$("#contentimgsview").children().remove();
+　　			$("#prodnameview").html("");
+　　			$("#prodrpview").html("0");
+　　			$("#prodetailform").fadeIn(200);
+　　			bottombuttons("prodetail");
+　　			var params = {"prodkey":prodkey};
+　　			post("n/prodetail",params,function(result){
+　　				if (result.data){
+	　　				$("#prodnameview").html(result.data.name);
+	　　	　　			$("#prodrpview").html(result.data.rp);
+	　　	　　			$("#headimgview").append("<img src='"+rootweb+result.data.headimg+"' style='width:100%;'/>");
+　　					var contentimgs = result.data.contentimgs.split("#");
+　　					for (var i=0;i<contentimgs.length;i++){
+	　　					$("#contentimgsview").append("<img src='"+rootweb+contentimgs[i]+"' style='width:100%;'/>");
+　　					}
+	　　			}
 　　			});
 		}
 		
@@ -115,6 +160,7 @@
 			}
 			$("#msgrepasswdform").html($("#msgrepasswdform").attr("old"));
 			$(".hideall").hide();
+			$("#createaccountbtn").show();
 　　			$("#repasswdform").fadeIn(200);
 　　			$("#repasswd").val("");
 　　			bottombuttons("repasswd");
@@ -127,15 +173,10 @@
 			$("#msgchangepasswdform").html($("#msgchangepasswdform").attr("old"));
 			$(".hideall").hide();
 			$("#passwdnew").val("");
+			$("#changepasswdbtn").show();
 　　			$("#repasswdnew").val("");
 　　			$("#changepasswdform").fadeIn(200);
 　　			bottombuttons("changepasswd");
-		}
-		
-		function showallprodlistform(){
-			$(".hideall").hide();
-　　			$("#allprodlistform").fadeIn(200);
-　　			bottombuttons("allprodlist");
 		}
 		
 		function showcreateshopform(){
@@ -145,6 +186,7 @@
 			$("#createshopmsg").html($("#createshopmsg").attr("old"));
 			$(".hideall").hide();
 			$("#shopname").val("");
+			$("#createshopbtn").show();
 　　			$("#createshopform").fadeIn(200);
 　　			bottombuttons("createshop");
 		}
@@ -156,6 +198,7 @@
 			$("#createshoprodmsg").html($("#createshoprodmsg").attr("old"));
 			$(".hideall").hide();
 			$(".removeall").remove();
+			$("#createshoprodbtn").show();
 			$("#prodnamecreate").val("");
 			$("#prodrpcreate").val("");
 			$("#fileUploadForm").show();
@@ -174,14 +217,14 @@
 	　　				var prods = result.data.prods;
 	　　				if (prods.length>0){
 		　　				for (var i=0;i<prods.length;i++){
-		　　					if ($("#"+prods[i].prodkey).html()==undefined){
-		　　						$("#shoprodlistform").prepend($("<div id='"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
+		　　					if ($("#shoprod-"+prods[i].prodkey).html()==undefined){
+		　　						$("#shoprodlistform").prepend($("<div id='shoprod-"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
 		　　							
 		　　							
 		　　						}));
+		　　						$("#shoprodlistform").scrollTop(0);
 		　　					}
 		　　				}
-		　　				$("#shoprodlistform").scrollTop(0);
 	　　				} else {
 	　　					$("#createshoprod").click();
 	　　				}
@@ -238,6 +281,18 @@
 				$("#createshop").hide();
 				$("#createshoprod").hide();
 				$("#changepasswd").show();
+			} else if (state=="allprodlist"){
+				$("#home").hide();
+				$("#account").show();
+				$("#createshop").hide();
+				$("#createshoprod").hide();
+				$("#changepasswd").hide();
+			} else if (state=="prodetail"){
+				$("#home").show();
+				$("#account").show();
+				$("#createshop").hide();
+				$("#createshoprod").hide();
+				$("#changepasswd").hide();
 			} else {
 				$("#home").hide();
 				$("#account").show();
@@ -263,6 +318,7 @@
 				}
 			});
 			$("#loginbtn").click(function(){
+				$("#loginbtn").hide();
 				var params = {"login":$("#login").val(),"passwd":$("#passwd").val()};
 				post("n/accountlogin", params, function(result){
 					if (result.state == 1){
@@ -272,6 +328,7 @@
 					} else {
 						showshoplistform();
 					}
+					$("#loginbtn").show();
 				});
 			});
 			$("#changepasswd").click(function(){
@@ -279,6 +336,7 @@
 			});
 			
 			$("#changepasswdbtn").click(function(){
+				$("#changepasswdbtn").hide();
 				var params = {"login":$("#login").val(),"passwd":$("#passwdnew").val(),"repasswd":$("#repasswdnew").val()};
 				post("n/accountchangepasswd", params, function(result){
 					if (result.state == 1&&result.reason=="wrongpasswd"){
@@ -288,6 +346,7 @@
 					} else {
 						$("#msgchangepasswdform").html("修改成功<br>Success");
 					}
+					$("#changepasswdbtn").show();
 				});
 			});
 			
@@ -296,6 +355,7 @@
 			});
 			
 			$("#createshopbtn").click(function(){
+				$("#createshopbtn").hide();
 				var params = {"shopname":$("#shopname").val()};
 				post("n/shopcreate", params, function(result){
 					if (result.state == 1&&result.reason=="duplicate"){
@@ -305,6 +365,7 @@
 					} else {
 						showshoplistform();
 					}
+					$("#createshopbtn").show();
 				});
 			});
 			
@@ -326,10 +387,12 @@
 					} else {
 						showshoprodlistform($("#resourceidcreate").val());
 					}
+					$("#createshoprodbtn").show();
 				});
 			};
 			
 			$("#createshoprodbtn").click(function(){
+				$("#createshoprodbtn").hide();
 				if (!$("#headimgcreate").length){
 					var data = new FormData($('#fileUploadForm')[0]);
 					post("u/picupload", data, function(result){
@@ -414,6 +477,7 @@
 							createshoprodfunc();
 						} else {
 							$("#createshoprodmsg").html("请上传主图<br>Need a head image");
+							$("#createshoprodbtn").show();
 						}
 					});
 				} else {
@@ -422,8 +486,10 @@
 			});
 			
 			$("#createaccountbtn").click(function(){
+				$("#createaccountbtn").hide();
 				var params = {"login":$("#login").val(),"passwd":$("#passwd").val(),"repasswd":$("#repasswd").val()};
 				post("n/accountcreate", params, function(result){
+					$("#createaccountbtn").show();
 					if (result.state == 1&&result.reason=="wrongpasswd"){
 						$("#msgrepasswdform").html("密码与前一次输入不一致<br>Please repeat the password");
 					} else if (result.state == 1&&result.reason=="duplicate"){
@@ -435,7 +501,7 @@
 					}
 				});
 			});
-	
+
 		});
 	</script>
 
@@ -520,7 +586,7 @@
 	</div>
 
 	<div id="changeshoprodform" class="hideall"
-		style="position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; display: none; background: #000;">
+		style="position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; display: none; background: #000;overflow-y:auto;">
 		<div id="changeshoprodmsg"
 			style="position: absolute; top: 5px; left: 50%; width: 100%; transform: translateX(-50%);">
 			修改商品<br>Change a product
@@ -621,7 +687,7 @@
 				<font class="filetitle">内容9 Content9</font><input type="file" name="content8" accept="image/*"/>
 			</div>
 		</form>
-		<div style="width:100%;padding-bottom:50px;padding-top:20px;text-align:center;">
+		<div style="width:100%;padding-bottom:50px;padding-top:20px;text-align:center;float:left;">
 			<input id="createshoprodbtn" type="button"
 				style="border: none; font: 18px Arial;"
 				value="新建Create" />
@@ -629,29 +695,14 @@
 	</div>
 
 	<div id="allprodlistform" class="hideall"
-		style="position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; display: none; background: #000;">
-		<div class="divlist">hello1</div>
-		<div class="divlist">hello2</div>
-		<div class="divlist">hello3</div>
-		<div class="divlist">hello4</div>
-		<div class="divlist">hello5</div>
-		<div class="divlist">hello6</div>
-		<div class="divlist">hello7</div>
-		<div class="divlist">hello8</div>
-		<div class="divlist">hello9</div>
-		<div class="divlist">hello10</div>
-		<div class="divlist">hello11</div>
-		<div class="divlist">hello12</div>
-		<div class="divlist">hello13</div>
-		<div class="divlist">hello14</div>
-		<div class="divlist">hello15</div>
+		style="position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; display: none; background: #000;overflow-y:auto;">
+
 	</div>
 
 	<div id="prodetailform" class="hideall"
 		style="position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; display: none; background: #000;">
-		<div
-			style="position: absolute; top: 5px; left: 10px; width: 30vw; height: 30vw;">
-			<img id="headimgview" src="asdf/asdf.png" />
+		<div id="headimgview" 
+			style="position: absolute; top: 0px; left: 0px; width: 30vw; height: 30vw;overflow:hidden;">
 		</div>
 		<div
 			style="position: absolute; top: 5px; right: 10px; width: 70vw; height: 30vw; text-align: right; display: grid;">
@@ -659,14 +710,7 @@
 		</div>
 		<div id="contentimgsview"
 			style="position: absolute; top: 30vw; right: 0px; left: 0px; bottom: 0px; overflow-x: hidden; overflow-y: auto;">
-			<img id="contentimg1view" style="width: 100%;" src="asdf/asdf.png" />
-			<img id="contentimg1view" style="width: 100%;" src="asdf/asdf.png" />
-			<img id="contentimg1view" style="width: 100%;" src="asdf/asdf.png" />
-			<img id="contentimg1view" style="width: 100%;" src="asdf/asdf.png" />
-			<img id="contentimg1view" style="width: 100%;" src="asdf/asdf.png" />
-			<img id="contentimg1view" style="width: 100%;" src="asdf/asdf.png" />
-			<img id="contentimg1view" style="width: 100%;" src="asdf/asdf.png" />
-			<img id="contentimg1view" style="width: 100%;" src="asdf/asdf.png" />
+			
 		</div>
 	</div>
 
