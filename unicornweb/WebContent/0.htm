@@ -9,14 +9,15 @@
 <meta name="msapplication-navbutton-color" content="#000" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="#000" />
-<title>Unicorn</title>
+<title>Unicorn Demo</title>
+<link rel="manifest" href="pwamanifest.json">
 <style type="text/css">
 .divlist {
 	position: relative;
 	float: left;
 	width: 50vw;
 	height: 50vw;
-	overflow:hidden;
+	overflow: hidden;
 }
 
 @media ( min-aspect-ratio : 1/1) {
@@ -25,7 +26,7 @@
 		float: left;
 		width: 25vw;
 		height: 25vw;
-		overflow:hidden;
+		overflow: hidden;
 	}
 }
 </style>
@@ -120,8 +121,8 @@
 	　　				var prods = result.data.prods;
 	　　				if (prods.length>0){
 		　　				for (var i=0;i<prods.length;i++){
-		　　					if ($("#"+prods[i].prodkey).html()==undefined&&prods[i].status==0){
-		　　							$("#allprodlistform").prepend($("<div id='"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
+		　　					if ($("#"+prods[i].prodkey).html()==undefined&&prods[i].status==1){
+		　　							$("#allprodlistform").append($("<div id='"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
 		　　							showprodetailform($(this).attr("id"));
 		　　						}));
 		　　						$("#allprodlistform").scrollTop(0);
@@ -218,9 +219,26 @@
 	　　				if (prods.length>0){
 		　　				for (var i=0;i<prods.length;i++){
 		　　					if ($("#shoprod-"+prods[i].prodkey).html()==undefined){
-		　　						$("#shoprodlistform").prepend($("<div id='shoprod-"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
-		　　							
-		　　							
+		　　						$("#shoprodlistform").prepend($("<div id='shoprod-"+prods[i].prodkey+"' shopkey='"+shopkey+"' prodkey='"+prods[i].prodkey+"' style='position:relative;cursor:pointer;' class='divlist'><img src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
+		　　							showchangeshoprodform($(this).attr("shopkey"), $(this).attr("prodkey"));
+		　　						}));
+		　　						var btntext = "上架onsale";
+		　　						if(prods[i].status==1){
+		　　							btntext = "下架offsale";
+		　　						}
+		　　						$("#shoprod-"+prods[i].prodkey).append($("<input type='button' style='position:absolute;left:0px;bottom:0px;z-index:10000;border: none; font: 18px Arial;' shoprodkey='"+prods[i].prodkey+"' shopkey='"+shopkey+"' value='"+btntext+"'>").click(function(){
+		　　							var url = "n/shoprodapprove";
+		　　							if ($(this).val()=="下架offsale"){
+		　　								url = "n/shoprodpending";
+		　　								$(this).val("上架onsale");
+		　　							} else {
+		　　								url = "n/shoprodapprove";
+		　　								$(this).val("下架offsale");
+		　　							}
+		　　							var params={"shopkey":$(this).attr("shopkey"),"shoprodkey":$(this).attr("shoprodkey")};
+		　　							post(url,params,function(result){
+		　　							});
+		　　							return false;
 		　　						}));
 		　　						$("#shoprodlistform").scrollTop(0);
 		　　					}
@@ -230,6 +248,50 @@
 	　　				}
 　　				}
 　　			});
+		}
+		
+		function showchangeshoprodform(shopkey, prodkey){
+			$(".hideall").hide();
+			$("#loginkeychange").val(localStorage.getItem("loginkey"));
+			$("#resourceidchange").val(shopkey);
+			$("#headimgchange").hide();
+			$(".removeall").remove();
+			for (var i=0;i<9;i++){
+				$("#content"+i+"change").hide();
+			}
+			$("#changefileUploadForm").show();
+			$("input[type=file]").val("");
+			$("#changeshoprodform").fadeIn(200);
+　　			bottombuttons("shoprodchange");
+　　			var params = {"prodkey":prodkey};
+　　			$("#changeshoprodbtn").attr("prodkey",prodkey);
+　　			post("n/prodetail",params,function(result){
+　　				if (result.data){
+	　　				$("#prodnamechange").val(result.data.name);
+	　　	　　			$("#prodrpchange").val(result.data.rp);
+	　　	　　			$("#changeshoprodbtn").show();
+	　　	　　			$("#changeshoprodbtn").attr("oldheadimg",result.data.headimg);
+	　　	　　			$("#changeshoprodbtn").attr("oldcontentimgs",result.data.contentimgs);
+	　　	　　			$("#changeshoprodbtn").attr("headimg",result.data.headimg);
+	　　	　　			$("#changeshoprodbtn").attr("contentimgs",result.data.contentimgs);
+	　　	　　			$("#changeshoprodform").prepend($("<div style='position:relative;width:30vw;height:30vw;overflow:hidden;float:left;' class='removeall' ><img style='width:100%' src='"+rootweb+result.data.headimg+"'/></div>")
+	　　	　　					.append($("<input type='button' style='position:absolute;right:0px;bottom:0px;z-index:10000;border: none; font: 18px Arial;' value='X'/>").click(function(){
+	　　	　　				$(this).parent().remove();
+	　　	　　				$("#headimgchange").show();
+	　　	　　			})));
+					var contentimgs = result.data.contentimgs.split("#");
+　　					for (var i=0;i<contentimgs.length;i++){
+　　						$("#content"+i+"change").before($("<div style='position:relative;width:100%;' class='removeall'><img style='width:100%' src='"+rootweb+contentimgs[i]+"'/></div>")
+　　								.append($("<input type='button' index='"+i+"' style='position:absolute;right:0px;bottom:0px;z-index:10000;border: none; font: 18px Arial;' value='X'/>").click(function(){
+　　				　　			$("#content"+$(this).attr("index")+"change").show();
+　　							$(this).parent().remove();
+　　				　　		})));
+　　					}
+　　					for (var i=contentimgs.length;i<9;i++){
+　　						$("#content"+i+"change").show();
+　　					}
+	　　			}
+　　			});			
 		}
 		
 		function bottombuttons(state){
@@ -293,6 +355,12 @@
 				$("#createshop").hide();
 				$("#createshoprod").hide();
 				$("#changepasswd").hide();
+			} else if (state=="shoprodchange"){
+				$("#home").show();
+				$("#account").show();
+				$("#createshop").hide();
+				$("#createshoprod").hide();
+				$("#changepasswd").hide();
 			} else {
 				$("#home").hide();
 				$("#account").show();
@@ -304,7 +372,9 @@
 		}
 		
 		$(document).ready(function() {
-			//post("n/abiginit",{});
+			//post("n/abiginit",{},function(){
+			//	alert("init success, please remove me.");
+			//});
 			bottombuttons();
 			$("#home").click(function(){
 				showallprodlistform();
@@ -485,6 +555,78 @@
 				}
 			});
 			
+			var changeshoprodfunc = function(){
+				var params = {"shopkey":$("#resourceidcreate").val(),
+						"shoprodkey":$("#changeshoprodbtn").attr("prodkey"),
+						"prodname":$("#prodnamechange").val(),
+						"prodrp":$("#prodrpchange").val(),
+						"headimg":$("#changeshoprodbtn").attr("headimg"),
+						"contentimgs":$("#changeshoprodbtn").attr("contentimgs")};
+				post("n/shoprodmodify", params, function(result){
+					if (result.state == 1&&result.reason=="duplicate"){
+						$("#changeshoprodmsg").html("商品已存在，请换一个名称<br>Please use another name");
+					} else if (result.state == 2){
+						$("#changeshoprodmsg").html("请输入必填项，RP为1到1000000<br>Please input all fields, RP is 1 to 1000000");
+					} else {
+						showshoprodlistform($("#resourceidchange").val());
+					}
+					$("#changeshoprodbtn").show();
+				});
+			};
+			
+			$("#changeshoprodbtn").click(function(){
+				$("#changeshoprodbtn").hide();
+				if ($("#changefileUploadForm").is(":visible")){
+					var data = new FormData($('#changefileUploadForm')[0]);
+					post("u/picupload", data, function(result){
+						$("#changefileUploadForm").hide();
+						var headimg = result.data.headimg;
+						var contentimgs = "";
+						for (var i=0;i<9;i++){
+							if (result.data["content"+i]){
+								if (contentimgs!=""){
+									contentimgs+="#";
+								}
+								contentimgs+=result.data["content"+i];
+								$("#changeshoprodform").append("<img class='removeall' style='width:100%;' src='"+rootweb+result.data["content"+i]+"'/>");
+							}
+						}
+						if (contentimgs == ""){
+							contentimgs = headimg;
+						}
+						$("#changeshoprodbtn").attr("headimg",headimg);
+						console.log("hello");
+						var oldcontentimgs = $("#changeshoprodbtn").attr("oldcontentimgs").split("#");
+						var newcontentimgs = "";
+						for (var i=0;i<oldcontentimgs.length;i++){
+							if (newcontentimgs!=""){
+								newcontentimgs+="#";
+							}
+							if (result.data["content"+i]){
+								newcontentimgs += result.data["content"+i];
+							} else {
+								newcontentimgs+=oldcontentimgs[i];
+							}
+						}
+						for (var i=oldcontentimgs.length;i<9;i++){
+							if (result.data["content"+i]){
+								if (newcontentimgs!=""){
+									newcontentimgs+="#";
+								}
+								newcontentimgs += result.data["content"+i];
+							}
+						}
+						$("#changeshoprodbtn").attr("contentimgs",newcontentimgs);
+						console.log("hello2");
+						$("#changeshoprodform").prepend("<img style='width:30vw;float:left;' headimg='"+headimg+"' contentimgs='"+contentimgs+"' class='removeall' src='"+rootweb+headimg+"'/>");
+						changeshoprodfunc();
+						$("#changeshoprodbtn").show();
+					});
+				} else {
+					changeshoprodfunc();
+				}
+			});
+			
 			$("#createaccountbtn").click(function(){
 				$("#createaccountbtn").hide();
 				var params = {"login":$("#login").val(),"passwd":$("#passwd").val(),"repasswd":$("#repasswd").val()};
@@ -510,15 +652,15 @@
 	style="position: fixed; top: 0px; right: 0px; left: 0px; bottom: 0px; overflow: hidden; font: 16px Arial; color: #bbb; text-align: center; background: #000; margin: 0px;">
 
 	<div id="home"
-		style="position: absolute; cursor: pointer; z-index: 10000; display: none; bottom: 0px; left: 50%; opacity: 0.6; transform: translateX(-50%); font: 35px Arial;">🏠</div>
+		style="position: absolute; cursor: pointer; z-index: 10000; display: none; bottom: 5px; left: 50%; opacity: 0.6; transform: translateX(-50%); font: 35px Arial;">🏠</div>
 	<div id="account"
-		style="position: absolute; cursor: pointer; z-index: 10000; display: none; bottom: 0px; right: 0px; opacity: 0.6; font: 35px Arial;">👤</div>
+		style="position: absolute; cursor: pointer; z-index: 10000; display: none; bottom: 5px; right: 0px; opacity: 0.6; font: 35px Arial;">👤</div>
 	<div id="createshop"
-		style="position: absolute; cursor: pointer; z-index: 10000; display: none; bottom: 0px; right: 0px; opacity: 0.6; transform: translateX(-300%); font: 35px Arial;">🏭</div>
+		style="position: absolute; cursor: pointer; z-index: 10000; display: none; bottom: 5px; right: 0px; opacity: 0.6; transform: translateX(-300%); font: 35px Arial;">🏭</div>
 	<div id="createshoprod"
-		style="position: absolute; cursor: pointer; z-index: 10000; display: none; bottom: 0px; right: 0px; opacity: 0.6; transform: translateX(-200%); font: 35px Arial;">📦</div>
+		style="position: absolute; cursor: pointer; z-index: 10000; display: none; bottom: 5px; right: 0px; opacity: 0.6; transform: translateX(-200%); font: 35px Arial;">📦</div>
 	<div id="changepasswd"
-		style="position: absolute; cursor: pointer; z-index: 10000; display: none; bottom: 0px; right: 0px; opacity: 0.6; transform: translateX(-100%); font: 35px Arial;">🔑</div>
+		style="position: absolute; cursor: pointer; z-index: 10000; display: none; bottom: 5px; right: 0px; opacity: 0.6; transform: translateX(-100%); font: 35px Arial;">🔑</div>
 
 	<div id="loginform" class="hideall"
 		style="position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; display: none; background: #000;">
@@ -586,58 +728,68 @@
 	</div>
 
 	<div id="changeshoprodform" class="hideall"
-		style="position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; display: none; background: #000;overflow-y:auto;">
+		style="position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; display: none; background: #000; overflow-x: hidden; overflow-y: auto;">
 		<div id="changeshoprodmsg"
 			style="position: absolute; top: 5px; left: 50%; width: 100%; transform: translateX(-50%);">
 			修改商品<br>Change a product
 		</div>
-		<input id="prodnamechange" type="text" maxlength="33"
+		<input id="prodnamechange" type="text" maxlength="33" size="15"
 			style="position: absolute; top: 80px; right: 10px; border: none; font: 24px Arial;"
 			placeholder="📦" /> <input id="prodrpchange" type="text"
-			maxlength="10"
+			maxlength="10" size="15"
 			style="position: absolute; top: 130px; right: 10px; border: none; font: 24px Arial;"
-			placeholder="1000000" />
-
-		<form method="POST" enctype="multipart/form-data" id="changefileUploadForm">
+			placeholder="RP" />
+		<div style="width: 100%; height: 160px;">&nbsp;</div>
+		<form method="POST" enctype="multipart/form-data"
+			id="changefileUploadForm">
 			<input id="loginkeychange" type="hidden" name="loginkey" value="" />
 			<input id="resourceidchange" type="hidden" name="resourceid" value="" />
-			<div style="position: absolute; top: 50px; left: 10px;">
-				主图 Head<input type="file" name="headimg" />
+			<div id="headimgchange"
+				style="position: absolute; top: 50px; left: 10px; display: none;">
+				主图 Head<input type="file" name="headimg" accept="image/*" />
 			</div>
-			<div style="position: absolute; top: 180px; left: 10px;">
-				内容1 Content1<input type="file" name="content0" />
+			<div id="content0change"
+				style="width: 100%; text-align: left; padding: 10px; display: none;">
+				内容1 Content1<input type="file" name="content0" accept="image/*" />
 			</div>
-			<div style="position: absolute; top: 230px; left: 10px;">
-				内容2 Content2<input type="file" name="content1" />
+			<div id="content1change"
+				style="width: 100%; text-align: left; padding: 10px; display: none;">
+				内容2 Content2<input type="file" name="content1" accept="image/*" />
 			</div>
-			<div style="position: absolute; top: 280px; left: 10px;">
-				内容3 Content3<input type="file" name="content2" />
+			<div id="content2change"
+				style="width: 100%; text-align: left; padding: 10px; display: none;">
+				内容3 Content3<input type="file" name="content2" accept="image/*" />
 			</div>
-			<div style="position: absolute; top: 330px; left: 10px;">
-				内容4 Content4<input type="file" name="content3" />
+			<div id="content3change"
+				style="width: 100%; text-align: left; padding: 10px; display: none;">
+				内容4 Content4<input type="file" name="content3" accept="image/*" />
 			</div>
-			<div style="position: absolute; top: 380px; left: 10px;">
-				内容5 Content5<input type="file" name="content4" />
+			<div id="content4change"
+				style="width: 100%; text-align: left; padding: 10px; display: none;">
+				内容5 Content5<input type="file" name="content4" accept="image/*" />
 			</div>
-			<div style="position: absolute; top: 430px; left: 10px;">
-				内容6 Content6<input type="file" name="content5" />
+			<div id="content5change"
+				style="width: 100%; text-align: left; padding: 10px; display: none;">
+				内容6 Content6<input type="file" name="content5" accept="image/*" />
 			</div>
-			<div style="position: absolute; top: 480px; left: 10px;">
-				内容7 Content7<input type="file" name="content6" />
+			<div id="content6change"
+				style="width: 100%; text-align: left; padding: 10px; display: none;">
+				内容7 Content7<input type="file" name="content6" accept="image/*" />
 			</div>
-			<div style="position: absolute; top: 530px; left: 10px;">
-				内容8 Content8<input type="file" name="content7" />
+			<div id="content7change"
+				style="width: 100%; text-align: left; padding: 10px; display: none;">
+				内容8 Content8<input type="file" name="content7" accept="image/*" />
 			</div>
-			<div style="position: absolute; top: 580px; left: 10px;">
-				内容9 Content9<input type="file" name="content8" />
+			<div id="content8change"
+				style="width: 100%; text-align: left; padding: 10px; display: none;">
+				内容9 Content9<input type="file" name="content8" accept="image/*" />
 			</div>
 		</form>
-
-		<input id="changeshoprodbtn" type="button"
-			style="position: absolute; top: 630px; left: 50%; transform: translateX(-50%); border: none; font: 18px Arial;"
-			value="修改Change" />
-		<div style="position: absolute; top: 700px;">&nbsp;</div>
-
+		<div
+			style="width: 100%; padding-bottom: 60px; padding-top: 20px; text-align: center; float: left;">
+			<input id="changeshoprodbtn" type="button"
+				style="border: none; font: 18px Arial;" value="修改Change" />
+		</div>
 	</div>
 
 	<div id="createshoprodform" class="hideall"
@@ -646,63 +798,63 @@
 			style="position: absolute; top: 5px; left: 50%; width: 100%; transform: translateX(-50%);">
 			新建商品<br>Create a product
 		</div>
-		<input id="prodnamecreate" type="text" maxlength="33" size="15" 
+		<input id="prodnamecreate" type="text" maxlength="33" size="15"
 			style="position: absolute; top: 80px; right: 10px; border: none; font: 24px Arial;"
 			placeholder="📦" /> <input id="prodrpcreate" type="text"
-			maxlength="10" size="15" 
+			maxlength="10" size="15"
 			style="position: absolute; top: 130px; right: 10px; border: none; font: 24px Arial;"
 			placeholder="RP" />
-		<div style="width:100%;height:160px;">&nbsp;</div>
+		<div style="width: 100%; height: 160px;">&nbsp;</div>
 		<form method="POST" enctype="multipart/form-data" id="fileUploadForm">
 			<input id="loginkeycreate" type="hidden" name="loginkey" value="" />
 			<input id="resourceidcreate" type="hidden" name="resourceid" value="" />
 			<div style="position: absolute; top: 50px; left: 10px;">
-				主图 Head<input type="file" name="headimg" accept="image/*"/>
+				主图 Head<input type="file" name="headimg" accept="image/*" />
 			</div>
-			<div style="width:100%;text-align:left;padding:10px;">
-				<font class="filetitle">内容1 Content1</font><input type="file" name="content0" accept="image/*"/>
+			<div style="width: 100%; text-align: left; padding: 10px;">
+				内容1 Content1<input type="file" name="content0" accept="image/*" />
 			</div>
-			<div style="width:100%;text-align:left;padding:10px;">
-				<font class="filetitle">内容2 Content2</font><input type="file" name="content1" accept="image/*"/>
+			<div style="width: 100%; text-align: left; padding: 10px;">
+				内容2 Content2<input type="file" name="content1" accept="image/*" />
 			</div>
-			<div style="width:100%;text-align:left;padding:10px;">
-				<font class="filetitle">内容3 Content3</font><input type="file" name="content2" accept="image/*"/>
+			<div style="width: 100%; text-align: left; padding: 10px;">
+				内容3 Content3<input type="file" name="content2" accept="image/*" />
 			</div>
-			<div style="width:100%;text-align:left;padding:10px;">
-				<font class="filetitle">内容4 Content4</font><input type="file" name="content3" accept="image/*"/>
+			<div style="width: 100%; text-align: left; padding: 10px;">
+				内容4 Content4<input type="file" name="content3" accept="image/*" />
 			</div>
-			<div style="width:100%;text-align:left;padding:10px;">
-				<font class="filetitle">内容5 Content5</font><input type="file" name="content4" accept="image/*"/>
+			<div style="width: 100%; text-align: left; padding: 10px;">
+				内容5 Content5<input type="file" name="content4" accept="image/*" />
 			</div>
-			<div style="width:100%;text-align:left;padding:10px;">
-				<font class="filetitle">内容6 Content6</font><input type="file" name="content5" accept="image/*"/>
+			<div style="width: 100%; text-align: left; padding: 10px;">
+				内容6 Content6<input type="file" name="content5" accept="image/*" />
 			</div>
-			<div style="width:100%;text-align:left;padding:10px;">
-				<font class="filetitle">内容7 Content7</font><input type="file" name="content6" accept="image/*"/>
+			<div style="width: 100%; text-align: left; padding: 10px;">
+				内容7 Content7<input type="file" name="content6" accept="image/*" />
 			</div>
-			<div style="width:100%;text-align:left;padding:10px;">
-				<font class="filetitle">内容8 Content8</font><input type="file" name="content7" accept="image/*"/>
+			<div style="width: 100%; text-align: left; padding: 10px;">
+				内容8 Content8<input type="file" name="content7" accept="image/*" />
 			</div>
-			<div style="width:100%;text-align:left;padding:10px;">
-				<font class="filetitle">内容9 Content9</font><input type="file" name="content8" accept="image/*"/>
+			<div style="width: 100%; text-align: left; padding: 10px;">
+				内容9 Content9<input type="file" name="content8" accept="image/*" />
 			</div>
 		</form>
-		<div style="width:100%;padding-bottom:50px;padding-top:20px;text-align:center;float:left;">
+		<div
+			style="width: 100%; padding-bottom: 60px; padding-top: 20px; text-align: center; float: left;">
 			<input id="createshoprodbtn" type="button"
-				style="border: none; font: 18px Arial;"
-				value="新建Create" />
+				style="border: none; font: 18px Arial;" value="新建Create" />
 		</div>
 	</div>
 
 	<div id="allprodlistform" class="hideall"
-		style="position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; display: none; background: #000;overflow-y:auto;">
+		style="position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; display: none; background: #000; overflow-y: auto;">
 
 	</div>
 
 	<div id="prodetailform" class="hideall"
 		style="position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; display: none; background: #000;">
-		<div id="headimgview" 
-			style="position: absolute; top: 0px; left: 0px; width: 30vw; height: 30vw;overflow:hidden;">
+		<div id="headimgview"
+			style="position: absolute; top: 0px; left: 0px; width: 30vw; height: 30vw; overflow: hidden;">
 		</div>
 		<div
 			style="position: absolute; top: 5px; right: 10px; width: 70vw; height: 30vw; text-align: right; display: grid;">
@@ -710,8 +862,9 @@
 		</div>
 		<div id="contentimgsview"
 			style="position: absolute; top: 30vw; right: 0px; left: 0px; bottom: 0px; overflow-x: hidden; overflow-y: auto;">
-			
+
 		</div>
 	</div>
+	<div style='font-size:9px;position:fixed;left:0px;right:0px;bottom:0px;width:100%;text-align:right;color:#999;'>© 02/09/2018-2090 getzdd@outlook.com 沪ICP备18004230号</div>
 </body>
 </html>

@@ -29,7 +29,9 @@ public class shoprodmodify implements Ibiz {
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		if (!Indexclient.getinstance("unicorn", bizp.getext("prodname")).filters(1).add("prod").readunique().isEmpty()){
+		String name = Textclient.getinstance("unicorn", "prod").key(bizp.getext("shoprodkey")).columns(1)
+		.add("name").read().get("name");
+		if (!name.equals(bizp.getext("prodname"))&&!Indexclient.getinstance("unicorn", bizp.getext("prodname")).filters(1).add("prod").readunique().isEmpty()){
 			throw new Exception("duplicate");
 		}
 		Textclient.getinstance("unicorn", "prod").key(bizp.getext("shoprodkey")).columnvalues(5)
