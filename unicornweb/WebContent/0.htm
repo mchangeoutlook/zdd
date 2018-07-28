@@ -31,7 +31,7 @@
 	}
 }
 </style>
-<script type="text/javascript" src="/cw/3rdjs/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/3rdjs/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
 	 	var root = "/unicornserver/";
 	 	var rootweb = "/unicornweb/uploadedimages/";
@@ -376,6 +376,37 @@
 			//post("n/abiginit",{},function(){
 			//	alert("init success, please remove me.");
 			//});
+			
+			
+			// Register the service worker if available.
+			if ('serviceWorker' in navigator) {
+			    navigator.serviceWorker.register('./sw.js').then(function(reg) {
+			        console.log('Successfully registered service worker', reg);
+			    }).catch(function(err) {
+			        console.warn('Error whilst registering service worker', err);
+			    });
+			}
+			
+			window.addEventListener('online', function(e) {
+			    // Resync data with server.
+			    console.log("You are online");
+			    
+			}, false);
+
+			window.addEventListener('offline', function(e) {
+			    // Queue up events for server.
+			    console.log("You are offline");
+			    
+			}, false);
+
+			// Check if the user is connected.
+			if (navigator.onLine) {
+			    //
+			} else {
+			    // Show offline message
+			    
+			}
+			
 			bottombuttons();
 			$("#home").click(function(){
 				showallprodlistform();
