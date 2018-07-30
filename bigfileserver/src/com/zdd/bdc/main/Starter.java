@@ -6,13 +6,13 @@ import java.util.Date;
 import java.util.Enumeration;
 
 import com.zdd.bdc.biz.Configclient;
-import com.zdd.bdc.biz.Indexserver;
+import com.zdd.bdc.biz.Fileserver;
 import com.zdd.bdc.ex.Theserver;
 
 /**
  * @author mido
  * how to run: 
- * nohup /data/jdk-9.0.4/bin/java -cp bigindexserver.jar:../commonlibs/bigexclient.jar:../commonlibs/bigconfigclient.jar:../commonlibs/bigcommonutil.jar:../commonlibs/bigexserver.jar com.zdd.bdc.main.Starter > log.runbigindexserver &
+ * nohup /data/jdk-9.0.4/bin/java -cp bigfileserver.jar:../commonlibs/bigcommonutil.jar:../commonlibs/bigexclient.jar:../commonlibs/bigconfigclient.jar:../commonlibs/bigexserver.jar com.zdd.bdc.main.Starter > log.runbigfileserver &
  */
 
 public class Starter {
@@ -37,9 +37,9 @@ public class Starter {
 			public void run() {
 				try {
 					Theserver.startblocking(ip,
-							Integer.parseInt(Configclient.getinstance("core", "core").read("indexserverport")), pending,
-							Integer.parseInt(Configclient.getinstance("core", "core").read("indexfilehash")),
-							Indexserver.class);
+							Integer.parseInt(Configclient.getinstance("core", "core").read("fileserverport")), pending,
+							10,
+							Fileserver.class);
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== System exit due to below exception:");
 					e.printStackTrace();
@@ -50,7 +50,7 @@ public class Starter {
 		}).start();
 
 		while (!"pending".equals(Configclient.getinstance("core", "pending")
-				.read(ip + "." + Configclient.getinstance("core", "core").read("indexserverport")))) {
+				.read(ip + "." + Configclient.getinstance("core", "core").read("fileserverport")))) {
 			Thread.sleep(30000);
 		}
 		pending.append("pending");

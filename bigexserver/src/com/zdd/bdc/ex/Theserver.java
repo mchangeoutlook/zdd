@@ -31,7 +31,7 @@ public class Theserver {
 		Selector acceptSelector = SelectorProvider.provider().openSelector();
 		ServerSocketChannel ssc = ServerSocketChannel.open();
 		ssc.configureBlocking(false);
-		InetSocketAddress isa = new InetSocketAddress(InetAddress.getLocalHost(), port);
+		InetSocketAddress isa = new InetSocketAddress(InetAddress.getByName(ip), port);
 		ssc.socket().bind(isa);
 		ssc.register(acceptSelector,
 		                SelectionKey.OP_ACCEPT);

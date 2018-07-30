@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -110,13 +111,26 @@ public class Configserver implements Theserverprocess {
 	}
 
 	public static String read(String namespace, String file, String configkey) {
-		if (confignsfileskeysvalues.get(namespace) == null) {
-			return null;
+		if (Files.exists(configfolder.resolve(namespace).resolve(file))){
+			try {
+				List<String> lines = Files.readAllLines(configfolder.resolve(namespace).resolve(file),Charset.forName("UTF-8"));
+				for (String line:lines) {
+					if (line.indexOf("#") > 0) {
+						String encodedkey = line.substring(0, line.indexOf("#"));
+						String encodedvalue = "";
+						if (line.length() > line.indexOf("#") + 1) {
+							encodedvalue = line.substring(line.indexOf("#") + 1);
+						}
+						if (URLDecoder.decode(encodedkey,"UTF-8").equals(configkey)) {
+							return URLDecoder.decode(encodedvalue,"UTF-8");
+						}
+					}
+				}
+			} catch (Exception e) {
+				// do nothing
+			}
 		}
-		if (confignsfileskeysvalues.get(namespace).get(file) == null) {
-			return null;
-		}
-		return confignsfileskeysvalues.get(namespace).get(file).get(configkey);
+		return null;
 	}
 
 	private static void populatebigindexgen(String namespace, String configkey, String configvalue) throws Exception {

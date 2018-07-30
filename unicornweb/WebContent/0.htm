@@ -20,6 +20,23 @@
 	height: 50vw;
 	overflow: hidden;
 }
+.headimgview{
+	position: absolute; 
+	top: 0px; 
+	left: 0px; 
+	width: 30vw; 
+	height: 30vw; 
+	overflow: hidden;
+}
+.contentimgsview{
+	position: absolute; 
+	top: 30vw; 
+	right: 0px; 
+	left: 0px; 
+	bottom: 0px; 
+	overflow-x: hidden; 
+	overflow-y: auto;
+}
 
 @media ( min-aspect-ratio : 1/1) {
 	.divlist {
@@ -29,9 +46,26 @@
 		height: 25vw;
 		overflow: hidden;
 	}
+	.headimgview{
+		position: absolute; 
+		top: 0px; 
+		left: 0px; 
+		width: 20vw; 
+		height: 20vw; 
+		overflow: hidden;
+	}
+	.contentimgsview{
+		position: absolute; 
+		top: 20vw; 
+		right: 0px; 
+		left: 0px; 
+		bottom: 0px; 
+		overflow-x: hidden; 
+		overflow-y: auto;
+	}
 }
 </style>
-<script type="text/javascript" src="/3rdjs/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="3rdjs/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
 	 	var root = "/unicornserver/";
 	 	var rootweb = "/unicornweb/uploadedimages/";
@@ -123,12 +157,17 @@
 	　　				if (prods.length>0){
 		　　				for (var i=0;i<prods.length;i++){
 		　　					if ($("#"+prods[i].prodkey).html()==undefined&&prods[i].status==1){
-		　　							$("#allprodlistform").append($("<div id='"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
+		　　							$("#allprodlistform").append($("<div id='"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img id='head-"+prods[i].key+"' src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
 		　　							showprodetailform($(this).attr("id"));
 		　　						}));
-		　　						$("#allprodlistform").scrollTop(0);
 		　　					}
+		　　					
 		　　				}
+		　　				$("img").each(function(){
+		　　					if (this.height==0||this.width==0){
+		　　						$(this).parent().remove();
+		　　					}
+		　　				});
 	　　				}
 　　				}
 　　			});
@@ -373,9 +412,9 @@
 		}
 		
 		$(document).ready(function() {
-			//post("n/abiginit",{},function(){
-			//	alert("init success, please remove me.");
-			//});
+			post("n/abiginit",{},function(){
+				alert("init success, please remove me.");
+			});
 			
 			
 			// Register the service worker if available.
@@ -886,14 +925,14 @@
 	<div id="prodetailform" class="hideall"
 		style="position: absolute; top: 0px; right: 0px; left: 0px; bottom: 0px; display: none; background: #000;">
 		<div id="headimgview"
-			style="position: absolute; top: 0px; left: 0px; width: 30vw; height: 30vw; overflow: hidden;">
+			class="headimgview">
 		</div>
 		<div
 			style="position: absolute; top: 5px; right: 10px; width: 70vw; height: 30vw; text-align: right; display: grid;">
 			<font id="prodnameview">name</font> <font id="prodrpview">1000000</font>
 		</div>
 		<div id="contentimgsview"
-			style="position: absolute; top: 30vw; right: 0px; left: 0px; bottom: 0px; overflow-x: hidden; overflow-y: auto;">
+			class="contentimgsview">
 
 		</div>
 	</div>
