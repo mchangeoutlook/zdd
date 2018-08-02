@@ -1,5 +1,6 @@
 package com.zdd.bdc.main;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Date;
@@ -18,16 +19,22 @@ import com.zdd.bdc.ex.Theserver;
 public class Starter {
 	public static void main(String[] s) throws Exception {
 		final StringBuffer pending = new StringBuffer();
-		NetworkInterface ni = NetworkInterface.getByName("eth0");
-        Enumeration<InetAddress> inetAddresses =  ni.getInetAddresses();
-
-        String localip = null;
-        while(inetAddresses.hasMoreElements()) {
-            InetAddress ia = inetAddresses.nextElement();
-            if(!ia.isLinkLocalAddress()) {
-                localip = ia.getHostAddress();
-                break;
-            }
+		String localip = null;
+		Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
+	    while (en.hasMoreElements()) {
+	        NetworkInterface i = (NetworkInterface) en.nextElement();
+	        for (Enumeration<InetAddress> en2 = i.getInetAddresses(); en2.hasMoreElements();) {
+	            InetAddress addr = (InetAddress) en2.nextElement();
+	            if (!addr.isLoopbackAddress()) {
+	                if (addr instanceof Inet4Address) {
+	                    localip = addr.getHostName();
+	                    break;
+	                }
+	            }
+	        }
+	    }
+        if (localip==null) {
+        		localip = InetAddress.getLocalHost().getHostAddress();
         }
 		final String ip = localip;
 

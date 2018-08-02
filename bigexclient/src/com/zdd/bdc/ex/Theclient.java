@@ -8,64 +8,82 @@ import java.nio.channels.SocketChannel;
 import java.util.Arrays;
 
 public class Theclient {
-	
-	public static byte[] request(String ip, int port, byte[] start, InputStream ins) throws Exception{
-		if (ins!=null&&(start==null||start.length==0)) {
-			throw new Exception("inputwithstart");
+
+	public static byte[] request(String ip, int port, byte[] request, InputStream requests, Theclientprocess cp)
+			throws Exception {
+		if (request == null || request.length == 0) {
+			throw new Exception("norequest");
 		}
 		if (ip.trim().isEmpty()) {
 			throw new Exception("noip");
 		}
-		if (start==null) {
-			start = new byte[0];
-		}
 		SocketChannel sc = null;
-		try{
+		try {
 			sc = SocketChannel.open();
-		    sc.connect(new InetSocketAddress(InetAddress.getByName(ip), port));
-		    
-		    int bs = start.length;
-		    ByteBuffer writebb = ByteBuffer.allocate(11+bs);
-			writebb.put(String.format ("%011d", bs).getBytes());
-			writebb.put(start);
+
+			sc.connect(new InetSocketAddress(InetAddress.getByName(ip), port));
+			sc.configureBlocking(true);
+			int bs = request.length;
+			ByteBuffer writebb = ByteBuffer.allocate(11 + bs);
+			writebb.put(String.format("%011d", bs).getBytes());
+			writebb.put(request);
 			writebb.flip();
 			sc.write(writebb);
-			
-			if (ins!=null) {
-				byte[] readb = new byte[1024];
-				bs = 0;
-				while((bs=ins.read(readb))!=-1) {
-					writebb.clear();
-					writebb = ByteBuffer.allocate(11+bs);
-					writebb.put(String.format ("%011d", bs).getBytes());
-					if (bs!=readb.length) {
-						readb=Arrays.copyOf(readb, bs);
+
+			if (requests != null) {
+				try {
+					byte[] readb = new byte[10240];
+					bs = 0;
+					while ((bs = requests.read(readb)) != -1) {
+						writebb.clear();
+						writebb = ByteBuffer.allocate(11 + bs);
+						writebb.put(String.format("%011d", bs).getBytes());
+						if (bs != readb.length) {
+							readb = Arrays.copyOf(readb, bs);
+						}
+						writebb.put(readb);
+						writebb.flip();
+						sc.write(writebb);
 					}
-					writebb.put(readb);
-					writebb.flip();
-					sc.write(writebb);
+				} finally {
+					requests.close();
 				}
-				
 			}
-			if (bs!=0) {
-				writebb.clear();
-				writebb = ByteBuffer.allocate(11);
-				writebb.put(String.format ("%011d", 0).getBytes());
-				writebb.flip();
-				sc.write(writebb);
-			}
+
+			writebb.clear();
+			writebb = ByteBuffer.allocate(11);
+			writebb.put(String.format("%011d", 0).getBytes());
+			writebb.flip();
+			sc.write(writebb);
+			sc.shutdownOutput();
+
 			ByteBuffer readbb = ByteBuffer.allocate(11);
 			sc.read(readbb);
 			Integer length = Integer.parseInt(new String(readbb.array()));
-			readbb.clear();
 			readbb = ByteBuffer.allocate(Math.abs(length));
 			sc.read(readbb);
-			if (length<0) {
-				throw new Exception(new String(readbb.array(),"UTF-8"));
+			byte[] returnvalue = readbb.array();
+
+			readbb.clear();
+			readbb = ByteBuffer.allocate(11);
+			sc.read(readbb);
+			length = Integer.parseInt(new String(readbb.array()));
+			while (length > 0) {
+				readbb.clear();
+				readbb = ByteBuffer.allocate(length);
+				sc.read(readbb);
+				cp.responses(readbb.array());
+
+				readbb.clear();
+				readbb = ByteBuffer.allocate(11);
+				sc.read(readbb);
+				length = Integer.parseInt(new String(readbb.array()));
 			}
-			return readbb.array();
-		}finally{
-			if (sc!=null){
+			
+			return returnvalue;
+		} finally {
+			sc.shutdownInput();
+			if (sc != null) {
 				sc.close();
 			}
 		}

@@ -7,11 +7,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Vector;
 
-import com.zdd.bdc.ex.Theserverprocess;
+import com.zdd.bdc.ex.Theclientprocess;
 import com.zdd.bdc.util.Bigindexfileutil;
 import com.zdd.bdc.util.Objectutil;
 
-public class Indexserver implements Theserverprocess {
+public class Indexserver implements Theclientprocess {
 
 	private Vector<String> readres = null;
 	private String unique = null;
@@ -85,11 +85,14 @@ public class Indexserver implements Theserverprocess {
 		if (filters != null && !filters.isEmpty()) {
 			Collections.sort(filters);
 			for (String f : filters) {
-				s += URLEncoder.encode(f, "UTF-8") + "#";
+				if (!s.equals("")) {
+					s+="#";
+				}
+				s += URLEncoder.encode(f, "UTF-8");
 			}
 		}
-		return Paths.get("bigindex/" + URLEncoder.encode(namespace, "UTF-8") + "/" + pagenum + "#" + s + "/"
+		return Paths.get("bigindex/" + URLEncoder.encode(namespace, "UTF-8") + "/"  + s + "#"+pagenum + "/"
 				+ Math.abs(index.hashCode()) % bigfilehash);
 	}
-
+	
 }

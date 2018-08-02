@@ -27,7 +27,6 @@ public class accountcreate implements Ibiz {
 
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
-		System.out.println(bizp.getext("login"));
 		if (!bizp.getext("repasswd").equals(bizp.getext("passwd"))){
 			throw new Exception("wrongpasswd");
 		}

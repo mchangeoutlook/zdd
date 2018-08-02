@@ -7,11 +7,11 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
-import com.zdd.bdc.ex.Theserverprocess;
+import com.zdd.bdc.ex.Theclientprocess;
 import com.zdd.bdc.util.Bigdatafileutil;
 import com.zdd.bdc.util.Objectutil;
 
-public class Textserver implements Theserverprocess {
+public class Textserver implements Theclientprocess {
 
 	private Map<String, String> readres = null;
 	private Map<String, Long> incrementres = null;

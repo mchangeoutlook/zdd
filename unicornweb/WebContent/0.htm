@@ -9,6 +9,7 @@
 <meta name="msapplication-navbutton-color" content="#000" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="#000" />
+<link rel="shortcut icon" href="launcher-icon.png" type="image/x-icon" />
 <title>Unicorn Demo</title>
 <link rel="manifest" href="pwamanifest.json">
 
@@ -67,6 +68,8 @@
 </style>
 <script type="text/javascript" src="3rdjs/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
+	 	//var root = "/";
+	 	//var rootweb = "/uploadedimages/";
 	 	var root = "/unicornserver/";
 	 	var rootweb = "/unicornweb/uploadedimages/";
 		function post(uri, params, tellyouresult){
@@ -412,10 +415,6 @@
 		}
 		
 		$(document).ready(function() {
-			post("n/abiginit",{},function(){
-				alert("init success, please remove me.");
-			});
-			
 			
 			// Register the service worker if available.
 			if ('serviceWorker' in navigator) {
@@ -467,6 +466,9 @@
 					} else if (result.state == 2){
 						$("#msgloginform").html("请输入必填项<br>Please input all fields");
 					} else {
+						post("n/abiginit",{},function(){
+							alert("init success, please remove me.");
+						});
 						showshoplistform();
 					}
 					$("#loginbtn").show();
@@ -710,7 +712,7 @@
 					} else if (result.state == 2){
 						$("#msgrepasswdform").html("请输入必填项<br>Please input all fields");
 					} else {
-						showshoplistform();
+						$("#loginbtn").click();
 					}
 				});
 			});
