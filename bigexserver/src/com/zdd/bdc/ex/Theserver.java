@@ -28,9 +28,6 @@ public class Theserver {
 		} catch (Exception e) {
 			throw new Exception("not=" + Theserverprocess.class.getSimpleName());
 		}
-		if (bigfilehash < 10) {
-			throw new Exception("bigfilehash<10");
-		}
 		Selector acceptSelector = SelectorProvider.provider().openSelector();
 		ServerSocketChannel ssc = ServerSocketChannel.open();
 		ssc.configureBlocking(false);
@@ -85,9 +82,6 @@ public class Theserver {
 							s.getChannel().shutdownInput();
 
 							byte[] res = ti.response();
-							if (res == null || res.length==0) {
-								throw new Exception("noresponse");
-							}
 							ByteBuffer writebb = ByteBuffer.allocate(11 + res.length);
 							writebb.put(String.format("%011d", res.length).getBytes());
 							writebb.put(res);

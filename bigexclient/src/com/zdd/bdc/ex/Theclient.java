@@ -11,12 +11,6 @@ public class Theclient {
 
 	public static byte[] request(String ip, int port, byte[] request, InputStream requests, Theclientprocess cp)
 			throws Exception {
-		if (request == null || request.length == 0) {
-			throw new Exception("norequest");
-		}
-		if (ip.trim().isEmpty()) {
-			throw new Exception("noip");
-		}
 		SocketChannel sc = null;
 		try {
 			sc = SocketChannel.open();

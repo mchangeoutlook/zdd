@@ -22,38 +22,27 @@ public class Configserver implements Theserverprocess {
 		if (Files.exists(configfolder) && Files.isDirectory(configfolder)) {
 			try {
 				Files.walk(configfolder).filter(Files::isRegularFile).forEach(pathfile -> {
-					final StringBuffer ns = new StringBuffer();
-					try {
-						ns.append(URLDecoder.decode(pathfile.getParent().getFileName().toString(), "UTF-8"));
-					} catch (Exception e) {
-						System.out.println(new Date() + " ==== System exited due to below exception:");
-						e.printStackTrace();
-						System.exit(1);
-					}
-					String namespace = ns.toString();
-					try {
-						final StringBuffer f = new StringBuffer();
+					if (!pathfile.getFileName().toString().startsWith(".")) {
 						try {
-							f.append(URLDecoder.decode(pathfile.getFileName().toString(), "UTF-8"));
+							String namespace = URLDecoder.decode(pathfile.getParent().getFileName().toString(),
+									"UTF-8");
+							String file = URLDecoder.decode(pathfile.getFileName().toString(), "UTF-8");
+							if (file.equals("bigdata")) {
+								Bigdataconfig.init(namespace);
+							} else if (file.equals("bigindex")) {
+								Bigindexconfig.init(namespace);
+							}
 						} catch (Exception e) {
-							System.out.println(new Date() + " ==== System exited due to below exception:");
+							System.out.println(new Date() + " ==== System exited when reading ["
+									+ pathfile.toAbsolutePath() + "] due to below exception:");
 							e.printStackTrace();
 							System.exit(1);
 						}
-						String file = f.toString();
-						if (file.equals("bigdata")) {
-							Bigdataconfig.init(namespace);
-						} else if (file.equals("bigindex")) {
-							Bigindexconfig.init(namespace);
-						}
-					} catch (Exception e) {
-						System.out.println(new Date() + " ==== System exited due to below exception:");
-						e.printStackTrace();
-						System.exit(1);
 					}
 				});
 			} catch (Exception e) {
-				System.out.println(new Date() + " ==== System exited due to below exception:");
+				System.out.println(new Date() + " ==== System exited when reading [" + configfolder.toAbsolutePath()
+						+ "] due to below exception:");
 				e.printStackTrace();
 				System.exit(1);
 			}
@@ -68,21 +57,18 @@ public class Configserver implements Theserverprocess {
 				return Bigindexconfig.read(namespace, configkey);
 			} else {
 				Path configfile = target(namespace, file);
-				if (Files.exists(configfile)) {
-					List<String> lines = Files.readAllLines(configfile, Charset.forName("UTF-8"));
-					for (String line : lines) {
-						if (line.indexOf("#") > 0) {
-							String encodedkey = line.substring(0, line.indexOf("#"));
+				List<String> lines = Files.readAllLines(configfile, Charset.forName("UTF-8"));
+				for (String line : lines) {
+					if (line.indexOf("#") > 0) {
+						String encodedkey = line.substring(0, line.indexOf("#"));
+						if (URLDecoder.decode(encodedkey, "UTF-8").equals(configkey)) {
 							String encodedvalue = "";
 							if (line.length() > line.indexOf("#") + 1) {
 								encodedvalue = line.substring(line.indexOf("#") + 1);
 							}
-							if (URLDecoder.decode(encodedkey, "UTF-8").equals(configkey)) {
-								return URLDecoder.decode(encodedvalue, "UTF-8");
-							}
+							return URLDecoder.decode(encodedvalue, "UTF-8");
 						}
 					}
-
 				}
 				return null;
 			}
@@ -112,22 +98,23 @@ public class Configserver implements Theserverprocess {
 				Object[] ns = returnvalue.keySet().toArray();
 				for (Object nsobj : ns) {
 					String namespace = nsobj.toString();
-					if (returnvalue.get(namespace) != null) {
-						Object[] files = returnvalue.get(namespace).keySet().toArray();
-						for (Object fileobj : files) {
-							String file = fileobj.toString();
-							if (returnvalue.get(namespace) != null && returnvalue.get(namespace).get(file) != null) {
-								Object[] configkeys = returnvalue.get(namespace).get(file).keySet().toArray();
-
-								for (Object configkeyobj : configkeys) {
-									String configkey = configkeyobj.toString();
-									String configvalue = Configserver.readconfig(namespace, file, configkey);
-									if (configvalue==null) {
-										returnvalue.get(namespace).get(file).remove(configkey);
-									} else {
-										returnvalue.get(namespace).get(file).put(configkey, configvalue);
+					Object[] files = returnvalue.get(namespace).keySet().toArray();
+					for (Object fileobj : files) {
+						String file = fileobj.toString();
+						Object[] configkeys = returnvalue.get(namespace).get(file).keySet().toArray();
+						for (Object configkeyobj : configkeys) {
+							String configkey = configkeyobj.toString();
+							String configvalue = Configserver.readconfig(namespace, file, configkey);
+							if (configvalue == null) {
+								returnvalue.get(namespace).get(file).remove(configkey);
+								if (returnvalue.get(namespace).get(file).isEmpty()) {
+									returnvalue.get(namespace).remove(file);
+									if (returnvalue.get(namespace).isEmpty()) {
+										returnvalue.remove(namespace);
 									}
 								}
+							} else {
+								returnvalue.get(namespace).get(file).put(configkey, configvalue);
 							}
 						}
 					}

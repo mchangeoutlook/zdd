@@ -18,6 +18,7 @@ import com.zdd.bdc.ex.Theserver;
 
 public class Starter {
 	public static void main(String[] s) throws Exception {
+		
 		final StringBuffer pending = new StringBuffer();
 		String localip = null;
 		Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
