@@ -112,12 +112,6 @@ public class Textclient {
 		}
 	}
 	
-	private static String distribute(String namespace, String key) {
-		String configkey = key.substring(13,17)+"-"+key.substring(7,9)+"-"+key.substring(2,4);
-		String[] ips = Configclient.getinstance(namespace, "bigdata").read(configkey).split("#");
-		String ip = ips[Math.abs(key.hashCode())%ips.length];
-		return ip;
-	}
 
 	public String modify() throws Exception {
 		if (key == null || cvs.isEmpty()) {
@@ -196,12 +190,4 @@ public class Textclient {
 		cols = null;
 	}
 
-	private static String newkey() {
-		Calendar cal = Calendar.getInstance();
-		String key = new StringBuffer(UUID.randomUUID().toString().replaceAll("-", ""))
-				.insert(2, String.format("%02d", cal.get(Calendar.DATE)))
-				.insert(7, String.format("%02d", cal.get(Calendar.MONTH) + 1))
-				.insert(13, String.valueOf(cal.get(Calendar.YEAR))).toString();
-		return key;
-	}
 }

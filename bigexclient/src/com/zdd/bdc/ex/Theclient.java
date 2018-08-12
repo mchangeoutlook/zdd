@@ -76,7 +76,6 @@ public class Theclient {
 			
 			return returnvalue;
 		} finally {
-			sc.shutdownInput();
 			if (sc != null) {
 				sc.close();
 			}

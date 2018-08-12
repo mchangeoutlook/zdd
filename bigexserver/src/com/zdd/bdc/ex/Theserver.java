@@ -13,14 +13,12 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 public class Theserver {
 
-	public static void startblocking(String ip, int port, StringBuffer pending, int bigfilehash, final Class<?> c)
+	public static void startblocking(String ip, int port, String ispending, StringBuffer pending, int bigfilehash, final Class<?> c)
 			throws Exception {
 		Theserverprocess test = null;
 		try {
@@ -35,12 +33,9 @@ public class Theserver {
 		ssc.socket().bind(isa);
 		ssc.register(acceptSelector, SelectionKey.OP_ACCEPT);
 
-		Map<String, String> config = new Hashtable<String, String>();
-		config.put("bigfilehash", String.valueOf(bigfilehash));
-
 		System.out.println(
 				new Date() + " " + test.getClass().getName() + " listening port [" + port + "] on ip [" + ip + "]");
-		while (acceptSelector.select() > 0 && !"pending".equals(pending.toString())) {
+		while (acceptSelector.select() > 0 && !ispending.equals(pending.toString())) {
 			Set<SelectionKey> readyKeys = acceptSelector.selectedKeys();
 			Iterator<SelectionKey> i = readyKeys.iterator();
 			while (i.hasNext()) {
@@ -53,7 +48,7 @@ public class Theserver {
 						try {
 							s.getChannel().configureBlocking(true);
 							Theserverprocess ti = (Theserverprocess) c.getDeclaredConstructor().newInstance();
-							ti.init(config);
+							ti.init(bigfilehash);
 							ByteBuffer readbb = ByteBuffer.allocate(11);
 							s.getChannel().read(readbb);
 							Integer length = Integer.parseInt(new String(readbb.array()));
@@ -79,8 +74,7 @@ public class Theserver {
 								s.getChannel().read(readbb);
 								length = Integer.parseInt(new String(readbb.array()));
 							}
-							s.getChannel().shutdownInput();
-
+							
 							byte[] res = ti.response();
 							ByteBuffer writebb = ByteBuffer.allocate(11 + res.length);
 							writebb.put(String.format("%011d", res.length).getBytes());
@@ -131,13 +125,14 @@ public class Theserver {
 								writebb.put(String.format("%011d", 0).getBytes());
 								writebb.flip();
 								s.getChannel().write(writebb);
+								s.getChannel().shutdownOutput();
 							} catch (Exception ex) {
 								System.out.println(new Date() + c.getName() + " process exception:");
 								e.printStackTrace();
 							}
 						} finally {
 							try {
-								s.getChannel().shutdownOutput();
+								System.out.println("========closed");
 								s.getChannel().close();
 								s.close();
 							} catch (Exception e) {

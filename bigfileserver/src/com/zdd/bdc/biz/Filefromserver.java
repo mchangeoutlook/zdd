@@ -3,23 +3,25 @@ package com.zdd.bdc.biz;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
-
 import com.zdd.bdc.ex.Theserverprocess;
+import com.zdd.bdc.util.STATIC;
 
 public class Filefromserver implements Theserverprocess {
 	
 	private Path targetpath;
 	
 	@Override
-	public void init(Map<String, String> config) {
+	public void init(int bigfilehash) {
 
 	}
 
 	@Override
 	public void request(byte[] b) throws Exception {
-		targetpath = Paths.get(new String(b,"UTF-8"));
+		String path = new String(b,"UTF-8");
+		if (path.startsWith("/")) {
+			path = path.replaceFirst("/", "");
+		}
+		targetpath = STATIC.LOCAL_DATAFOLDER.resolve(path);
 	}
 
 	@Override

@@ -6,30 +6,28 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import com.zdd.bdc.ex.Theserverprocess;
 import com.zdd.bdc.util.Objectutil;
+import com.zdd.bdc.util.STATIC;
 
 public class Configserver implements Theserverprocess {
 
-	public static Path configfolder = Paths.get("config");
-
-	static {
-		if (Files.exists(configfolder) && Files.isDirectory(configfolder)) {
+		static {
+		if (Files.exists(STATIC.LOCAL_CONFIGFOLDER) && Files.isDirectory(STATIC.LOCAL_CONFIGFOLDER)) {
 			try {
-				Files.walk(configfolder).filter(Files::isRegularFile).forEach(pathfile -> {
+				Files.walk(STATIC.LOCAL_CONFIGFOLDER).filter(Files::isRegularFile).forEach(pathfile -> {
 					if (!pathfile.getFileName().toString().startsWith(".")) {
 						try {
 							String namespace = URLDecoder.decode(pathfile.getParent().getFileName().toString(),
 									"UTF-8");
 							String file = URLDecoder.decode(pathfile.getFileName().toString(), "UTF-8");
-							if (file.equals("bigdata")) {
+							if (file.equals(STATIC.REMOTE_CONFIGFILE_BIGDATA)) {
 								Bigdataconfig.init(namespace);
-							} else if (file.equals("bigindex")) {
+							} else if (file.equals(STATIC.REMOTE_CONFIGFILE_BIGINDEX)) {
 								Bigindexconfig.init(namespace);
 							}
 						} catch (Exception e) {
@@ -41,7 +39,7 @@ public class Configserver implements Theserverprocess {
 					}
 				});
 			} catch (Exception e) {
-				System.out.println(new Date() + " ==== System exited when reading [" + configfolder.toAbsolutePath()
+				System.out.println(new Date() + " ==== System exited when reading [" + STATIC.LOCAL_CONFIGFOLDER.toAbsolutePath()
 						+ "] due to below exception:");
 				e.printStackTrace();
 				System.exit(1);
@@ -51,20 +49,20 @@ public class Configserver implements Theserverprocess {
 
 	public static String readconfig(String namespace, String file, String configkey) {
 		try {
-			if (file.equals("bigdata")) {
+			if (file.equals(STATIC.REMOTE_CONFIGFILE_BIGDATA)) {
 				return Bigdataconfig.read(namespace, configkey);
-			} else if (file.equals("bigindex")) {
+			} else if (file.equals(STATIC.REMOTE_CONFIGFILE_BIGINDEX)) {
 				return Bigindexconfig.read(namespace, configkey);
 			} else {
-				Path configfile = target(namespace, file);
+				Path configfile = targetconfigfile(namespace, file);
 				List<String> lines = Files.readAllLines(configfile, Charset.forName("UTF-8"));
 				for (String line : lines) {
-					if (line.indexOf("#") > 0) {
-						String encodedkey = line.substring(0, line.indexOf("#"));
+					if (line.indexOf(STATIC.KEY_SPLIT_VAL) > 0) {
+						String encodedkey = line.substring(0, line.indexOf(STATIC.KEY_SPLIT_VAL));
 						if (URLDecoder.decode(encodedkey, "UTF-8").equals(configkey)) {
 							String encodedvalue = "";
-							if (line.length() > line.indexOf("#") + 1) {
-								encodedvalue = line.substring(line.indexOf("#") + 1);
+							if (line.length() > line.indexOf(STATIC.KEY_SPLIT_VAL) + 1) {
+								encodedvalue = line.substring(line.indexOf(STATIC.KEY_SPLIT_VAL) + 1);
 							}
 							return URLDecoder.decode(encodedvalue, "UTF-8");
 						}
@@ -80,21 +78,21 @@ public class Configserver implements Theserverprocess {
 	private Map<String, Map<String, Map<String, String>>> returnvalue = new Hashtable<String, Map<String, Map<String, String>>>();
 
 	@Override
-	public void init(Map<String, String> config) {
+	public void init(int bigfilehash) {
 
 	}
 
-	private static Path target(String namespace, String file) throws Exception {
-		return configfolder.resolve(URLEncoder.encode(namespace, "UTF-8") + "/" + URLEncoder.encode(file, "UTF-8"));
+	private static Path targetconfigfile(String namespace, String file) throws Exception {
+		return STATIC.LOCAL_CONFIGFOLDER.resolve(URLEncoder.encode(namespace, "UTF-8") + "/" + URLEncoder.encode(file, "UTF-8"));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void request(byte[] b) throws Exception {
 		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(b);
-		if (params.get("data") != null) {
-			returnvalue = (Map<String, Map<String, Map<String, String>>>) params.get("data");
-			if ("read".equals(params.get("action").toString())) {
+		if (params.get(STATIC.DATA_KEY) != null) {
+			returnvalue = (Map<String, Map<String, Map<String, String>>>) params.get(STATIC.DATA_KEY);
+			if (STATIC.ACTION_READ.equals(params.get(STATIC.ACTION_KEY).toString())) {
 				Object[] ns = returnvalue.keySet().toArray();
 				for (Object nsobj : ns) {
 					String namespace = nsobj.toString();
@@ -121,7 +119,7 @@ public class Configserver implements Theserverprocess {
 				}
 			}
 		} else {
-			throw new Exception("notsupport-" + params.get("action"));
+			throw new Exception("notsupport-" + params.get(STATIC.ACTION_KEY));
 		}
 	}
 
