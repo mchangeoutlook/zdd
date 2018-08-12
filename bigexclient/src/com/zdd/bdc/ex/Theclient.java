@@ -23,7 +23,6 @@ public class Theclient {
 			writebb.put(request);
 			writebb.flip();
 			sc.write(writebb);
-			
 
 			if (requests != null) {
 				try {
