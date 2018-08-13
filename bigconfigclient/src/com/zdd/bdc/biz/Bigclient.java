@@ -9,7 +9,7 @@ public class Bigclient {
 	//return ip:port
 	public static String distributebigdata(String namespace, String key) {
 		String configkey = STATIC.FORMAT_yMd(key);
-		String[] servers = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(configkey).split(STATIC.VAL_SPLIT_VAL);
+		String[] servers = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(configkey).split(STATIC.SPLIT_VAL_VAL);
 		return servers[Math.abs(key.hashCode())%servers.length];
 	}
 

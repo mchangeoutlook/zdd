@@ -25,23 +25,23 @@ public class Bigdataconfig {
 		Map<String, String> parentfolderip_port = new Hashtable<String, String>();
 		Map<String, String> iport_filehash = new Hashtable<String, String>();
 		for (String line : lines) {
-			if (line.indexOf(STATIC.KEY_SPLIT_VAL) > 0) {
-				String key = URLDecoder.decode(line.substring(0, line.indexOf(STATIC.KEY_SPLIT_VAL)), "UTF-8");
-				String value = URLDecoder.decode(line.substring(line.indexOf(STATIC.KEY_SPLIT_VAL) + 1), "UTF-8");
-				String[] values = value.split(STATIC.VAL_SPLIT_VAL);
+			if (line.indexOf(STATIC.SPLIT_KEY_VAL) > 0) {
+				String key = URLDecoder.decode(line.substring(0, line.indexOf(STATIC.SPLIT_KEY_VAL)), "UTF-8");
+				String value = URLDecoder.decode(line.substring(line.indexOf(STATIC.SPLIT_KEY_VAL) + 1), "UTF-8");
+				String[] values = value.split(STATIC.SPLIT_VAL_VAL);
 				String ipport = "";
 				for (String val : values) {
-					String[] vals = val.split(STATIC.IP_SPLIT_PORT);
+					String[] vals = val.split(STATIC.SPLIT_IP_PORT);
 					String parentfolder = vals[0];
 					String filehash = vals[1];
 					String ip = vals[2];
 					String port = vals[3];
-					parentfolderip_port.put(parentfolder + STATIC.IP_SPLIT_PORT + ip, port);
-					iport_filehash.put(ip + STATIC.IP_SPLIT_PORT+ port, filehash);
+					parentfolderip_port.put(parentfolder + STATIC.SPLIT_IP_PORT + ip, port);
+					iport_filehash.put(ip + STATIC.SPLIT_IP_PORT+ port, filehash);
 					if (!ipport.equals("")) {
-						ipport += STATIC.VAL_SPLIT_VAL;
+						ipport += STATIC.SPLIT_VAL_VAL;
 					}
-					ipport += ip + STATIC.IP_SPLIT_PORT + port;
+					ipport += ip + STATIC.SPLIT_IP_PORT + port;
 				}
 				date_ipport.put(key, ipport);
 			}

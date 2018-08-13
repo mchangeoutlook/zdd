@@ -34,7 +34,7 @@ public class Theserver {
 		ssc.register(acceptSelector, SelectionKey.OP_ACCEPT);
 
 		System.out.println(new Date() + " ==== " + test.getClass().getName() + " listening port [" + port + "] on ip ["
-				+ ip + "]");
+				+ ip + "] and bigfilehash = ["+bigfilehash+"]");
 		while (acceptSelector.select() > 0 && !ispending.equals(pending.toString())) {
 			Set<SelectionKey> readyKeys = acceptSelector.selectedKeys();
 			Iterator<SelectionKey> i = readyKeys.iterator();

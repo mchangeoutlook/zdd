@@ -1,17 +1,16 @@
 package com.zdd.bdc.biz;
 
-import java.net.URLEncoder;
+import java.io.InputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Vector;
 
-import com.zdd.bdc.ex.Theclientprocess;
+import com.zdd.bdc.ex.Theserverprocess;
 import com.zdd.bdc.util.Bigindexfileutil;
 import com.zdd.bdc.util.Objectutil;
+import com.zdd.bdc.util.STATIC;
 
-public class Indexserver implements Theclientprocess {
+public class Indexserver implements Theserverprocess {
 
 	private Vector<String> readres = null;
 	private String unique = null;
@@ -19,55 +18,55 @@ public class Indexserver implements Theclientprocess {
 	private int bigfilehash = 1000;
 
 	@Override
-	public void init(Map<String, String> config) {
-		bigfilehash = Integer.parseInt(config.get("bigfilehash"));
+	public void init(int thebigfilehash) {
+		bigfilehash = thebigfilehash;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void start(byte[] b) throws Exception {
+	public void request(byte[] b) throws Exception {
 		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(b);
-		if ("create".equals(params.get("action").toString())) {
-			String index = params.get("index").toString();
-			String key = params.get("key").toString();
-			String namespace = params.get("ns").toString();
-			Vector<String> filters = (Vector<String>) params.get("filters");
-			if (params.get("pagenum") == null) {
-				Path target = target(index, -1, filters, namespace);
+		if (STATIC.PARAM_ACTION_CREATE.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
+			String index = params.get(STATIC.PARAM_INDEX_KEY).toString();
+			String key = params.get(STATIC.PARAM_KEY_KEY).toString();
+			String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
+			Vector<String> filters = (Vector<String>) params.get(STATIC.PARAM_FILTERS_KEY);
+			if (params.get(STATIC.PARAM_PAGENUM_KEY) == null) {
+				Path target = Bigindexfileutil.target(index, STATIC.PAGENUM_UNIQUEINDEX, filters, namespace, bigfilehash);
 				Bigindexfileutil.createunique(index, target, key);
 			} else {
-				long pagenum = Long.parseLong(params.get("pagenum").toString());
-				Path target = target(index, pagenum, filters, namespace);
+				long pagenum = Long.parseLong(params.get(STATIC.PARAM_PAGENUM_KEY).toString());
+				Path target = Bigindexfileutil.target(index, pagenum, filters, namespace, bigfilehash);
 				Bigindexfileutil.create(index, target, key);
 			}
-		} else if ("read".equals(params.get("action").toString())) {
-			String index = params.get("index").toString();
-			String namespace = params.get("ns").toString();
-			Vector<String> filters = (Vector<String>) params.get("filters");
-			if (params.get("pagenum") == null) {
-				Path target = target(index, -1, filters, namespace);
+		} else if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
+			String index = params.get(STATIC.PARAM_INDEX_KEY).toString();
+			String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
+			Vector<String> filters = (Vector<String>) params.get(STATIC.PARAM_FILTERS_KEY);
+			if (params.get(STATIC.PARAM_PAGENUM_KEY) == null) {
+				Path target = Bigindexfileutil.target(index, STATIC.PAGENUM_UNIQUEINDEX, filters, namespace, bigfilehash);
 				Vector<String> res = Bigindexfileutil.read(index, target);
 				unique = "";
 				if (!res.isEmpty()) {
 					unique = res.get(0);
 				}
 			} else {
-				long pagenum = Long.parseLong(params.get("pagenum").toString());
-				Path target = target(index, pagenum, filters, namespace);
+				long pagenum = Long.parseLong(params.get(STATIC.PARAM_PAGENUM_KEY).toString());
+				Path target = Bigindexfileutil.target(index, pagenum, filters, namespace, bigfilehash);
 				readres = Bigindexfileutil.read(index, target);
 			}
 		} else {
-			throw new Exception("notsupport-" + params.get("action"));
+			throw new Exception("notsupport-" + params.get(STATIC.PARAM_ACTION_KEY));
 		}
 	}
 
 	@Override
-	public void process(byte[] b) throws Exception {
+	public void requests(byte[] b) throws Exception {
 
 	}
 
 	@Override
-	public byte[] end() throws Exception {
+	public byte[] response() throws Exception {
 		if (readres != null) {
 			return Objectutil.convert(readres);
 		}
@@ -77,22 +76,11 @@ public class Indexserver implements Theclientprocess {
 		return null;
 	}
 
-	private Path target(String index, long pagenum, Vector<String> filters, String namespace) throws Exception {
-		if (namespace.isEmpty()) {
-			throw new Exception("emptyns");
-		}
-		String s = "";
-		if (filters != null && !filters.isEmpty()) {
-			Collections.sort(filters);
-			for (String f : filters) {
-				if (!s.equals("")) {
-					s+="#";
-				}
-				s += URLEncoder.encode(f, "UTF-8");
-			}
-		}
-		return Paths.get("bigindex/" + URLEncoder.encode(namespace, "UTF-8") + "/"  + s + "#"+pagenum + "/"
-				+ Math.abs(index.hashCode()) % bigfilehash);
+	@Override
+	public InputStream responses() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
 	
 }

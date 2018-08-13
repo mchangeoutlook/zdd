@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import com.zdd.bdc.ex.Theclient;
 import com.zdd.bdc.util.Objectutil;
+import com.zdd.bdc.util.STATIC;
 
 public class Indexclient {
 
@@ -34,16 +35,17 @@ public class Indexclient {
 
 	public void create(String key, long pagenum) throws Exception {
 		try {
-			Map<String, Object> params = new HashMap<String, Object>(5);
-			params.put("key", key);
-			params.put("action", "create");
-			params.put("ns", ns);
-			params.put("index", index);
-			params.put("pagenum", pagenum);
-			params.put("filters", filters);
-			Theclient.request(distribute(ns, pagenum, index),
-					Integer.parseInt(Configclient.getinstance("core", "core").read("indexserverport")),
-					Objectutil.convert(params), null);
+			Map<String, Object> params = new HashMap<String, Object>(6);
+			params.put(STATIC.PARAM_KEY_KEY, key);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_CREATE);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_INDEX_KEY, index);
+			params.put(STATIC.PARAM_PAGENUM_KEY, pagenum);
+			params.put(STATIC.PARAM_FILTERS_KEY, filters);
+			String[] iport = Bigclient.distributebigindex(ns, pagenum, index).split(STATIC.SPLIT_IP_PORT);
+			Theclient.request(iport[0],
+					Integer.parseInt(iport[1]),
+					Objectutil.convert(params), null, null);
 		} finally {
 			clear();
 		}
@@ -52,14 +54,15 @@ public class Indexclient {
 	public void createunique(String key) throws Exception {
 		try {
 			Map<String, Object> params = new HashMap<String, Object>(5);
-			params.put("key", key);
-			params.put("action", "create");
-			params.put("ns", ns);
-			params.put("index", index);
-			params.put("filters", filters);
-			Theclient.request(distribute(ns, -1, index),
-					Integer.parseInt(Configclient.getinstance("core", "core").read("indexserverport")),
-					Objectutil.convert(params), null);
+			params.put(STATIC.PARAM_KEY_KEY, key);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_CREATE);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_INDEX_KEY, index);
+			params.put(STATIC.PARAM_FILTERS_KEY, filters);
+			String[] iport = Bigclient.distributebigindex(ns, STATIC.PAGENUM_UNIQUEINDEX, index).split(STATIC.SPLIT_IP_PORT);
+			Theclient.request(iport[0],
+					Integer.parseInt(iport[1]),
+					Objectutil.convert(params), null, null);
 		} finally {
 			clear();
 		}
@@ -69,15 +72,17 @@ public class Indexclient {
 	public Vector<String> read(long pagenum) throws Exception {
 		try {
 			Map<String, Object> params = new HashMap<String, Object>(5);
-			params.put("index", index);
-			params.put("action", "read");
-			params.put("ns", ns);
-			params.put("pagenum", pagenum);
-			params.put("filters", filters);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_READ);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_INDEX_KEY, index);
+			params.put(STATIC.PARAM_PAGENUM_KEY, pagenum);
+			params.put(STATIC.PARAM_FILTERS_KEY, filters);
+			String[] iport = Bigclient.distributebigindex(ns, pagenum, index).split(STATIC.SPLIT_IP_PORT);
+			
 			return (Vector<String>) Objectutil
-					.convert(Theclient.request(distribute(ns, pagenum, index),
-							Integer.parseInt(Configclient.getinstance("core", "core").read("indexserverport")),
-							Objectutil.convert(params), null));
+					.convert(Theclient.request(iport[0],
+							Integer.parseInt(iport[1]),
+							Objectutil.convert(params), null, null));
 		} finally {
 			clear();
 		}
@@ -85,25 +90,19 @@ public class Indexclient {
 
 	public String readunique() throws Exception {
 		try {
-			Map<String, Object> params = new HashMap<String, Object>(5);
-			params.put("index", index);
-			params.put("action", "read");
-			params.put("ns", ns);
-			params.put("filters", filters);
+			Map<String, Object> params = new HashMap<String, Object>(4);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_READ);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_INDEX_KEY, index);
+			params.put(STATIC.PARAM_FILTERS_KEY, filters);
+			String[] iport = Bigclient.distributebigindex(ns, STATIC.PAGENUM_UNIQUEINDEX, index).split(STATIC.SPLIT_IP_PORT);
 			return (String) Objectutil
-					.convert(Theclient.request(distribute(ns, -1, index),
-							Integer.parseInt(Configclient.getinstance("core", "core").read("indexserverport")),
-							Objectutil.convert(params), null));
+					.convert(Theclient.request(iport[0],
+							Integer.parseInt(iport[1]),
+							Objectutil.convert(params), null, null));
 		} finally {
 			clear();
 		}
-	}
-
-	private static String distribute(String namespace, long pagenum, String index) {
-		String ip = Configclient.getinstance(namespace, "bigindex")
-				.read(String.valueOf(Math.abs((pagenum + index).hashCode())
-						% Integer.parseInt(Configclient.getinstance("core", "core").read("maxindexservers"))));
-		return ip;
 	}
 
 	private void clear() {

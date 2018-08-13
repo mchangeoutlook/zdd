@@ -1,13 +1,12 @@
 package com.zdd.bdc.biz;
 
-import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Vector;
 
 import com.zdd.bdc.ex.Theclient;
 import com.zdd.bdc.util.Objectutil;
+import com.zdd.bdc.util.STATIC;
 
 public class Textclient {
 
@@ -78,16 +77,17 @@ public class Textclient {
 			throw new Exception(".columnvalues.add4create.create");
 		}
 		try {
-			key = newkey();
+			key = Bigclient.newbigdatakey();
 			Map<String, Object> params = new Hashtable<String, Object>(6);
-			params.put("key", key);
-			params.put("action", "create");
-			params.put("ns", ns);
-			params.put("tb", tb);
-			params.put("cvs", cvs);
-			params.put("cvmaxs", cvmaxs);
-			Theclient.request(distribute(ns, key), 
-					Integer.parseInt(Configclient.getinstance("core", "core").read("textserverport")), Objectutil.convert(params), null);
+			params.put(STATIC.PARAM_KEY_KEY, key);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_CREATE);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_TABLE_KEY, tb);
+			params.put(STATIC.PARAM_COLUMNVALUES_KEY, cvs);
+			params.put(STATIC.PARAM_COLUMNMAXVALUES_KEY, cvmaxs);
+			String[] iport = Bigclient.distributebigdata(ns, key).split(STATIC.SPLIT_IP_PORT);
+			Theclient.request(iport[0], 
+					Integer.parseInt(iport[1]), Objectutil.convert(params), null, null);
 			return key;
 		} finally {
 			clear();
@@ -100,13 +100,14 @@ public class Textclient {
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);
-			params.put("key", key);
-			params.put("action", "delete");
-			params.put("ns", ns);
-			params.put("tb", tb);
-			params.put("cols", cols);
-			Objectutil.convert(Theclient.request(distribute(ns, key), 
-					Integer.parseInt(Configclient.getinstance("core", "core").read("textserverport")), Objectutil.convert(params), null));
+			params.put(STATIC.PARAM_KEY_KEY, key);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_DELETE);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_TABLE_KEY, tb);
+			params.put(STATIC.PARAM_COLUMNS_KEY, cols);
+			String[] iport = Bigclient.distributebigdata(ns, key).split(STATIC.SPLIT_IP_PORT);
+			Objectutil.convert(Theclient.request(iport[0], 
+					Integer.parseInt(iport[1]), Objectutil.convert(params), null, null));
 		} finally {
 			clear();
 		}
@@ -119,13 +120,14 @@ public class Textclient {
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);
-			params.put("key", key);
-			params.put("action", "modify");
-			params.put("ns", ns);
-			params.put("tb", tb);
-			params.put("cvs", cvs);
-			Theclient.request(distribute(ns, key), 
-					Integer.parseInt(Configclient.getinstance("core", "core").read("textserverport")), Objectutil.convert(params), null);
+			params.put(STATIC.PARAM_KEY_KEY, key);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_MODIFY);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_TABLE_KEY, tb);
+			params.put(STATIC.PARAM_COLUMNVALUES_KEY, cvs);
+			String[] iport = Bigclient.distributebigdata(ns, key).split(STATIC.SPLIT_IP_PORT);
+			Theclient.request(iport[0], 
+					Integer.parseInt(iport[1]), Objectutil.convert(params), null, null);
 			return key;
 		} finally {
 			clear();
@@ -139,14 +141,15 @@ public class Textclient {
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);
-			params.put("key", key);
-			params.put("action", "read");
-			params.put("ns", ns);
-			params.put("tb", tb);
-			params.put("cols", cols);
+			params.put(STATIC.PARAM_KEY_KEY, key);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_READ);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_TABLE_KEY, tb);
+			params.put(STATIC.PARAM_COLUMNS_KEY, cols);
+			String[] iport = Bigclient.distributebigdata(ns, key).split(STATIC.SPLIT_IP_PORT);
 			return (Map<String, String>) Objectutil
-					.convert(Theclient.request(distribute(ns, key), 
-							Integer.parseInt(Configclient.getinstance("core", "core").read("textserverport")), Objectutil.convert(params), null));
+					.convert(Theclient.request(iport[0], 
+							Integer.parseInt(iport[1]), Objectutil.convert(params), null, null));
 		} finally {
 			clear();
 		}
@@ -159,14 +162,16 @@ public class Textclient {
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);
-			params.put("key", key);
-			params.put("action", "increment");
-			params.put("ns", ns);
-			params.put("tb", tb);
-			params.put("cas", cas);
+			params.put(STATIC.PARAM_KEY_KEY, key);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_INCREMENT);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_TABLE_KEY, tb);
+			params.put(STATIC.PARAM_COLUMNAMOUNTS_KEY, cas);
+			String[] iport = Bigclient.distributebigdata(ns, key).split(STATIC.SPLIT_IP_PORT);
+			
 			return (Map<String, Long>) Objectutil
-					.convert(Theclient.request(distribute(ns, key), 
-							Integer.parseInt(Configclient.getinstance("core", "core").read("textserverport")), Objectutil.convert(params), null));
+					.convert(Theclient.request(iport[0], 
+							Integer.parseInt(iport[1]), Objectutil.convert(params), null, null));
 		} finally {
 			clear();
 		}

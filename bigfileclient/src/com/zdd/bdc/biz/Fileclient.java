@@ -25,7 +25,7 @@ public class Fileclient {
 
 	public void write(String key, InputStream requests) throws Exception {
 		try {
-			String[] iport = Bigclient.distributebigdata("pngbigto", key).split(STATIC.IP_SPLIT_PORT);
+			String[] iport = Bigclient.distributebigdata("pngbigto", key).split(STATIC.SPLIT_IP_PORT);
 			Theclient.request(iport[0], Integer.parseInt(iport[1]), path.getBytes("UTF-8"), requests, null);
 		} finally {
 			requests.close();
@@ -33,7 +33,7 @@ public class Fileclient {
 	}
 
 	public String read(String key, Theclientprocess cp) throws Exception {
-		String[] iport = Bigclient.distributebigdata("pngbigfrom", key).split(STATIC.IP_SPLIT_PORT);
+		String[] iport = Bigclient.distributebigdata("pngbigfrom", key).split(STATIC.SPLIT_IP_PORT);
 		Theclient.request(iport[0], Integer.parseInt(iport[1]), path.getBytes("UTF-8"), null, cp);
 		return key;
 	}

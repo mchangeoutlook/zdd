@@ -1,5 +1,6 @@
 package com.zdd.bdc.util;
 
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
@@ -51,7 +52,7 @@ public class Bigdatafileutil {
 		if (bkey.length != 40) {
 			throw new Exception("key40");
 		}
-		
+
 		try {
 			if (!Files.exists(target)) {
 				write(bkey, target, -1, String.valueOf(amount).getBytes(), 20);
@@ -68,7 +69,7 @@ public class Bigdatafileutil {
 						write(bkey, target, -1, String.valueOf(amount).getBytes(), 20);
 						returnvalue = amount;
 					} else {
-						position -= (11+10);
+						position -= (11 + 10);
 						sbc.position(position);
 						ByteBuffer bbvaluelength = ByteBuffer.allocate(10);
 						sbc.read(bbvaluelength);
@@ -79,21 +80,21 @@ public class Bigdatafileutil {
 						sbc.read(bbvalue);
 						try {
 							long current = Long.parseLong(new String(bbvalue.array()));
-							if (amount==0) {
+							if (amount == 0) {
 								returnvalue = current;
 							} else {
 								long newvalue = current + amount;
 								write(String.valueOf(newvalue).getBytes(), target, position - 20, 20);
 								returnvalue = newvalue;
 							}
-						}catch(NumberFormatException e) {
+						} catch (NumberFormatException e) {
 							throw new Exception("notLong");
 						}
 					}
 				}
-				
+
 			}
-		}finally {
+		} finally {
 			if (sbc != null) {
 				sbc.close();
 			}
@@ -127,7 +128,6 @@ public class Bigdatafileutil {
 	}
 
 	public static synchronized void create(String key, Path target, byte[] value, int max) throws Exception {
-		SeekableByteChannel sbc = null;
 		byte[] bkey = key.getBytes("UTF-8");
 		if (bkey.length != 40) {
 			throw new Exception("key40");
@@ -135,13 +135,8 @@ public class Bigdatafileutil {
 		if (max == 0 || value.length > max) {
 			throw new Exception("exceed");
 		}
-		try {
-			write(bkey, target, -1, value, max);
-		} finally {
-			if (sbc != null) {
-				sbc.close();
-			}
-		}
+		write(bkey, target, -1, value, max);
+
 	}
 
 	public static void modify(String key, Path target, byte[] value) throws Exception {
@@ -200,12 +195,12 @@ public class Bigdatafileutil {
 			}
 		}
 
-		if (max>=0&&Arrays.equals(bbkey.array(), bkey)) {
+		if (max >= 0 && Arrays.equals(bbkey.array(), bkey)) {
 			returnvalue = position + 11;
 		}
 		return returnvalue;
 	}
-	
+
 	private static void write(byte[] bkey, Path target, long startposition, byte[] value, int max) throws Exception {
 		ByteBuffer bbvalue = ByteBuffer.allocate(max);
 		bbvalue.put(value);
@@ -226,11 +221,13 @@ public class Bigdatafileutil {
 
 	private static void write(Path target, long startposition, ByteBuffer bb) throws Exception {
 		if (startposition == -1) {
-			if (!Files.exists(target)&&target.getParent()!=null&&!Files.exists(target.getParent())) {
-				Files.createDirectories(target.getParent());
+			synchronized (target) {
+				if (!Files.exists(target) && target.getParent() != null && !Files.exists(target.getParent())) {
+					Files.createDirectories(target.getParent());
+				}
+				Files.write(target, bb.array(), StandardOpenOption.CREATE, StandardOpenOption.APPEND,
+						StandardOpenOption.SYNC);
 			}
-			Files.write(target, bb.array(), StandardOpenOption.CREATE, StandardOpenOption.APPEND,
-					StandardOpenOption.SYNC);
 		} else {
 			SeekableByteChannel sbc = null;
 			try {
@@ -245,6 +242,22 @@ public class Bigdatafileutil {
 				}
 			}
 		}
+	}
+
+	public static Path target(String key, String namespace, String table, String column, int bigfilehash)
+			throws Exception {
+		if (namespace.isEmpty()) {
+			throw new Exception("emptyns");
+		}
+		if (table.isEmpty()) {
+			throw new Exception("emptytb");
+		}
+		if (column.isEmpty()) {
+			throw new Exception("emptycol");
+		}
+		return STATIC.LOCAL_DATAFOLDER
+				.resolve(URLEncoder.encode(namespace, "UTF-8") + "/" + URLEncoder.encode(table, "UTF-8") + "/"
+						+ URLEncoder.encode(column, "UTF-8") + "/" + Math.abs(key.hashCode()) % bigfilehash);
 	}
 
 }

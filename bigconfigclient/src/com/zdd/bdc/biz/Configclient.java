@@ -35,11 +35,11 @@ public class Configclient {
 							}
 
 							Files.lines(pathfile, Charset.forName("UTF-8")).forEach(line -> {
-								if (line.indexOf(STATIC.KEY_SPLIT_VAL) > 0) {
-									String encodedkey = line.substring(0, line.indexOf(STATIC.KEY_SPLIT_VAL));
+								if (line.indexOf(STATIC.SPLIT_KEY_VAL) > 0) {
+									String encodedkey = line.substring(0, line.indexOf(STATIC.SPLIT_KEY_VAL));
 									String encodedvalue = "";
-									if (line.length() > line.indexOf(STATIC.KEY_SPLIT_VAL) + 1) {
-										encodedvalue = line.substring(line.indexOf(STATIC.KEY_SPLIT_VAL) + 1);
+									if (line.length() > line.indexOf(STATIC.SPLIT_KEY_VAL) + 1) {
+										encodedvalue = line.substring(line.indexOf(STATIC.SPLIT_KEY_VAL) + 1);
 									}
 									try {
 										nsfilekeyvalue.get(namespace).get(file).put(
@@ -93,8 +93,8 @@ public class Configclient {
 						Map<String, Map<String, Map<String, String>>> temp = (Map<String, Map<String, Map<String, String>>>) Objectutil
 								.convert(Objectutil.convert(nsfilekeyvalue));
 						Map<String, Object> params = new Hashtable<String, Object>(2);
-						params.put(STATIC.DATA_KEY, temp);
-						params.put(STATIC.ACTION_KEY, STATIC.ACTION_READ);
+						params.put(STATIC.PARAM_DATA_KEY, temp);
+						params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_READ);
 						Map<String, Map<String, Map<String, String>>> res = null;
 						res = (Map<String, Map<String, Map<String, String>>>) Objectutil
 								.convert(Theclient.request(nsfilekeyvalue.get(STATIC.NAMESPACE_CORE).get(STATIC.REMOTE_CONFIGFILE_CORE).get(STATIC.REMOTE_CONFIGKEY_CONFIGSERVERIP),
@@ -201,8 +201,8 @@ public class Configclient {
 		config.get(namespace).put(file, new Hashtable<String, String>(1));
 		config.get(namespace).get(file).put(configkey, "");
 		Map<String, Object> params = new Hashtable<String, Object>(2);
-		params.put(STATIC.DATA_KEY, config);
-		params.put(STATIC.ACTION_KEY, STATIC.ACTION_READ);
+		params.put(STATIC.PARAM_DATA_KEY, config);
+		params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_READ);
 		Map<String, Map<String, Map<String, String>>> res = null;
 		try {
 			res = (Map<String, Map<String, Map<String, String>>>) Objectutil

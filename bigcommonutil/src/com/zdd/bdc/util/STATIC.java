@@ -6,10 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class STATIC {
-	public static final String IP_SPLIT_PORT = ":";
-	public static final String VAL_SPLIT_VAL = "#";
-	public static final String KEY_SPLIT_VAL = "#";
-	public static final String A_SPLIT_B = "#";
+	public static final String SPLIT_IP_PORT = ":";
+	public static final String SPLIT_VAL_VAL = "#";
+	public static final String SPLIT_KEY_VAL = "#";
+	public static final String SPLIT_A_B = "#";
 	
 	public static final String REMOTE_CONFIGFILE_BIGDATA = "bigdata";
 	public static final String REMOTE_CONFIGFILE_BIGINDEX = "bigindex";
@@ -23,14 +23,27 @@ public class STATIC {
 	
 	public static final String REMOTE_CONFIGVAL_PENDING = "pending";
 	
-	public static final String DATA_KEY = "data";
+	public static final int PAGENUM_UNIQUEINDEX= -1;
+
+	public static final String PARAM_KEY_KEY = "key";
+	public static final String PARAM_NAMESPACE_KEY = "ns";
+	public static final String PARAM_INDEX_KEY = "index";
+	public static final String PARAM_PAGENUM_KEY = "pagenum";
+	public static final String PARAM_FILTERS_KEY = "filters";
+	public static final String PARAM_TABLE_KEY = "tb";
+	public static final String PARAM_COLUMNS_KEY = "cols";
+	public static final String PARAM_COLUMNVALUES_KEY = "cvs";
+	public static final String PARAM_COLUMNAMOUNTS_KEY = "cas";
+	public static final String PARAM_COLUMNMAXVALUES_KEY = "cvmaxs";
+
+	public static final String PARAM_DATA_KEY = "data";
 	
-	public static final String ACTION_KEY = "action";
-	public static final String ACTION_READ = "read";
-	public static final String ACTION_DELETE = "delete";
-	public static final String ACTION_MODIFY = "modify";
-	public static final String ACTION_CREATE = "create";
-	public static final String ACTION_INCREMENT = "increment";
+	public static final String PARAM_ACTION_KEY = "action";
+	public static final String PARAM_ACTION_READ = "read";
+	public static final String PARAM_ACTION_DELETE = "delete";
+	public static final String PARAM_ACTION_MODIFY = "modify";
+	public static final String PARAM_ACTION_CREATE = "create";
+	public static final String PARAM_ACTION_INCREMENT = "increment";
 
 	public static final String NAMESPACE_CORE = "core";
 	

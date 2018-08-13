@@ -24,17 +24,17 @@ public class Bigindexconfig {
 		Map<String, String> iport_filehash = new Hashtable<String, String>();
 
 		for (String line : lines) {
-			if (line.indexOf(STATIC.KEY_SPLIT_VAL) > 0) {
-				String key = URLDecoder.decode(line.substring(0, line.indexOf(STATIC.KEY_SPLIT_VAL)), "UTF-8");
-				String value = URLDecoder.decode(line.substring(line.indexOf(STATIC.KEY_SPLIT_VAL) + 1), "UTF-8");
-				String[] vals = value.split(STATIC.IP_SPLIT_PORT);
+			if (line.indexOf(STATIC.SPLIT_KEY_VAL) > 0) {
+				String key = URLDecoder.decode(line.substring(0, line.indexOf(STATIC.SPLIT_KEY_VAL)), "UTF-8");
+				String value = URLDecoder.decode(line.substring(line.indexOf(STATIC.SPLIT_KEY_VAL) + 1), "UTF-8");
+				String[] vals = value.split(STATIC.SPLIT_IP_PORT);
 				String parentfolder = vals[0];
 				String filehash = vals[1];
 				String ip = vals[2];
 				String port = vals[3];
-				parentfolderip_port.put(parentfolder + STATIC.IP_SPLIT_PORT + ip, port);
-				iport_filehash.put(ip + STATIC.IP_SPLIT_PORT + port, filehash);
-				String ipport = ip + STATIC.IP_SPLIT_PORT + port;
+				parentfolderip_port.put(parentfolder + STATIC.SPLIT_IP_PORT + ip, port);
+				iport_filehash.put(ip + STATIC.SPLIT_IP_PORT + port, filehash);
+				String ipport = ip + STATIC.SPLIT_IP_PORT + port;
 
 				if (key.contains("-")) {
 					int start = Integer.parseInt(key.split("-")[0]);

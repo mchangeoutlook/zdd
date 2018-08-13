@@ -9,11 +9,12 @@ import java.util.Enumeration;
 import com.zdd.bdc.biz.Configclient;
 import com.zdd.bdc.biz.Textserver;
 import com.zdd.bdc.ex.Theserver;
+import com.zdd.bdc.util.STATIC;
 
 /**
  * @author mido
  * how to run: 
- * nohup /data/jdk-9.0.4/bin/java -cp bigdataserver.jar:../commonlibs/bigexclient.jar:../commonlibs/bigconfigclient.jar:../commonlibs/bigcommonutil.jar:../commonlibs/bigexserver.jar com.zdd.bdc.main.Starter > log.runbigdataserver &
+ * nohup /data/jdk-9.0.4/bin/java -cp bigtextserver.jar:../../commonlibs/bigexclient.jar:../../commonlibs/bigconfigclient.jar:../../commonlibs/bigcommonutil.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.main.Starter > log.runbigtextserver &
  */
 
 public class Starter {
@@ -37,13 +38,17 @@ public class Starter {
         		localip = InetAddress.getLocalHost().getHostAddress();
         }
 		final String ip = localip;
-		
+		final String port = Configclient.getinstance("unicorn", STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.PARENTFOLDER + STATIC.SPLIT_IP_PORT + ip);
+
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				try {
-					Theserver.startblocking(ip, Integer.parseInt(Configclient.getinstance("core", "core").read("textserverport")), pending, Integer.parseInt(Configclient.getinstance("core", "core").read("textfilehash")), Textserver.class);
+					Theserver.startblocking(ip,
+							Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending,
+							Integer.parseInt(Configclient.getinstance("unicorn", STATIC.REMOTE_CONFIGFILE_BIGDATA).read(ip + STATIC.SPLIT_IP_PORT + port)),
+							 Textserver.class);
 				} catch (Exception e) {
 					System.out.println(new Date()+" ==== System exit due to below exception:");
 					e.printStackTrace();
@@ -52,11 +57,14 @@ public class Starter {
 			}
 			
 		}).start();
-		
-		while(!"pending".equals(Configclient.getinstance("core", "pending").read(ip+"."+Configclient.getinstance("core", "core").read("textserverport")))) {
-			Thread.sleep(30000);
+		while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING).read(ip + STATIC.SPLIT_IP_PORT + port))) {
+			try {
+				Thread.sleep(30000);
+			} catch (InterruptedException e) {
+				// do nothing
+			}
 		}
-		pending.append("pending");
+		pending.append(STATIC.REMOTE_CONFIGVAL_PENDING);
 		System.out.println(new Date()+" ==== System will exit when next connection attempts.");
 	}
 }

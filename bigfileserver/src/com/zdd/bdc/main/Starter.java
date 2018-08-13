@@ -36,7 +36,7 @@ public class Starter {
 		}
 		final String ip = localip;
 
-		final String port = Configclient.getinstance("pngbigfrom", STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.PARENTFOLDER + STATIC.IP_SPLIT_PORT + ip);
+		final String port = Configclient.getinstance("pngbigfrom", STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.PARENTFOLDER + STATIC.SPLIT_IP_PORT + ip);
 		
 		final StringBuffer pending = new StringBuffer();
 		
@@ -55,7 +55,7 @@ public class Starter {
 
 		}).start();
 
-		while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING).read(ip + STATIC.IP_SPLIT_PORT + port))) {
+		while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING).read(ip + STATIC.SPLIT_IP_PORT + port))) {
 			try {
 				Thread.sleep(30000);
 			} catch (InterruptedException e) {

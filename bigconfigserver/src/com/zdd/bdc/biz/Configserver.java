@@ -57,12 +57,12 @@ public class Configserver implements Theserverprocess {
 				Path configfile = targetconfigfile(namespace, file);
 				List<String> lines = Files.readAllLines(configfile, Charset.forName("UTF-8"));
 				for (String line : lines) {
-					if (line.indexOf(STATIC.KEY_SPLIT_VAL) > 0) {
-						String encodedkey = line.substring(0, line.indexOf(STATIC.KEY_SPLIT_VAL));
+					if (line.indexOf(STATIC.SPLIT_KEY_VAL) > 0) {
+						String encodedkey = line.substring(0, line.indexOf(STATIC.SPLIT_KEY_VAL));
 						if (URLDecoder.decode(encodedkey, "UTF-8").equals(configkey)) {
 							String encodedvalue = "";
-							if (line.length() > line.indexOf(STATIC.KEY_SPLIT_VAL) + 1) {
-								encodedvalue = line.substring(line.indexOf(STATIC.KEY_SPLIT_VAL) + 1);
+							if (line.length() > line.indexOf(STATIC.SPLIT_KEY_VAL) + 1) {
+								encodedvalue = line.substring(line.indexOf(STATIC.SPLIT_KEY_VAL) + 1);
 							}
 							return URLDecoder.decode(encodedvalue, "UTF-8");
 						}
@@ -90,9 +90,9 @@ public class Configserver implements Theserverprocess {
 	@Override
 	public void request(byte[] b) throws Exception {
 		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(b);
-		if (params.get(STATIC.DATA_KEY) != null) {
-			returnvalue = (Map<String, Map<String, Map<String, String>>>) params.get(STATIC.DATA_KEY);
-			if (STATIC.ACTION_READ.equals(params.get(STATIC.ACTION_KEY).toString())) {
+		if (params.get(STATIC.PARAM_DATA_KEY) != null) {
+			returnvalue = (Map<String, Map<String, Map<String, String>>>) params.get(STATIC.PARAM_DATA_KEY);
+			if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
 				Object[] ns = returnvalue.keySet().toArray();
 				for (Object nsobj : ns) {
 					String namespace = nsobj.toString();
@@ -119,7 +119,7 @@ public class Configserver implements Theserverprocess {
 				}
 			}
 		} else {
-			throw new Exception("notsupport-" + params.get(STATIC.ACTION_KEY));
+			throw new Exception("notsupport-" + params.get(STATIC.PARAM_ACTION_KEY));
 		}
 	}
 
