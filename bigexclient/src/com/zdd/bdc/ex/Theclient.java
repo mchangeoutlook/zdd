@@ -67,6 +67,11 @@ public class Theclient {
 			readbb = new byte[11];
 			is.readNBytes(readbb, 0, readbb.length);
 			length = Integer.parseInt(new String(readbb));
+			if (length < 0) {
+				readbb = new byte[Math.abs(length)];
+				is.readNBytes(readbb, 0, readbb.length);
+				throw new Exception(new String(readbb, "UTF-8"));
+			}
 			while (length > 0) {
 				readbb = new byte[length];
 				is.readNBytes(readbb, 0, readbb.length);
@@ -79,19 +84,15 @@ public class Theclient {
 
 			return returnvalue;
 		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (Exception e) {
-					// do nothing
-				}
+			try {
+				is.close();
+			} catch (Exception e) {
+				// do nothing
 			}
-			if (sc != null) {
-				try {
-					sc.close();
-				} catch (Exception e) {
-					// do nothing
-				}
+			try {
+				sc.close();
+			} catch (Exception e) {
+				// do nothing
 			}
 
 		}

@@ -32,7 +32,6 @@ public class Filefromserver implements Theserverprocess {
 
 	@Override
 	public byte[] response() throws Exception {
-		// TODO Auto-generated method stub
 		return "done".getBytes();
 	}
 
