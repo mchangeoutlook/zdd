@@ -51,7 +51,7 @@ public class Theclient {
 			sc.write(writebb);
 			sc.shutdownOutput();
 		} catch (Exception e) {
-			// do nothing
+			//do nothing
 		}
 		try {
 			is = sc.socket().getInputStream();

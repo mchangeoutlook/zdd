@@ -2,6 +2,7 @@ package com.zdd.bdc.biz;
 
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
@@ -73,7 +74,7 @@ public class Indexserver implements Theserverprocess {
 		if (unique != null) {
 			return Objectutil.convert(unique);
 		}
-		return null;
+		return Objectutil.convert(new Vector<String>());
 	}
 
 	@Override

@@ -92,7 +92,7 @@ public class Textserver implements Theserverprocess {
 		if (incrementres != null) {
 			return Objectutil.convert(incrementres);
 		}
-		return null;
+		return Objectutil.convert(new Hashtable<String, String>());
 	}
 
 	@Override

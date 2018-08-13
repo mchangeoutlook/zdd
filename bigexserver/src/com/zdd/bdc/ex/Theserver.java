@@ -113,7 +113,6 @@ public class Theserver {
 								writebb.put(res);
 								writebb.flip();
 								s.getChannel().write(writebb);
-								e.printStackTrace();
 							} catch (Exception ex) {
 								System.out.println(new Date() + " ==== " + c.getName() + " process exception:");
 								e.printStackTrace();
