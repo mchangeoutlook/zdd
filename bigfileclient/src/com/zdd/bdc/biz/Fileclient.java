@@ -37,40 +37,5 @@ public class Fileclient {
 		Theclient.request(iport[0], Integer.parseInt(iport[1]), path.getBytes("UTF-8"), null, cp);
 		return key;
 	}
-	
-	public static void main(String[] s) throws IOException, Exception {
-		for (int i=0;i<100;i++) {
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					for (int j=0	;j<45;j++) {
-						String key = Bigclient.newbigdatakey();
-						String path = "/test/"+UUID.randomUUID().toString();
-						try {
-							Fileclient.getinstance(path).write(key, Files.newInputStream(Paths.get("/Users/mido/Documents/青食H5.zip")));
-						
-						Fileclient.getinstance(path).read(key, new Theclientprocess() {
-							String path = UUID.randomUUID().toString();
-							@Override
-							public void responses(byte[] b) throws Exception {
-								Files.write(Paths.get("/Users/mido/Downloads/unicorn/unicorndemo/test/"+path+".zip"), b, StandardOpenOption.CREATE,StandardOpenOption.APPEND);
-							}
-							
-						});
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					
-				}
-		
-			}).start();
-		}
-	}
 
 }
