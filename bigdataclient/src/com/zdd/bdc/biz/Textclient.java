@@ -1,16 +1,10 @@
 package com.zdd.bdc.biz;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Vector;
 
 import com.zdd.bdc.ex.Theclient;
-import com.zdd.bdc.ex.Theclientprocess;
 import com.zdd.bdc.util.Objectutil;
 import com.zdd.bdc.util.STATIC;
 
@@ -200,58 +194,5 @@ public class Textclient {
 		}
 		cols = null;
 	}
-	
-
-	public static void main(String[] s) throws IOException, Exception {
-		
-		for (int i=0;i<1;i++) {
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					for (int j=0	;j<2000;j++) {
-						try {
-							String key = Textclient.getinstance("unicorn", "testable").columnvalues(1).add4create("columnvalue", "value"+j, 100).create();
-							if (!Textclient.getinstance("unicorn", "testable").key(key).columns(1).add("columnvalue").read().get("columnvalue").equals("value"+j)) {
-								throw new Exception("wrong value");
-							}
-							//Textclient.getinstance("unicorn", "testable").key(key).add4increment("columnamount", j).increment();
-							
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					
-				}
-		
-			}).start();
-		}
-		
-		for (int i=0;i<1;i++) {
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					for (int j=0	;j<1;j++) {
-						try {
-							String key = Textclient.getinstance("unicorn", "testable").columnvalues(1).add4create("columnvalue", "value"+j, 100).create();
-							if (!Textclient.getinstance("unicorn", "testable").key(key).columns(1).add("columnvalue").read().get("columnvalue").equals("value"+j)) {
-								throw new Exception("wrong value");
-							}
-							//Textclient.getinstance("unicorn", "testable").key(key).add4increment("columnamount", j).increment();
-							
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					
-				}
-		
-			}).start();
-		}
-	}
-
 
 }

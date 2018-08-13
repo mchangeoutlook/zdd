@@ -11,55 +11,71 @@ import java.util.Collections;
 import java.util.Vector;
 
 public class Bigindexfileutil {
+	private static String[] synchorizedfile = null;
+
+	public static void initonlyonce(int bigfilehash) {
+		if (synchorizedfile == null) {
+			synchorizedfile = new String[bigfilehash];
+			for (int i = 0; i < bigfilehash; i++) {
+				synchorizedfile[i] = String.valueOf(i);
+			}
+		}
+	}
 
 	public static Vector<String> read(String index, Path target) throws Exception {
-		if (index.isEmpty()) {
-			throw new Exception("emptyindex");
-		}
-		Vector<String> keys = new Vector<String>(100);
-		if (Files.exists(target)) {
-			Files.lines(target, Charset.forName("UTF-8")).forEach(line -> {
-				try {
-					if (line.startsWith(URLEncoder.encode(index, "UTF-8") + STATIC.SPLIT_KEY_VAL)) {
-						keys.add(URLDecoder.decode(line.split(STATIC.SPLIT_KEY_VAL)[1], "UTF-8"));
+		synchronized (synchorizedfile[Integer.parseInt(target.getFileName().toString())]) {
+			if (index.isEmpty()) {
+				throw new Exception("emptyindex");
+			}
+			Vector<String> keys = new Vector<String>(100);
+			if (Files.exists(target)) {
+				Files.lines(target, Charset.forName("UTF-8")).forEach(line -> {
+					try {
+						if (line.startsWith(URLEncoder.encode(index, "UTF-8") + STATIC.SPLIT_KEY_VAL)) {
+							keys.add(URLDecoder.decode(line.split(STATIC.SPLIT_KEY_VAL)[1], "UTF-8"));
+						}
+					} catch (Exception e) {
+						// do nothing
 					}
-				} catch (Exception e) {
-					//do nothing
-				}
-			});
+				});
+			}
+			return keys;
 		}
-		return keys;
 	}
 
-	public static synchronized void create(String index, Path target, String key) throws Exception {
-		if (index.isEmpty()) {
-			throw new Exception("emptyindex");
-		}
-		if (key.isEmpty()) {
-			throw new Exception("emptykey");
-		}
-		byte[] bline = (URLEncoder.encode(index, "UTF-8") + STATIC.SPLIT_A_B + URLEncoder.encode(key, "UTF-8")
-				+ System.lineSeparator()).getBytes("UTF-8");
-		ByteBuffer bb = ByteBuffer.allocate(bline.length);
-		bb.put(bline);
-		write(target, bb);
-	}
-
-	public static synchronized void createunique(String index, Path target, String key) throws Exception {
-		if (index.isEmpty()) {
-			throw new Exception("emptyindex");
-		}
-		if (key.isEmpty()) {
-			throw new Exception("emptykey");
-		}
-		if (read(index, target).isEmpty()) {
+	public static void create(String index, Path target, String key) throws Exception {
+		synchronized (synchorizedfile[Integer.parseInt(target.getFileName().toString())]) {
+			if (index.isEmpty()) {
+				throw new Exception("emptyindex");
+			}
+			if (key.isEmpty()) {
+				throw new Exception("emptykey");
+			}
 			byte[] bline = (URLEncoder.encode(index, "UTF-8") + STATIC.SPLIT_A_B + URLEncoder.encode(key, "UTF-8")
 					+ System.lineSeparator()).getBytes("UTF-8");
 			ByteBuffer bb = ByteBuffer.allocate(bline.length);
 			bb.put(bline);
 			write(target, bb);
-		} else {
-			throw new Exception("duplicate");
+		}
+	}
+
+	public static void createunique(String index, Path target, String key) throws Exception {
+		synchronized (synchorizedfile[Integer.parseInt(target.getFileName().toString())]) {
+			if (index.isEmpty()) {
+				throw new Exception("emptyindex");
+			}
+			if (key.isEmpty()) {
+				throw new Exception("emptykey");
+			}
+			if (read(index, target).isEmpty()) {
+				byte[] bline = (URLEncoder.encode(index, "UTF-8") + STATIC.SPLIT_A_B + URLEncoder.encode(key, "UTF-8")
+						+ System.lineSeparator()).getBytes("UTF-8");
+				ByteBuffer bb = ByteBuffer.allocate(bline.length);
+				bb.put(bline);
+				write(target, bb);
+			} else {
+				throw new Exception("duplicate");
+			}
 		}
 	}
 
@@ -69,9 +85,9 @@ public class Bigindexfileutil {
 		}
 		Files.write(target, bb.array(), StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.SYNC);
 	}
-	
 
-	public static Path target(String index, long pagenum, Vector<String> filters, String namespace, int bigfilehash) throws Exception {
+	public static Path target(String index, long pagenum, Vector<String> filters, String namespace, int bigfilehash)
+			throws Exception {
 		if (namespace.isEmpty()) {
 			throw new Exception("emptyns");
 		}
@@ -80,13 +96,13 @@ public class Bigindexfileutil {
 			Collections.sort(filters);
 			for (String f : filters) {
 				if (!s.equals("")) {
-					s+=STATIC.SPLIT_A_B;
+					s += STATIC.SPLIT_A_B;
 				}
 				s += URLEncoder.encode(f, "UTF-8");
 			}
 		}
-		return STATIC.LOCAL_DATAFOLDER.resolve( URLEncoder.encode(namespace, "UTF-8") + "/"  + s + STATIC.SPLIT_A_B+pagenum + "/"
-				+ Math.abs(index.hashCode()) % bigfilehash);
+		return STATIC.LOCAL_DATAFOLDER.resolve(URLEncoder.encode(namespace, "UTF-8") + "/" + s + STATIC.SPLIT_A_B
+				+ pagenum + "/" + Math.abs(index.hashCode()) % bigfilehash);
 	}
 
 }

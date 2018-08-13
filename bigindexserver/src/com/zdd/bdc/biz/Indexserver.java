@@ -2,7 +2,6 @@ package com.zdd.bdc.biz;
 
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
@@ -21,6 +20,7 @@ public class Indexserver implements Theserverprocess {
 	@Override
 	public void init(int thebigfilehash) {
 		bigfilehash = thebigfilehash;
+		Bigindexfileutil.initonlyonce(bigfilehash);
 	}
 
 	@SuppressWarnings("unchecked")

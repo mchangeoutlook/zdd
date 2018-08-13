@@ -10,160 +10,180 @@ import java.util.Arrays;
 
 public class Bigdatafileutil {
 
-	public static byte[] read(String key, Path target) throws Exception {
-		byte[] returnvalue = null;
-		long position = Files.exists(target) ? Files.size(target) : 0;
-		if (position != 0) {
-			SeekableByteChannel sbc = null;
-			try {
-				sbc = Files.newByteChannel(target, StandardOpenOption.READ);
-				position = findkey(sbc, position, key);
-				if (position != -1) {
-					position -= 11;
-					sbc.position(position);
-					ByteBuffer bbmax = ByteBuffer.allocate(11);
-					sbc.read(bbmax);
-					int max = Integer.parseInt(new String(bbmax.array()));
+	private static String[] synchorizedfile = null;
 
-					position -= 10;
-					sbc.position(position);
-					ByteBuffer bbvaluelength = ByteBuffer.allocate(10);
-					sbc.read(bbvaluelength);
-					int valuelength = Integer.parseInt(new String(bbvaluelength.array()));
-
-					ByteBuffer bbvalue = ByteBuffer.allocate(valuelength);
-					sbc.position(position - max);
-					sbc.read(bbvalue);
-					returnvalue = bbvalue.array();
-				}
-			} finally {
-				if (sbc != null) {
-					sbc.close();
-				}
+	public static synchronized void initonlyonce(int bigfilehash) {
+		if (synchorizedfile == null) {
+			synchorizedfile = new String[bigfilehash];
+			for (int i = 0; i < bigfilehash; i++) {
+				synchorizedfile[i] = String.valueOf(i);
 			}
 		}
-		return returnvalue;
 	}
 
-	public static synchronized long increment(String key, Path target, long amount) throws Exception {
-		long returnvalue = 0l;
-		SeekableByteChannel sbc = null;
-		byte[] bkey = key.getBytes("UTF-8");
-		if (bkey.length != 40) {
-			throw new Exception("key40");
-		}
-
-		try {
-			if (!Files.exists(target)) {
-				write(bkey, target, -1, String.valueOf(amount).getBytes(), 20);
-				returnvalue = amount;
-			} else {
-				long position = Files.exists(target) ? Files.size(target) : 0;
-				if (position == 0) {
-					write(bkey, target, -1, String.valueOf(amount).getBytes(), 20);
-					returnvalue = amount;
-				} else {
+	public static byte[] read(String key, Path target) throws Exception {
+		synchronized (synchorizedfile[Integer.parseInt(target.getFileName().toString())]) {
+			byte[] returnvalue = null;
+			long position = Files.exists(target) ? Files.size(target) : 0;
+			if (position != 0) {
+				SeekableByteChannel sbc = null;
+				try {
 					sbc = Files.newByteChannel(target, StandardOpenOption.READ);
 					position = findkey(sbc, position, key);
-					if (position == -1) {
-						write(bkey, target, -1, String.valueOf(amount).getBytes(), 20);
-						returnvalue = amount;
-					} else {
-						position -= (11 + 10);
+					if (position != -1) {
+						position -= 11;
+						sbc.position(position);
+						ByteBuffer bbmax = ByteBuffer.allocate(11);
+						sbc.read(bbmax);
+						int max = Integer.parseInt(new String(bbmax.array()));
+
+						position -= 10;
 						sbc.position(position);
 						ByteBuffer bbvaluelength = ByteBuffer.allocate(10);
 						sbc.read(bbvaluelength);
 						int valuelength = Integer.parseInt(new String(bbvaluelength.array()));
 
 						ByteBuffer bbvalue = ByteBuffer.allocate(valuelength);
-						sbc.position(position - 20);
+						sbc.position(position - max);
 						sbc.read(bbvalue);
-						try {
-							long current = Long.parseLong(new String(bbvalue.array()));
-							if (amount == 0) {
-								returnvalue = current;
-							} else {
-								long newvalue = current + amount;
-								write(String.valueOf(newvalue).getBytes(), target, position - 20, 20);
-								returnvalue = newvalue;
-							}
-						} catch (NumberFormatException e) {
-							throw new Exception("notLong");
-						}
+						returnvalue = bbvalue.array();
+					}
+				} finally {
+					if (sbc != null) {
+						sbc.close();
 					}
 				}
-
 			}
-		} finally {
-			if (sbc != null) {
-				sbc.close();
-			}
+			return returnvalue;
 		}
+	}
 
-		return returnvalue;
+	public static long increment(String key, Path target, long amount) throws Exception {
+		synchronized (synchorizedfile[Integer.parseInt(target.getFileName().toString())]) {
+			long returnvalue = 0l;
+
+			SeekableByteChannel sbc = null;
+			byte[] bkey = key.getBytes("UTF-8");
+			if (bkey.length != 40) {
+				throw new Exception("key40");
+			}
+
+			try {
+				if (!Files.exists(target)) {
+					write(bkey, target, -1, String.valueOf(amount).getBytes(), 20);
+					returnvalue = amount;
+				} else {
+					long position = Files.exists(target) ? Files.size(target) : 0;
+					if (position == 0) {
+						write(bkey, target, -1, String.valueOf(amount).getBytes(), 20);
+						returnvalue = amount;
+					} else {
+						sbc = Files.newByteChannel(target, StandardOpenOption.READ);
+						position = findkey(sbc, position, key);
+						if (position == -1) {
+							write(bkey, target, -1, String.valueOf(amount).getBytes(), 20);
+							returnvalue = amount;
+						} else {
+							position -= (11 + 10);
+							sbc.position(position);
+							ByteBuffer bbvaluelength = ByteBuffer.allocate(10);
+							sbc.read(bbvaluelength);
+							int valuelength = Integer.parseInt(new String(bbvaluelength.array()));
+
+							ByteBuffer bbvalue = ByteBuffer.allocate(valuelength);
+							sbc.position(position - 20);
+							sbc.read(bbvalue);
+							try {
+								long current = Long.parseLong(new String(bbvalue.array()));
+								if (amount == 0) {
+									returnvalue = current;
+								} else {
+									long newvalue = current + amount;
+									write(String.valueOf(newvalue).getBytes(), target, position - 20, 20);
+									returnvalue = newvalue;
+								}
+							} catch (NumberFormatException e) {
+								throw new Exception("notLong");
+							}
+						}
+					}
+
+				}
+			} finally {
+				if (sbc != null) {
+					sbc.close();
+				}
+			}
+
+			return returnvalue;
+		}
 	}
 
 	public static void delete(String key, Path target) throws Exception {
-		SeekableByteChannel sbc = null;
-		try {
-			long position = Files.exists(target) ? Files.size(target) : 0;
-			if (position == 0) {
-				throw new Exception("empty");
-			}
-			sbc = Files.newByteChannel(target, StandardOpenOption.READ);
-			position = findkey(sbc, position, key);
-			if (position == -1) {
-				throw new Exception("notfound");
-			}
-			long startposition = position - 11;
-			ByteBuffer bb = ByteBuffer.allocate(1);
-			bb.put("-".getBytes());
-			write(target, startposition, bb);
-		} finally {
-			if (sbc != null) {
-				sbc.close();
+		synchronized (synchorizedfile[Integer.parseInt(target.getFileName().toString())]) {
+			SeekableByteChannel sbc = null;
+			try {
+				long position = Files.exists(target) ? Files.size(target) : 0;
+				if (position == 0) {
+					throw new Exception("empty");
+				}
+				sbc = Files.newByteChannel(target, StandardOpenOption.READ);
+				position = findkey(sbc, position, key);
+				if (position == -1) {
+					throw new Exception("notfound");
+				}
+				long startposition = position - 11;
+				ByteBuffer bb = ByteBuffer.allocate(1);
+				bb.put("-".getBytes());
+				write(target, startposition, bb);
+			} finally {
+				if (sbc != null) {
+					sbc.close();
+				}
 			}
 		}
-
 	}
 
-	public static synchronized void create(String key, Path target, byte[] value, int max) throws Exception {
-		byte[] bkey = key.getBytes("UTF-8");
-		if (bkey.length != 40) {
-			throw new Exception("key40");
+	public static void create(String key, Path target, byte[] value, int max) throws Exception {
+		synchronized (synchorizedfile[Integer.parseInt(target.getFileName().toString())]) {
+			byte[] bkey = key.getBytes("UTF-8");
+			if (bkey.length != 40) {
+				throw new Exception("key40");
+			}
+			if (max == 0 || value.length > max) {
+				throw new Exception("exceed");
+			}
+			write(bkey, target, -1, value, max);
 		}
-		if (max == 0 || value.length > max) {
-			throw new Exception("exceed");
-		}
-		write(bkey, target, -1, value, max);
-
 	}
 
 	public static void modify(String key, Path target, byte[] value) throws Exception {
-		SeekableByteChannel sbc = null;
-		try {
-			long position = Files.exists(target) ? Files.size(target) : 0;
-			if (position == 0) {
-				throw new Exception("empty");
-			}
-			sbc = Files.newByteChannel(target, StandardOpenOption.READ);
-			position = findkey(sbc, position, key);
-			if (position == -1) {
-				throw new Exception("notfound");
-			}
-			position -= 11;
-			sbc.position(position);
-			ByteBuffer bbmax = ByteBuffer.allocate(11);
-			sbc.read(bbmax);
-			int max = Integer.parseInt(new String(bbmax.array()));
-			if (max < value.length) {
-				throw new Exception("exceed");
-			}
-			long startposition = position - max - 10;
-			write(value, target, startposition, max);
-		} finally {
-			if (sbc != null) {
-				sbc.close();
+		synchronized (synchorizedfile[Integer.parseInt(target.getFileName().toString())]) {
+			SeekableByteChannel sbc = null;
+			try {
+				long position = Files.exists(target) ? Files.size(target) : 0;
+				if (position == 0) {
+					throw new Exception("empty");
+				}
+				sbc = Files.newByteChannel(target, StandardOpenOption.READ);
+				position = findkey(sbc, position, key);
+				if (position == -1) {
+					throw new Exception("notfound");
+				}
+				position -= 11;
+				sbc.position(position);
+				ByteBuffer bbmax = ByteBuffer.allocate(11);
+				sbc.read(bbmax);
+				int max = Integer.parseInt(new String(bbmax.array()));
+				if (max < value.length) {
+					throw new Exception("exceed");
+				}
+				long startposition = position - max - 10;
+				write(value, target, startposition, max);
+			} finally {
+				if (sbc != null) {
+					sbc.close();
+				}
 			}
 		}
 	}
