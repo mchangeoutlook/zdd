@@ -1,12 +1,6 @@
 package com.zdd.bdc.biz;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.UUID;
-
 import com.zdd.bdc.ex.Theclient;
 import com.zdd.bdc.ex.Theclientprocess;
 import com.zdd.bdc.util.STATIC;
