@@ -50,7 +50,10 @@ public class Theclient {
 			writebb.flip();
 			sc.write(writebb);
 			sc.shutdownOutput();
-
+		} catch (Exception e) {
+			// do nothing
+		}
+		try {
 			is = sc.socket().getInputStream();
 			byte[] readbb = new byte[11];
 			is.readNBytes(readbb, 0, readbb.length);
@@ -58,7 +61,9 @@ public class Theclient {
 			readbb = new byte[Math.abs(length)];
 			is.readNBytes(readbb, 0, readbb.length);
 			byte[] returnvalue = readbb;
-
+			if (length < 0) {
+				throw new Exception(new String(returnvalue, "UTF-8"));
+			}
 			readbb = new byte[11];
 			is.readNBytes(readbb, 0, readbb.length);
 			length = Integer.parseInt(new String(readbb));
@@ -82,7 +87,11 @@ public class Theclient {
 				}
 			}
 			if (sc != null) {
-				sc.close();
+				try {
+					sc.close();
+				} catch (Exception e) {
+					// do nothing
+				}
 			}
 
 		}
