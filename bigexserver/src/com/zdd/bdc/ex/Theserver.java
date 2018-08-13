@@ -34,7 +34,7 @@ public class Theserver {
 		ssc.register(acceptSelector, SelectionKey.OP_ACCEPT);
 
 		System.out.println(
-				new Date() + " " + test.getClass().getName() + " listening port [" + port + "] on ip [" + ip + "]");
+				new Date() + " ==== " + test.getClass().getName() + " listening port [" + port + "] on ip [" + ip + "]");
 		while (acceptSelector.select() > 0 && !ispending.equals(pending.toString())) {
 			Set<SelectionKey> readyKeys = acceptSelector.selectedKeys();
 			Iterator<SelectionKey> i = readyKeys.iterator();
@@ -45,34 +45,28 @@ public class Theserver {
 				final Socket s = nextReady.accept().socket();
 				new Thread(new Runnable() {
 					public void run() {
+						InputStream is = null;
 						try {
-							s.getChannel().configureBlocking(true);
+							is = s.getChannel().socket().getInputStream();
 							Theserverprocess ti = (Theserverprocess) c.getDeclaredConstructor().newInstance();
 							ti.init(bigfilehash);
-							ByteBuffer readbb = ByteBuffer.allocate(11);
-							s.getChannel().read(readbb);
-							Integer length = Integer.parseInt(new String(readbb.array()));
+							byte[] readbb = new byte[11]; 
+							is.readNBytes(readbb, 0, readbb.length);
+							Integer length = Integer.parseInt(new String(readbb));
+							readbb = new byte[Math.abs(length)]; 
+							is.readNBytes(readbb, 0, readbb.length);
+							ti.request(readbb);
 
-							readbb.clear();
-							readbb = ByteBuffer.allocate(length);
-							s.getChannel().read(readbb);
-
-							ti.request(readbb.array());
-
-							readbb.clear();
-							readbb = ByteBuffer.allocate(11);
-							s.getChannel().read(readbb);
-							length = Integer.parseInt(new String(readbb.array()));
+							readbb = new byte[11]; 
+							is.readNBytes(readbb, 0, readbb.length);
+							length = Integer.parseInt(new String(readbb));
 							while (length > 0) {
-								readbb.clear();
-								readbb = ByteBuffer.allocate(length);
-								s.getChannel().read(readbb);
-								ti.requests(readbb.array());
-
-								readbb.clear();
-								readbb = ByteBuffer.allocate(11);
-								s.getChannel().read(readbb);
-								length = Integer.parseInt(new String(readbb.array()));
+								readbb = new byte[length]; 
+								is.readNBytes(readbb, 0, readbb.length);
+								ti.requests(readbb);
+								readbb = new byte[11]; 
+								is.readNBytes(readbb, 0, readbb.length);
+								length = Integer.parseInt(new String(readbb));
 							}
 							
 							byte[] res = ti.response();
@@ -125,15 +119,19 @@ public class Theserver {
 								writebb.put(String.format("%011d", 0).getBytes());
 								writebb.flip();
 								s.getChannel().write(writebb);
-								s.getChannel().shutdownOutput();
 							} catch (Exception ex) {
 								System.out.println(new Date() + c.getName() + " process exception:");
 								e.printStackTrace();
 							}
 						} finally {
+							if (is!=null) {
+								try {
+									is.close();
+								}catch(Exception e) {
+									//do nothing
+								}
+							}
 							try {
-								System.out.println("========closed");
-								s.getChannel().close();
 								s.close();
 							} catch (Exception e) {
 								// do nothing

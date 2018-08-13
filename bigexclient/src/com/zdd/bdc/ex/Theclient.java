@@ -12,11 +12,11 @@ public class Theclient {
 	public static byte[] request(String ip, int port, byte[] request, InputStream requests, Theclientprocess cp)
 			throws Exception {
 		SocketChannel sc = null;
+		InputStream is = null;
 		try {
 			sc = SocketChannel.open();
 
 			sc.connect(new InetSocketAddress(InetAddress.getByName(ip), port));
-			sc.configureBlocking(true);
 			int bs = request.length;
 			ByteBuffer writebb = ByteBuffer.allocate(11 + bs);
 			writebb.put(String.format("%011d", bs).getBytes());
@@ -51,34 +51,40 @@ public class Theclient {
 			sc.write(writebb);
 			sc.shutdownOutput();
 
-			ByteBuffer readbb = ByteBuffer.allocate(11);
-			sc.read(readbb);
-			Integer length = Integer.parseInt(new String(readbb.array()));
-			readbb = ByteBuffer.allocate(Math.abs(length));
-			sc.read(readbb);
-			byte[] returnvalue = readbb.array();
+			is = sc.socket().getInputStream();
+			byte[] readbb = new byte[11];
+			is.readNBytes(readbb, 0, readbb.length);
+			Integer length = Integer.parseInt(new String(readbb));
+			readbb = new byte[Math.abs(length)];
+			is.readNBytes(readbb, 0, readbb.length);
+			byte[] returnvalue = readbb;
 
-			readbb.clear();
-			readbb = ByteBuffer.allocate(11);
-			sc.read(readbb);
-			length = Integer.parseInt(new String(readbb.array()));
+			readbb = new byte[11];
+			is.readNBytes(readbb, 0, readbb.length);
+			length = Integer.parseInt(new String(readbb));
 			while (length > 0) {
-				readbb.clear();
-				readbb = ByteBuffer.allocate(length);
-				sc.read(readbb);
-				cp.responses(readbb.array());
+				readbb = new byte[length];
+				is.readNBytes(readbb, 0, readbb.length);
+				cp.responses(readbb);
 
-				readbb.clear();
-				readbb = ByteBuffer.allocate(11);
-				sc.read(readbb);
-				length = Integer.parseInt(new String(readbb.array()));
+				readbb = new byte[11];
+				is.readNBytes(readbb, 0, readbb.length);
+				length = Integer.parseInt(new String(readbb));
 			}
-			
+
 			return returnvalue;
 		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (Exception e) {
+					// do nothing
+				}
+			}
 			if (sc != null) {
 				sc.close();
 			}
+
 		}
 	}
 }
