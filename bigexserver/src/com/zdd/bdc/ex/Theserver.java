@@ -115,6 +115,8 @@ public class Theserver {
 								s.getChannel().write(writebb);
 							} catch (Exception ex) {
 								System.out.println(new Date() + " ==== " + c.getName() + " process exception:");
+								ex.printStackTrace();
+								System.out.println(new Date() + " ==== " + c.getName() + " due to exception:");
 								e.printStackTrace();
 							}
 						} finally {

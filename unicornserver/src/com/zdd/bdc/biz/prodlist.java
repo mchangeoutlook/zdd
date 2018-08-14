@@ -24,13 +24,22 @@ public class prodlist implements Ibiz {
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		Vector<String> prodkeys = Indexclient.getinstance("unicorn", "ALL").filters(1).add("allprods").read(0);
+		long pagenum = 0;
+		try {
+			pagenum = Long.parseLong(bizp.getext("pagenum"));
+		}catch(Exception e) {
+			//do nothing
+		}
+		Vector<String> prodkeys = Indexclient.getinstance("unicorn", "ALL").filters(1).add("allprods").read(pagenum);
 		List<Map<String, String>> prods = new ArrayList<Map<String, String>>();
 		for (String prodkey:prodkeys) {
 			Map<String, String> prod = Textclient.getinstance("unicorn", "prod").key(prodkey).columns(5)
 			.add("status").add("name").add("rp").add("headimg").add("contentimgs").read();
-			prod.put("prodkey", prodkey);
-			prods.add(prod);
+			if ("1".equals(Textclient.getinstance("unicorn", "png").key(prod.get("headimg")).columns(1).add("status").read()
+					.get("status")))  {
+				prod.put("prodkey", prodkey);
+				prods.add(prod);
+			}
 		}
 		returnvalue.put("prods", prods);
 		return returnvalue;

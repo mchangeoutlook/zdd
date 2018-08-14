@@ -1,8 +1,5 @@
 package com.zdd.bdc.biz;
 
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
@@ -28,39 +25,26 @@ public class picupload implements Ibiz {
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		String imagerootfolder = Configclient.getinstance("unicorn", "bigfile").read("filerootfolder");
+		String abigkey = Indexclient.getinstance("unicorn", "abig").readunique();
 		if (!bizp.getfilenames().isEmpty()) {
 			for (String filename:bizp.getfilenames()) {
-				String targetfiletemp = UUID.randomUUID().toString().replaceAll("-", "");
-				String targetfilepending = targetfiletemp;
-				String relativepath = targetfiletemp;
+				String path = UUID.randomUUID().toString().replaceAll("-", "");
 				if (bizp.getext("resourceid").equals(bizp.getaccountkey())) {
-					relativepath = "approved/account/"+relativepath;
-					targetfilepending = imagerootfolder+"pending/"+UUID.randomUUID().toString().replaceAll("-", "")+"/account/"+targetfilepending;
-					targetfiletemp = imagerootfolder+"approved/account/"+targetfiletemp;
+					path = "account/"+path;
 				} else {
-					relativepath = "approved/"+bizp.getext("resourceid")+"/"+relativepath;
-					targetfilepending = imagerootfolder+"pending/"+UUID.randomUUID().toString().replaceAll("-", "")+"/"+bizp.getext("resourceid")+"/"+targetfilepending;
-					targetfiletemp = imagerootfolder+"approved/"+bizp.getext("resourceid")+"/"+targetfiletemp;
+					path = bizp.getext("resourceid")+"/"+path;
 				}
-				Fileclient.copyto(Configclient.getinstance("unicorn", "bigfile").read("fileserverip"), 
-						Integer.parseInt(Configclient.getinstance("core", "core").read("fileserverport")), 
-						targetfilepending, bizp.getfile(filename));
-				String reviewingfile = "reviewhead.png";
+				String type = "head";
 				if (filename.contains("content")) {
-					reviewingfile = "reviewcontent.png";
+					type = "content";
 				}
-				InputStream is = Files.newInputStream(Paths.get(reviewingfile));
-				try {
-					Fileclient.copyto(Configclient.getinstance("unicorn", "bigfile").read("fileserverip"), 
-							Integer.parseInt(Configclient.getinstance("core", "core").read("fileserverport")), 
-									targetfiletemp, is);
-					returnvalue.put(filename, relativepath);
-				}finally{
-					if (is!=null) {
-						is.close();
-					}
-				}
+				String key = Textclient.getinstance("unicorn", "png").columnvalues(3).add4create("status", "0", 1).add4create("path", path, 73).add4create("type", type, 7).create();
+				Fileclient.getinstance(path).write(key, bizp.getfile(filename));
+				
+				long numofreviews = Textclient.getinstance("unicorn", "abig").key(abigkey).columnamounts(1).add4increment("numofreviews", 1).increment().get("numofreviews");
+				Indexclient.getinstance("unicorn", "ALL").filters(1).add("allreviews").create(key, numofreviews / 100);
+		
+				returnvalue.put(filename, key);
 			}
 		}
 		

@@ -13,8 +13,10 @@
 <title>Unicorn</title>
 <script type="text/javascript" src="3rdjs/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
-	 	var root = "/";
-	 	var rootweb = "/uploadedimages/";
+		//var root = "/";
+		//var rootweb = "/d/";
+		var root = "/unicornserver/";
+		var rootweb = "/unicornserver/d/";
 		function post(uri, params, tellyouresult){
 			var ajaxjson = {
 				url:root+uri,  
@@ -59,17 +61,17 @@
 	　　				var pics = result.data.pics;
 	　　				if (pics.length>0){
 		　　				for (var i=0;i<pics.length;i++){
-	　　						$("#reviewlistform").prepend($("<div id='"+pics[i].substring(75)+"' style='position:relative;with:100%;'></div>").append("<img src='"+rootweb+"pending/"+pics[i]+"' style='width:100%'/>")
+	　　						$("#reviewlistform").prepend($("<div id='"+pics[i]+"' style='position:relative;with:100%;'></div>").append("<img src='"+rootweb+pics[i]+"' style='width:100%'/>")
 	　　								.append($("<input type='button' pic='"+pics[i]+"' style='position:absolute;left:0px;bottom:0px; border: none; font: 18px Arial;' value='Approve'/>").click(function(){
 	　　									var params = {"pic":$(this).attr("pic")};
 	　　									post("n/picapprove",params,function(){
-	　　										$("#"+params.pic.substring(75)).remove();
+	　　										$("#"+params.pic).remove();
 	　　									});
 	　　								}))
 	  								.append($("<input type='button' pic='"+pics[i]+"' style='position:absolute;right:0px;bottom:0px; border: none; font: 18px Arial;' value='Reject'/>").click(function(){
 	　　									var params = {"pic":$(this).attr("pic")};
 	　　									post("n/picreject",params,function(){
-	　　										$("#"+params.pic.substring(75)).remove();
+	　　										$("#"+params.pic).remove();
 	　　									});
 	　　								})));
 	　　					}

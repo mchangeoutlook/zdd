@@ -69,9 +69,9 @@
 <script type="text/javascript" src="3rdjs/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
 	 	//var root = "/";
-	 	//var rootweb = "/uploadedimages/";
+	 	//var rootweb = "/d/";
 	 	var root = "/unicornserver/";
-	 	var rootweb = "/unicornweb/uploadedimages/";
+	 	var rootweb = "/unicornserver/d/";
 		function post(uri, params, tellyouresult){
 			var ajaxjson = {
 				url:root+uri,  
@@ -160,17 +160,19 @@
 	　　				if (prods.length>0){
 		　　				for (var i=0;i<prods.length;i++){
 		　　					if ($("#"+prods[i].prodkey).html()==undefined&&prods[i].status==1){
-		　　							$("#allprodlistform").append($("<div id='"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img id='head-"+prods[i].key+"' src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
+		　　							$("#allprodlistform").append($("<div id='"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img id='head-"+prods[i].prodkey+"' src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font id='namerp-"+prods[i].prodkey+"' style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
 		　　							showprodetailform($(this).attr("id"));
 		　　						}));
+		　　					} else if ($("#"+prods[i].prodkey).html()!=undefined){
+		　　						if (prods[i].status!=1){
+		　　							$("#"+prods[i].prodkey).remove();
+		　　						} else {
+		　　							$("#head-"+prods[i].prodkey).attr("src",rootweb+prods[i].headimg);
+			　　						$("#namerp-"+prods[i].prodkey).html(prods[i].name+"<br>"+prods[i].rp);
+		　　						}
 		　　					}
 		　　					
 		　　				}
-		　　				$("img").each(function(){
-		　　					if (this.height==0||this.width==0){
-		　　						$(this).parent().remove();
-		　　					}
-		　　				});
 	　　				}
 　　				}
 　　			});
@@ -262,7 +264,7 @@
 	　　				if (prods.length>0){
 		　　				for (var i=0;i<prods.length;i++){
 		　　					if ($("#shoprod-"+prods[i].prodkey).html()==undefined){
-		　　						$("#shoprodlistform").prepend($("<div id='shoprod-"+prods[i].prodkey+"' shopkey='"+shopkey+"' prodkey='"+prods[i].prodkey+"' style='position:relative;cursor:pointer;' class='divlist'><img src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
+		　　						$("#shoprodlistform").prepend($("<div id='shoprod-"+prods[i].prodkey+"' shopkey='"+shopkey+"' prodkey='"+prods[i].prodkey+"' style='position:relative;cursor:pointer;' class='divlist'><img id='shoprodhead-"+prods[i].prodkey+"' src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font id='shoprodnamerp-"+prods[i].prodkey+"' style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
 		　　							showchangeshoprodform($(this).attr("shopkey"), $(this).attr("prodkey"));
 		　　						}));
 		　　						var btntext = "上架onsale";
@@ -284,6 +286,9 @@
 		　　							return false;
 		　　						}));
 		　　						$("#shoprodlistform").scrollTop(0);
+		　　					} else {
+		　　						$("#shoprodhead-"+prods[i].prodkey).attr("src",rootweb+prods[i].headimg);
+		　　						$("#shoprodnamerp-"+prods[i].prodkey).html(prods[i].name+"<br>"+prods[i].rp);
 		　　					}
 		　　				}
 	　　				} else {
@@ -668,7 +673,6 @@
 							contentimgs = headimg;
 						}
 						$("#changeshoprodbtn").attr("headimg",headimg);
-						console.log("hello");
 						var oldcontentimgs = $("#changeshoprodbtn").attr("oldcontentimgs").split("#");
 						var newcontentimgs = "";
 						for (var i=0;i<oldcontentimgs.length;i++){
@@ -690,7 +694,6 @@
 							}
 						}
 						$("#changeshoprodbtn").attr("contentimgs",newcontentimgs);
-						console.log("hello2");
 						$("#changeshoprodform").prepend("<img style='width:30vw;float:left;' headimg='"+headimg+"' contentimgs='"+contentimgs+"' class='removeall' src='"+rootweb+headimg+"'/>");
 						changeshoprodfunc();
 						$("#changeshoprodbtn").show();
@@ -725,7 +728,7 @@
 	style="position: fixed; top: 0px; right: 0px; left: 0px; bottom: 0px; overflow: hidden; font: 16px Arial; color: #bbb; text-align: center; background: #000; margin: 0px;">
 
 	<div id="home"
-		style="position: absolute; cursor: pointer; z-index: 10000; display: none; bottom: 5px; left: 50%; opacity: 0.6; transform: translateX(-50%); font: 35px Arial;">🏠</div>
+		style="position: absolute; cursor: pointer; z-index: 10000; display: none; bottom: 5px; left: 0px; opacity: 0.6; font: 35px Arial;">🏠</div>
 	<div id="account"
 		style="position: absolute; cursor: pointer; z-index: 10000; display: none; bottom: 5px; right: 0px; opacity: 0.6; font: 35px Arial;">👤</div>
 	<div id="createshop"

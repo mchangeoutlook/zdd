@@ -1,8 +1,5 @@
 package com.zdd.bdc.biz;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -27,14 +24,7 @@ public class picreject implements Ibiz {
 	@Override
 	public Map<String, Object> process(Bizparams bizp) throws Exception {
 		Map<String, Object> returnvalue = new Hashtable<String, Object>();
-		Path from = Paths.get(Configclient.getinstance("unicorn", "bigfile").read("filerootfolder")+"pending/"+bizp.getext("pic"));
-		Path to = Paths.get(Configclient.getinstance("unicorn", "bigfile").read("filerootfolder")+"approved/"+from.getParent().getFileName().toString()+"/"+from.getFileName().toString());
-
-		Files.deleteIfExists(from);
-		Files.deleteIfExists(from.getParent());
-		Files.deleteIfExists(from.getParent().getParent());
-		Files.deleteIfExists(to);
-		
+		Textclient.getinstance("unicorn", "png").key(bizp.getext("pic")).columnvalues(1).add4modify("status", "2").modify();
 		return returnvalue;
 	}
 
