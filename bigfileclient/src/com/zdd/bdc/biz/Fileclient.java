@@ -1,6 +1,7 @@
 package com.zdd.bdc.biz;
 
 import java.io.InputStream;
+
 import com.zdd.bdc.ex.Theclient;
 import com.zdd.bdc.ex.Theclientprocess;
 import com.zdd.bdc.util.STATIC;
@@ -30,6 +31,11 @@ public class Fileclient {
 		String[] iport = Bigclient.distributebigdata("pngbigfrom", key).split(STATIC.SPLIT_IP_PORT);
 		Theclient.request(iport[0], Integer.parseInt(iport[1]), path.getBytes("UTF-8"), null, cp);
 		return key;
+	}
+	
+	public static void main(String[] s) throws java.text.ParseException {
+		System.out.println(new java.text.SimpleDateFormat("yyyyMMdd").parse("20190101").getTime());
+		System.out.println(new java.util.Date(1522511999000l));
 	}
 
 }

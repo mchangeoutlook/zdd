@@ -261,6 +261,7 @@
 　　			post("n/shoprodlist",params,function(result){
 　　				if (result.data&&result.data.prods){
 	　　				var prods = result.data.prods;
+	　　				$("#shoprodlistform").children().remove();
 	　　				if (prods.length>0){
 		　　				for (var i=0;i<prods.length;i++){
 		　　					if ($("#shoprod-"+prods[i].prodkey).html()==undefined){
@@ -271,7 +272,7 @@
 		　　						if(prods[i].status==1){
 		　　							btntext = "下架offsale";
 		　　						}
-		　　						$("#shoprod-"+prods[i].prodkey).append($("<input type='button' style='position:absolute;left:0px;bottom:0px;z-index:10000;border: none; font: 18px Arial;' shoprodkey='"+prods[i].prodkey+"' shopkey='"+shopkey+"' value='"+btntext+"'>").click(function(){
+		　　						$("#shoprod-"+prods[i].prodkey).append($("<input id='sale-"+prods[i].prodkey+"' type='button' style='position:absolute;left:0px;bottom:0px;z-index:10000;border: none; font: 18px Arial;' shoprodkey='"+prods[i].prodkey+"' shopkey='"+shopkey+"' value='"+btntext+"'>").click(function(){
 		　　							var url = "n/shoprodapprove";
 		　　							if ($(this).val()=="下架offsale"){
 		　　								url = "n/shoprodpending";
@@ -289,6 +290,11 @@
 		　　					} else {
 		　　						$("#shoprodhead-"+prods[i].prodkey).attr("src",rootweb+prods[i].headimg);
 		　　						$("#shoprodnamerp-"+prods[i].prodkey).html(prods[i].name+"<br>"+prods[i].rp);
+		　　						
+		　　						$("#"+prods[i].prodkey).val("上架onsale");
+		　　						if(prods[i].status==1){
+		　　							$("#"+prods[i].prodkey).val("下架offsale");
+		　　						}
 		　　					}
 		　　				}
 	　　				} else {
@@ -822,43 +828,43 @@
 			<input id="resourceidchange" type="hidden" name="resourceid" value="" />
 			<div id="headimgchange"
 				style="position: absolute; top: 50px; left: 10px; display: none;">
-				主图 Head<input type="file" name="headimg" accept="image/*" />
+				主图 Head &lt;100k<input type="file" name="headimg" accept="image/*" />
 			</div>
 			<div id="content0change"
 				style="width: 100%; text-align: left; padding: 10px; display: none;">
-				内容1 Content1<input type="file" name="content0" accept="image/*" />
+				内容1 Content1 &lt;100k<input type="file" name="content0" accept="image/*" />
 			</div>
 			<div id="content1change"
 				style="width: 100%; text-align: left; padding: 10px; display: none;">
-				内容2 Content2<input type="file" name="content1" accept="image/*" />
+				内容2 Content2 &lt;100k<input type="file" name="content1" accept="image/*" />
 			</div>
 			<div id="content2change"
 				style="width: 100%; text-align: left; padding: 10px; display: none;">
-				内容3 Content3<input type="file" name="content2" accept="image/*" />
+				内容3 Content3 &lt;100k<input type="file" name="content2" accept="image/*" />
 			</div>
 			<div id="content3change"
 				style="width: 100%; text-align: left; padding: 10px; display: none;">
-				内容4 Content4<input type="file" name="content3" accept="image/*" />
+				内容4 Content4 &lt;100k<input type="file" name="content3" accept="image/*" />
 			</div>
 			<div id="content4change"
 				style="width: 100%; text-align: left; padding: 10px; display: none;">
-				内容5 Content5<input type="file" name="content4" accept="image/*" />
+				内容5 Content5 &lt;100k<input type="file" name="content4" accept="image/*" />
 			</div>
 			<div id="content5change"
 				style="width: 100%; text-align: left; padding: 10px; display: none;">
-				内容6 Content6<input type="file" name="content5" accept="image/*" />
+				内容6 Content6 &lt;100k<input type="file" name="content5" accept="image/*" />
 			</div>
 			<div id="content6change"
 				style="width: 100%; text-align: left; padding: 10px; display: none;">
-				内容7 Content7<input type="file" name="content6" accept="image/*" />
+				内容7 Content7 &lt;100k<input type="file" name="content6" accept="image/*" />
 			</div>
 			<div id="content7change"
 				style="width: 100%; text-align: left; padding: 10px; display: none;">
-				内容8 Content8<input type="file" name="content7" accept="image/*" />
+				内容8 Content8 &lt;100k<input type="file" name="content7" accept="image/*" />
 			</div>
 			<div id="content8change"
 				style="width: 100%; text-align: left; padding: 10px; display: none;">
-				内容9 Content9<input type="file" name="content8" accept="image/*" />
+				内容9 Content9 &lt;100k<input type="file" name="content8" accept="image/*" />
 			</div>
 		</form>
 		<div
@@ -885,34 +891,34 @@
 			<input id="loginkeycreate" type="hidden" name="loginkey" value="" />
 			<input id="resourceidcreate" type="hidden" name="resourceid" value="" />
 			<div style="position: absolute; top: 50px; left: 10px;">
-				主图 Head<input type="file" name="headimg" accept="image/*" />
+				主图 Head &lt;100k<input type="file" name="headimg" accept="image/*" />
 			</div>
 			<div style="width: 100%; text-align: left; padding: 10px;">
-				内容1 Content1<input type="file" name="content0" accept="image/*" />
+				内容1 Content1 &lt;100k<input type="file" name="content0" accept="image/*" />
 			</div>
 			<div style="width: 100%; text-align: left; padding: 10px;">
-				内容2 Content2<input type="file" name="content1" accept="image/*" />
+				内容2 Content2 &lt;100k<input type="file" name="content1" accept="image/*" />
 			</div>
 			<div style="width: 100%; text-align: left; padding: 10px;">
-				内容3 Content3<input type="file" name="content2" accept="image/*" />
+				内容3 Content3 &lt;100k<input type="file" name="content2" accept="image/*" />
 			</div>
 			<div style="width: 100%; text-align: left; padding: 10px;">
-				内容4 Content4<input type="file" name="content3" accept="image/*" />
+				内容4 Content4 &lt;100k<input type="file" name="content3" accept="image/*" />
 			</div>
 			<div style="width: 100%; text-align: left; padding: 10px;">
-				内容5 Content5<input type="file" name="content4" accept="image/*" />
+				内容5 Content5 &lt;100k<input type="file" name="content4" accept="image/*" />
 			</div>
 			<div style="width: 100%; text-align: left; padding: 10px;">
-				内容6 Content6<input type="file" name="content5" accept="image/*" />
+				内容6 Content6 &lt;100k<input type="file" name="content5" accept="image/*" />
 			</div>
 			<div style="width: 100%; text-align: left; padding: 10px;">
-				内容7 Content7<input type="file" name="content6" accept="image/*" />
+				内容7 Content7 &lt;100k<input type="file" name="content6" accept="image/*" />
 			</div>
 			<div style="width: 100%; text-align: left; padding: 10px;">
-				内容8 Content8<input type="file" name="content7" accept="image/*" />
+				内容8 Content8 &lt;100k<input type="file" name="content7" accept="image/*" />
 			</div>
 			<div style="width: 100%; text-align: left; padding: 10px;">
-				内容9 Content9<input type="file" name="content8" accept="image/*" />
+				内容9 Content9 &lt;100k<input type="file" name="content8" accept="image/*" />
 			</div>
 		</form>
 		<div
