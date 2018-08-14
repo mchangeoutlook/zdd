@@ -14,12 +14,9 @@ import com.zdd.bdc.util.Bizvalidauth;
  
 @SuppressWarnings("serial")
 @WebServlet("/u/*")
-@MultipartConfig(fileSizeThreshold=1024*1024*3, 	// 100 KB 
-				maxFileSize=1024*1024*3,      	// 100 KB
-				maxRequestSize=1024*1024*5)   	// 5 MB
-//@MultipartConfig(fileSizeThreshold=1024*100, 	// 100 KB 
-//                 maxFileSize=1024*100,      	// 100 KB
-//                 maxRequestSize=1024*1024*2)   	// 2 MB
+@MultipartConfig(fileSizeThreshold=1024*100, 	// 100 KB 
+                 maxFileSize=1024*100,      	// 100 KB
+                 maxRequestSize=1024*1024*2)   	// 2 MB
 public class Upload extends HttpServlet {
      
     protected void doPost(HttpServletRequest request,

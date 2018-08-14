@@ -73,6 +73,7 @@
 	 	var root = "/unicornserver/";
 	 	var rootweb = "/unicornserver/d/";
 		function post(uri, params, tellyouresult){
+			$("#loading").show();
 			var ajaxjson = {
 				url:root+uri,  
 			　　	timeout : 20000, 
@@ -93,6 +94,7 @@
 			　　		}
 			　　	},
 			　　	complete : function(XMLHttpRequest,status){
+			　　		$("#loading").hide();
 			　　		if (status!="success"){
 						ajaxpost.abort();
 						alert("网络异常或上传单张图片超100k！Network unavailable or uploading pic's size > 100k!");
@@ -827,7 +829,7 @@
 			<input id="loginkeychange" type="hidden" name="loginkey" value="" />
 			<input id="resourceidchange" type="hidden" name="resourceid" value="" />
 			<div id="headimgchange"
-				style="position: absolute; top: 50px; left: 10px; display: none;">
+				style="position: absolute; top: 40px; text-align: left; left: 10px; display: none;">
 				主图 Head &lt;100k<input type="file" name="headimg" accept="image/*" />
 			</div>
 			<div id="content0change"
@@ -890,7 +892,7 @@
 		<form method="POST" enctype="multipart/form-data" id="fileUploadForm">
 			<input id="loginkeycreate" type="hidden" name="loginkey" value="" />
 			<input id="resourceidcreate" type="hidden" name="resourceid" value="" />
-			<div style="position: absolute; top: 50px; left: 10px;">
+			<div style="position: absolute; top: 40px; text-align: left; left: 10px;">
 				主图 Head &lt;100k<input type="file" name="headimg" accept="image/*" />
 			</div>
 			<div style="width: 100%; text-align: left; padding: 10px;">
@@ -945,8 +947,11 @@
 		<div id="contentimgsview"
 			class="contentimgsview">
 
-		</div>
+		</div>		
 	</div>
+	
+	<div id="loading" style="display:none;position:fixed;left:0px;right:0px;top:0px;bottom:0px;opacity:0.7;background:black;"><font style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);font: 35px Arial;">⌛</font>️</div>
+	
 	<div style='font-size:9px;position:fixed;left:0px;right:0px;bottom:0px;width:100%;text-align:right;color:#999;'>© 02/09/2018-2090 getzdd@outlook.com 沪ICP备18004230号</div>
 </body>
 </html>
