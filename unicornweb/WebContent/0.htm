@@ -162,7 +162,7 @@
 	　　				if (prods.length>0){
 		　　				for (var i=0;i<prods.length;i++){
 		　　					if ($("#"+prods[i].prodkey).html()==undefined&&prods[i].status==1){
-		　　							$("#allprodlistform").append($("<div id='"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img id='head-"+prods[i].prodkey+"' src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font id='namerp-"+prods[i].prodkey+"' style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
+		　　							$("#allprodlistform").append($("<div id='"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img id='head-"+prods[i].prodkey+"' src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font id='namerp-"+prods[i].prodkey+"' style='text-align:right;position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
 		　　							showprodetailform($(this).attr("id"));
 		　　						}));
 		　　					} else if ($("#"+prods[i].prodkey).html()!=undefined){
