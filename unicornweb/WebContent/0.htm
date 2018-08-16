@@ -39,6 +39,10 @@
 	overflow-y: auto;
 }
 
+.prodetailtext{
+	height: 30vw;
+}
+
 @media ( min-aspect-ratio : 1/1) {
 	.divlist {
 		position: relative;
@@ -51,19 +55,22 @@
 		position: absolute; 
 		top: 0px; 
 		left: 0px; 
-		width: 20vw; 
-		height: 20vw; 
+		width: 10vw; 
+		height: 10vw; 
 		overflow: hidden;
 	}
 	.contentimgsview{
 		position: absolute; 
-		top: 20vw; 
+		top: 10vw; 
 		right: 0px; 
 		left: 0px; 
 		bottom: 0px; 
 		overflow-x: hidden; 
 		overflow-y: auto;
 	}
+	.prodetailtext{
+	height: 10vw;
+}
 }
 </style>
 <script type="text/javascript" src="3rdjs/jquery-3.3.1.min.js"></script>
@@ -267,7 +274,7 @@
 	　　				if (prods.length>0){
 		　　				for (var i=0;i<prods.length;i++){
 		　　					if ($("#shoprod-"+prods[i].prodkey).html()==undefined){
-		　　						$("#shoprodlistform").prepend($("<div id='shoprod-"+prods[i].prodkey+"' shopkey='"+shopkey+"' prodkey='"+prods[i].prodkey+"' style='position:relative;cursor:pointer;' class='divlist'><img id='shoprodhead-"+prods[i].prodkey+"' src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font id='shoprodnamerp-"+prods[i].prodkey+"' style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
+		　　						$("#shoprodlistform").prepend($("<div id='shoprod-"+prods[i].prodkey+"' shopkey='"+shopkey+"' prodkey='"+prods[i].prodkey+"' style='position:relative;cursor:pointer;' class='divlist'><img id='shoprodhead-"+prods[i].prodkey+"' src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font id='shoprodnamerp-"+prods[i].prodkey+"' style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6;text-align:right;'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
 		　　							showchangeshoprodform($(this).attr("shopkey"), $(this).attr("prodkey"));
 		　　						}));
 		　　						var btntext = "上架onsale";
@@ -940,8 +947,8 @@
 		<div id="headimgview"
 			class="headimgview">
 		</div>
-		<div
-			style="position: absolute; top: 5px; right: 10px; width: 70vw; height: 30vw; text-align: right; display: grid;">
+		<div class="prodetailtext"
+			style="position: absolute; top: 5px; right: 10px; width: 70vw; text-align: right; display: grid;">
 			<font id="prodnameview">name</font> <font id="prodrpview">1000000</font>
 		</div>
 		<div id="contentimgsview"
