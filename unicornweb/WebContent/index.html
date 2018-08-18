@@ -169,7 +169,7 @@
 	　　				if (prods.length>0){
 		　　				for (var i=0;i<prods.length;i++){
 		　　					if ($("#"+prods[i].prodkey).html()==undefined&&prods[i].status==1){
-		　　							$("#allprodlistform").append($("<div id='"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img id='head-"+prods[i].prodkey+"' src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font id='namerp-"+prods[i].prodkey+"' style='text-align:right;position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
+		　　							$("#allprodlistform").append($("<div id='"+prods[i].prodkey+"' style='cursor:pointer;' class='divlist'><img id='head-"+prods[i].prodkey+"' src='"+rootweb+prods[i].headimg+"' style='width:100%'/><div id='namerp-"+prods[i].prodkey+"' style='text-align:right;position:absolute;left:0px;right:0px;bottom:0px;background-color:black;opacity:0.6'>"+prods[i].name+"<br>"+prods[i].rp+"</div></div>").click(function(){
 		　　							showprodetailform($(this).attr("id"));
 		　　						}));
 		　　					} else if ($("#"+prods[i].prodkey).html()!=undefined){
@@ -274,7 +274,7 @@
 	　　				if (prods.length>0){
 		　　				for (var i=0;i<prods.length;i++){
 		　　					if ($("#shoprod-"+prods[i].prodkey).html()==undefined){
-		　　						$("#shoprodlistform").prepend($("<div id='shoprod-"+prods[i].prodkey+"' shopkey='"+shopkey+"' prodkey='"+prods[i].prodkey+"' style='position:relative;cursor:pointer;' class='divlist'><img id='shoprodhead-"+prods[i].prodkey+"' src='"+rootweb+prods[i].headimg+"' style='width:100%'/><font id='shoprodnamerp-"+prods[i].prodkey+"' style='position:absolute;right:0px;bottom:0px;background-color:black;opacity:0.6;text-align:right;'>"+prods[i].name+"<br>"+prods[i].rp+"</font></div>").click(function(){
+		　　						$("#shoprodlistform").prepend($("<div id='shoprod-"+prods[i].prodkey+"' shopkey='"+shopkey+"' prodkey='"+prods[i].prodkey+"' style='position:relative;cursor:pointer;' class='divlist'><img id='shoprodhead-"+prods[i].prodkey+"' src='"+rootweb+prods[i].headimg+"' style='width:100%'/><div id='shoprodnamerp-"+prods[i].prodkey+"' style='position:absolute;left:0px;right:0px;bottom:0px;background-color:black;opacity:0.6;text-align:right;'>"+prods[i].name+"<br>"+prods[i].rp+"</div></div>").click(function(){
 		　　							showchangeshoprodform($(this).attr("shopkey"), $(this).attr("prodkey"));
 		　　						}));
 		　　						var btntext = "上架onsale";
