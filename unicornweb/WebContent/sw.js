@@ -9,7 +9,7 @@ self.addEventListener('install', function(e) {
             return cache.addAll([
                 './',
                 './3rdjs/jquery-3.3.1.min.js',
-                './0.html'
+                './index.html'
             ]).then(function() {
                 self.skipWaiting();
             });
