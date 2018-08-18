@@ -29,7 +29,7 @@
             "type": "image/png"
         }
     ],
-    "start_url": "0.htm",
+    "start_url": "index.html",
     "display": "standalone",
     "orientation": "portrait",
     "theme_color": "#000000",
