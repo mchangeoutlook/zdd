@@ -32,10 +32,5 @@ public class Fileclient {
 		Theclient.request(iport[0], Integer.parseInt(iport[1]), path.getBytes("UTF-8"), null, cp);
 		return key;
 	}
-	
-	public static void main(String[] s) throws java.text.ParseException {
-		System.out.println(new java.text.SimpleDateFormat("yyyyMMdd").parse("20190101").getTime());
-		System.out.println(new java.util.Date(1522511999000l));
-	}
 
 }

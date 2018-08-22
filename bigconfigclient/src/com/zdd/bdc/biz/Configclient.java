@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import com.zdd.bdc.ex.Theclient;
@@ -33,8 +34,8 @@ public class Configclient {
 							if (nsfilekeyvalue.get(namespace).get(file) == null) {
 								nsfilekeyvalue.get(namespace).put(file, new Hashtable<String, String>());
 							}
-
-							Files.lines(pathfile, Charset.forName("UTF-8")).forEach(line -> {
+							List<String> lines = Files.readAllLines(pathfile, Charset.forName("UTF-8"));
+							for (String line:lines) {
 								if (line.indexOf(STATIC.SPLIT_KEY_VAL) > 0) {
 									String encodedkey = line.substring(0, line.indexOf(STATIC.SPLIT_KEY_VAL));
 									String encodedvalue = "";
@@ -53,7 +54,7 @@ public class Configclient {
 										System.exit(1);
 									}
 								}
-							});
+							};
 						} catch (Exception e) {
 							System.out.println(new Date() + " ==== System exited when reading [" + pathfile
 									+ "] due to below exception:");

@@ -12,13 +12,13 @@ public class Theclient {
 	public static byte[] request(String ip, int port, byte[] request, InputStream requests, Theclientprocess cp)
 			throws Exception {
 		SocketChannel sc = null;
-		InputStream is = null;
+		ByteBuffer writebb = null;
 		try {
 			sc = SocketChannel.open();
 
 			sc.connect(new InetSocketAddress(InetAddress.getByName(ip), port));
 			int bs = request.length;
-			ByteBuffer writebb = ByteBuffer.allocate(11 + bs);
+			writebb = ByteBuffer.allocate(11 + bs);
 			writebb.put(String.format("%011d", bs).getBytes());
 			writebb.put(request);
 			writebb.flip();
@@ -49,10 +49,16 @@ public class Theclient {
 			writebb.put(String.format("%011d", 0).getBytes());
 			writebb.flip();
 			sc.write(writebb);
-			sc.shutdownOutput();
-		} catch (Exception e) {
-			//do nothing
+		} catch(Exception ex) {
+			try {
+				sc.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+			throw ex;
 		}
+		
+		InputStream is = null;
 		try {
 			is = sc.socket().getInputStream();
 			byte[] readbb = new byte[11];
@@ -81,7 +87,12 @@ public class Theclient {
 				is.readNBytes(readbb, 0, readbb.length);
 				length = Integer.parseInt(new String(readbb));
 			}
-
+			
+			writebb.clear();
+			writebb = ByteBuffer.allocate(11);
+			writebb.put(String.format("%011d", 0).getBytes());
+			writebb.flip();
+			sc.write(writebb);
 			return returnvalue;
 		} finally {
 			try {

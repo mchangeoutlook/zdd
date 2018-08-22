@@ -103,6 +103,26 @@ public class Theserver {
 							writebb.put(String.format("%011d", 0).getBytes());
 							writebb.flip();
 							s.getChannel().write(writebb);
+							try {
+								readbb = new byte[11];
+								is.readNBytes(readbb, 0, readbb.length);
+								length = Integer.parseInt(new String(readbb));
+								if (length==0) {
+									try {
+										is.close();
+									} catch (Exception e) {
+										// do nothing
+									}
+
+									try {
+										s.close();
+									} catch (Exception e) {
+										// do nothing
+									}
+								}
+							}catch(Exception ex) {
+								//do nothing
+							}
 						} catch (Exception e) {
 							try {
 								StringWriter errors = new StringWriter();

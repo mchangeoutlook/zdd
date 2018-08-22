@@ -46,11 +46,7 @@ public class Indexserver implements Theserverprocess {
 			Vector<String> filters = (Vector<String>) params.get(STATIC.PARAM_FILTERS_KEY);
 			if (params.get(STATIC.PARAM_PAGENUM_KEY) == null) {
 				Path target = Bigindexfileutil.target(index, STATIC.PAGENUM_UNIQUEINDEX, filters, namespace, bigfilehash);
-				Vector<String> res = Bigindexfileutil.read(index, target);
-				unique = "";
-				if (!res.isEmpty()) {
-					unique = res.get(0);
-				}
+				unique = Bigindexfileutil.readunique(index, target);
 			} else {
 				long pagenum = Long.parseLong(params.get(STATIC.PARAM_PAGENUM_KEY).toString());
 				Path target = Bigindexfileutil.target(index, pagenum, filters, namespace, bigfilehash);

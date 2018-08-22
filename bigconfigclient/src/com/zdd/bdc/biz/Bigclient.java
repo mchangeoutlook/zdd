@@ -23,4 +23,9 @@ public class Bigclient {
 				.read(String.valueOf(Math.abs((pagenum + index).hashCode())
 						% Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS))));
 	}
+	
+	public static String distributebigindexserveri(String namespace, long pagenum, String index) {
+		return String.valueOf(Math.abs((pagenum + index).hashCode())
+				% Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS)));
+	}
 }
