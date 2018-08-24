@@ -16,7 +16,6 @@ import com.zdd.bdc.util.STATIC;
  * @author mido how to run: 
  * nohup /data/jdk-9.0.4/bin/java -cp bigindexserver.jar:../../commonlibs/bigindexclient.jar:../../commonlibs/bigexclient.jar:../../commonlibs/bigconfigclient.jar:../../commonlibs/bigcommonutil.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.main.Starter unicorn > log.runbigindexserver &
  */
-
 public class Starter {
 	public static void main(String[] s) throws Exception {
 		final StringBuffer pending = new StringBuffer();
