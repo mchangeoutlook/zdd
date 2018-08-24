@@ -21,7 +21,6 @@ public class Textserver implements Theserverprocess {
 	@Override
 	public void init(int thebigfilehash) {
 		bigfilehash = thebigfilehash;
-		Bigdatafileutil.initonlyonce(bigfilehash);
 	}
 	
 	@SuppressWarnings("unchecked")

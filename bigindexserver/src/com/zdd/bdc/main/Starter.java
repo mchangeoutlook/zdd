@@ -10,6 +10,7 @@ import com.zdd.bdc.biz.Configclient;
 import com.zdd.bdc.biz.Indexserver;
 import com.zdd.bdc.biz.Movingdistribution;
 import com.zdd.bdc.ex.Theserver;
+import com.zdd.bdc.util.Bigindexfileutil;
 import com.zdd.bdc.util.STATIC;
 
 /**
@@ -44,9 +45,11 @@ public class Starter {
 			@Override
 			public void run() {
 				try {
+					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGINDEX).read(ip + STATIC.SPLIT_IP_PORT + port));
+					Bigindexfileutil.initonlyonce(bigfilehash);
+					
 					Theserver.startblocking(ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending,
-							Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGINDEX)
-									.read(ip + STATIC.SPLIT_IP_PORT + port)),
+							bigfilehash,
 							Indexserver.class);
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== Indexserver exit due to below exception:");

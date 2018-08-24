@@ -20,7 +20,6 @@ public class Indexserver implements Theserverprocess {
 	@Override
 	public void init(int thebigfilehash) {
 		bigfilehash = thebigfilehash;
-		Bigindexfileutil.initonlyonce(bigfilehash);
 	}
 
 	@SuppressWarnings("unchecked")
