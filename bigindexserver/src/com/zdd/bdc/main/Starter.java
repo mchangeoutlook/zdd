@@ -14,7 +14,7 @@ import com.zdd.bdc.util.STATIC;
 
 /**
  * @author mido how to run: 
- * nohup /data/jdk-9.0.4/bin/java -cp bigindexserver.jar:../../commonlibs/bigindexclient.jar:../../commonlibs/bigexclient.jar:../../commonlibs/bigconfigclient.jar:../../commonlibs/bigcommonutil.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.main.Starter > log.runbigindexserver &
+ * nohup /data/jdk-9.0.4/bin/java -cp bigindexserver.jar:../../commonlibs/bigindexclient.jar:../../commonlibs/bigexclient.jar:../../commonlibs/bigconfigclient.jar:../../commonlibs/bigcommonutil.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.main.Starter unicorn > log.runbigindexserver &
  */
 
 public class Starter {
@@ -38,7 +38,7 @@ public class Starter {
 			localip = InetAddress.getLocalHost().getHostAddress();
 		}
 		final String ip = localip;
-		final String port = Configclient.getinstance("unicorn", STATIC.REMOTE_CONFIGFILE_BIGINDEX)
+		final String port = Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGINDEX)
 				.read(STATIC.PARENTFOLDER + STATIC.SPLIT_IP_PORT + ip);
 		new Thread(new Runnable() {
 
@@ -46,7 +46,7 @@ public class Starter {
 			public void run() {
 				try {
 					Theserver.startblocking(ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending,
-							Integer.parseInt(Configclient.getinstance("unicorn", STATIC.REMOTE_CONFIGFILE_BIGINDEX)
+							Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGINDEX)
 									.read(ip + STATIC.SPLIT_IP_PORT + port)),
 							Indexserver.class);
 				} catch (Exception e) {

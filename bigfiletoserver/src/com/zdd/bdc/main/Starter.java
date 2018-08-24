@@ -12,7 +12,7 @@ import com.zdd.bdc.ex.Theserver;
 import com.zdd.bdc.util.STATIC;
 
 /**
- * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp bigfiletoserver.jar:../../commonlibs/bigcommonutil.jar:../../commonlibs/bigexclient.jar:../../commonlibs/bigconfigclient.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.main.Starter > log.runbigfiletoserver &
+ * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp bigfiletoserver.jar:../../commonlibs/bigcommonutil.jar:../../commonlibs/bigexclient.jar:../../commonlibs/bigconfigclient.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.main.Starter pngbigto > log.runbigfiletoserver &
  */
 
 public class Starter {
@@ -37,7 +37,7 @@ public class Starter {
 		}
 		final String ip = localip;
 
-		final String port = Configclient.getinstance("pngbigto", STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.PARENTFOLDER + STATIC.SPLIT_IP_PORT + ip);
+		final String port = Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.PARENTFOLDER + STATIC.SPLIT_IP_PORT + ip);
 
 		new Thread(new Runnable() {
 
