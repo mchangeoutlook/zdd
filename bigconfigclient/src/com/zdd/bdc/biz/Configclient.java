@@ -26,26 +26,22 @@ public class Configclient {
 					if (!pathfile.getFileName().toString().startsWith(".")) {
 						try {
 							String namespace = URLDecoder.decode(pathfile.getParent().getFileName().toString(),
-									"UTF-8");
-							String file = URLDecoder.decode(pathfile.getFileName().toString(), "UTF-8");
+									STATIC.CHARSET_DEFAULT);
+							String file = URLDecoder.decode(pathfile.getFileName().toString(), STATIC.CHARSET_DEFAULT);
 							if (nsfilekeyvalue.get(namespace) == null) {
 								nsfilekeyvalue.put(namespace, new Hashtable<String, Map<String, String>>());
 							}
 							if (nsfilekeyvalue.get(namespace).get(file) == null) {
 								nsfilekeyvalue.get(namespace).put(file, new Hashtable<String, String>());
 							}
-							List<String> lines = Files.readAllLines(pathfile, Charset.forName("UTF-8"));
+							List<String> lines = Files.readAllLines(pathfile, Charset.forName(STATIC.CHARSET_DEFAULT));
 							for (String line:lines) {
-								if (line.indexOf(STATIC.SPLIT_KEY_VAL) > 0) {
-									String encodedkey = line.substring(0, line.indexOf(STATIC.SPLIT_KEY_VAL));
-									String encodedvalue = "";
-									if (line.length() > line.indexOf(STATIC.SPLIT_KEY_VAL) + 1) {
-										encodedvalue = line.substring(line.indexOf(STATIC.SPLIT_KEY_VAL) + 1);
-									}
+								if (STATIC.commentget(line) == null) {
+									String[] keyval = STATIC.keyval(line);
 									try {
 										nsfilekeyvalue.get(namespace).get(file).put(
-												URLDecoder.decode(encodedkey, "UTF-8"),
-												URLDecoder.decode(encodedvalue, "UTF-8"));
+												keyval[0],
+												keyval[1]);
 									} catch (Exception e) {
 										System.out.println(new Date() + " ==== System exited when handling line ["
 												+ line + "] of file [" + pathfile.toAbsolutePath()
@@ -139,19 +135,17 @@ public class Configclient {
 												Files.createDirectories(target.getParent());
 											}
 											Files.write(target,
-													("#Auto generated on " + new Date() + System.lineSeparator()
-															+ "#line format: URLEncoded key#URLEncoded value"
-															+ System.lineSeparator()).getBytes("UTF-8"),
+													(STATIC.commentput("Auto generated on " + new Date()) + System.lineSeparator()
+															+ STATIC.commentput("line format: "+STATIC.keyval("URLEncoded key", "value"))
+															+ System.lineSeparator()).getBytes(STATIC.CHARSET_DEFAULT),
 													StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
 													StandardOpenOption.SYNC);
 											Object[] configkeys = nsfilekeyvalue.get(namespace).get(file).keySet()
 													.toArray();
 											for (Object configkey : configkeys) {
 												Files.write(target,
-														(URLEncoder.encode(configkey.toString(), "UTF-8") + "#"
-																+ URLEncoder.encode(nsfilekeyvalue.get(namespace)
-																		.get(file).get(configkey.toString()), "UTF-8")
-																+ System.lineSeparator()).getBytes("UTF-8"),
+														(STATIC.keyval(configkey.toString(), nsfilekeyvalue.get(namespace)
+																.get(file).get(configkey.toString())) + System.lineSeparator()).getBytes(STATIC.CHARSET_DEFAULT),
 														StandardOpenOption.CREATE, StandardOpenOption.APPEND,
 														StandardOpenOption.SYNC);
 											}
@@ -229,11 +223,11 @@ public class Configclient {
 	}
 
 	private static Path targetconfigfile(String namespace, String file) throws Exception {
-		Path folder = STATIC.LOCAL_CONFIGFOLDER.resolve(URLEncoder.encode(namespace, "UTF-8"));
+		Path folder = STATIC.LOCAL_CONFIGFOLDER.resolve(URLEncoder.encode(namespace, STATIC.CHARSET_DEFAULT));
 		if (file == null) {
 			return folder;
 		} else {
-			return folder.resolve(URLEncoder.encode(file, "UTF-8"));
+			return folder.resolve(URLEncoder.encode(file, STATIC.CHARSET_DEFAULT));
 		}
 	}
 

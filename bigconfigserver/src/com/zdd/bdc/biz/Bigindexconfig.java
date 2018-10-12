@@ -1,6 +1,5 @@
 package com.zdd.bdc.biz;
 
-import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Date;
@@ -16,7 +15,7 @@ public class Bigindexconfig {
 
 	public static void init(String namespace) throws Exception {
 		List<String> lines = Files.readAllLines(STATIC.LOCAL_CONFIGFOLDER.resolve(namespace).resolve(STATIC.REMOTE_CONFIGFILE_BIGINDEX),
-				Charset.forName("UTF-8"));
+				Charset.forName(STATIC.CHARSET_DEFAULT));
 
 		Map<String, String> hash_ipport = new Hashtable<String, String>();
 
@@ -24,21 +23,23 @@ public class Bigindexconfig {
 		Map<String, String> iport_filehash = new Hashtable<String, String>();
 
 		for (String line : lines) {
-			if (line.indexOf(STATIC.SPLIT_KEY_VAL) > 0) {
-				String key = URLDecoder.decode(line.substring(0, line.indexOf(STATIC.SPLIT_KEY_VAL)), "UTF-8");
-				String value = URLDecoder.decode(line.substring(line.indexOf(STATIC.SPLIT_KEY_VAL) + 1), "UTF-8");
-				String[] vals = value.split(STATIC.SPLIT_IP_PORT);
+			if (STATIC.commentget(line) == null) {
+				String[] keyval = STATIC.keyval(line);
+				String key = keyval[0];
+				String value = keyval[1];
+				String[] vals = STATIC.splitenc(value);
 				String parentfolder = vals[0];
 				String filehash = vals[1];
 				String ip = vals[2];
 				String port = vals[3];
-				parentfolderip_port.put(parentfolder + STATIC.SPLIT_IP_PORT + ip, port);
-				iport_filehash.put(ip + STATIC.SPLIT_IP_PORT + port, filehash);
-				String ipport = ip + STATIC.SPLIT_IP_PORT + port;
+				parentfolderip_port.put(STATIC.splitenc(parentfolder, ip), port);
+				iport_filehash.put(STATIC.splitenc(ip, port), filehash);
+				String ipport = STATIC.splitenc(ip, port);
 
-				if (key.contains("-")) {
-					int start = Integer.parseInt(key.split("-")[0]);
-					int end = Integer.parseInt(key.split("-")[1]);
+				String[] fromto = STATIC.fromto(key);
+				if (fromto.length==2) {
+					int start = Integer.parseInt(fromto[0]);
+					int end = Integer.parseInt(fromto[1]);
 					for (int i = start; i <= end; i++) {
 						hash_ipport.put(String.valueOf(i), ipport);
 					}

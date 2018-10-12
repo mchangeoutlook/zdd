@@ -42,7 +42,28 @@ public class Indexclient {
 			params.put(STATIC.PARAM_INDEX_KEY, index);
 			params.put(STATIC.PARAM_PAGENUM_KEY, pagenum);
 			params.put(STATIC.PARAM_FILTERS_KEY, filters);
-			String[] iport = Bigclient.distributebigindex(ns, pagenum, index).split(STATIC.SPLIT_IP_PORT);
+			String[] iport = STATIC.splitenc(Bigclient.distributebigindex(ns, pagenum, index));
+			Theclient.request(iport[0],
+					Integer.parseInt(iport[1]),
+					Objectutil.convert(params), null, null);
+		} finally {
+			clear();
+		}
+	}
+
+	public void create(String key, long pagenum, String version) throws Exception {
+		try {
+			Map<String, Object> params = new HashMap<String, Object>(6);
+			params.put(STATIC.PARAM_KEY_KEY, key);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_CREATE);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_INDEX_KEY, index);
+			params.put(STATIC.PARAM_PAGENUM_KEY, pagenum);
+			params.put(STATIC.PARAM_FILTERS_KEY, filters);
+			if (version!=null&&!version.trim().isEmpty()) {
+				params.put(STATIC.PARAM_VERSION_KEY, version);
+			}
+			String[] iport = STATIC.splitenc(Bigclient.distributebigindex(ns, pagenum, index));
 			Theclient.request(iport[0],
 					Integer.parseInt(iport[1]),
 					Objectutil.convert(params), null, null);
@@ -59,7 +80,7 @@ public class Indexclient {
 			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
 			params.put(STATIC.PARAM_INDEX_KEY, index);
 			params.put(STATIC.PARAM_FILTERS_KEY, filters);
-			String[] iport = Bigclient.distributebigindex(ns, STATIC.PAGENUM_UNIQUEINDEX, index).split(STATIC.SPLIT_IP_PORT);
+			String[] iport = STATIC.splitenc(Bigclient.distributebigindex(ns, STATIC.PAGENUM_UNIQUEINDEX, index));
 			Theclient.request(iport[0],
 					Integer.parseInt(iport[1]),
 					Objectutil.convert(params), null, null);
@@ -69,15 +90,17 @@ public class Indexclient {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Vector<String> read(long pagenum) throws Exception {
+	public Vector<String> read(long pagenum, int numofdata) throws Exception {
 		try {
 			Map<String, Object> params = new HashMap<String, Object>(5);
 			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_READ);
 			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
 			params.put(STATIC.PARAM_INDEX_KEY, index);
 			params.put(STATIC.PARAM_PAGENUM_KEY, pagenum);
+			params.put(STATIC.PARAM_NUMOFDATA, numofdata);
+			
 			params.put(STATIC.PARAM_FILTERS_KEY, filters);
-			String[] iport = Bigclient.distributebigindex(ns, pagenum, index).split(STATIC.SPLIT_IP_PORT);
+			String[] iport = STATIC.splitenc(Bigclient.distributebigindex(ns, pagenum, index));
 			
 			return (Vector<String>) Objectutil
 					.convert(Theclient.request(iport[0],
@@ -95,7 +118,7 @@ public class Indexclient {
 			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
 			params.put(STATIC.PARAM_INDEX_KEY, index);
 			params.put(STATIC.PARAM_FILTERS_KEY, filters);
-			String[] iport = Bigclient.distributebigindex(ns, STATIC.PAGENUM_UNIQUEINDEX, index).split(STATIC.SPLIT_IP_PORT);
+			String[] iport = STATIC.splitenc(Bigclient.distributebigindex(ns, STATIC.PAGENUM_UNIQUEINDEX, index));
 			return (String) Objectutil
 					.convert(Theclient.request(iport[0],
 							Integer.parseInt(iport[1]),

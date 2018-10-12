@@ -35,7 +35,7 @@ public class Textserver implements Theserverprocess {
 			Map<String, Integer> cvmaxs = (Map<String, Integer>) params.get(STATIC.PARAM_COLUMNMAXVALUES_KEY);
 			for (String column : cvs.keySet()) {
 				Path target = Bigdatafileutil.target(key, namespace, table, column, bigfilehash);
-				Bigdatafileutil.create(key, target, cvs.get(column).getBytes("UTF-8"), cvmaxs.get(column));
+				Bigdatafileutil.create(key, target, cvs.get(column).getBytes(STATIC.CHARSET_DEFAULT), cvmaxs.get(column));
 			}
 		} else if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
 			String key = params.get(STATIC.PARAM_KEY_KEY).toString();
@@ -47,7 +47,7 @@ public class Textserver implements Theserverprocess {
 				Path target = Bigdatafileutil.target(key, namespace, table, column, bigfilehash);
 				byte[] r = Bigdatafileutil.read(key, target);
 				if (r != null) {
-					readres.put(column, new String(r, "UTF-8"));
+					readres.put(column, new String(r, STATIC.CHARSET_DEFAULT));
 				}
 			}
 		} else if (STATIC.PARAM_ACTION_INCREMENT.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
@@ -67,7 +67,7 @@ public class Textserver implements Theserverprocess {
 			Map<String, String> cvs = (Map<String, String>) params.get(STATIC.PARAM_COLUMNVALUES_KEY);
 			for (String column : cvs.keySet()) {
 				Path target = Bigdatafileutil.target(key, namespace, table, column, bigfilehash);
-				Bigdatafileutil.modify(key, target, cvs.get(column).getBytes("UTF-8"));
+				Bigdatafileutil.modify(key, target, cvs.get(column).getBytes(STATIC.CHARSET_DEFAULT));
 			}
 		} else if (STATIC.PARAM_ACTION_DELETE.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
 			String key = params.get(STATIC.PARAM_KEY_KEY).toString();

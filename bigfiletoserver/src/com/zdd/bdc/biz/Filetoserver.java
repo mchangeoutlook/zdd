@@ -18,7 +18,7 @@ public class Filetoserver implements Theserverprocess {
 
 	@Override
 	public void request(byte[] b) throws Exception {
-		String path = new String(b,"UTF-8");
+		String path = new String(b,STATIC.CHARSET_DEFAULT);
 		if (path.startsWith("/")) {
 			path = path.replaceFirst("/", "");
 		}

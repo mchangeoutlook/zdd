@@ -39,14 +39,14 @@ public class Starter {
         		localip = InetAddress.getLocalHost().getHostAddress();
         }
 		final String ip = localip;
-		final String port = Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.PARENTFOLDER + STATIC.SPLIT_IP_PORT + ip);
+		final String port = Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitenc(STATIC.PARENTFOLDER, ip));
 
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				try {
-					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGDATA).read(ip + STATIC.SPLIT_IP_PORT + port));
+					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitenc(ip, port)));
 					Bigdatafileutil.initonlyonce(bigfilehash);
 					Theserver.startblocking(ip,
 							Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending,
@@ -60,7 +60,7 @@ public class Starter {
 			}
 			
 		}).start();
-		while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING).read(ip + STATIC.SPLIT_IP_PORT + port))) {
+		while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING).read(STATIC.splitenc(ip, port)))) {
 			try {
 				Thread.sleep(30000);
 			} catch (InterruptedException e) {

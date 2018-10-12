@@ -1,6 +1,5 @@
 package com.zdd.bdc.biz;
 
-import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Arrays;
@@ -9,6 +8,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import com.zdd.bdc.util.STATIC;
 
@@ -18,32 +18,31 @@ public class Bigdataconfig {
 
 	public static void init(String namespace) throws Exception {
 		List<String> lines = Files.readAllLines(STATIC.LOCAL_CONFIGFOLDER.resolve(namespace).resolve(STATIC.REMOTE_CONFIGFILE_BIGDATA),
-				Charset.forName("UTF-8"));
+				Charset.forName(STATIC.CHARSET_DEFAULT));
 
 		Map<String, String> date_ipport = new Hashtable<String, String>();
 
 		Map<String, String> parentfolderip_port = new Hashtable<String, String>();
 		Map<String, String> iport_filehash = new Hashtable<String, String>();
 		for (String line : lines) {
-			if (line.indexOf(STATIC.SPLIT_KEY_VAL) > 0) {
-				String key = URLDecoder.decode(line.substring(0, line.indexOf(STATIC.SPLIT_KEY_VAL)), "UTF-8");
-				String value = URLDecoder.decode(line.substring(line.indexOf(STATIC.SPLIT_KEY_VAL) + 1), "UTF-8");
-				String[] values = value.split(STATIC.SPLIT_VAL_VAL);
-				String ipport = "";
+			if (STATIC.commentget(line) == null) {
+				String[] keyval = STATIC.keyval(line);
+				String key = keyval[0];
+				String value = keyval[1];
+				String[] values = STATIC.split(value);
+				Vector<String> ipports = new Vector<String>(values.length);
 				for (String val : values) {
-					String[] vals = val.split(STATIC.SPLIT_IP_PORT);
+					String[] vals = STATIC.splitenc(val);
 					String parentfolder = vals[0];
 					String filehash = vals[1];
 					String ip = vals[2];
 					String port = vals[3];
-					parentfolderip_port.put(parentfolder + STATIC.SPLIT_IP_PORT + ip, port);
-					iport_filehash.put(ip + STATIC.SPLIT_IP_PORT+ port, filehash);
-					if (!ipport.equals("")) {
-						ipport += STATIC.SPLIT_VAL_VAL;
-					}
-					ipport += ip + STATIC.SPLIT_IP_PORT + port;
+					parentfolderip_port.put(STATIC.splitenc(parentfolder, ip), port);
+					iport_filehash.put(STATIC.splitenc(ip, port), filehash);
+					ipports.add(STATIC.splitenc(ip, port));
 				}
-				date_ipport.put(key, ipport);
+				String[] ipportsarray = new String[ipports.size()];
+				date_ipport.put(key, STATIC.split(ipports.toArray(ipportsarray)));
 			}
 		}
 

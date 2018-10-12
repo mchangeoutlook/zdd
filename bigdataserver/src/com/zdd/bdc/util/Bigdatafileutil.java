@@ -8,6 +8,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
+import com.zdd.bdc.biz.Bigclient;
+import com.zdd.bdc.biz.Texti;
+
 public class Bigdatafileutil {
 
 	private static String[] synchorizedfile = null;
@@ -29,7 +32,7 @@ public class Bigdatafileutil {
 				SeekableByteChannel sbc = null;
 				try {
 					sbc = Files.newByteChannel(target, StandardOpenOption.READ);
-					position = findkey(sbc, position, key);
+					position = findkey(sbc, position, key, null);
 					if (position != -1) {
 						position -= 11;
 						sbc.position(position);
@@ -63,7 +66,7 @@ public class Bigdatafileutil {
 			long returnvalue = 0l;
 
 			SeekableByteChannel sbc = null;
-			byte[] bkey = key.getBytes("UTF-8");
+			byte[] bkey = key.getBytes(STATIC.CHARSET_DEFAULT);
 			if (bkey.length != 40) {
 				throw new Exception("key40");
 			}
@@ -79,7 +82,7 @@ public class Bigdatafileutil {
 						returnvalue = amount;
 					} else {
 						sbc = Files.newByteChannel(target, StandardOpenOption.READ);
-						position = findkey(sbc, position, key);
+						position = findkey(sbc, position, key, null);
 						if (position == -1) {
 							write(bkey, target, -1, String.valueOf(amount).getBytes(), 20);
 							returnvalue = amount;
@@ -128,7 +131,7 @@ public class Bigdatafileutil {
 					throw new Exception("empty");
 				}
 				sbc = Files.newByteChannel(target, StandardOpenOption.READ);
-				position = findkey(sbc, position, key);
+				position = findkey(sbc, position, key, null);
 				if (position == -1) {
 					throw new Exception("notfound");
 				}
@@ -146,7 +149,7 @@ public class Bigdatafileutil {
 
 	public static void create(String key, Path target, byte[] value, int max) throws Exception {
 		synchronized (synchorizedfile[Integer.parseInt(target.getFileName().toString())]) {
-			byte[] bkey = key.getBytes("UTF-8");
+			byte[] bkey = key.getBytes(STATIC.CHARSET_DEFAULT);
 			if (bkey.length != 40) {
 				throw new Exception("key40");
 			}
@@ -166,7 +169,7 @@ public class Bigdatafileutil {
 					throw new Exception("empty");
 				}
 				sbc = Files.newByteChannel(target, StandardOpenOption.READ);
-				position = findkey(sbc, position, key);
+				position = findkey(sbc, position, key, null);
 				if (position == -1) {
 					throw new Exception("notfound");
 				}
@@ -188,7 +191,10 @@ public class Bigdatafileutil {
 		}
 	}
 
-	private static long findkey(SeekableByteChannel sbc, long fromposition, String key) throws Exception {
+	public static long findkey(SeekableByteChannel sbc, long fromposition, String key, Texti ti) throws Exception {
+		if (ti!=null) {//need to walk through the file
+			key = Bigclient.newbigdatakey();//not exist key will cause walking through the file
+		}
 		long returnvalue = -1;
 		long position = fromposition - 40;
 		sbc.position(position);
@@ -199,7 +205,20 @@ public class Bigdatafileutil {
 		ByteBuffer bbmax = ByteBuffer.allocate(11);
 		sbc.read(bbmax);
 		int max = Integer.parseInt(new String(bbmax.array()));
-		byte[] bkey = key.getBytes("UTF-8");
+		byte[] bkey = key.getBytes(STATIC.CHARSET_DEFAULT);
+		if (ti!=null) {
+			position -= 10;
+			sbc.position(position);
+			ByteBuffer bbvaluelength = ByteBuffer.allocate(10);
+			sbc.read(bbvaluelength);
+			int valuelength = Integer.parseInt(new String(bbvaluelength.array()));
+
+			ByteBuffer bbvalue = ByteBuffer.allocate(valuelength);
+			sbc.position(position - max);
+			sbc.read(bbvalue);
+			ti.process(bbkey.array(), bbvalue.array());
+			position+=10;
+		}
 		while ((!Arrays.equals(bbkey.array(), bkey) || max < 0) && position != 0) {
 			position -= (10 + Math.abs(max));
 			if (position != 0) {
@@ -212,6 +231,19 @@ public class Bigdatafileutil {
 				bbmax = ByteBuffer.allocate(11);
 				sbc.read(bbmax);
 				max = Integer.parseInt(new String(bbmax.array()));
+				if (ti!=null) {
+					position -= 10;
+					sbc.position(position);
+					ByteBuffer bbvaluelength = ByteBuffer.allocate(10);
+					sbc.read(bbvaluelength);
+					int valuelength = Integer.parseInt(new String(bbvaluelength.array()));
+
+					ByteBuffer bbvalue = ByteBuffer.allocate(valuelength);
+					sbc.position(position - max);
+					sbc.read(bbvalue);
+					ti.process(bbkey.array(), bbvalue.array());
+					position+=10;
+				}
 			}
 		}
 
@@ -274,9 +306,22 @@ public class Bigdatafileutil {
 		if (column.isEmpty()) {
 			throw new Exception("emptycol");
 		}
+		return targetfolder(namespace, table, column).resolve(String.valueOf(Math.abs(key.hashCode()) % bigfilehash));
+	}
+	
+	public static Path targetfolder(String namespace, String table, String column) throws Exception {
+		if (namespace.isEmpty()) {
+			throw new Exception("emptyns");
+		}
+		if (table.isEmpty()) {
+			throw new Exception("emptytb");
+		}
+		if (column.isEmpty()) {
+			throw new Exception("emptycol");
+		}
 		return STATIC.LOCAL_DATAFOLDER
-				.resolve(URLEncoder.encode(namespace, "UTF-8") + "/" + URLEncoder.encode(table, "UTF-8") + "/"
-						+ URLEncoder.encode(column, "UTF-8") + "/" + Math.abs(key.hashCode()) % bigfilehash);
+				.resolve(URLEncoder.encode(namespace, STATIC.CHARSET_DEFAULT) + "/" + URLEncoder.encode(table, STATIC.CHARSET_DEFAULT) + "/"
+						+ URLEncoder.encode(column, STATIC.CHARSET_DEFAULT));
 	}
 
 }

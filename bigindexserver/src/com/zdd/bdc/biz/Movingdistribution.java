@@ -30,10 +30,19 @@ public class Movingdistribution extends Thread {
 
 	@Override
 	public void run() {
+		StringBuffer ipportsb = new StringBuffer();
+		try {
+			ipportsb.append(STATIC.splitenc(ip, port));
+		}catch(Exception e) {
+			System.out.println(new Date() + " ==== error terminated auto redistribution");
+			e.printStackTrace();
+			return;
+		}
+		final String ipportpending = ipportsb.toString();
 		System.out.println(new Date() + " ==== started auto redistribution");
 		while (!STATIC.REMOTE_CONFIGVAL_PENDING
 				.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
-						.read(ip + STATIC.SPLIT_IP_PORT + port))) {
+						.read(ipportpending))) {
 			if (Files.exists(STATIC.LOCAL_DATAFOLDER) && Files.isDirectory(STATIC.LOCAL_DATAFOLDER)) {
 				try {
 					Path progressfolder = STATIC.LOCAL_DATAFOLDER.toAbsolutePath().getParent()
@@ -47,7 +56,7 @@ public class Movingdistribution extends Thread {
 						public FileVisitResult postVisitDirectory(Object arg0, IOException arg1) throws IOException {
 							if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(
 									Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
-											.read(ip + STATIC.SPLIT_IP_PORT + port))) {
+											.read(ipportpending))) {
 								return FileVisitResult.CONTINUE;
 							} else {
 								return FileVisitResult.TERMINATE;
@@ -60,7 +69,7 @@ public class Movingdistribution extends Thread {
 								throws IOException {
 							if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(
 									Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
-											.read(ip + STATIC.SPLIT_IP_PORT + port))) {
+											.read(ipportpending))) {
 								return FileVisitResult.CONTINUE;
 							} else {
 								return FileVisitResult.TERMINATE;
@@ -71,10 +80,10 @@ public class Movingdistribution extends Thread {
 						public FileVisitResult visitFile(Object file, BasicFileAttributes arg1) throws IOException {
 							if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(
 									Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
-											.read(ip + STATIC.SPLIT_IP_PORT + port))) {
+											.read(ipportpending))) {
 								Path pathfile = Paths.get(file.toString());
-								if (!Files.isDirectory(pathfile)
-										&& !pathfile.getFileName().toString().startsWith(".")) {
+								if (!Files.isDirectory(pathfile) && !pathfile.getFileName().toString().startsWith(".")
+										&& Files.size(pathfile) > 0) {
 									Path progressfile = progressfolder
 											.resolve(pathfile.toAbsolutePath().getParent().getParent().getParent()
 													.getFileName().toString())
@@ -87,74 +96,77 @@ public class Movingdistribution extends Thread {
 									try {
 										String namespace = URLDecoder.decode(
 												pathfile.getParent().getParent().getParent().getFileName().toString(),
-												"UTF-8");
+												STATIC.CHARSET_DEFAULT);
 										String serverindex = URLDecoder.decode(
-												pathfile.getParent().getParent().getFileName().toString(), "UTF-8");
-										String[] filterspagenum = pathfile.getParent().getFileName().toString()
-												.split(STATIC.SPLIT_A_B);
-										Vector<String> filters = new Vector<String>(filterspagenum.length - 1);
-										for (int i = 0; i < filterspagenum.length - 1; i++) {
-											if (!filterspagenum[i].isEmpty()) {
-												filters.add(URLDecoder.decode(filterspagenum[i], "UTF-8"));
-											}
+												pathfile.getParent().getParent().getFileName().toString(), STATIC.CHARSET_DEFAULT);
+										String targetiport = Configclient
+												.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGINDEX)
+												.read(serverindex);
+										if (targetiport == null
+												|| targetiport.equals(STATIC.splitenc(ip, port))) {
+											return FileVisitResult.CONTINUE;
 										}
-										long pagenum = Long.parseLong(filterspagenum[filterspagenum.length - 1]);
-										br = Files.newBufferedReader(pathfile, Charset.forName("UTF-8"));
+
+										br = Files.newBufferedReader(pathfile, Charset.forName(STATIC.CHARSET_DEFAULT));
 										String line = br.readLine();
 										numoflines++;
-										if (line != null && !line.trim().isEmpty()) {
-											String targetiport = Configclient
-													.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGINDEX)
-													.read(serverindex);
-											if (targetiport == null
-													|| targetiport.equals(ip + STATIC.SPLIT_IP_PORT + port)) {
-												return FileVisitResult.CONTINUE;
-											}
-										}
+										if (line != null && STATIC.commentget(line)==null) {
 
-										if (Files.exists(progressfile)) {
-											int processedlines = Integer.parseInt(
-													Files.readAllLines(progressfile, Charset.forName("UTF-8")).get(0));
-											while (line != null && numoflines < processedlines) {
-												line = br.readLine();
-												numoflines++;
-											}
-										}
-
-										if (line != null) {
-
-											if (!Files.exists(progressfile.getParent())) {
-												Files.createDirectories(progressfile.getParent());
-											}
-
-											while (line != null && !line.trim().isEmpty()) {
-												String[] indexkey = line.split(STATIC.SPLIT_A_B);
-												String index = URLDecoder.decode(indexkey[0], "UTF-8");
-												String key = URLDecoder.decode(indexkey[1], "UTF-8");
-												Indexclient ic = Indexclient.getinstance(namespace, index);
-												if (!filters.isEmpty()) {
-													ic = ic.filters(filters.size());
-													for (String filter : filters) {
-														ic.add(filter);
-													}
+											String[] filterspagenum = STATIC.splitenc(pathfile.getParent().getFileName().toString());
+											Vector<String> filters = new Vector<String>(filterspagenum.length - 1);
+											for (int i = 0; i < filterspagenum.length - 1; i++) {
+												if (!filterspagenum[i].isEmpty()) {
+													filters.add(filterspagenum[i]);
 												}
-												if (pagenum == STATIC.PAGENUM_UNIQUEINDEX) {
-													try {
-														ic.createunique(key);
-													} catch (Exception e) {
-														if (!e.getMessage().contains("duplicate")) {
-															throw e;
+											}
+											long pagenum = Long.parseLong(filterspagenum[filterspagenum.length - 1]);
+
+											if (Files.exists(progressfile)) {
+												int processedlines = Integer.parseInt(Files
+														.readAllLines(progressfile, Charset.forName(STATIC.CHARSET_DEFAULT)).get(0));
+												while (line != null && numoflines < processedlines) {
+													line = br.readLine();
+													numoflines++;
+												}
+											}
+
+											if (line != null) {
+
+												if (!Files.exists(progressfile.getParent())) {
+													Files.createDirectories(progressfile.getParent());
+												}
+
+												while (line != null && !line.trim().isEmpty()) {
+													String[] indexkey = STATIC.keyval(line);
+													String index = indexkey[0];
+													String key = indexkey[1];
+													Indexclient ic = Indexclient.getinstance(namespace, index);
+													if (!filters.isEmpty()) {
+														ic = ic.filters(filters.size());
+														for (String filter : filters) {
+															ic.add(filter);
 														}
 													}
-												} else {
-													ic.create(key, pagenum);
+													if (pagenum == STATIC.PAGENUM_UNIQUEINDEX) {
+														try {
+															ic.createunique(key);
+														} catch (Exception e) {
+															if (!e.getMessage().contains("duplicate")) {
+																throw e;
+															}
+														}
+													} else {
+														ic.create(key, pagenum);
+													}
+													line = br.readLine();
+													numoflines++;
+													Files.write(progressfile,
+															String.valueOf(numoflines).getBytes(STATIC.CHARSET_DEFAULT),
+															StandardOpenOption.CREATE,
+															StandardOpenOption.TRUNCATE_EXISTING,
+															StandardOpenOption.SYNC);
+
 												}
-												line = br.readLine();
-												numoflines++;
-												Files.write(progressfile, String.valueOf(numoflines).getBytes("UTF-8"),
-														StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
-														StandardOpenOption.SYNC);
-												
 											}
 										}
 										Files.deleteIfExists(pathfile);
@@ -184,9 +196,12 @@ public class Movingdistribution extends Thread {
 									} catch (Exception e) {
 										StringWriter errors = new StringWriter();
 										e.printStackTrace(new PrintWriter(errors));
+										if (!Files.exists(progressfile.getParent())) {
+											Files.createDirectories(progressfile.getParent());
+										}
 										Files.write(progressfile,
 												(numoflines + System.lineSeparator() + errors.toString())
-														.getBytes("UTF-8"),
+														.getBytes(STATIC.CHARSET_DEFAULT),
 												StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
 												StandardOpenOption.SYNC);
 									} finally {
@@ -209,7 +224,7 @@ public class Movingdistribution extends Thread {
 						public FileVisitResult visitFileFailed(Object arg0, IOException arg1) throws IOException {
 							if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(
 									Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
-											.read(ip + STATIC.SPLIT_IP_PORT + port))) {
+											.read(ipportpending))) {
 								return FileVisitResult.CONTINUE;
 							} else {
 								return FileVisitResult.TERMINATE;
@@ -217,12 +232,12 @@ public class Movingdistribution extends Thread {
 						}
 					});
 				} catch (Exception e) {
-					//
+					//do nothing
 				}
 			}
 			if (!STATIC.REMOTE_CONFIGVAL_PENDING
 					.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
-							.read(ip + STATIC.SPLIT_IP_PORT + port))) {
+							.read(STATIC.split(ip, port)))) {
 				try {
 					Thread.sleep(120000);
 				} catch (InterruptedException e1) {

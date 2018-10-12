@@ -1,2 +1,2 @@
-sessionexpireseconds#3600
-itemsonepage#100
+sessionexpireseconds=3600
+itemsonepage=100

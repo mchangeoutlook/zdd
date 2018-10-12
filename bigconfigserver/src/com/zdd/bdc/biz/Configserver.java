@@ -1,5 +1,6 @@
 package com.zdd.bdc.biz;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -8,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import com.zdd.bdc.ex.Theserverprocess;
 import com.zdd.bdc.util.Objectutil;
@@ -16,15 +16,15 @@ import com.zdd.bdc.util.STATIC;
 
 public class Configserver implements Theserverprocess {
 
-		static {
+	static {
 		if (Files.exists(STATIC.LOCAL_CONFIGFOLDER) && Files.isDirectory(STATIC.LOCAL_CONFIGFOLDER)) {
 			try {
 				Files.walk(STATIC.LOCAL_CONFIGFOLDER).filter(Files::isRegularFile).forEach(pathfile -> {
 					if (!pathfile.getFileName().toString().startsWith(".")) {
 						try {
 							String namespace = URLDecoder.decode(pathfile.getParent().getFileName().toString(),
-									"UTF-8");
-							String file = URLDecoder.decode(pathfile.getFileName().toString(), "UTF-8");
+									STATIC.CHARSET_DEFAULT);
+							String file = URLDecoder.decode(pathfile.getFileName().toString(), STATIC.CHARSET_DEFAULT);
 							if (file.equals(STATIC.REMOTE_CONFIGFILE_BIGDATA)) {
 								Bigdataconfig.init(namespace);
 							} else if (file.equals(STATIC.REMOTE_CONFIGFILE_BIGINDEX)) {
@@ -39,8 +39,8 @@ public class Configserver implements Theserverprocess {
 					}
 				});
 			} catch (Exception e) {
-				System.out.println(new Date() + " ==== System exited when reading [" + STATIC.LOCAL_CONFIGFOLDER.toAbsolutePath()
-						+ "] due to below exception:");
+				System.out.println(new Date() + " ==== System exited when reading ["
+						+ STATIC.LOCAL_CONFIGFOLDER.toAbsolutePath() + "] due to below exception:");
 				e.printStackTrace();
 				System.exit(1);
 			}
@@ -48,30 +48,36 @@ public class Configserver implements Theserverprocess {
 	}
 
 	public static String readconfig(String namespace, String file, String configkey) {
-		try {
-			if (file.equals(STATIC.REMOTE_CONFIGFILE_BIGDATA)) {
-				return Bigdataconfig.read(namespace, configkey);
-			} else if (file.equals(STATIC.REMOTE_CONFIGFILE_BIGINDEX)) {
-				return Bigindexconfig.read(namespace, configkey);
-			} else {
+		if (file.equals(STATIC.REMOTE_CONFIGFILE_BIGDATA)) {
+			return Bigdataconfig.read(namespace, configkey);
+		} else if (file.equals(STATIC.REMOTE_CONFIGFILE_BIGINDEX)) {
+			return Bigindexconfig.read(namespace, configkey);
+		} else {
+			BufferedReader br = null;
+			try {
 				Path configfile = targetconfigfile(namespace, file);
-				List<String> lines = Files.readAllLines(configfile, Charset.forName("UTF-8"));
-				for (String line : lines) {
-					if (line.indexOf(STATIC.SPLIT_KEY_VAL) > 0) {
-						String encodedkey = line.substring(0, line.indexOf(STATIC.SPLIT_KEY_VAL));
-						if (URLDecoder.decode(encodedkey, "UTF-8").equals(configkey)) {
-							String encodedvalue = "";
-							if (line.length() > line.indexOf(STATIC.SPLIT_KEY_VAL) + 1) {
-								encodedvalue = line.substring(line.indexOf(STATIC.SPLIT_KEY_VAL) + 1);
-							}
-							return URLDecoder.decode(encodedvalue, "UTF-8");
+				br = Files.newBufferedReader(configfile, Charset.forName(STATIC.CHARSET_DEFAULT));
+				String line = br.readLine();
+				while (line != null) {
+					if (STATIC.commentget(line) == null) {
+						String[] keyval = STATIC.keyval(line);
+						if (keyval[0].equals(configkey)) {
+							return keyval[1];
 						}
 					}
 				}
 				return null;
+			} catch (Exception e) {
+				return null;
+			} finally {
+				if (br != null) {
+					try {
+						br.close();
+					} catch (Exception e) {
+						// do nothing
+					}
+				}
 			}
-		} catch (Exception e) {
-			return null;
 		}
 	}
 
@@ -83,7 +89,8 @@ public class Configserver implements Theserverprocess {
 	}
 
 	private static Path targetconfigfile(String namespace, String file) throws Exception {
-		return STATIC.LOCAL_CONFIGFOLDER.resolve(URLEncoder.encode(namespace, "UTF-8") + "/" + URLEncoder.encode(file, "UTF-8"));
+		return STATIC.LOCAL_CONFIGFOLDER.resolve(URLEncoder.encode(namespace, STATIC.CHARSET_DEFAULT) + "/"
+				+ URLEncoder.encode(file, STATIC.CHARSET_DEFAULT));
 	}
 
 	@SuppressWarnings("unchecked")

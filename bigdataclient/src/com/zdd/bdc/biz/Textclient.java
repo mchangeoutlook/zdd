@@ -85,7 +85,7 @@ public class Textclient {
 			params.put(STATIC.PARAM_TABLE_KEY, tb);
 			params.put(STATIC.PARAM_COLUMNVALUES_KEY, cvs);
 			params.put(STATIC.PARAM_COLUMNMAXVALUES_KEY, cvmaxs);
-			String[] iport = Bigclient.distributebigdata(ns, key).split(STATIC.SPLIT_IP_PORT);
+			String[] iport = STATIC.splitenc(Bigclient.distributebigdata(ns, key));
 			Theclient.request(iport[0], 
 					Integer.parseInt(iport[1]), Objectutil.convert(params), null, null);
 			return key;
@@ -105,7 +105,7 @@ public class Textclient {
 			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
 			params.put(STATIC.PARAM_TABLE_KEY, tb);
 			params.put(STATIC.PARAM_COLUMNS_KEY, cols);
-			String[] iport = Bigclient.distributebigdata(ns, key).split(STATIC.SPLIT_IP_PORT);
+			String[] iport = STATIC.splitenc(Bigclient.distributebigdata(ns, key));
 			Objectutil.convert(Theclient.request(iport[0], 
 					Integer.parseInt(iport[1]), Objectutil.convert(params), null, null));
 		} finally {
@@ -125,7 +125,7 @@ public class Textclient {
 			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
 			params.put(STATIC.PARAM_TABLE_KEY, tb);
 			params.put(STATIC.PARAM_COLUMNVALUES_KEY, cvs);
-			String[] iport = Bigclient.distributebigdata(ns, key).split(STATIC.SPLIT_IP_PORT);
+			String[] iport = STATIC.splitenc(Bigclient.distributebigdata(ns, key));
 			Theclient.request(iport[0], 
 					Integer.parseInt(iport[1]), Objectutil.convert(params), null, null);
 			return key;
@@ -146,7 +146,7 @@ public class Textclient {
 			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
 			params.put(STATIC.PARAM_TABLE_KEY, tb);
 			params.put(STATIC.PARAM_COLUMNS_KEY, cols);
-			String[] iport = Bigclient.distributebigdata(ns, key).split(STATIC.SPLIT_IP_PORT);
+			String[] iport = STATIC.splitenc(Bigclient.distributebigdata(ns, key));
 			return (Map<String, String>) Objectutil
 					.convert(Theclient.request(iport[0], 
 							Integer.parseInt(iport[1]), Objectutil.convert(params), null, null));
@@ -167,7 +167,7 @@ public class Textclient {
 			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
 			params.put(STATIC.PARAM_TABLE_KEY, tb);
 			params.put(STATIC.PARAM_COLUMNAMOUNTS_KEY, cas);
-			String[] iport = Bigclient.distributebigdata(ns, key).split(STATIC.SPLIT_IP_PORT);
+			String[] iport = STATIC.splitenc(Bigclient.distributebigdata(ns, key));
 			
 			return (Map<String, Long>) Objectutil
 					.convert(Theclient.request(iport[0], 

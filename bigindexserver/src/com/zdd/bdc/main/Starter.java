@@ -39,13 +39,13 @@ public class Starter {
 		}
 		final String ip = localip;
 		final String port = Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGINDEX)
-				.read(STATIC.PARENTFOLDER + STATIC.SPLIT_IP_PORT + ip);
+				.read(STATIC.splitenc(STATIC.PARENTFOLDER, ip));
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				try {
-					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGINDEX).read(ip + STATIC.SPLIT_IP_PORT + port));
+					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGINDEX).read(STATIC.splitenc(ip, port)));
 					Bigindexfileutil.initonlyonce(bigfilehash);
 					
 					Theserver.startblocking(ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending,
@@ -64,7 +64,7 @@ public class Starter {
 		
 		while (!STATIC.REMOTE_CONFIGVAL_PENDING
 				.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
-						.read(ip + STATIC.SPLIT_IP_PORT + port))) {
+						.read(STATIC.splitenc(ip, port)))) {
 			try {
 				Thread.sleep(30000);
 			} catch (InterruptedException e) {

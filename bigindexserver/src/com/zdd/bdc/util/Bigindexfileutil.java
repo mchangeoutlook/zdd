@@ -1,7 +1,6 @@
 package com.zdd.bdc.util;
 
 import java.io.BufferedReader;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -25,25 +24,28 @@ public class Bigindexfileutil {
 		}
 	}
 
-	public static Vector<String> read(String index, Path target) throws Exception {
+	public static Vector<String> read(String index, Path target, int numofdata) throws Exception {
 		synchronized (synchorizedfile[Integer.parseInt(target.getFileName().toString())]) {
 			if (index.isEmpty()) {
 				throw new Exception("emptyindex");
 			}
-			Vector<String> keys = new Vector<String>(100);
+			Vector<String> keys = new Vector<String>(numofdata);
 			if (Files.exists(target)) {
 				BufferedReader br = null;
 				try {
-					br = Files.newBufferedReader(target, Charset.forName("UTF-8"));
+					br = Files.newBufferedReader(target, Charset.forName(STATIC.CHARSET_DEFAULT));
 					String line = br.readLine();
-					while(line!=null&&!line.trim().isEmpty()) {
-						if (line.startsWith(URLEncoder.encode(index, "UTF-8") + STATIC.SPLIT_KEY_VAL)) {
-							keys.add(URLDecoder.decode(line.split(STATIC.SPLIT_KEY_VAL)[1], "UTF-8"));
+					while (line != null && !line.trim().isEmpty()) {
+						if (STATIC.commentget(line)==null) {
+							String[] indexkey = STATIC.keyval(line);
+							if (indexkey[0].equals(index)) {
+								keys.add(indexkey[1]);
+							}
 						}
 						line = br.readLine();
 					}
-				}finally {
-					if (br!=null) {
+				} finally {
+					if (br != null) {
 						br.close();
 					}
 				}
@@ -51,7 +53,7 @@ public class Bigindexfileutil {
 			return keys;
 		}
 	}
-	
+
 	public static String readunique(String index, Path target) throws Exception {
 		synchronized (synchorizedfile[Integer.parseInt(target.getFileName().toString())]) {
 			if (index.isEmpty()) {
@@ -60,16 +62,19 @@ public class Bigindexfileutil {
 			if (Files.exists(target)) {
 				BufferedReader br = null;
 				try {
-					br = Files.newBufferedReader(target, Charset.forName("UTF-8"));
+					br = Files.newBufferedReader(target, Charset.forName(STATIC.CHARSET_DEFAULT));
 					String line = br.readLine();
-					while(line!=null&&!line.trim().isEmpty()) {
-						if (line.startsWith(URLEncoder.encode(index, "UTF-8") + STATIC.SPLIT_KEY_VAL)) {
-							return URLDecoder.decode(line.split(STATIC.SPLIT_KEY_VAL)[1], "UTF-8");
+					while (line != null && !line.trim().isEmpty()) {
+						if (STATIC.commentget(line)==null) {
+							String[] indexkey = STATIC.keyval(line);
+							if (indexkey[0].equals(index)) {
+								return indexkey[1];
+							}
 						}
 						line = br.readLine();
 					}
-				}finally {
-					if (br!=null) {
+				} finally {
+					if (br != null) {
 						br.close();
 					}
 				}
@@ -86,8 +91,63 @@ public class Bigindexfileutil {
 			if (key.isEmpty()) {
 				throw new Exception("emptykey");
 			}
-			byte[] bline = (URLEncoder.encode(index, "UTF-8") + STATIC.SPLIT_A_B + URLEncoder.encode(key, "UTF-8")
-					+ System.lineSeparator()).getBytes("UTF-8");
+			byte[] bline = (STATIC.keyval(index,key)
+					+ System.lineSeparator()).getBytes(STATIC.CHARSET_DEFAULT);
+			ByteBuffer bb = ByteBuffer.allocate(bline.length);
+			bb.put(bline);
+			write(target, bb);
+		}
+	}
+
+	public static void create(String index, Path target, String key, String version) throws Exception {
+		synchronized (synchorizedfile[Integer.parseInt(target.getFileName().toString())]) {
+			if (index.isEmpty()) {
+				throw new Exception("emptyindex");
+			}
+			if (key.isEmpty()) {
+				throw new Exception("emptykey");
+			}
+			if (version.isEmpty()) {
+				throw new Exception("emptyversion");
+			}
+			boolean isold = false;
+			if (Files.exists(target)) {
+				BufferedReader br = null;
+				String firstline = null;
+				try {
+					br = Files.newBufferedReader(target, Charset.forName(STATIC.CHARSET_DEFAULT));
+					firstline = br.readLine();
+				} finally {
+					if (br!=null) {
+						br.close();
+					}
+				}
+				if (firstline == null) {
+					isold = true;
+				} else {
+					if (STATIC.commentget(firstline)==null) {
+						throw new Exception("emptyoldversion");
+					} else {
+						if (version.compareTo(STATIC.commentget(firstline)) > 0) {
+							isold = true;
+						}
+					}
+				}
+
+			} else {
+				isold = true;
+			}
+			if (isold) {
+				Files.write(target, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
+						StandardOpenOption.SYNC);
+				byte[] bline = (STATIC.commentput(version)
+						+ System.lineSeparator()).getBytes(STATIC.CHARSET_DEFAULT);
+				ByteBuffer bb = ByteBuffer.allocate(bline.length);
+				bb.put(bline);
+				write(target, bb);
+			}
+			byte[] bline = (STATIC.keyval(index, key)
+					+ System.lineSeparator()).getBytes(STATIC.CHARSET_DEFAULT);
 			ByteBuffer bb = ByteBuffer.allocate(bline.length);
 			bb.put(bline);
 			write(target, bb);
@@ -103,8 +163,8 @@ public class Bigindexfileutil {
 				throw new Exception("emptykey");
 			}
 			if (readunique(index, target).isEmpty()) {
-				byte[] bline = (URLEncoder.encode(index, "UTF-8") + STATIC.SPLIT_A_B + URLEncoder.encode(key, "UTF-8")
-						+ System.lineSeparator()).getBytes("UTF-8");
+				byte[] bline = (STATIC.keyval(index, key)
+						+ System.lineSeparator()).getBytes(STATIC.CHARSET_DEFAULT);
 				ByteBuffer bb = ByteBuffer.allocate(bline.length);
 				bb.put(bline);
 				write(target, bb);
@@ -126,18 +186,20 @@ public class Bigindexfileutil {
 		if (namespace.isEmpty()) {
 			throw new Exception("emptyns");
 		}
-		String s = "";
+		Vector<String> filtersandpagenum = new Vector<String>(filters.size()+1);
 		if (filters != null && !filters.isEmpty()) {
 			Collections.sort(filters);
 			for (String f : filters) {
-				if (!s.equals("")) {
-					s += STATIC.SPLIT_A_B;
-				}
-				s += URLEncoder.encode(f, "UTF-8");
+				filtersandpagenum.add(f);
 			}
 		}
-		return STATIC.LOCAL_DATAFOLDER.resolve(URLEncoder.encode(namespace, "UTF-8")).resolve(Bigclient.distributebigindexserveri(namespace, pagenum, index)).resolve(s + STATIC.SPLIT_A_B
-				+ pagenum ).resolve(String.valueOf(Math.abs(index.hashCode()) % bigfilehash));
+		filtersandpagenum.add(String.valueOf(pagenum));
+		String[] fp = new String[filtersandpagenum.size()];
+		filtersandpagenum.toArray(fp);
+		return STATIC.LOCAL_DATAFOLDER.resolve(URLEncoder.encode(namespace, STATIC.CHARSET_DEFAULT))
+				.resolve(Bigclient.distributebigindexserveri(namespace, pagenum, index))
+				.resolve(STATIC.splitenc(fp))
+				.resolve(String.valueOf(Math.abs(index.hashCode()) % bigfilehash));
 	}
 
 }

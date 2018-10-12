@@ -1,0 +1,17 @@
+active=dig0#dig1
+
+dig0.sort=namespace#table#col
+dig0.interval=W01300
+dig0.period=20180910-20180910
+dig0.index=namespace0#table0#col0:namespace1#table1#col1
+dig0.filter=namespace0#table0#col0:namespace1#table1#col1
+
+dig1.sort=namespace#table#col
+dig1.interval=D1300
+dig1.period=20180910-20200920
+dig1.index=namespace0#table0#col0
+dig1.filter=namespace0#table0#col0
+
+
+
+

@@ -20,16 +20,16 @@ public class Fileclient {
 
 	public void write(String key, InputStream requests) throws Exception {
 		try {
-			String[] iport = Bigclient.distributebigdata("pngbigto", key).split(STATIC.SPLIT_IP_PORT);
-			Theclient.request(iport[0], Integer.parseInt(iport[1]), path.getBytes("UTF-8"), requests, null);
+			String[] iport = STATIC.splitenc(Bigclient.distributebigdata("pngbigto", key));
+			Theclient.request(iport[0], Integer.parseInt(iport[1]), path.getBytes(STATIC.CHARSET_DEFAULT), requests, null);
 		} finally {
 			requests.close();
 		}
 	}
 
 	public String read(String key, Theclientprocess cp) throws Exception {
-		String[] iport = Bigclient.distributebigdata("pngbigfrom", key).split(STATIC.SPLIT_IP_PORT);
-		Theclient.request(iport[0], Integer.parseInt(iport[1]), path.getBytes("UTF-8"), null, cp);
+		String[] iport = STATIC.splitenc(Bigclient.distributebigdata("pngbigfrom", key));
+		Theclient.request(iport[0], Integer.parseInt(iport[1]), path.getBytes(STATIC.CHARSET_DEFAULT), null, cp);
 		return key;
 	}
 

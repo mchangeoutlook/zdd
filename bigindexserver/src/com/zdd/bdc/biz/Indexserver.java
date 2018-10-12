@@ -37,7 +37,11 @@ public class Indexserver implements Theserverprocess {
 			} else {
 				long pagenum = Long.parseLong(params.get(STATIC.PARAM_PAGENUM_KEY).toString());
 				Path target = Bigindexfileutil.target(index, pagenum, filters, namespace, bigfilehash);
-				Bigindexfileutil.create(index, target, key);
+				if (params.get(STATIC.PARAM_VERSION_KEY)!=null&&!params.get(STATIC.PARAM_VERSION_KEY).toString().trim().isEmpty()) {
+					Bigindexfileutil.create(index, target, key, params.get(STATIC.PARAM_VERSION_KEY).toString());
+				} else {
+					Bigindexfileutil.create(index, target, key);
+				}
 			}
 		} else if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
 			String index = params.get(STATIC.PARAM_INDEX_KEY).toString();
@@ -48,8 +52,10 @@ public class Indexserver implements Theserverprocess {
 				unique = Bigindexfileutil.readunique(index, target);
 			} else {
 				long pagenum = Long.parseLong(params.get(STATIC.PARAM_PAGENUM_KEY).toString());
+				int numofdata = Integer.parseInt(params.get(STATIC.PARAM_NUMOFDATA).toString());
+				
 				Path target = Bigindexfileutil.target(index, pagenum, filters, namespace, bigfilehash);
-				readres = Bigindexfileutil.read(index, target);
+				readres = Bigindexfileutil.read(index, target, numofdata);
 			}
 		} else {
 			throw new Exception("notsupport-" + params.get(STATIC.PARAM_ACTION_KEY));
