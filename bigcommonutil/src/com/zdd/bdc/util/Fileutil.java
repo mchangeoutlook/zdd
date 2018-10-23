@@ -103,7 +103,10 @@ public class Fileutil {
 		}
 	}
 	
-	private static void walkdata(Path target, Filedatawalk walker, boolean reverse) throws Exception {
+	public static void walkdata(Path target, Filedatawalk walker, boolean reverse) throws Exception {
+		if (!Files.exists(target)) {
+			//do nothing
+		} else {
 		SeekableByteChannel sbc = null;
 		try {
 			sbc = Files.newByteChannel(target, StandardOpenOption.WRITE, StandardOpenOption.READ, StandardOpenOption.SYNC);
@@ -175,6 +178,7 @@ public class Fileutil {
 				sbc.close();
 			}
 		}
+		}
 	}
 	
 	private static void write(Path target, long startposition, ByteBuffer towrite) throws Exception {
@@ -231,27 +235,6 @@ public class Fileutil {
 		}, false);
 	}
 
-	public static void modifyfirstvalue1byvalue2(byte[] newvalue1, byte[] value2, Path target) throws Exception {
-		walkdata(target, new Filedatawalk() {
-
-			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2,
-					boolean isv2deleted) {
-				if (isv1deleted||isv2deleted) {
-					return null;
-				} else {
-					if (Arrays.equals(value2, v2)) {
-						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE, Filedatawalkresult.DATA_REPLACE, newvalue1, value2);
-					} else {
-						//ignore the data
-						return null;
-					}
-				}
-			}
-			
-		}, false);
-	}
-
 	public static void modifylastvalue2byvalue1(byte[] value1, byte[] newvalue2, Path target) throws Exception {
 		walkdata(target, new Filedatawalk() {
 
@@ -271,111 +254,6 @@ public class Fileutil {
 			}
 			
 		}, true);
-	}
-
-	public static void modifylastvalue1byvalue2(byte[] newvalue1, byte[] value2, Path target) throws Exception {
-		walkdata(target, new Filedatawalk() {
-
-			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2,
-					boolean isv2deleted) {
-				if (isv1deleted||isv2deleted) {
-					return null;
-				} else {
-					if (Arrays.equals(value2, v2)) {
-						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE, Filedatawalkresult.DATA_REPLACE, newvalue1, value2);
-					} else {
-						//ignore the data
-						return null;
-					}
-				}
-			}
-			
-		}, true);
-	}
-
-	public static void modifyallvalue2byvalue1(byte[] value1, byte[] newvalue2, Path target) throws Exception {
-		walkdata(target, new Filedatawalk() {
-
-			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2,
-					boolean isv2deleted) {
-				if (isv1deleted||isv2deleted) {
-					return null;
-				} else {
-					if (Arrays.equals(value1, v1)) {
-						return new Filedatawalkresult(Filedatawalkresult.WALK_CONTINUE, Filedatawalkresult.DATA_REPLACE, value1, newvalue2);
-					} else {
-						//ignore the data
-						return null;
-					}
-				}
-			}
-			
-		}, true);
-	}
-
-	public static void modifyallvalue1byvalue2(byte[] newvalue1, byte[] value2, Path target) throws Exception {
-		walkdata(target, new Filedatawalk() {
-
-			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2,
-					boolean isv2deleted) {
-				if (isv1deleted||isv2deleted) {
-					return null;
-				} else {
-					if (Arrays.equals(value2, v2)) {
-						return new Filedatawalkresult(Filedatawalkresult.WALK_CONTINUE, Filedatawalkresult.DATA_REPLACE, newvalue1, value2);
-					} else {
-						//ignore the data
-						return null;
-					}
-				}
-			}
-			
-		}, true);
-	}
-
-	public static void deletefirstvalue2byvalue1(byte[] value1, Path target) throws Exception {
-		walkdata(target, new Filedatawalk() {
-
-			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2,
-					boolean isv2deleted) {
-				if (isv1deleted||isv2deleted) {
-					return null;
-				} else {
-					if (Arrays.equals(value1, v1)) {
-						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE, Filedatawalkresult.DATA_DELETE, null, null);
-					} else {
-						//ignore the data
-						return null;
-					}
-				}
-			}
-			
-		}, false);		
-	}
-
-	public static void deletefirstvalue1byvalue2(byte[] value2, Path target) throws Exception {
-		walkdata(target, new Filedatawalk() {
-
-			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2,
-					boolean isv2deleted) {
-				if (isv1deleted||isv2deleted) {
-					return null;
-				} else {
-					if (Arrays.equals(value2, v2)) {
-						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE, Filedatawalkresult.DATA_DELETE, null, null);
-					} else {
-						//ignore the data
-						return null;
-					}
-				}
-			}
-			
-		}, false);
 	}
 
 	public static void deletelastvalue2byvalue1(byte[] value1, Path target) throws Exception {
@@ -398,98 +276,23 @@ public class Fileutil {
 			
 		}, true);
 	}
-
-	public static void deletelastvalue1byvalue2(byte[] value2, Path target) throws Exception {
+	
+	public static Vector<byte[]> readfirstvalue1value2(Path target) throws Exception {
+		Vector<byte[]> returnvalue = new Vector<byte[]>(2);
 		walkdata(target, new Filedatawalk() {
 
 			@Override
 			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2,
 					boolean isv2deleted) {
-				if (isv1deleted||isv2deleted) {
-					return null;
-				} else {
-					if (Arrays.equals(value2, v2)) {
-						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE, Filedatawalkresult.DATA_DELETE, null, null);
-					} else {
-						//ignore the data
-						return null;
-					}
-				}
-			}
-			
-		}, true);
-	}
-
-	public static void deleteallvalue2byvalue1(byte[] value1, Path target) throws Exception {
-		walkdata(target, new Filedatawalk() {
-
-			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2,
-					boolean isv2deleted) {
-				if (isv1deleted||isv2deleted) {
-					return null;
-				} else {
-					if (Arrays.equals(value1, v1)) {
-						return new Filedatawalkresult(Filedatawalkresult.WALK_CONTINUE, Filedatawalkresult.DATA_DELETE, null, null);
-					} else {
-						//ignore the data
-						return null;
-					}
-				}
-			}
-			
-		}, true);
-	}
-
-	public static void deleteallvalue1byvalue2(byte[] value2, Path target) throws Exception {
-		walkdata(target, new Filedatawalk() {
-
-			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2,
-					boolean isv2deleted) {
-				if (isv1deleted||isv2deleted) {
-					return null;
-				} else {
-					if (Arrays.equals(value2, v2)) {
-						return new Filedatawalkresult(Filedatawalkresult.WALK_CONTINUE, Filedatawalkresult.DATA_DELETE, null, null);
-					} else {
-						//ignore the data
-						return null;
-					}
-				}
-			}
-			
-		}, true);
-	}
-
-	public static byte[] readfirstvalue1byvalue2(byte[] value2, Path target) throws Exception {
-		Vector<byte[]> returnvalue = new Vector<byte[]>(1);
-		walkdata(target, new Filedatawalk() {
-
-			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2,
-					boolean isv2deleted) {
-				if (isv1deleted||isv2deleted) {
-					return null;
-				} else {
-					if (Arrays.equals(value2, v2)) {
-						returnvalue.add(v1);
-						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE, Filedatawalkresult.DATA_DONOTHING, null, null);
-					} else {
-						//ignore the data
-						return null;
-					}
-				}
+				returnvalue.add(v1);
+				returnvalue.add(v2);
+				return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE, Filedatawalkresult.DATA_DONOTHING, null, null);
 			}
 			
 		}, false);
-		if (returnvalue.isEmpty()) {
-			return null;
-		} else {
-			return returnvalue.get(0);
-		}
+		return returnvalue;
 	}
-	
+
 	public static byte[] readfirstvalue2byvalue1(byte[] value1, Path target) throws Exception {
 		Vector<byte[]> returnvalue = new Vector<byte[]>(1);
 		walkdata(target, new Filedatawalk() {
@@ -511,34 +314,6 @@ public class Fileutil {
 			}
 			
 		}, false);
-		if (returnvalue.isEmpty()) {
-			return null;
-		} else {
-			return returnvalue.get(0);
-		}
-	}
-
-	public static byte[] readlastvalue1byvalue2(byte[] value2, Path target) throws Exception {
-		Vector<byte[]> returnvalue = new Vector<byte[]>(1);
-		walkdata(target, new Filedatawalk() {
-
-			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2,
-					boolean isv2deleted) {
-				if (isv1deleted||isv2deleted) {
-					return null;
-				} else {
-					if (Arrays.equals(value2, v2)) {
-						returnvalue.add(v1);
-						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE, Filedatawalkresult.DATA_DONOTHING, null, null);
-					} else {
-						//ignore the data
-						return null;
-					}
-				}
-			}
-			
-		}, true);
 		if (returnvalue.isEmpty()) {
 			return null;
 		} else {
@@ -574,31 +349,8 @@ public class Fileutil {
 		}
 
 	}
-
-	public static Vector<byte[]> readallvalue1byvalue2(byte[] value2, int defaultnumofvalues, Path target) throws Exception {
-		Vector<byte[]> returnvalue = new Vector<byte[]>(defaultnumofvalues);
-		walkdata(target, new Filedatawalk() {
-
-			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2,
-					boolean isv2deleted) {
-				if (isv1deleted||isv2deleted) {
-					return null;
-				} else {
-					if (Arrays.equals(value2, v2)) {
-						returnvalue.add(v1);
-					} else {
-						//ignore the data
-					}
-					return null;
-				}
-			}
-			
-		}, true);
-		return returnvalue;
-	}
 	
-	public static Vector<byte[]> readallvalue2byvalue1(byte[] value1, int defaultnumofvalues, Path target) throws Exception {
+	public static Vector<byte[]> readallvalue2byvalue1(byte[] value1, int defaultnumofvalues, boolean reverse, Path target) throws Exception {
 		Vector<byte[]> returnvalue = new Vector<byte[]>(defaultnumofvalues);
 		walkdata(target, new Filedatawalk() {
 
@@ -617,7 +369,7 @@ public class Fileutil {
 				}
 			}
 			
-		}, true);
+		}, reverse);
 		return returnvalue;
 	}
 	

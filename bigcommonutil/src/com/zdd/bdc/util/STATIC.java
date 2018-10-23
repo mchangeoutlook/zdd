@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Vector;
 
 public class STATIC {
 	
@@ -18,11 +17,15 @@ public class STATIC {
 	public static final String SORT_ROOTFOLDER = "sorting";
 	public static final String SORT_DONEFILE = "done";
 	
-	public static final String REMOTE_CONFIGFILE_BIGDATA = "bigdata";
-	public static final String REMOTE_CONFIGFILE_BIGINDEX = "bigindex";
-	public static final String REMOTE_CONFIGFILE_CORE = "core";
-	public static final String REMOTE_CONFIGFILE_DIG = "dig";
-	public static final String REMOTE_CONFIGFILE_PENDING = "pending";
+	public static final String SORT_STATUS_NOTFOUND = "notfound";
+	public static final String SORT_STATUS_SORTING = "sorting";
+	public static final String SORT_STATUS_DONE = "accomplished";
+	
+	public static final String REMOTE_CONFIG_BIGDATA = "bigdata";
+	public static final String REMOTE_CONFIG_BIGINDEX = "bigindex";
+	public static final String REMOTE_CONFIG_CORE = "core";
+	public static final String REMOTE_CONFIG_DIG = "dig";
+	public static final String REMOTE_CONFIG_PENDING = "pending";
 
 	public static final String REMOTE_CONFIGKEY_CONFIGSERVERIP = "configserverip";
 	public static final String REMOTE_CONFIGKEY_CONFIGSERVERPORT = "configserverport";
@@ -85,79 +88,13 @@ public class STATIC {
 	}
 	public static final String splitenc(String... values) throws Exception {
 		String returnvalue = "";
-		for (String val:values) {
-			if (!returnvalue.isEmpty()) {
+		for (int i=0;i<values.length;i++) {
+			if (i!=0) {
 				returnvalue+=SPLIT_ENC;
 			}
-			returnvalue+=URLEncoder.encode(val, CHARSET_DEFAULT);
+			returnvalue+=URLEncoder.encode(values[i], CHARSET_DEFAULT);
 		}
 		return returnvalue;
-	}
-
-	private static final String SPLIT = ":";
-	public static final String[] split(String from) {
-		return from.split(SPLIT);
-	}
-	public static final String split(String... values) {
-		String returnvalue = "";
-		for (String val:values) {
-			if (!returnvalue.isEmpty()) {
-				returnvalue+=SPLIT;
-			}
-			returnvalue+=val;
-		}
-		return returnvalue;
-	}
-	
-	private static final String SPLIT_KEY_VAL = "=";
-	public static final String[] keyval(String from) throws Exception {
-		String[] returnvalue = new String[2];
-		returnvalue[0] = URLDecoder.decode(from.substring(0, from.indexOf(SPLIT_KEY_VAL)),CHARSET_DEFAULT);
-		if (from.endsWith(SPLIT_KEY_VAL)) {
-			returnvalue[1] = "";
-		} else {
-			returnvalue[1] = from.substring(from.indexOf(SPLIT_KEY_VAL)+1);
-		}
-		return returnvalue;
-	}
-	public static final String keyval(String key, String value) throws Exception {
-		return URLEncoder.encode(key,CHARSET_DEFAULT)+SPLIT_KEY_VAL+value;
-	}
-
-	private static final String SPLIT_FROM_TO = "-";
-	public static final String[] fromto(String fromto) throws Exception {
-		return fromto.split(SPLIT_FROM_TO);
-	}
-	public static final String fromto(String from, String to) throws Exception {
-		return from+SPLIT_FROM_TO+to;
-	}
-
-	private static final String SPLIT_COMMENT = "@";
-	public static final String commentget(String line) {
-		if (line!=null&&line.startsWith(SPLIT_COMMENT)) {
-			if (line.endsWith(SPLIT_COMMENT)) {
-				return "";
-			} else {
-				return line.substring(1);
-			}
-		} else {
-			return null;
-		}
-	}
-	public static final String commentput(String comment) {
-		return SPLIT_COMMENT+comment;
-	}
-	
-	public static void main(String[] s) throws Exception {
-		Vector<String> a = new Vector<String>(3);
-		a.add("12345");
-		a.add("abcd");
-		a.add("efgh");
-		a.add("3456");
-		a.add("bcde");
-		a.add("2345");
-		String[] aa = new String[a.size()];
-		System.out.println(STATIC.split(a.toArray(aa)));
 	}
 	
 }
