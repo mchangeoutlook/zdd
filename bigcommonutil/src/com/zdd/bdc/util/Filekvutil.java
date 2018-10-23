@@ -2,6 +2,7 @@ package com.zdd.bdc.util;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Vector;
 
 public class Filekvutil {
@@ -54,7 +55,7 @@ public class Filekvutil {
 	}
 
 	public static void indexversion(String version, Path target) throws Exception {
-		synchronized(Integer.valueOf(Math.abs(target.getFileName().toString().hashCode()))) {
+		synchronized(target.getFileName().toString().intern()) {
 			if (!Files.exists(target)||Files.size(target)==0) {
 				Fileutil.create(versionkey.getBytes(STATIC.CHARSET_DEFAULT), versionkeymaxlength, version.getBytes(STATIC.CHARSET_DEFAULT), versionvalmaxlength, target);
 			} else {
@@ -88,7 +89,7 @@ public class Filekvutil {
 
 	public static void index(String index, String value, boolean isunique, Path target) throws Exception {
 		if (isunique) {
-			synchronized(Integer.valueOf(Math.abs(target.getFileName().toString().hashCode()))) {
+			synchronized(index.intern()) {
 				if (index(index, target)==null) {
 					byte[] indexb = index.getBytes(STATIC.CHARSET_DEFAULT);
 					byte[] valueb = value.getBytes(STATIC.CHARSET_DEFAULT);
@@ -128,7 +129,7 @@ public class Filekvutil {
 	}
 
 	public static long dataincrement(String key, long amount, Path target) throws Exception {
-		synchronized(Integer.valueOf(Math.abs(target.getFileName().toString().hashCode()))) {
+		synchronized(key.intern()) {
 			String amountstr = dataread(key, target);
 			if (amountstr==null) {
 				byte[] keyb = key.getBytes(STATIC.CHARSET_DEFAULT);
@@ -143,7 +144,7 @@ public class Filekvutil {
 				}
 				long newamount = oldval+amount;
 				byte[] keyb = key.getBytes(STATIC.CHARSET_DEFAULT);
-				Fileutil.create(keyb, keyb.length, String.valueOf(newamount).getBytes(STATIC.CHARSET_DEFAULT), incrementmaxlength+1, target);
+				Fileutil.modifylastvalue2byvalue1(keyb, String.valueOf(newamount).getBytes(STATIC.CHARSET_DEFAULT), target);
 				return newamount;
 			}
 		}

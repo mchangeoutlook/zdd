@@ -138,7 +138,7 @@ public class Fileutil {
 						} else {
 							sbc.position(sbc.position()-towrite.capacity());
 						}
-						synchronized(Integer.valueOf(Math.abs(target.getFileName().toString().hashCode()))) {
+						synchronized(new String(value1,STATIC.CHARSET_DEFAULT).intern()) {
 							write(sbc, towrite);
 						}
 						if (reverse) {
@@ -153,7 +153,14 @@ public class Fileutil {
 						} else {
 							sbc.position(sbc.position()-towrite.capacity());
 						}
-						synchronized(Integer.valueOf(Math.abs(target.getFileName().toString().hashCode()))) {
+						String sync = null;
+						if (Arrays.equals(res.getvalue1(), value1)) {
+							sync = new String(value1,STATIC.CHARSET_DEFAULT).intern();
+						} else {
+							sync = new String(value2,STATIC.CHARSET_DEFAULT).intern();
+						}
+						
+						synchronized(sync) {
 							write(sbc, towrite);
 						}
 						if (reverse) {
@@ -205,7 +212,7 @@ public class Fileutil {
 
 	public static void create(byte[] value1, int value1maxlength, byte[] value2, int value2maxlength, Path target) throws Exception {
 		ByteBuffer towrite = formatdatapair(value1, value1maxlength, false, value2, value2maxlength, false);
-		synchronized(Integer.valueOf(Math.abs(target.getFileName().toString().hashCode()))) {
+		synchronized(target.getFileName().toString().intern()) {
 			if (Files.exists(target)) {
 				write(target, Files.size(target), towrite);
 			} else {
