@@ -138,7 +138,7 @@ public class Fileutil {
 						} else {
 							sbc.position(sbc.position()-towrite.capacity());
 						}
-						synchronized(new String(value1,STATIC.CHARSET_DEFAULT).intern()) {
+						synchronized(synckey(new String(value1))) {
 							write(sbc, towrite);
 						}
 						if (reverse) {
@@ -155,12 +155,11 @@ public class Fileutil {
 						}
 						String sync = null;
 						if (Arrays.equals(res.getvalue1(), value1)) {
-							sync = new String(value1,STATIC.CHARSET_DEFAULT).intern();
+							sync = new String(value1);
 						} else {
-							sync = new String(value2,STATIC.CHARSET_DEFAULT).intern();
+							sync = new String(value2);
 						}
-						
-						synchronized(sync) {
+						synchronized(synckey(sync)) {
 							write(sbc, towrite);
 						}
 						if (reverse) {
@@ -212,7 +211,7 @@ public class Fileutil {
 
 	public static void create(byte[] value1, int value1maxlength, byte[] value2, int value2maxlength, Path target) throws Exception {
 		ByteBuffer towrite = formatdatapair(value1, value1maxlength, false, value2, value2maxlength, false);
-		synchronized(target.getFileName().toString().intern()) {
+		synchronized(syncfile(target)) {
 			if (Files.exists(target)) {
 				write(target, Files.size(target), towrite);
 			} else {
@@ -378,6 +377,15 @@ public class Fileutil {
 			
 		}, reverse);
 		return returnvalue;
+	}
+	
+	//to avoid dead lock, sync file and key on different range.
+	public static String syncfile(Path tosync) {
+		return String.valueOf(Math.abs(tosync.getFileName().toString().hashCode()%10000)+10000).intern();
+	}
+	
+	public static String synckey(String tosync) {
+		return String.valueOf(Math.abs(tosync.hashCode()%10000)).intern();
 	}
 	
 }
