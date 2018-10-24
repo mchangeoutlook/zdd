@@ -4,37 +4,22 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Random;
 
 public class CS {
 	
-	public static final String CHARSET_DEFAULT = "UTF-8";
+	public static final Path LOCAL_CONFIGFOLDER = Paths.get("config");
 	
-	public static final String SORT_COMPARE_TO_STRING = "0";
-	public static final int SORT_PROGRESSONEFILECAPACITY = 800000;
-	public static final String SORT_ALL = "ALLwithoutconsideringanyfilter";
-	public static final String SORT_ROOTFOLDER = "sorting";
-	public static final String SORT_DONEFILE = "done";
-	
-	public static final String SORT_STATUS_NOTFOUND = "notfound";
-	public static final String SORT_STATUS_SORTING = "sorting";
-	public static final String SORT_STATUS_DONE = "accomplished";
-	
+	public static final String NAMESPACE_CORE = "core";
+	public static final String REMOTE_CONFIG_CORE = "core";
 	public static final String REMOTE_CONFIG_BIGDATA = "bigdata";
 	public static final String REMOTE_CONFIG_BIGINDEX = "bigindex";
-	public static final String REMOTE_CONFIG_CORE = "core";
-	public static final String REMOTE_CONFIG_DIG = "dig";
-	public static final String REMOTE_CONFIG_PENDING = "pending";
-
+	
 	public static final String REMOTE_CONFIGKEY_CONFIGSERVERIP = "configserverip";
 	public static final String REMOTE_CONFIGKEY_CONFIGSERVERPORT = "configserverport";
-	public static final String REMOTE_CONFIGKEY_MAXINDEXSERVERS = "maxindexservers";
 	public static final String REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS = "updateconfigcache.intervalseconds";
+	public static final String REMOTE_CONFIGKEY_MAXINDEXSERVERS = "maxindexservers";
 	
-	public static final String REMOTE_CONFIGVAL_PENDING = "pending";
-
 	public static final String PARAM_KEY_KEY = "key";
 	public static final String PARAM_NAMESPACE_KEY = "ns";
 	public static final String PARAM_INDEX_KEY = "index";
@@ -46,7 +31,9 @@ public class CS {
 	public static final String PARAM_COLUMNVALUES_KEY = "cvs";
 	public static final String PARAM_COLUMNAMOUNTS_KEY = "cas";
 	public static final String PARAM_COLUMNMAXVALUES_KEY = "cvmaxs";
-
+	
+	public static final int PAGENUM_UNIQUEINDEX = -1;
+	
 	public static final String PARAM_DATA_KEY = "data";
 	public static final String PARAM_VERSION_KEY = "version";
 	
@@ -57,14 +44,6 @@ public class CS {
 	public static final String PARAM_ACTION_CREATE = "create";
 	public static final String PARAM_ACTION_INCREMENT = "increment";
 
-	public static final Path LOCAL_CONFIGFOLDER = Paths.get("config");
-	public static final String PARENTFOLDER = Paths.get(".").toAbsolutePath().getParent().getParent().getFileName().toString();
-	
-	public static final String NAMESPACE_CORE = "core";
-	
-	public static final SimpleDateFormat FORMAT_yMd = new SimpleDateFormat("yyyyMMdd");
-	public static final SimpleDateFormat FORMAT_yMdHms = new SimpleDateFormat("yyyyMMddHHmmss");
-	
 	public static final String FORMAT_yMd(String key) {
 		return key.substring(13,17)+key.substring(7,9)+key.substring(2,4);
 	}
@@ -80,7 +59,7 @@ public class CS {
 	public static final String[] splitenc(String from) throws Exception {
 		String[] returnvalue = from.split(SPLIT_ENC);
 		for (int i = 0;i < returnvalue.length;i++) {
-			returnvalue[i] = URLDecoder.decode(returnvalue[i], CHARSET_DEFAULT);
+			returnvalue[i] = URLDecoder.decode(returnvalue[i], "UTF-8");
 		}
 		return returnvalue;
 	}
@@ -90,7 +69,7 @@ public class CS {
 			if (i!=0) {
 				returnvalue+=SPLIT_ENC;
 			}
-			returnvalue+=URLEncoder.encode(values[i], CHARSET_DEFAULT);
+			returnvalue+=URLEncoder.encode(values[i], "UTF-8");
 		}
 		return returnvalue;
 	}

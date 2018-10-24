@@ -4,95 +4,95 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Random;
+import java.util.Vector;
 
 public class SS {
-	
-	public static final String CHARSET_DEFAULT = "UTF-8";
-	
+	public static final Path LOCAL_CONFIGFOLDER = Paths.get("config");
+	public static final Path LOCAL_DATAFOLDER = Paths.get(".").toAbsolutePath().getParent().getParent().resolve("data");
+	public static final String PARENTFOLDER = Paths.get(".").toAbsolutePath().getParent().getParent().getFileName()
+			.toString();
+
+	public static final int configkeymaxlength = 100;
+	public static final int configvalmaxlength = 500;
+	public static final int configmaxnumofvals = 100;
+
+	public static final String versionkey = ":version:";
+	public static final int versionkeymaxlength = 9;
+	public static final int versionvalmaxlength = 50;
+
+	public static final int incrementmaxlength = String.valueOf(Long.MAX_VALUE).length() + 1;
+
 	public static final String SORT_COMPARE_TO_STRING = "0";
+
 	public static final int SORT_PROGRESSONEFILECAPACITY = 800000;
+
 	public static final String SORT_ALL = "ALLwithoutconsideringanyfilter";
 	public static final String SORT_ROOTFOLDER = "sorting";
 	public static final String SORT_DONEFILE = "done";
-	
+
 	public static final String SORT_STATUS_NOTFOUND = "notfound";
 	public static final String SORT_STATUS_SORTING = "sorting";
 	public static final String SORT_STATUS_DONE = "accomplished";
-	
-	public static final String REMOTE_CONFIG_BIGDATA = "bigdata";
-	public static final String REMOTE_CONFIG_BIGINDEX = "bigindex";
-	public static final String REMOTE_CONFIG_CORE = "core";
+
 	public static final String REMOTE_CONFIG_DIG = "dig";
 	public static final String REMOTE_CONFIG_PENDING = "pending";
 
-	public static final String REMOTE_CONFIGKEY_CONFIGSERVERIP = "configserverip";
-	public static final String REMOTE_CONFIGKEY_CONFIGSERVERPORT = "configserverport";
-	public static final String REMOTE_CONFIGKEY_MAXINDEXSERVERS = "maxindexservers";
-	public static final String REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS = "updateconfigcache.intervalseconds";
-	
 	public static final String REMOTE_CONFIGVAL_PENDING = "pending";
 
-	public static final String PARAM_KEY_KEY = "key";
-	public static final String PARAM_NAMESPACE_KEY = "ns";
-	public static final String PARAM_INDEX_KEY = "index";
-	public static final String PARAM_PAGENUM_KEY = "pagenum";
-	public static final String PARAM_NUMOFDATA = "numofdata";
-	public static final String PARAM_FILTERS_KEY = "filters";
-	public static final String PARAM_TABLE_KEY = "tb";
-	public static final String PARAM_COLUMNS_KEY = "cols";
-	public static final String PARAM_COLUMNVALUES_KEY = "cvs";
-	public static final String PARAM_COLUMNAMOUNTS_KEY = "cas";
-	public static final String PARAM_COLUMNMAXVALUES_KEY = "cvmaxs";
+	// to avoid dead lock, sync file and key on different range.
+	private static final int synchash = 10000;
 
-	public static final String PARAM_DATA_KEY = "data";
-	public static final String PARAM_VERSION_KEY = "version";
-	
-	public static final String PARAM_ACTION_KEY = "action";
-	public static final String PARAM_ACTION_READ = "read";
-	public static final String PARAM_ACTION_DELETE = "delete";
-	public static final String PARAM_ACTION_MODIFY = "modify";
-	public static final String PARAM_ACTION_CREATE = "create";
-	public static final String PARAM_ACTION_INCREMENT = "increment";
+	public static String syncfile(Path tosync) {
 
-	public static final Path LOCAL_CONFIGFOLDER = Paths.get("config");
-	public static final String PARENTFOLDER = Paths.get(".").toAbsolutePath().getParent().getParent().getFileName().toString();
-	
-	public static final String NAMESPACE_CORE = "core";
-	
-	public static final SimpleDateFormat FORMAT_yMd = new SimpleDateFormat("yyyyMMdd");
-	public static final SimpleDateFormat FORMAT_yMdHms = new SimpleDateFormat("yyyyMMddHHmmss");
-	
-	public static final String FORMAT_yMd(String key) {
-		return key.substring(13,17)+key.substring(7,9)+key.substring(2,4);
+		return String.valueOf(Math.abs(tosync.getFileName().toString().hashCode() % synchash) + synchash).intern();
 	}
-	public static final String FORMAT_KEY(String idcontainsmorethanequal9chars) {
-		Calendar cal = Calendar.getInstance();
-		return new StringBuffer(idcontainsmorethanequal9chars)
-				.insert(2, String.format("%02d", cal.get(Calendar.DATE)))
-				.insert(7, String.format("%02d", cal.get(Calendar.MONTH) + 1))
-				.insert(13, String.valueOf(cal.get(Calendar.YEAR))).toString();
+
+	public static String synckey(String tosync) {
+		return String.valueOf(Math.abs(tosync.hashCode() % synchash)).intern();
 	}
-	
-	private static final String SPLIT_ENC = "#";
-	public static final String[] splitenc(String from) throws Exception {
-		String[] returnvalue = from.split(SPLIT_ENC);
-		for (int i = 0;i < returnvalue.length;i++) {
-			returnvalue[i] = URLDecoder.decode(returnvalue[i], CHARSET_DEFAULT);
-		}
-		return returnvalue;
+
+	public static byte[] tobytes(String str) throws Exception {
+		return str.getBytes("UTF-8");
 	}
-	public static final String splitenc(String... values) throws Exception {
-		String returnvalue = "";
-		for (int i=0;i<values.length;i++) {
-			if (i!=0) {
-				returnvalue+=SPLIT_ENC;
+
+	public static String tostring(byte[] b) throws Exception {
+		return new String(b, "UTF-8");
+	}
+
+	public static String urldecode(String str) throws Exception {
+		return URLDecoder.decode(str, "UTF-8");
+	}
+
+	public static String urlencode(String str) throws Exception {
+		return URLEncoder.encode(str, "UTF-8");
+	}
+
+	public static String filtersandpagenum(long pagenum, Vector<String> filters) throws Exception {
+		String filtersandpagenum = "";
+		if (filters != null && !filters.isEmpty()) {
+			for (String f : filters) {
+				if (!f.trim().isEmpty()) {
+					filtersandpagenum += SS.urlencode(f) + "#";
+				} else {
+					throw new Exception("hasemptyfilter");
+				}
 			}
-			returnvalue+=URLEncoder.encode(values[i], CHARSET_DEFAULT);
+		}
+		if (filtersandpagenum.isEmpty()) {
+			filtersandpagenum += "#" + String.valueOf(pagenum);
+		} else {
+			filtersandpagenum += String.valueOf(pagenum);
+		}
+		return filtersandpagenum;
+	}
+
+	public static Vector<String> filtersandpagenum(String filtersandpagenum) throws Exception {
+		String[] splits = filtersandpagenum.split("#");
+		Vector<String> returnvalue = new Vector<String>(splits.length);
+		for (String s : splits) {
+			returnvalue.add(urldecode(s));
 		}
 		return returnvalue;
 	}
-	
+
 }

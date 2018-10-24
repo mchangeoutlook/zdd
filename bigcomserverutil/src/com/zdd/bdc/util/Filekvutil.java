@@ -1,44 +1,31 @@
 package com.zdd.bdc.util;
 
-import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Vector;
 
 public class Filekvutil {
-	public static final String CHARSET_DEFAULT = "UTF-8";
-	public static final Path LOCAL_CONFIGFOLDER = Paths.get("config");
-	public static final Path LOCAL_DATAFOLDER = Paths.get(".").toAbsolutePath().getParent().getParent().resolve("data");
-	
-	private static final int configkeymaxlength = 100;
-	private static final int configvalmaxlength = 500;
-	private static final int configmaxnumofvals = 100;
-
-	private static final String versionkey = ":version:";
-	private static final int versionkeymaxlength = 9;
-	private static final int versionvalmaxlength = 50;
-
-	private static final int incrementmaxlength = String.valueOf(Long.MAX_VALUE).length()+1;
 
 	public static void config(String key, String value, String namespace, String configfile) throws Exception {
-		Fileutil.create(tobytes(key), configkeymaxlength, tobytes(value), configvalmaxlength, configfile(namespace, configfile));
+		Fileutil.create(SS.tobytes(key), SS.configkeymaxlength, SS.tobytes(value), SS.configvalmaxlength,
+				configfile(namespace, configfile));
 	}
 
 	public static String config(String key, String namespace, String configfile) throws Exception {
-		byte[] val = Fileutil.readfirstvalue2byvalue1(tobytes(key), configfile(namespace, configfile));
+		byte[] val = Fileutil.readfirstvalue2byvalue1(SS.tobytes(key), configfile(namespace, configfile));
 		if (val == null) {
 			return null;
 		} else {
-			return tostring(val);
+			return SS.tostring(val);
 		}
 	}
 
 	public static String[] configs(String key, String namespace, String configfile) throws Exception {
-		Vector<byte[]> vals = Fileutil.readallvalue2byvalue1(tobytes(key), configmaxnumofvals, true, configfile(namespace, configfile));
+		Vector<byte[]> vals = Fileutil.readallvalue2byvalue1(SS.tobytes(key), SS.configmaxnumofvals, true,
+				configfile(namespace, configfile));
 		String[] returnvalue = new String[vals.size()];
 		for (int i = 0; i < vals.size(); i++) {
-			returnvalue[i] = tostring(vals.get(i));
+			returnvalue[i] = SS.tostring(vals.get(i));
 		}
 		return returnvalue;
 	}
@@ -48,8 +35,8 @@ public class Filekvutil {
 		if (val.isEmpty()) {
 			return null;
 		} else {
-			if (versionkey.equals(tostring(val.get(0)))) {
-				return tostring(val.get(1));
+			if (SS.versionkey.equals(SS.tostring(val.get(0)))) {
+				return SS.tostring(val.get(1));
 			} else {
 				return null;
 			}
@@ -57,50 +44,53 @@ public class Filekvutil {
 	}
 
 	public static void indexversion(String version, Path target) throws Exception {
-		synchronized (Fileutil.syncfile(target)) {
+		synchronized (SS.syncfile(target)) {
 			if (!Files.exists(target) || Files.size(target) == 0) {
-				Fileutil.create(tobytes(versionkey), versionkeymaxlength, tobytes(version), versionvalmaxlength,
-						target);
+				Fileutil.create(SS.tobytes(SS.versionkey), SS.versionkeymaxlength, SS.tobytes(version),
+						SS.versionvalmaxlength, target);
 			} else {
 				String existingversion = indexversion(target);
 				if (existingversion == null) {
 					throw new Exception("noexistversion");
 				} else {
-					Fileutil.modifyfirstvalue2byvalue1(tobytes(versionkey), tobytes(version), target);
+					Fileutil.modifyfirstvalue2byvalue1(SS.tobytes(SS.versionkey), SS.tobytes(version), target);
 				}
 			}
 		}
 	}
 
-	public static String index(String index, Vector<String> filters, int bigfilehash, Path indexfolder) throws Exception {
-		
+	public static String index(String index, Vector<String> filters, int bigfilehash, Path indexfolder)
+			throws Exception {
+
 		Path target = indexfile(index, -1, filters, bigfilehash, indexfolder);
-		
-		byte[] val = Fileutil.readlastvalue2byvalue1(tobytes(index), target);
+
+		byte[] val = Fileutil.readlastvalue2byvalue1(SS.tobytes(index), target);
 		if (val == null) {
 			return null;
 		} else {
-			return tostring(val);
+			return SS.tostring(val);
 		}
 	}
 
-	public static String[] indexes(String index, int numofvals, long pagenum, Vector<String> filters, int bigfilehash, Path indexfolder) throws Exception {
+	public static String[] indexes(String index, int numofvals, long pagenum, Vector<String> filters, int bigfilehash,
+			Path indexfolder) throws Exception {
 		Path target = indexfile(index, pagenum, filters, bigfilehash, indexfolder);
-		Vector<byte[]> vals = Fileutil.readallvalue2byvalue1(tobytes(index), numofvals, true, target);
+		Vector<byte[]> vals = Fileutil.readallvalue2byvalue1(SS.tobytes(index), numofvals, true, target);
 		String[] returnvalue = new String[vals.size()];
 		for (int i = 0; i < vals.size(); i++) {
-			returnvalue[i] = tostring(vals.get(i));
+			returnvalue[i] = SS.tostring(vals.get(i));
 		}
 		return returnvalue;
 	}
 
-	public static void index(String index, String value, boolean isunique, long pagenum, Vector<String> filters, int bigfilehash, Path indexfolder) throws Exception {
+	public static void index(String index, String value, boolean isunique, long pagenum, Vector<String> filters,
+			int bigfilehash, Path indexfolder) throws Exception {
 		if (isunique) {
 			Path target = indexfile(index, -1, filters, bigfilehash, indexfolder);
-			synchronized (Fileutil.synckey(index)) {
+			synchronized (SS.synckey(index)) {
 				if (index(index, filters, bigfilehash, indexfolder) == null) {
-					byte[] indexb = tobytes(index);
-					byte[] valueb = tobytes(value);
+					byte[] indexb = SS.tobytes(index);
+					byte[] valueb = SS.tobytes(value);
 					Fileutil.create(indexb, indexb.length, valueb, valueb.length, target);
 				} else {
 					throw new Exception("duplicate");
@@ -108,41 +98,51 @@ public class Filekvutil {
 			}
 		} else {
 			Path target = indexfile(index, pagenum, filters, bigfilehash, indexfolder);
-			byte[] indexb = tobytes(index);
-			byte[] valueb = tobytes(value);
+			byte[] indexb = SS.tobytes(index);
+			byte[] valueb = SS.tobytes(value);
 			Fileutil.create(indexb, indexb.length, valueb, valueb.length, target);
 		}
 
 	}
 
-	public static String dataread(String key, String namespace, String table, String column, int bigfilehash) throws Exception {
-		byte[] val = Fileutil.readlastvalue2byvalue1(tobytes(key), datafile(key, bigfilehash, datafolder(namespace, table, column)));
+	public static String dataread(String key, String namespace, String table, String column, int bigfilehash)
+			throws Exception {
+		byte[] val = Fileutil.readlastvalue2byvalue1(SS.tobytes(key),
+				datafile(key, bigfilehash, datafolder(namespace, table, column)));
 		if (val == null) {
 			return null;
 		} else {
-			return tostring(val);
+			return SS.tostring(val);
 		}
 	}
 
-	public static void datadelete(String key, String namespace, String table, String column, int bigfilehash) throws Exception {
-		Fileutil.deletelastvalue2byvalue1(tobytes(key), datafile(key, bigfilehash, datafolder(namespace, table, column)));
+	public static void datadelete(String key, String namespace, String table, String column, int bigfilehash)
+			throws Exception {
+		Fileutil.deletelastvalue2byvalue1(SS.tobytes(key),
+				datafile(key, bigfilehash, datafolder(namespace, table, column)));
 	}
 
-	public static void datamodify(String key, String newvalue, String namespace, String table, String column, int bigfilehash) throws Exception {
-		Fileutil.modifylastvalue2byvalue1(tobytes(key), tobytes(newvalue), datafile(key, bigfilehash, datafolder(namespace, table, column)));
+	public static void datamodify(String key, String newvalue, String namespace, String table, String column,
+			int bigfilehash) throws Exception {
+		Fileutil.modifylastvalue2byvalue1(SS.tobytes(key), SS.tobytes(newvalue),
+				datafile(key, bigfilehash, datafolder(namespace, table, column)));
 	}
 
-	public static void datacreate(String key, String value, int valuemaxlength, String namespace, String table, String column, int bigfilehash) throws Exception {
-		byte[] keyb = tobytes(key);
-		Fileutil.create(keyb, keyb.length, tobytes(value), valuemaxlength, datafile(key, bigfilehash, datafolder(namespace, table, column)));
+	public static void datacreate(String key, String value, int valuemaxlength, String namespace, String table,
+			String column, int bigfilehash) throws Exception {
+		byte[] keyb = SS.tobytes(key);
+		Fileutil.create(keyb, keyb.length, SS.tobytes(value), valuemaxlength,
+				datafile(key, bigfilehash, datafolder(namespace, table, column)));
 	}
 
-	public static long dataincrement(String key, long amount, String namespace, String table, String column, int bigfilehash) throws Exception {
-		synchronized (Fileutil.synckey(key)) {
+	public static long dataincrement(String key, long amount, String namespace, String table, String column,
+			int bigfilehash) throws Exception {
+		synchronized (SS.synckey(key)) {
 			String amountstr = dataread(key, namespace, table, column, bigfilehash);
 			if (amountstr == null) {
-				byte[] keyb = tobytes(key);
-				Fileutil.create(keyb, keyb.length, tobytes(String.valueOf(amount)), incrementmaxlength, datafile(key, bigfilehash, datafolder(namespace, table, column)));
+				byte[] keyb = SS.tobytes(key);
+				Fileutil.create(keyb, keyb.length, SS.tobytes(String.valueOf(amount)), SS.incrementmaxlength,
+						datafile(key, bigfilehash, datafolder(namespace, table, column)));
 				return amount;
 			} else {
 				Long oldval = null;
@@ -152,19 +152,12 @@ public class Filekvutil {
 					throw new Exception("nolongvalue");
 				}
 				long newamount = oldval + amount;
-				byte[] keyb = tobytes(key);
-				Fileutil.modifylastvalue2byvalue1(keyb, tobytes(String.valueOf(newamount)), datafile(key, bigfilehash, datafolder(namespace, table, column)));
+				byte[] keyb = SS.tobytes(key);
+				Fileutil.modifylastvalue2byvalue1(keyb, SS.tobytes(String.valueOf(newamount)),
+						datafile(key, bigfilehash, datafolder(namespace, table, column)));
 				return newamount;
 			}
 		}
-	}
-
-	public static byte[] tobytes(String str) throws Exception {
-		return str.getBytes(CHARSET_DEFAULT);
-	}
-
-	public static String tostring(byte[] b) throws Exception {
-		return new String(b, CHARSET_DEFAULT);
 	}
 
 	public static Path datafile(String key, int bigfilehash, Path datafolder) {
@@ -175,33 +168,18 @@ public class Filekvutil {
 		if (namespace.trim().isEmpty() || table.trim().isEmpty() || column.trim().isEmpty()) {
 			return null;
 		} else {
-			return LOCAL_DATAFOLDER.resolve(namespace).resolve(table).resolve(column);
+			return SS.LOCAL_DATAFOLDER.resolve(namespace).resolve(table).resolve(column);
 		}
 	}
 
-	public static Path indexfile(String index, long pagenum, Vector<String> filters, int bigfilehash,
-			Path indexfolder) throws Exception {
-		String filtersandpagenum = "";
-		if (filters != null && !filters.isEmpty()) {
-			for (String f : filters) {
-				if (!f.trim().isEmpty()) {
-					filtersandpagenum += URLEncoder.encode(f, CHARSET_DEFAULT) + "#";
-				} else {
-					throw new Exception("hasemptyfilter");
-				}
-			}
-		}
-		if (filtersandpagenum.isEmpty()) {
-			filtersandpagenum+="#"+String.valueOf(pagenum);
-		} else {
-			filtersandpagenum+=String.valueOf(pagenum);
-		}
-		return indexfolder.resolve(filtersandpagenum).resolve(String.valueOf(Math.abs(index.hashCode()) % bigfilehash));
-
+	public static Path indexfile(String index, long pagenum, Vector<String> filters, int bigfilehash, Path indexfolder)
+			throws Exception {
+		return indexfolder.resolve(SS.filtersandpagenum(pagenum, filters))
+				.resolve(String.valueOf(Math.abs(index.hashCode()) % bigfilehash));
 	}
 
 	public static Path configfile(String namespace, String configfile) {
-		return LOCAL_CONFIGFOLDER.resolve(namespace).resolve(configfile);
+		return SS.LOCAL_CONFIGFOLDER.resolve(namespace).resolve(configfile);
 	}
 
 }
