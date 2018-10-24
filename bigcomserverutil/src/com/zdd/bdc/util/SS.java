@@ -4,6 +4,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Vector;
 
 public class SS {
@@ -39,6 +40,8 @@ public class SS {
 
 	public static final String REMOTE_CONFIGVAL_PENDING = "pending";
 
+	public static final SimpleDateFormat FORMAT_yMd = new SimpleDateFormat("yyyyMMdd");
+	
 	// to avoid dead lock, sync file and key on different range.
 	private static final int synchash = 10000;
 

@@ -74,4 +74,19 @@ public class CS {
 		return returnvalue;
 	}
 	
+	public static byte[] tobytes(String str) throws Exception {
+		return str.getBytes("UTF-8");
+	}
+
+	public static String tostring(byte[] b) throws Exception {
+		return new String(b, "UTF-8");
+	}
+	
+	public static String[] splitiport(String str) {
+		return str.split(":");
+	}
+	public static String splitiport(String ip, String port) {
+		return ip+":"+port;
+	}
+	
 }

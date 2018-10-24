@@ -8,13 +8,14 @@ import java.util.Enumeration;
 
 import com.zdd.bdc.biz.Configserver;
 import com.zdd.bdc.ex.Theserver;
-import com.zdd.bdc.util.STATIC;
+import com.zdd.bdc.util.CS;
+import com.zdd.bdc.util.SS;
 
 
 /**
  * @author mido
  * how to run: 
- * nohup /data/jdk-9.0.4/bin/java -cp bigconfigserver.jar:../../commonlibs/bigcommonutil.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.main.Starter > log.runbigconfigserver &
+ * nohup /data/jdk-9.0.4/bin/java -cp bigconfigserver.jar:../../commonlibs/bigcomclientutil.jar:../../commonlibs/bigcomserverutil.jar:../../commonlibs/bigfileutil.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.main.Starter > log.runbigconfigserver &
  */
 
 public class Starter {
@@ -45,7 +46,7 @@ public class Starter {
 			@Override
 			public void run() {
 				try {
-					Theserver.startblocking(ip, Integer.parseInt(Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE, STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT)), STATIC.REMOTE_CONFIGVAL_PENDING, pending, 10, Configserver.class);
+					Theserver.startblocking(ip, Integer.parseInt(Configserver.readconfig(CS.NAMESPACE_CORE, CS.REMOTE_CONFIG_CORE, CS.REMOTE_CONFIGKEY_CONFIGSERVERPORT)), SS.REMOTE_CONFIGVAL_PENDING, pending, 10, Configserver.class);
 				} catch (Exception e) {
 					System.out.println(new Date()+" ==== System exit due to below exception:");
 					e.printStackTrace();
@@ -55,10 +56,10 @@ public class Starter {
 			
 		}).start();
 		
-		while(!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING, STATIC.splitenc(ip, Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE, STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT))))) {
+		while(!SS.REMOTE_CONFIGVAL_PENDING.equals(Configserver.readconfig(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING, CS.splitiport(ip, Configserver.readconfig(CS.NAMESPACE_CORE, CS.REMOTE_CONFIG_CORE, CS.REMOTE_CONFIGKEY_CONFIGSERVERPORT))))) {
 			Thread.sleep(30000);
 		}
-		pending.append(STATIC.REMOTE_CONFIGVAL_PENDING);
+		pending.append(SS.REMOTE_CONFIGVAL_PENDING);
 		System.out.println(new Date()+" ==== System will exit when next connection attempts.");
 	}
 }

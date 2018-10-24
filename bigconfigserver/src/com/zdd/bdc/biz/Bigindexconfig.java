@@ -1,42 +1,36 @@
 package com.zdd.bdc.biz;
 
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
-import com.zdd.bdc.util.STATIC;
+import com.zdd.bdc.util.CS;
+import com.zdd.bdc.util.Filekvutil;
 
 public class Bigindexconfig {
 
 	private static final Map<String, Map<String, String>> config = new Hashtable<String, Map<String, String>>();
 
 	public static void init(String namespace) throws Exception {
-		List<String> lines = Files.readAllLines(STATIC.LOCAL_CONFIGFOLDER.resolve(namespace).resolve(STATIC.REMOTE_CONFIGFILE_BIGINDEX),
-				Charset.forName(STATIC.CHARSET_DEFAULT));
+		String active = Filekvutil.config("active", namespace, CS.REMOTE_CONFIG_BIGINDEX);
+		String[] hashes = CS.splitenc(active);
 
 		Map<String, String> hash_ipport = new Hashtable<String, String>();
 
 		Map<String, String> parentfolderip_port = new Hashtable<String, String>();
 		Map<String, String> iport_filehash = new Hashtable<String, String>();
 
-		for (String line : lines) {
-			if (STATIC.commentget(line) == null) {
-				String[] keyval = STATIC.keyval(line);
-				String key = keyval[0];
-				String value = keyval[1];
-				String[] vals = STATIC.splitenc(value);
+		for (String key : hashes) {
+				String[] vals = CS.splitenc(Filekvutil.config(key, namespace, CS.REMOTE_CONFIG_BIGINDEX));
 				String parentfolder = vals[0];
 				String filehash = vals[1];
 				String ip = vals[2];
 				String port = vals[3];
-				parentfolderip_port.put(STATIC.splitenc(parentfolder, ip), port);
-				iport_filehash.put(STATIC.splitenc(ip, port), filehash);
-				String ipport = STATIC.splitenc(ip, port);
+				parentfolderip_port.put(CS.splitenc(parentfolder, ip), port);
+				iport_filehash.put(CS.splitiport(ip, port), filehash);
+				String ipport = CS.splitiport(ip, port);
 
-				String[] fromto = STATIC.fromto(key);
+				String[] fromto = key.split("-");
 				if (fromto.length==2) {
 					int start = Integer.parseInt(fromto[0]);
 					int end = Integer.parseInt(fromto[1]);
@@ -46,13 +40,13 @@ public class Bigindexconfig {
 				} else {
 					hash_ipport.put(key, ipport);
 				}
-			}
+			
 		}
 		Map<String, String> all = new Hashtable<String, String>();
 		all.putAll(hash_ipport);
 		all.putAll(parentfolderip_port);
 		all.putAll(iport_filehash);
-		all.put(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS, String.valueOf(hash_ipport.size()));
+		all.put(CS.REMOTE_CONFIGKEY_MAXINDEXSERVERS, String.valueOf(hash_ipport.size()));
 		config.put(namespace, all);
 		System.out.println(new Date() + " ==== generated bigindexconfig ["+all+"] [" + parentfolderip_port.size()
 				+ "] index servers and [" + hash_ipport.size() + "] hashes under namespace [" + namespace + "]");
@@ -63,5 +57,5 @@ public class Bigindexconfig {
 	public static String read(String namespace, String key) {
 		return config.get(namespace).get(key);
 	}
-
+	
 }
