@@ -1,11 +1,13 @@
-package com.zdd.bdc.biz;
+package com.zdd.bdc.server.biz;
 
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import com.zdd.bdc.ex.Theserverprocess;
-import com.zdd.bdc.util.STATIC;
+
+import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.server.ex.Theserverprocess;
+import com.zdd.bdc.server.util.SS;
 
 public class Filetoserver implements Theserverprocess {
 	
@@ -18,11 +20,11 @@ public class Filetoserver implements Theserverprocess {
 
 	@Override
 	public void request(byte[] b) throws Exception {
-		String path = new String(b,STATIC.CHARSET_DEFAULT);
+		String path = CS.tostring(b);
 		if (path.startsWith("/")) {
 			path = path.replaceFirst("/", "");
 		}
-		targetpath = STATIC.LOCAL_DATAFOLDER.resolve(path);
+		targetpath = SS.LOCAL_DATAFOLDER.resolve(path);
 	}
 
 	@Override

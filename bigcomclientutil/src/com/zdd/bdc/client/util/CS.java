@@ -1,4 +1,4 @@
-package com.zdd.bdc.util;
+package com.zdd.bdc.client.util;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -31,8 +31,6 @@ public class CS {
 	public static final String PARAM_COLUMNVALUES_KEY = "cvs";
 	public static final String PARAM_COLUMNAMOUNTS_KEY = "cas";
 	public static final String PARAM_COLUMNMAXVALUES_KEY = "cvmaxs";
-	
-	public static final int PAGENUM_UNIQUEINDEX = -1;
 	
 	public static final String PARAM_DATA_KEY = "data";
 	public static final String PARAM_VERSION_KEY = "version";

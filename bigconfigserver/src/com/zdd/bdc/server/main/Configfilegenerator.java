@@ -1,12 +1,12 @@
-package com.zdd.bdc.main;
+package com.zdd.bdc.server.main;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-import com.zdd.bdc.util.CS;
-import com.zdd.bdc.util.Filekvutil;
-import com.zdd.bdc.util.SS;
+import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.server.util.Filekvutil;
+import com.zdd.bdc.server.util.SS;
 
 public class Configfilegenerator {
 	private static void gencore() throws Exception {
@@ -34,7 +34,7 @@ public class Configfilegenerator {
 		Filekvutil.config("dig0.sort", CS.splitenc("namespace", "table", "col"), CS.NAMESPACE_CORE,
 				SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig0.interval", "W01300", CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
-		Filekvutil.config("dig0.period", "20180910-20180910", CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
+		Filekvutil.config("dig0.period", SS.splitfromto("20180910","20180910"), CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig0.index", CS.splitenc("namespace0", "table0", "col0"), CS.NAMESPACE_CORE,
 				SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig0.index", CS.splitenc("namespace1", "table1", "col1"), CS.NAMESPACE_CORE,
@@ -47,7 +47,7 @@ public class Configfilegenerator {
 		Filekvutil.config("dig1.sort", CS.splitenc("namespace", "table", "col"), CS.NAMESPACE_CORE,
 				SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig1.interval", "D1300", CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
-		Filekvutil.config("dig1.period", "20180910-20200920", CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
+		Filekvutil.config("dig1.period", SS.splitfromto("20180910","20200920"), CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig1.index", CS.splitenc("namespace0", "table0", "col0"), CS.NAMESPACE_CORE,
 				SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig1.filter", CS.splitenc("namespace0", "table0", "col0"), CS.NAMESPACE_CORE,
@@ -61,7 +61,7 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		// Filekvutil.config("127.0.0.1#9999", "pending", STATIC.NAMESPACE_CORE,
+		// Filekvutil.config(CS.splitiport("127.0.0.1","9999"), "pending", STATIC.NAMESPACE_CORE,
 		// STATIC.REMOTE_CONFIG_PENDING);
 	}
 
@@ -123,10 +123,10 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		Filekvutil.config("active", CS.splitenc("0-9999",""), "unicorn",
+		Filekvutil.config("active", CS.splitenc(SS.splitfromto("0","9999"),""), "unicorn",
 				CS.REMOTE_CONFIG_BIGINDEX);
 		
-		Filekvutil.config("0-9999", CS.splitenc("bigindex1", "10000", "127.0.0.1", "9991"), "unicorn",
+		Filekvutil.config(SS.splitfromto("0","9999"), CS.splitenc("bigindex1", "10000", "127.0.0.1", "9991"), "unicorn",
 				CS.REMOTE_CONFIG_BIGINDEX);
 		//add here
 	}

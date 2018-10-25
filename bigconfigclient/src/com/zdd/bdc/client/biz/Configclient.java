@@ -1,4 +1,4 @@
-package com.zdd.bdc.biz;
+package com.zdd.bdc.client.biz;
 
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -9,9 +9,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import com.zdd.bdc.ex.Theclient;
-import com.zdd.bdc.util.CS;
-import com.zdd.bdc.util.Objectutil;
+import com.zdd.bdc.client.ex.Theclient;
+import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.Objectutil;
 
 public class Configclient {
 

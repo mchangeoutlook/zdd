@@ -1,10 +1,8 @@
-package com.zdd.bdc.biz;
+package com.zdd.bdc.server.biz;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -16,7 +14,14 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
 import java.util.Vector;
 
-import com.zdd.bdc.util.STATIC;
+import com.zdd.bdc.client.biz.Configclient;
+import com.zdd.bdc.client.biz.Indexclient;
+import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.server.util.Filedatawalk;
+import com.zdd.bdc.server.util.Filedatawalkresult;
+import com.zdd.bdc.server.util.Filekvutil;
+import com.zdd.bdc.server.util.Fileutil;
+import com.zdd.bdc.server.util.SS;
 
 public class Movingdistribution extends Thread {
 
@@ -32,7 +37,7 @@ public class Movingdistribution extends Thread {
 	public void run() {
 		StringBuffer ipportsb = new StringBuffer();
 		try {
-			ipportsb.append(STATIC.splitenc(ip, port));
+			ipportsb.append(CS.splitiport(ip, port));
 		}catch(Exception e) {
 			System.out.println(new Date() + " ==== error terminated auto redistribution");
 			e.printStackTrace();
@@ -40,22 +45,22 @@ public class Movingdistribution extends Thread {
 		}
 		final String ipportpending = ipportsb.toString();
 		System.out.println(new Date() + " ==== started auto redistribution");
-		while (!STATIC.REMOTE_CONFIGVAL_PENDING
-				.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
+		while (!SS.REMOTE_CONFIGVAL_PENDING
+				.equals(Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING)
 						.read(ipportpending))) {
-			if (Files.exists(STATIC.LOCAL_DATAFOLDER) && Files.isDirectory(STATIC.LOCAL_DATAFOLDER)) {
+			if (Files.exists(SS.LOCAL_DATAFOLDER) && Files.isDirectory(SS.LOCAL_DATAFOLDER)) {
 				try {
-					Path progressfolder = STATIC.LOCAL_DATAFOLDER.toAbsolutePath().getParent()
+					Path progressfolder = SS.LOCAL_DATAFOLDER.toAbsolutePath().getParent()
 							.resolve("movingdistribution");
 					if (!Files.exists(progressfolder)) {
 						Files.createDirectories(progressfolder);
 					}
-					Files.walkFileTree(STATIC.LOCAL_DATAFOLDER, new FileVisitor<Object>() {
+					Files.walkFileTree(SS.LOCAL_DATAFOLDER, new FileVisitor<Object>() {
 
 						@Override
 						public FileVisitResult postVisitDirectory(Object arg0, IOException arg1) throws IOException {
-							if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(
-									Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
+							if (!SS.REMOTE_CONFIGVAL_PENDING.equals(
+									Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING)
 											.read(ipportpending))) {
 								return FileVisitResult.CONTINUE;
 							} else {
@@ -67,8 +72,8 @@ public class Movingdistribution extends Thread {
 						@Override
 						public FileVisitResult preVisitDirectory(Object arg0, BasicFileAttributes arg1)
 								throws IOException {
-							if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(
-									Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
+							if (!SS.REMOTE_CONFIGVAL_PENDING.equals(
+									Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING)
 											.read(ipportpending))) {
 								return FileVisitResult.CONTINUE;
 							} else {
@@ -78,8 +83,8 @@ public class Movingdistribution extends Thread {
 
 						@Override
 						public FileVisitResult visitFile(Object file, BasicFileAttributes arg1) throws IOException {
-							if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(
-									Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
+							if (!SS.REMOTE_CONFIGVAL_PENDING.equals(
+									Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING)
 											.read(ipportpending))) {
 								Path pathfile = Paths.get(file.toString());
 								if (!Files.isDirectory(pathfile) && !pathfile.getFileName().toString().startsWith(".")
@@ -91,84 +96,103 @@ public class Movingdistribution extends Thread {
 													.toString())
 											.resolve(pathfile.toAbsolutePath().getParent().getFileName().toString())
 											.resolve(pathfile.getFileName().toString());
-									int numoflines = 0;
-									BufferedReader br = null;
 									try {
-										String namespace = URLDecoder.decode(
-												pathfile.getParent().getParent().getParent().getFileName().toString(),
-												STATIC.CHARSET_DEFAULT);
-										String serverindex = URLDecoder.decode(
-												pathfile.getParent().getParent().getFileName().toString(), STATIC.CHARSET_DEFAULT);
+										String namespace = pathfile.getParent().getParent().getParent().getFileName().toString();
+										String serverindex = pathfile.getParent().getParent().getFileName().toString();
 										String targetiport = Configclient
-												.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGINDEX)
+												.getinstance(namespace, CS.REMOTE_CONFIG_BIGINDEX)
 												.read(serverindex);
 										if (targetiport == null
-												|| targetiport.equals(STATIC.splitenc(ip, port))) {
+												|| targetiport.equals(CS.splitiport(ip, port))) {
 											return FileVisitResult.CONTINUE;
 										}
-
-										br = Files.newBufferedReader(pathfile, Charset.forName(STATIC.CHARSET_DEFAULT));
-										String line = br.readLine();
-										numoflines++;
-										if (line != null && STATIC.commentget(line)==null) {
-
-											String[] filterspagenum = STATIC.splitenc(pathfile.getParent().getFileName().toString());
-											Vector<String> filters = new Vector<String>(filterspagenum.length - 1);
-											for (int i = 0; i < filterspagenum.length - 1; i++) {
-												if (!filterspagenum[i].isEmpty()) {
-													filters.add(filterspagenum[i]);
+										if (Filekvutil.indexversion(pathfile)!=null) {
+											//don't move, delete directly
+										} else {
+											Vector<String> filterspagenum = SS.filtersandpagenum(pathfile.getParent().getFileName().toString());
+											Vector<String> filters = new Vector<String>(filterspagenum.size() - 1);
+											for (int i = 0; i < filterspagenum.size() - 1; i++) {
+												if (!filterspagenum.get(i).trim().isEmpty()) {
+													filters.add(filterspagenum.get(i));
 												}
 											}
-											long pagenum = Long.parseLong(filterspagenum[filterspagenum.length - 1]);
-
+											long pagenum = Long.parseLong(filterspagenum.get(filterspagenum.size() - 1));
+											
+											long processeddata = 0;
 											if (Files.exists(progressfile)) {
-												int processedlines = Integer.parseInt(Files
-														.readAllLines(progressfile, Charset.forName(STATIC.CHARSET_DEFAULT)).get(0));
-												while (line != null && numoflines < processedlines) {
-													line = br.readLine();
-													numoflines++;
-												}
+												processeddata = Integer.parseInt(Files
+														.readAllLines(progressfile, Charset.forName("UTF-8")).get(0));
 											}
-
-											if (line != null) {
-
-												if (!Files.exists(progressfile.getParent())) {
-													Files.createDirectories(progressfile.getParent());
-												}
-
-												while (line != null && !line.trim().isEmpty()) {
-													String[] indexkey = STATIC.keyval(line);
-													String index = indexkey[0];
-													String key = indexkey[1];
-													Indexclient ic = Indexclient.getinstance(namespace, index);
-													if (!filters.isEmpty()) {
-														ic = ic.filters(filters.size());
-														for (String filter : filters) {
-															ic.add(filter);
-														}
-													}
-													if (pagenum == STATIC.PAGENUM_UNIQUEINDEX) {
+											
+											final Long processednumofdata = processeddata;
+											
+											Fileutil.walkdata(pathfile, new Filedatawalk() {
+	
+												@Override
+												public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1, boolean isv1deleted, byte[] v2,
+														boolean isv2deleted) {
+													if (isv1deleted||isv2deleted||datasequence<processednumofdata) {
+														return null;
+													} else {
 														try {
-															ic.createunique(key);
-														} catch (Exception e) {
-															if (!e.getMessage().contains("duplicate")) {
-																throw e;
+														String index = SS.tostring(v1);
+														String key = SS.tostring(v2);
+														Indexclient ic = Indexclient.getinstance(namespace, index);
+														if (!filters.isEmpty()) {
+															ic = ic.filters(filters.size());
+															for (String filter : filters) {
+																ic.add(filter);
 															}
 														}
-													} else {
-														ic.create(key, pagenum);
+														if (pagenum == -1) {
+															try {
+																ic.createunique(key);
+															} catch (Exception e) {
+																if (!e.getMessage().contains("duplicate")) {
+																	//
+																}
+															}
+														} else {
+															ic.create(key, pagenum);
+														}
+														if (!Files.exists(progressfile.getParent())) {
+															Files.createDirectories(progressfile.getParent());
+														}
+														Files.write(progressfile,
+																SS.tobytes(String.valueOf(datasequence+1)),
+																StandardOpenOption.CREATE,
+																StandardOpenOption.TRUNCATE_EXISTING,
+																StandardOpenOption.SYNC);
+														return null;
+														} catch (Exception e) {
+															StringWriter errors = new StringWriter();
+															e.printStackTrace(new PrintWriter(errors));
+															try {
+															if (!Files.exists(progressfile.getParent())) {
+																Files.createDirectories(progressfile.getParent());
+															}
+															Files.write(progressfile,
+																	SS.tobytes((datasequence+1) + System.lineSeparator() + errors.toString()),
+																	StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
+																	StandardOpenOption.SYNC);
+															}catch(Exception e1) {
+																//do nothing
+															}
+															return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE, Filedatawalkresult.DATA_DONOTHING, null, null);
+															
+														}
 													}
-													line = br.readLine();
-													numoflines++;
-													Files.write(progressfile,
-															String.valueOf(numoflines).getBytes(STATIC.CHARSET_DEFAULT),
-															StandardOpenOption.CREATE,
-															StandardOpenOption.TRUNCATE_EXISTING,
-															StandardOpenOption.SYNC);
-
 												}
-											}
+												
+											}, false);
 										}
+										
+										try {
+											Files.deleteIfExists(progressfile.getParent());
+										} catch (Exception ex) {
+											// do nothing
+										}
+										
 										Files.deleteIfExists(pathfile);
 										Files.deleteIfExists(progressfile);
 										try {
@@ -196,22 +220,28 @@ public class Movingdistribution extends Thread {
 									} catch (Exception e) {
 										StringWriter errors = new StringWriter();
 										e.printStackTrace(new PrintWriter(errors));
-										if (!Files.exists(progressfile.getParent())) {
-											Files.createDirectories(progressfile.getParent());
-										}
-										Files.write(progressfile,
-												(numoflines + System.lineSeparator() + errors.toString())
-														.getBytes(STATIC.CHARSET_DEFAULT),
-												StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
-												StandardOpenOption.SYNC);
-									} finally {
-										if (br != null) {
+										if (Files.exists(progressfile)) {
 											try {
-												br.close();
-											} catch (IOException ex) {
-												// do nothing;
+												Files.write(progressfile,
+														SS.tobytes(System.lineSeparator() + errors.toString()),
+														StandardOpenOption.CREATE, StandardOpenOption.APPEND,
+														StandardOpenOption.SYNC);
+											} catch (Exception e1) {
+												//do nothing
+											}
+										} else {
+											if (!Files.exists(progressfile.getParent())) {
+												Files.createDirectories(progressfile.getParent());
+											}
+											try {
+												Files.write(progressfile,
+														SS.tobytes(0 + System.lineSeparator() + errors.toString()),
+														StandardOpenOption.CREATE, StandardOpenOption.SYNC);
+											} catch (Exception e1) {
+												//do nothing
 											}
 										}
+										
 									}
 								}
 								return FileVisitResult.CONTINUE;
@@ -222,8 +252,8 @@ public class Movingdistribution extends Thread {
 
 						@Override
 						public FileVisitResult visitFileFailed(Object arg0, IOException arg1) throws IOException {
-							if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(
-									Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
+							if (!SS.REMOTE_CONFIGVAL_PENDING.equals(
+									Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING)
 											.read(ipportpending))) {
 								return FileVisitResult.CONTINUE;
 							} else {
@@ -235,9 +265,9 @@ public class Movingdistribution extends Thread {
 					//do nothing
 				}
 			}
-			if (!STATIC.REMOTE_CONFIGVAL_PENDING
-					.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
-							.read(STATIC.split(ip, port)))) {
+			if (!SS.REMOTE_CONFIGVAL_PENDING
+					.equals(Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING)
+							.read(CS.splitiport(ip, port)))) {
 				try {
 					Thread.sleep(120000);
 				} catch (InterruptedException e1) {

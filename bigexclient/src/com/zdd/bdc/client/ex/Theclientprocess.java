@@ -1,4 +1,4 @@
-package com.zdd.bdc.ex;
+package com.zdd.bdc.client.ex;
 
 public interface Theclientprocess {
 	public void responses(byte[] b) throws Exception;

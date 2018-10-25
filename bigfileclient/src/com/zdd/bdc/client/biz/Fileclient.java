@@ -1,10 +1,11 @@
-package com.zdd.bdc.biz;
+package com.zdd.bdc.client.biz;
 
 import java.io.InputStream;
 
-import com.zdd.bdc.ex.Theclient;
-import com.zdd.bdc.ex.Theclientprocess;
-import com.zdd.bdc.util.STATIC;
+import com.zdd.bdc.client.biz.Bigclient;
+import com.zdd.bdc.client.ex.Theclient;
+import com.zdd.bdc.client.ex.Theclientprocess;
+import com.zdd.bdc.client.util.CS;
 
 public class Fileclient {
 
@@ -20,16 +21,16 @@ public class Fileclient {
 
 	public void write(String key, InputStream requests) throws Exception {
 		try {
-			String[] iport = STATIC.splitenc(Bigclient.distributebigdata("pngbigto", key));
-			Theclient.request(iport[0], Integer.parseInt(iport[1]), path.getBytes(STATIC.CHARSET_DEFAULT), requests, null);
+			String[] iport = Bigclient.distributebigdata("pngbigto", key);
+			Theclient.request(iport[0], Integer.parseInt(iport[1]), CS.tobytes(path), requests, null);
 		} finally {
 			requests.close();
 		}
 	}
 
 	public String read(String key, Theclientprocess cp) throws Exception {
-		String[] iport = STATIC.splitenc(Bigclient.distributebigdata("pngbigfrom", key));
-		Theclient.request(iport[0], Integer.parseInt(iport[1]), path.getBytes(STATIC.CHARSET_DEFAULT), null, cp);
+		String[] iport = Bigclient.distributebigdata("pngbigfrom", key);
+		Theclient.request(iport[0], Integer.parseInt(iport[1]), CS.tobytes(path), null, cp);
 		return key;
 	}
 

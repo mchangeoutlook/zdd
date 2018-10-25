@@ -1,4 +1,4 @@
-package com.zdd.bdc.main;
+package com.zdd.bdc.server.main;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -6,19 +6,19 @@ import java.net.NetworkInterface;
 import java.util.Date;
 import java.util.Enumeration;
 
-import com.zdd.bdc.biz.Configserver;
-import com.zdd.bdc.ex.Theserver;
-import com.zdd.bdc.util.CS;
-import com.zdd.bdc.util.SS;
+import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.server.biz.Configserver;
+import com.zdd.bdc.server.ex.Theserver;
+import com.zdd.bdc.server.util.SS;
 
 
 /**
  * @author mido
  * how to run: 
- * nohup /data/jdk-9.0.4/bin/java -cp bigconfigserver.jar:../../commonlibs/bigcomclientutil.jar:../../commonlibs/bigcomserverutil.jar:../../commonlibs/bigfileutil.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.main.Starter > log.runbigconfigserver &
+ * nohup /data/jdk-9.0.4/bin/java -cp bigconfigserver.jar:../../commonlibs/bigcomclientutil.jar:../../commonlibs/bigcomserverutil.jar:../../commonlibs/bigfileutil.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.server.main.Startconfigserver > log.runbigconfigserver &
  */
 
-public class Starter {
+public class Startconfigserver {
 	public static void main(String[] s) throws Exception {
 		
 		final StringBuffer pending = new StringBuffer();

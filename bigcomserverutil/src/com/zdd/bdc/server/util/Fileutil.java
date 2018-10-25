@@ -1,4 +1,4 @@
-package com.zdd.bdc.util;
+package com.zdd.bdc.server.util;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
@@ -119,6 +119,8 @@ public class Fileutil {
 					sbc.position(0);
 				}
 				Vector<byte[]> datapair = parsedatapair(sbc, reverse);
+				long datasequence = 0;
+				long dataseqincludedeleted = 0;
 				while (datapair != null) {
 					byte[] value1maxlength = datapair.get(0);
 					byte[] value1 = datapair.get(1);
@@ -130,9 +132,13 @@ public class Fileutil {
 					byte[] value2length = datapair.get(5);
 					boolean isvalue2deleted = Integer.parseInt(new String(value2length)) < 0;
 
-					Filedatawalkresult res = walker.data(value1, isvalue1deleted, value2, isvalue2deleted);
+					Filedatawalkresult res = walker.data(datasequence, dataseqincludedeleted, value1, isvalue1deleted, value2, isvalue2deleted);
 					if (res == null) {// move to next data
 						datapair = parsedatapair(sbc, reverse);
+						dataseqincludedeleted++;
+						if (!isvalue1deleted&&!isvalue2deleted) {
+							datasequence++;
+						}
 					} else {
 						if (res.getdataction() == Filedatawalkresult.DATA_DELETE) {
 							ByteBuffer towrite = formatdatapair(value1, Integer.parseInt(new String(value1maxlength)),
@@ -179,6 +185,10 @@ public class Fileutil {
 
 						if (res.getwalkaction() == Filedatawalkresult.WALK_CONTINUE) {
 							datapair = parsedatapair(sbc, reverse);
+							dataseqincludedeleted++;
+							if (!isvalue1deleted&&!isvalue2deleted) {
+								datasequence++;
+							}
 						} else {
 							break;
 						}
@@ -227,32 +237,11 @@ public class Fileutil {
 		}
 	}
 
-	public static void modifyfirstvalue2byvalue1(byte[] value1, byte[] newvalue2, Path target) throws Exception {
-		walkdata(target, new Filedatawalk() {
-
-			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
-				if (isv1deleted || isv2deleted) {
-					return null;
-				} else {
-					if (Arrays.equals(value1, v1)) {
-						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-								Filedatawalkresult.DATA_REPLACE, value1, newvalue2);
-					} else {
-						// ignore the data
-						return null;
-					}
-				}
-			}
-
-		}, false);
-	}
-
 	public static void modifylastvalue2byvalue1(byte[] value1, byte[] newvalue2, Path target) throws Exception {
 		walkdata(target, new Filedatawalk() {
 
 			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
+			public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
 				if (isv1deleted || isv2deleted) {
 					return null;
 				} else {
@@ -273,7 +262,7 @@ public class Fileutil {
 		walkdata(target, new Filedatawalk() {
 
 			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
+			public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
 				if (isv1deleted || isv2deleted) {
 					return null;
 				} else {
@@ -295,7 +284,7 @@ public class Fileutil {
 		walkdata(target, new Filedatawalk() {
 
 			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
+			public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
 				returnvalue.add(v1);
 				returnvalue.add(v2);
 				return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE, Filedatawalkresult.DATA_DONOTHING,
@@ -311,7 +300,7 @@ public class Fileutil {
 		walkdata(target, new Filedatawalk() {
 
 			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
+			public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
 				if (isv1deleted || isv2deleted) {
 					return null;
 				} else {
@@ -339,7 +328,7 @@ public class Fileutil {
 		walkdata(target, new Filedatawalk() {
 
 			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
+			public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
 				if (isv1deleted || isv2deleted) {
 					return null;
 				} else {
@@ -369,7 +358,7 @@ public class Fileutil {
 		walkdata(target, new Filedatawalk() {
 
 			@Override
-			public Filedatawalkresult data(byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
+			public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
 				if (isv1deleted || isv2deleted) {
 					return null;
 				} else {

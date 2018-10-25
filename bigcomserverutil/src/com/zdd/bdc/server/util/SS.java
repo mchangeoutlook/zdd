@@ -1,4 +1,4 @@
-package com.zdd.bdc.util;
+package com.zdd.bdc.server.util;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -22,7 +22,7 @@ public class SS {
 	public static final int versionvalmaxlength = 50;
 
 	public static final int incrementmaxlength = String.valueOf(Long.MAX_VALUE).length() + 1;
-
+	
 	public static final String SORT_COMPARE_TO_STRING = "0";
 
 	public static final int SORT_PROGRESSONEFILECAPACITY = 800000;
@@ -69,8 +69,15 @@ public class SS {
 	public static String urlencode(String str) throws Exception {
 		return URLEncoder.encode(str, "UTF-8");
 	}
+	
+	public static String[] splitfromto(String str) {
+		return str.split("-");
+	}
+	public static String splitfromto(String from, String to) {
+		return from+"-"+to;
+	}
 
-	public static String filtersandpagenum(long pagenum, Vector<String> filters) throws Exception {
+	public static String filtersandpagenum(Long pagenum, Vector<String> filters) throws Exception {
 		String filtersandpagenum = "";
 		if (filters != null && !filters.isEmpty()) {
 			for (String f : filters) {
@@ -82,9 +89,9 @@ public class SS {
 			}
 		}
 		if (filtersandpagenum.isEmpty()) {
-			filtersandpagenum += "#" + String.valueOf(pagenum);
+			filtersandpagenum += "#" + pagenum==null?"-1":String.valueOf(pagenum);
 		} else {
-			filtersandpagenum += String.valueOf(pagenum);
+			filtersandpagenum += pagenum==null?"-1":String.valueOf(pagenum);
 		}
 		return filtersandpagenum;
 	}

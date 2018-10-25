@@ -1,4 +1,4 @@
-package com.zdd.bdc.ex;
+package com.zdd.bdc.server.ex;
 
 import java.io.InputStream;
 import java.io.PrintWriter;

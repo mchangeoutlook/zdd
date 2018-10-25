@@ -1,8 +1,8 @@
-package com.zdd.bdc.biz;
+package com.zdd.bdc.client.biz;
 
 import java.util.UUID;
 
-import com.zdd.bdc.util.CS;
+import com.zdd.bdc.client.util.CS;
 
 public class Bigclient {
 
@@ -18,13 +18,13 @@ public class Bigclient {
 	}
 	
 	//return [ip][port]
-	public static String[] distributebigindex(String namespace, long pagenum, String index) {
+	public static String[] distributebigindex(String namespace, Long pagenum, String index) {
 		return CS.splitiport(Configclient.getinstance(namespace, CS.REMOTE_CONFIG_BIGINDEX)
 				.read(String.valueOf(Math.abs((pagenum + index).hashCode())
 						% Integer.parseInt(Configclient.getinstance(namespace, CS.REMOTE_CONFIG_BIGINDEX).read(CS.REMOTE_CONFIGKEY_MAXINDEXSERVERS)))));
 	}
 	
-	public static String distributebigindexserveri(String namespace, long pagenum, String index) {
+	public static String distributebigindexserveri(String namespace, Long pagenum, String index) {
 		return String.valueOf(Math.abs((pagenum + index).hashCode())
 				% Integer.parseInt(Configclient.getinstance(namespace, CS.REMOTE_CONFIG_BIGINDEX).read(CS.REMOTE_CONFIGKEY_MAXINDEXSERVERS)));
 	}

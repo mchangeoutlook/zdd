@@ -1,4 +1,4 @@
-package com.zdd.bdc.util;
+package com.zdd.bdc.server.util;
 
 public class Filedatawalkresult {
 	private int walkaction = -1;

@@ -1,11 +1,12 @@
-package com.zdd.bdc.biz;
+package com.zdd.bdc.server.biz;
 
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import com.zdd.bdc.util.CS;
-import com.zdd.bdc.util.Filekvutil;
+import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.server.util.Filekvutil;
+import com.zdd.bdc.server.util.SS;
 
 public class Bigindexconfig {
 
@@ -30,7 +31,7 @@ public class Bigindexconfig {
 				iport_filehash.put(CS.splitiport(ip, port), filehash);
 				String ipport = CS.splitiport(ip, port);
 
-				String[] fromto = key.split("-");
+				String[] fromto = SS.splitfromto(key);
 				if (fromto.length==2) {
 					int start = Integer.parseInt(fromto[0]);
 					int end = Integer.parseInt(fromto[1]);

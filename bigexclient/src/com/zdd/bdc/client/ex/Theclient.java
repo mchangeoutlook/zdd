@@ -1,4 +1,4 @@
-package com.zdd.bdc.ex;
+package com.zdd.bdc.client.ex;
 
 import java.io.InputStream;
 import java.net.InetAddress;

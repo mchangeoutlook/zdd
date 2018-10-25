@@ -1,4 +1,4 @@
-package com.zdd.bdc.util;
+package com.zdd.bdc.client.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

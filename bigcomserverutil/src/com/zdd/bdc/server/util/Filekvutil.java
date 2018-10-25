@@ -1,7 +1,8 @@
-package com.zdd.bdc.util;
+package com.zdd.bdc.server.util;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Vector;
 
 public class Filekvutil {
@@ -20,12 +21,12 @@ public class Filekvutil {
 		}
 	}
 
-	public static String[] configs(String key, String namespace, String configfile) throws Exception {
+	public static Vector<String> configs(String key, String namespace, String configfile) throws Exception {
 		Vector<byte[]> vals = Fileutil.readallvalue2byvalue1(SS.tobytes(key), SS.configmaxnumofvals, true,
 				configfile(namespace, configfile));
-		String[] returnvalue = new String[vals.size()];
-		for (int i = 0; i < vals.size(); i++) {
-			returnvalue[i] = SS.tostring(vals.get(i));
+		Vector<String> returnvalue = new Vector<String>(vals.size());
+		for (byte[] val:vals) {
+			returnvalue.add(SS.tostring(val));
 		}
 		return returnvalue;
 	}
@@ -43,7 +44,11 @@ public class Filekvutil {
 		}
 	}
 
-	public static void indexversion(String version, Path target) throws Exception {
+	public static void indexversion(String version, String index, String value, Long pagenum, Vector<String> filters,
+			int bigfilehash, Path indexfolder) throws Exception {
+		
+		Path target = indexfile(index, pagenum, filters, bigfilehash, indexfolder);
+
 		synchronized (SS.syncfile(target)) {
 			if (!Files.exists(target) || Files.size(target) == 0) {
 				Fileutil.create(SS.tobytes(SS.versionkey), SS.versionkeymaxlength, SS.tobytes(version),
@@ -52,17 +57,25 @@ public class Filekvutil {
 				String existingversion = indexversion(target);
 				if (existingversion == null) {
 					throw new Exception("noexistversion");
+				} else if (existingversion.compareTo(version)<0){
+					Files.write(target, new byte[0], StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.SYNC);
+					Fileutil.create(SS.tobytes(SS.versionkey), SS.versionkeymaxlength, SS.tobytes(version),
+							SS.versionvalmaxlength, target);
+				} else if (existingversion.compareTo(version)>0){
+					throw new Exception("olderversion");
 				} else {
-					Fileutil.modifyfirstvalue2byvalue1(SS.tobytes(SS.versionkey), SS.tobytes(version), target);
+					//do nothing
 				}
 			}
+			index(index, value, pagenum, filters,
+				 bigfilehash, indexfolder);
 		}
 	}
 
 	public static String index(String index, Vector<String> filters, int bigfilehash, Path indexfolder)
 			throws Exception {
 
-		Path target = indexfile(index, -1, filters, bigfilehash, indexfolder);
+		Path target = indexfile(index, null, filters, bigfilehash, indexfolder);
 
 		byte[] val = Fileutil.readlastvalue2byvalue1(SS.tobytes(index), target);
 		if (val == null) {
@@ -72,34 +85,31 @@ public class Filekvutil {
 		}
 	}
 
-	public static String[] indexes(String index, int numofvals, long pagenum, Vector<String> filters, int bigfilehash,
+	public static Vector<String> indexes(String index, int numofvals, Long pagenum, Vector<String> filters, int bigfilehash,
 			Path indexfolder) throws Exception {
 		Path target = indexfile(index, pagenum, filters, bigfilehash, indexfolder);
 		Vector<byte[]> vals = Fileutil.readallvalue2byvalue1(SS.tobytes(index), numofvals, true, target);
-		String[] returnvalue = new String[vals.size()];
-		for (int i = 0; i < vals.size(); i++) {
-			returnvalue[i] = SS.tostring(vals.get(i));
+		Vector<String> returnvalue = new Vector<String>(vals.size());
+		for (byte[] val:vals) {
+			returnvalue.add(SS.tostring(val));
 		}
 		return returnvalue;
 	}
 
-	public static void index(String index, String value, boolean isunique, long pagenum, Vector<String> filters,
+	public static void index(String index, String value, Long pagenum, Vector<String> filters,
 			int bigfilehash, Path indexfolder) throws Exception {
-		if (isunique) {
-			Path target = indexfile(index, -1, filters, bigfilehash, indexfolder);
+		Path target = indexfile(index, pagenum, filters, bigfilehash, indexfolder);
+		byte[] indexb = SS.tobytes(index);
+		byte[] valueb = SS.tobytes(value);
+		if (pagenum==null) {
 			synchronized (SS.synckey(index)) {
 				if (index(index, filters, bigfilehash, indexfolder) == null) {
-					byte[] indexb = SS.tobytes(index);
-					byte[] valueb = SS.tobytes(value);
 					Fileutil.create(indexb, indexb.length, valueb, valueb.length, target);
 				} else {
 					throw new Exception("duplicate");
 				}
 			}
 		} else {
-			Path target = indexfile(index, pagenum, filters, bigfilehash, indexfolder);
-			byte[] indexb = SS.tobytes(index);
-			byte[] valueb = SS.tobytes(value);
 			Fileutil.create(indexb, indexb.length, valueb, valueb.length, target);
 		}
 
@@ -172,7 +182,7 @@ public class Filekvutil {
 		}
 	}
 
-	public static Path indexfile(String index, long pagenum, Vector<String> filters, int bigfilehash, Path indexfolder)
+	public static Path indexfile(String index, Long pagenum, Vector<String> filters, int bigfilehash, Path indexfolder)
 			throws Exception {
 		return indexfolder.resolve(SS.filtersandpagenum(pagenum, filters))
 				.resolve(String.valueOf(Math.abs(index.hashCode()) % bigfilehash));

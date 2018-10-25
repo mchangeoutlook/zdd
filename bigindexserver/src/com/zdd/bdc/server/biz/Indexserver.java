@@ -1,14 +1,16 @@
-package com.zdd.bdc.biz;
+package com.zdd.bdc.server.biz;
 
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Vector;
 
-import com.zdd.bdc.ex.Theserverprocess;
-import com.zdd.bdc.util.Bigindexfileutil;
-import com.zdd.bdc.util.Objectutil;
-import com.zdd.bdc.util.STATIC;
+import com.zdd.bdc.client.biz.Bigclient;
+import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.Objectutil;
+import com.zdd.bdc.server.ex.Theserverprocess;
+import com.zdd.bdc.server.util.Filekvutil;
+import com.zdd.bdc.server.util.SS;
 
 public class Indexserver implements Theserverprocess {
 
@@ -26,39 +28,35 @@ public class Indexserver implements Theserverprocess {
 	@Override
 	public void request(byte[] b) throws Exception {
 		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(b);
-		if (STATIC.PARAM_ACTION_CREATE.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
-			String index = params.get(STATIC.PARAM_INDEX_KEY).toString();
-			String key = params.get(STATIC.PARAM_KEY_KEY).toString();
-			String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
-			Vector<String> filters = (Vector<String>) params.get(STATIC.PARAM_FILTERS_KEY);
-			if (params.get(STATIC.PARAM_PAGENUM_KEY) == null) {
-				Path target = Bigindexfileutil.target(index, STATIC.PAGENUM_UNIQUEINDEX, filters, namespace, bigfilehash);
-				Bigindexfileutil.createunique(index, target, key);
+		if (CS.PARAM_ACTION_CREATE.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
+			String index = params.get(CS.PARAM_INDEX_KEY).toString();
+			String key = params.get(CS.PARAM_KEY_KEY).toString();
+			String namespace = params.get(CS.PARAM_NAMESPACE_KEY).toString();
+			Vector<String> filters = (Vector<String>) params.get(CS.PARAM_FILTERS_KEY);
+			Long pagenum = null;
+			if (params.get(CS.PARAM_PAGENUM_KEY) != null) {
+				pagenum = Long.parseLong(params.get(CS.PARAM_PAGENUM_KEY).toString());
 			} else {
-				long pagenum = Long.parseLong(params.get(STATIC.PARAM_PAGENUM_KEY).toString());
-				Path target = Bigindexfileutil.target(index, pagenum, filters, namespace, bigfilehash);
-				if (params.get(STATIC.PARAM_VERSION_KEY)!=null&&!params.get(STATIC.PARAM_VERSION_KEY).toString().trim().isEmpty()) {
-					Bigindexfileutil.create(index, target, key, params.get(STATIC.PARAM_VERSION_KEY).toString());
-				} else {
-					Bigindexfileutil.create(index, target, key);
-				}
+				//do nothing
 			}
-		} else if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
-			String index = params.get(STATIC.PARAM_INDEX_KEY).toString();
-			String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
-			Vector<String> filters = (Vector<String>) params.get(STATIC.PARAM_FILTERS_KEY);
-			if (params.get(STATIC.PARAM_PAGENUM_KEY) == null) {
-				Path target = Bigindexfileutil.target(index, STATIC.PAGENUM_UNIQUEINDEX, filters, namespace, bigfilehash);
-				unique = Bigindexfileutil.readunique(index, target);
+			if (params.get(CS.PARAM_VERSION_KEY)!=null&&!params.get(CS.PARAM_VERSION_KEY).toString().trim().isEmpty()) {
+				Filekvutil.indexversion(params.get(CS.PARAM_VERSION_KEY).toString(), index, key, pagenum, filters, bigfilehash, indexfolder(namespace, pagenum, index));
 			} else {
-				long pagenum = Long.parseLong(params.get(STATIC.PARAM_PAGENUM_KEY).toString());
-				int numofdata = Integer.parseInt(params.get(STATIC.PARAM_NUMOFDATA).toString());
-				
-				Path target = Bigindexfileutil.target(index, pagenum, filters, namespace, bigfilehash);
-				readres = Bigindexfileutil.read(index, target, numofdata);
+				Filekvutil.index(index, key, pagenum, filters, bigfilehash, indexfolder(namespace, pagenum, index));
+			}
+		} else if (CS.PARAM_ACTION_READ.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
+			String index = params.get(CS.PARAM_INDEX_KEY).toString();
+			String namespace = params.get(CS.PARAM_NAMESPACE_KEY).toString();
+			Vector<String> filters = (Vector<String>) params.get(CS.PARAM_FILTERS_KEY);
+			if (params.get(CS.PARAM_PAGENUM_KEY) == null) {
+				unique = Filekvutil.index(index, filters, bigfilehash, indexfolder(namespace, null, index));
+			} else {
+				long pagenum = Long.parseLong(params.get(CS.PARAM_PAGENUM_KEY).toString());
+				int numofdata = Integer.parseInt(params.get(CS.PARAM_NUMOFDATA).toString());
+				readres = Filekvutil.indexes(index, numofdata, pagenum, filters, bigfilehash, indexfolder(namespace, pagenum, index));
 			}
 		} else {
-			throw new Exception("notsupport-" + params.get(STATIC.PARAM_ACTION_KEY));
+			throw new Exception("notsupport-" + params.get(CS.PARAM_ACTION_KEY));
 		}
 	}
 
@@ -84,5 +82,8 @@ public class Indexserver implements Theserverprocess {
 		return null;
 	}
 
-	
+	private static Path indexfolder(String namespace, Long pagenum, String index) {
+		return SS.LOCAL_DATAFOLDER.resolve(namespace)
+		.resolve(Bigclient.distributebigindexserveri(namespace, pagenum, index));
+	}
 }

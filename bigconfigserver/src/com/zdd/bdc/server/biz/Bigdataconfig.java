@@ -1,4 +1,4 @@
-package com.zdd.bdc.biz;
+package com.zdd.bdc.server.biz;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -7,9 +7,9 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
-import com.zdd.bdc.util.CS;
-import com.zdd.bdc.util.Filekvutil;
-import com.zdd.bdc.util.SS;
+import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.server.util.Filekvutil;
+import com.zdd.bdc.server.util.SS;
 
 public class Bigdataconfig {
 
@@ -24,8 +24,8 @@ public class Bigdataconfig {
 		Map<String, String> parentfolderip_port = new Hashtable<String, String>();
 		Map<String, String> iport_filehash = new Hashtable<String, String>();
 		for (String key : dates) {
-			String[] values = Filekvutil.configs(key, namespace, CS.REMOTE_CONFIG_BIGDATA);
-			Vector<String> ipports = new Vector<String>(values.length);
+			Vector<String> values = Filekvutil.configs(key, namespace, CS.REMOTE_CONFIG_BIGDATA);
+			Vector<String> ipports = new Vector<String>(values.size());
 			for (String val : values) {
 				String[] vals = CS.splitenc(val);
 				String parentfolder = vals[0];

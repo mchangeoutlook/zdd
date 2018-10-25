@@ -1,15 +1,16 @@
-package com.zdd.bdc.biz;
+package com.zdd.bdc.server.biz;
 
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
-import com.zdd.bdc.ex.Theserverprocess;
-import com.zdd.bdc.util.CS;
-import com.zdd.bdc.util.Filekvutil;
-import com.zdd.bdc.util.Objectutil;
-import com.zdd.bdc.util.SS;
+
+import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.Objectutil;
+import com.zdd.bdc.server.ex.Theserverprocess;
+import com.zdd.bdc.server.util.Filekvutil;
+import com.zdd.bdc.server.util.SS;
 
 public class Configserver implements Theserverprocess {
 
