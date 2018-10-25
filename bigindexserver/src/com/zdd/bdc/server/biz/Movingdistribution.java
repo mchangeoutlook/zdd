@@ -275,6 +275,7 @@ public class Movingdistribution extends Thread {
 				}
 			}
 		}
+		
 		System.out.println(new Date() + " ==== stopped auto redistribution");
 	}
 
