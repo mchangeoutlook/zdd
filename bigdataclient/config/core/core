@@ -1,5 +1,0 @@
-#Auto generated on Sat Aug 11 12:42:46 CST 2018
-#line format: URLEncoded key#URLEncoded value
-configserverip#127.0.0.1
-updateconfigcache.intervalseconds#30
-configserverport#9999
