@@ -78,7 +78,9 @@ public class Dataclient {
 			throw new Exception(".columnvalues.add4create.create");
 		}
 		try {
-			key = Bigclient.newbigdatakey();
+			if (key==null) {
+				key = Bigclient.newbigdatakey();
+			}
 			Map<String, Object> params = new Hashtable<String, Object>(6);
 			params.put(CS.PARAM_KEY_KEY, key);
 			params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_CREATE);

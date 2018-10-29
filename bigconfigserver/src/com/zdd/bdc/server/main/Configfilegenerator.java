@@ -61,8 +61,10 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		// Filekvutil.config(CS.splitiport("127.0.0.1","9999"), "pending", STATIC.NAMESPACE_CORE,
-		// STATIC.REMOTE_CONFIG_PENDING);
+		 Filekvutil.config(CS.splitiport("127.0.0.1","9993"), "pending", CS.NAMESPACE_CORE,
+		 SS.REMOTE_CONFIG_PENDING);
+		 Filekvutil.config(CS.splitiport("127.0.0.1","9994"), "pending", CS.NAMESPACE_CORE,
+		 SS.REMOTE_CONFIG_PENDING);
 	}
 
 	private static void genpngbigfrom() throws Exception {
@@ -123,10 +125,12 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		Filekvutil.config("active", CS.splitenc(SS.splitfromto("0","9999"),""), "unicorn",
+		Filekvutil.config("active", CS.splitenc(SS.splitfromto("0","9"),SS.splitfromto("10","19")), "unicorn",
 				CS.REMOTE_CONFIG_BIGINDEX);
 		
-		Filekvutil.config(SS.splitfromto("0","9999"), CS.splitenc("bigindex1", "10000", "127.0.0.1", "9991"), "unicorn",
+		Filekvutil.config(SS.splitfromto("0","9"), CS.splitenc("bigindex1", "100", "127.0.0.1", "9991"), "unicorn",
+				CS.REMOTE_CONFIG_BIGINDEX);
+		Filekvutil.config(SS.splitfromto("10","19"), CS.splitenc("bigindex2", "100", "127.0.0.1", "9992"), "unicorn",
 				CS.REMOTE_CONFIG_BIGINDEX);
 		//add here
 	}

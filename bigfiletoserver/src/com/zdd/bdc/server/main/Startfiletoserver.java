@@ -64,7 +64,7 @@ public class Startfiletoserver {
 		}
 		pending.append(SS.REMOTE_CONFIGVAL_PENDING);
 		System.out.println(new Date() + " ==== System will exit when next connection attempts.");
-
+		Configclient.running = false;
 	}
 
 }

@@ -89,9 +89,9 @@ public class SS {
 			}
 		}
 		if (filtersandpagenum.isEmpty()) {
-			filtersandpagenum += "#" + pagenum==null?"-1":String.valueOf(pagenum);
+			filtersandpagenum += "#" + (pagenum==null?"-1":String.valueOf(pagenum));
 		} else {
-			filtersandpagenum += pagenum==null?"-1":String.valueOf(pagenum);
+			filtersandpagenum += (pagenum==null?"-1":String.valueOf(pagenum));
 		}
 		return filtersandpagenum;
 	}

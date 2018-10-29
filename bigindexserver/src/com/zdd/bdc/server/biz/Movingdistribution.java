@@ -186,7 +186,10 @@ public class Movingdistribution extends Thread {
 											if (Files.exists(progressfile)) {
 												try {
 													Files.write(progressfile,
-															SS.tobytes(System.lineSeparator() + errors.toString()),
+															SS.tobytes(System.lineSeparator() + new Date()
+																	+ " ==== error in distributing file ["
+																	+ indexfile.toAbsolutePath().toString() + "]:"
+																	+ errors.toString()),
 															StandardOpenOption.CREATE, StandardOpenOption.APPEND,
 															StandardOpenOption.SYNC);
 												} catch (Exception e1) {
@@ -201,7 +204,10 @@ public class Movingdistribution extends Thread {
 												}
 												try {
 													Files.write(progressfile,
-															SS.tobytes(0 + System.lineSeparator() + errors.toString()),
+															SS.tobytes(0 + System.lineSeparator() + new Date()
+																	+ " ==== error in distributing file ["
+																	+ indexfile.toAbsolutePath().toString() + "]:"
+																	+ errors.toString()),
 															StandardOpenOption.CREATE,
 															StandardOpenOption.TRUNCATE_EXISTING,
 															StandardOpenOption.SYNC);
@@ -254,6 +260,8 @@ public class Movingdistribution extends Thread {
 
 		final Long processednumofdata = processeddata;
 
+		StringBuffer error = new StringBuffer();
+
 		Fileutil.walkdata(indexfile, new Filedatawalk() {
 
 			@Override
@@ -293,20 +301,9 @@ public class Movingdistribution extends Thread {
 					} catch (Exception e) {
 						StringWriter errors = new StringWriter();
 						e.printStackTrace(new PrintWriter(errors));
-						try {
-							if (!Files.exists(progressfile.getParent())) {
-								Files.createDirectories(progressfile.getParent());
-							}
-							Files.write(progressfile,
-									SS.tobytes(datasequence + System.lineSeparator() + errors.toString()),
-									StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
-									StandardOpenOption.SYNC);
-						} catch (Exception e1) {
-							System.out.println(new Date() + " ==== error in distributing file ["
-									+ indexfile.toAbsolutePath().toString() + "] datasequence [" + datasequence
-									+ "], will continue next file");
-							e.printStackTrace();
-						}
+						error.append(new Date()
+								+ " ==== error when distributing datasequence [" + datasequence + "]:"
+								+ errors.toString());
 						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
 								Filedatawalkresult.DATA_DONOTHING, null, null);
 					}
@@ -314,6 +311,9 @@ public class Movingdistribution extends Thread {
 			}
 
 		}, false);
+		if (error.length() != 0) {
+			throw new Exception(error.toString());
+		}
 	}
 
 }

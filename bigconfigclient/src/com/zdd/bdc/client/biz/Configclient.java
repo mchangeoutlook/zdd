@@ -15,6 +15,7 @@ import com.zdd.bdc.client.util.Objectutil;
 
 public class Configclient {
 
+	public static boolean running = true;
 	private static Map<String, Map<String, Map<String, String>>> nsfilekeyvalue = new Hashtable<String, Map<String, Map<String, String>>>();
 	private static Map<String, String> nsfilechanged = new Hashtable<String, String>();
 	static {
@@ -81,7 +82,7 @@ public class Configclient {
 						+ Integer.parseInt(
 								Configclient.getinstance(CS.NAMESPACE_CORE, CS.REMOTE_CONFIG_CORE).read(CS.REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS))
 						+ " seconds");
-				while (true) {
+				while (running) {
 					try {
 						Thread.sleep(Integer.parseInt(
 								Configclient.getinstance(CS.NAMESPACE_CORE, CS.REMOTE_CONFIG_CORE).read(CS.REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS))
