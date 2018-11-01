@@ -49,7 +49,7 @@ public class Theserver {
 						try {
 							is = s.getChannel().socket().getInputStream();
 							Theserverprocess ti = (Theserverprocess) c.getDeclaredConstructor().newInstance();
-							ti.init(bigfilehash);
+							ti.init(ip, port, bigfilehash);
 							byte[] readbb = new byte[11];
 							is.readNBytes(readbb, 0, readbb.length);
 							Integer length = Integer.parseInt(new String(readbb));

@@ -57,7 +57,7 @@ public class Configserver implements Theserverprocess {
 	private Map<String, Map<String, Map<String, String>>> returnvalue = new Hashtable<String, Map<String, Map<String, String>>>();
 
 	@Override
-	public void init(int bigfilehash) {
+	public void init(String ip, int port, int bigfilehash) {
 
 	}
 

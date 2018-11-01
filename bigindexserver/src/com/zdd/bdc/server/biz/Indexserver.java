@@ -20,7 +20,7 @@ public class Indexserver implements Theserverprocess {
 	private int bigfilehash = 1000;
 
 	@Override
-	public void init(int thebigfilehash) {
+	public void init(String ip, int port, int thebigfilehash) {
 		bigfilehash = thebigfilehash;
 	}
 

@@ -14,7 +14,7 @@ public class Filetoserver implements Theserverprocess {
 	private Path targetpath;
 	
 	@Override
-	public void init(int bigfilehash) {
+	public void init(String ip, int port, int bigfilehash) {
 
 	}
 
