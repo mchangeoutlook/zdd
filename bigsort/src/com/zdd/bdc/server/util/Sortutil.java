@@ -11,35 +11,27 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.Map.Entry;
+import java.util.Vector;
+
 import com.zdd.bdc.client.util.CS;
 
 public class Sortutil {
 
-	private static Path sortingfilesfolder(boolean isasc, Path sortingfolder) {
-		if (isasc) {
-			return sortingfolder.resolve("goingbigger");
-		} else {
-			return sortingfolder.resolve("goingsmaller");
-		}
-	}
-
-	private static Path sortmergefolder(boolean isasc, Path sortingfolder) {
-		if (isasc) {
-			return sortingfolder.resolve("gonebigger");
-		} else {
-			return sortingfolder.resolve("gonesmaller");
-		}
-	}
+	private static final String mergedfilename = "done";
 
 	public static void sortintofiles(boolean isasc, Map<String, Long> tosort, Path sortingfolder) throws Exception {
 		try {
-			Path sortingfilesfolder = sortingfilesfolder(isasc, sortingfolder);
-			if (!Files.exists(sortingfilesfolder)) {
-				Files.createDirectories(sortingfilesfolder);
+			if (!Files.exists(sortingfolder)) {
+				Files.createDirectories(sortingfolder);
+			} else {
+				if (Files.exists(sortingfolder.resolve(mergedfilename))) {
+					clearfolder(sortingfolder, null);
+				} else {
+					// do nothing
+				}
 			}
-			Path sortintofile = sortingfilesfolder.resolve(String.valueOf(sortingfilesfolder.toFile().list().length));
+			Path sortintofile = sortingfolder.resolve(String.valueOf(sortingfolder.toFile().list().length));
 
 			List<Map.Entry<String, Long>> entryList = new ArrayList<Map.Entry<String, Long>>(tosort.entrySet());
 			Collections.sort(entryList, new Comparator<Entry<String, Long>>() {
@@ -66,23 +58,20 @@ public class Sortutil {
 								+ System.lineSeparator()),
 						StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.SYNC);
 			}
-		} catch(Exception e){
-			clearfolder(sortingfilesfolder(isasc, sortingfolder));
+		} catch (Exception e) {
+			clearfolder(sortingfolder, null);
 			throw e;
-		}finally {
-			clearfolder(sortmergefolder(isasc, sortingfolder));
 		}
 	}
 
-	private static void clearfolder(Path thefolder) {
+	private static void clearfolder(Path thefolder, String except) throws Exception {
 		String[] files = thefolder.toFile().list();
 		if (files != null) {
 			for (String file : files) {
-				try {
-					Files.write(thefolder.resolve(file), new byte[0], StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.SYNC);
+				if (!file.equals(except)) {
+					Files.write(thefolder.resolve(file), new byte[0], StandardOpenOption.CREATE,
+							StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.SYNC);
 					Files.deleteIfExists(thefolder.resolve(file));
-				} catch (Exception e) {
-					// do nothing
 				}
 			}
 		}
@@ -91,18 +80,14 @@ public class Sortutil {
 	public static Path sortmerge(boolean isasc, Path sortingfolder) throws Exception {
 		Vector<BufferedReader> brs = null;
 		try {
-			Path sortmergefolder = sortmergefolder(isasc, sortingfolder);
-			if (!Files.exists(sortmergefolder)) {
-				Files.createDirectories(sortmergefolder);
-			}
-			Path mergedfile = sortmergefolder.resolve("done");
-			String[] sortingfiles = sortingfilesfolder(isasc, sortingfolder).toFile().list();
+			Path mergedfile = sortingfolder.resolve(mergedfilename);
+			String[] sortingfiles = sortingfolder.toFile().list();
 			brs = new Vector<BufferedReader>(sortingfiles.length);
 			Vector<Long> amounts = new Vector<Long>(sortingfiles.length);
 			Vector<String> keys = new Vector<String>(sortingfiles.length);
 			for (String sortingfile : sortingfiles) {
-				BufferedReader br = Files.newBufferedReader(
-						sortingfilesfolder(isasc, sortingfolder).resolve(sortingfile), Charset.forName("UTF-8"));
+				BufferedReader br = Files.newBufferedReader(sortingfolder.resolve(sortingfile),
+						Charset.forName("UTF-8"));
 				brs.add(br);
 				String line = br.readLine();
 				String[] keyamount = CS.splitenc(line);
@@ -158,10 +143,10 @@ public class Sortutil {
 			}
 			return mergedfile;
 		} catch (Exception e) {
-			clearfolder(sortmergefolder(isasc, sortingfolder));
+			clearfolder(sortingfolder, null);
 			throw e;
 		} finally {
-			clearfolder(sortingfilesfolder(isasc, sortingfolder));
+			clearfolder(sortingfolder, mergedfilename);
 			if (brs != null) {
 				for (BufferedReader br : brs) {
 					try {

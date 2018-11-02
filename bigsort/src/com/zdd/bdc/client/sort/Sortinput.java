@@ -4,6 +4,10 @@ import java.nio.file.Path;
 
 public abstract class Sortinput {
 	
+	public boolean isasc() {
+		return true;
+	}
+	
 	public abstract Path sortingfolder() throws Exception;
 	
 	public abstract void datasource() throws Exception;
@@ -12,4 +16,5 @@ public abstract class Sortinput {
 		
 	}
 	
+
 }
