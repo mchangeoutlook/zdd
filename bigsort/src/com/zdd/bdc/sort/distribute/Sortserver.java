@@ -1,4 +1,4 @@
-package com.zdd.bdc.server.sort;
+package com.zdd.bdc.sort.distribute;
 
 import java.io.InputStream;
 

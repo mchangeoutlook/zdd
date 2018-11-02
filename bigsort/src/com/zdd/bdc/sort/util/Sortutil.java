@@ -1,4 +1,4 @@
-package com.zdd.bdc.server.util;
+package com.zdd.bdc.sort.util;
 
 import java.io.BufferedReader;
 import java.nio.charset.Charset;

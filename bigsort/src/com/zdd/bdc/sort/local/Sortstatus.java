@@ -1,8 +1,8 @@
-package com.zdd.bdc.client.sort;
+package com.zdd.bdc.sort.local;
 
 import java.nio.file.Path;
 
-public interface Clientstatus {
+public interface Sortstatus {
 	
 	public static final int NOTFOUND = 0;
 	public static final int SORTING = 1;

@@ -1,4 +1,4 @@
-package com.zdd.bdc.client.sort;
+package com.zdd.bdc.sort.local;
 
 import java.io.BufferedReader;
 import java.nio.charset.Charset;
@@ -12,11 +12,10 @@ import java.util.Vector;
 import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.CS;
 import com.zdd.bdc.client.util.Objectutil;
-import com.zdd.bdc.server.sort.Serverstatus;
 import com.zdd.bdc.server.util.SS;
-import com.zdd.bdc.server.util.Sortutil;
+import com.zdd.bdc.sort.util.Sortutil;
 
-public class Sortclient {
+public class Sortfactory {
 	private static Map<String, Sortinput> SI = new Hashtable<String, Sortinput>();
 	private static Map<String, Sortoutput> SO = new Hashtable<String, Sortoutput>();
 	private static Map<String, BufferedReader> BR = new Hashtable<String, BufferedReader>();
@@ -49,7 +48,7 @@ public class Sortclient {
 		}
 	}
 	
-	public synchronized static void start(Vector<String> sortingservers, Sortinput si, Sortoutput so) throws Exception{
+	public synchronized static void start(Vector<String> sortingservers, Sortinput si, Sortoutput so, Sortstatus ss) throws Exception{
 		Path sortingfolder = si.sortingfolder();
 		final boolean isasc = si.isasc();
 		if (SI.get(sortingfolder.toString())==null) {
@@ -64,7 +63,7 @@ public class Sortclient {
 						Path mergedfile = Sortutil.sortmerge(isasc, sortingfolder);
 						BR.put(sortingfolder.toString(), Files.newBufferedReader(mergedfile, Charset.forName("UTF-8")));
 						
-						Serverstatus.status(sortingfolder, Serverstatus.PROGRESS);
+						Sortcontrol.to(sortingfolder, Sortcontrol.CONTINUE);
 						System.out.println(new Date()+" ==== started distributing sort folder ["+sortingfolder+"]");
 						
 						//check included sorting server:
@@ -76,9 +75,9 @@ public class Sortclient {
 							String[] iport = CS.splitiport(ipport);
 							int sortstatus = (Integer)Objectutil.convert(Theclient.request(iport[0], 
 									Integer.parseInt(iport[1]), Objectutil.convert(params), null, null));
-							if (sortstatus==Clientstatus.MERGED||sortstatus == Clientstatus.SORTING) {
+							if (sortstatus==Sortstatus.MERGED||sortstatus == Sortstatus.SORTING) {
 								validsortingservers.add(ipport);
-							} else if (sortstatus==Clientstatus.NOTFOUND){
+							} else if (sortstatus==Sortstatus.NOTFOUND){
 								//do nothing
 							} else {
 								throw new Exception("error sort status: ["+sortstatus+"] from ["+ipport+"]");
@@ -90,13 +89,13 @@ public class Sortclient {
 							Map<String, Object> params = new Hashtable<String, Object>(6);
 							params.put(CS.PARAM_KEY_KEY, sortingfolder);
 							params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_CREATE);
-							params.put(CS.PARAM_DATA_KEY, Sortclient.next(sortingfolder));
+							params.put(CS.PARAM_DATA_KEY, Sortfactory.next(sortingfolder));
 							String[] iport = CS.splitiport(ipport);
 							Theclient.request(iport[0], 
 									Integer.parseInt(iport[1]), Objectutil.convert(params), null, null);
 						}
 					} catch (Exception e) {
-						Serverstatus.status(sortingfolder, Serverstatus.ERROR);
+						Sortcontrol.to(sortingfolder, Sortcontrol.TERMINATE);
 						System.out.println(new Date()+" ==== error when distributing sort folder ["+sortingfolder+"]");
 						e.printStackTrace();
 						stop(sortingfolder);
