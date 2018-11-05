@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.Vector;
 
 import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.sort.distribute.Sortelement;
 
 public class Sortutil {
 
@@ -159,10 +160,9 @@ public class Sortutil {
 		}
 	}
 
-	// [ip][port][key][amount]
-	public static String[] findminmaxtodistribute(Vector<String[]> distributearray, boolean isasc) {
-		String[] returnvalue = null;
-		for (String[] t : distributearray) {
+	public static Sortelement findminmaxtodistribute(Vector<Sortelement> distributearray, boolean isasc) {
+		Sortelement returnvalue = null;
+		for (Sortelement t : distributearray) {
 			if (returnvalue == null) {
 				if (t != null) {
 					returnvalue = t;
@@ -172,13 +172,13 @@ public class Sortutil {
 			} else {
 				if (t != null) {
 					if (isasc) {
-						if (Long.parseLong(t[3]) < Long.parseLong(returnvalue[3])) {
+						if (t.amount() < returnvalue.amount()) {
 							returnvalue = t;
 						} else {
 							// do nothing
 						}
 					} else {
-						if (Long.parseLong(t[3]) > Long.parseLong(returnvalue[3])) {
+						if (t.amount() > returnvalue.amount()) {
 							returnvalue = t;
 						} else {
 							// do nothing
@@ -191,25 +191,4 @@ public class Sortutil {
 		}
 		return returnvalue;
 	}
-
-	public static void addtodistribute(Vector<String[]> distributearray, String ip, int port, String key, long amount) {
-		String[] t = new String[4];
-		t[0] = ip;
-		t[1] = String.valueOf(port);
-		t[2] = key;
-		t[3] = String.valueOf(amount);
-		distributearray.add(t);
-	}
-
-	public static void nulltodistribute(Vector<String[]> distributearray, String ip, int port) {
-		for (int i = 0; i < distributearray.size(); i++) {
-			if (distributearray.get(i) != null && ip.equals(distributearray.get(i)[0])
-					&& String.valueOf(port).equals(distributearray.get(i)[1])) {
-				distributearray.set(i, null);
-			} else {
-				// do nothing
-			}
-		}
-	}
-
 }
