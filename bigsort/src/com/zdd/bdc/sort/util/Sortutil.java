@@ -159,4 +159,57 @@ public class Sortutil {
 		}
 	}
 
+	// [ip][port][key][amount]
+	public static String[] findminmaxtodistribute(Vector<String[]> distributearray, boolean isasc) {
+		String[] returnvalue = null;
+		for (String[] t : distributearray) {
+			if (returnvalue == null) {
+				if (t != null) {
+					returnvalue = t;
+				} else {
+					// do nothing
+				}
+			} else {
+				if (t != null) {
+					if (isasc) {
+						if (Long.parseLong(t[3]) < Long.parseLong(returnvalue[3])) {
+							returnvalue = t;
+						} else {
+							// do nothing
+						}
+					} else {
+						if (Long.parseLong(t[3]) > Long.parseLong(returnvalue[3])) {
+							returnvalue = t;
+						} else {
+							// do nothing
+						}
+					}
+				} else {
+					// do nothing
+				}
+			}
+		}
+		return returnvalue;
+	}
+
+	public static void addtodistribute(Vector<String[]> distributearray, String ip, int port, String key, long amount) {
+		String[] t = new String[4];
+		t[0] = ip;
+		t[1] = String.valueOf(port);
+		t[2] = key;
+		t[3] = String.valueOf(amount);
+		distributearray.add(t);
+	}
+
+	public static void nulltodistribute(Vector<String[]> distributearray, String ip, int port) {
+		for (int i = 0; i < distributearray.size(); i++) {
+			if (distributearray.get(i) != null && ip.equals(distributearray.get(i)[0])
+					&& String.valueOf(port).equals(distributearray.get(i)[1])) {
+				distributearray.set(i, null);
+			} else {
+				// do nothing
+			}
+		}
+	}
+
 }

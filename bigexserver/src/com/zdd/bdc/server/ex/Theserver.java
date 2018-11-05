@@ -24,7 +24,7 @@ public class Theserver {
 		try {
 			test = (Theserverprocess) c.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
-			throw new Exception("not=" + Theserverprocess.class.getSimpleName());
+			throw new Exception(c+" !instanceof " + Theserverprocess.class.getSimpleName());
 		}
 		Selector acceptSelector = SelectorProvider.provider().openSelector();
 		ServerSocketChannel ssc = ServerSocketChannel.open();
