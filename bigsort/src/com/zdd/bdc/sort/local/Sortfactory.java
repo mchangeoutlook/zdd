@@ -1,8 +1,5 @@
 package com.zdd.bdc.sort.local;
 
-import java.io.BufferedReader;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.Hashtable;
@@ -12,19 +9,18 @@ import java.util.Vector;
 import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.CS;
 import com.zdd.bdc.client.util.Objectutil;
-import com.zdd.bdc.server.util.SS;
-import com.zdd.bdc.sort.util.Sortutil;
+import com.zdd.bdc.sort.distribute.Sortcheck;
+import com.zdd.bdc.sort.distribute.Sortdistribute;
+import com.zdd.bdc.sort.util.Sorthouse;
 
 public class Sortfactory {		
 
-	public synchronized static void start(Vector<String> sortingservers, Sortinput input, Sortoutput output,
-			Sortstatus status) throws Exception {
+	public synchronized static void start(String ip, int port, Vector<String> sortingservers, Sortinput input, Sortoutput output,
+			Sortcheck check) throws Exception {
 		Path sortingfolder = input.sortingfolder();
-		if (si.get(sortingfolder.toString()) == null) {
-			Sortcontrol.to(sortingfolder, Sortcontrol.CONTINUE);
-			si.put(sortingfolder.toString(), input);
-			so.put(sortingfolder.toString(), output);
-			ss.put(sortingfolder.toString(), status);
+		if (Sorthouse.sortoutputs.get(sortingfolder) == null) {
+			Sorthouse.sortoutputs.put(sortingfolder, output);
+			Sorthouse.sortchecks.put(sortingfolder, check);
 			new Thread(new Runnable() {
 
 				@Override
@@ -32,9 +28,6 @@ public class Sortfactory {
 					try {
 						System.out.println(new Date() + " ==== started sorting local [" + sortingfolder + "]");
 						input.datasource();
-						Path mergedfile = Sortutil.sortmerge(input.isasc(), sortingfolder);
-						br.put(sortingfolder.toString(), Files.newBufferedReader(mergedfile, Charset.forName("UTF-8")));
-
 						System.out.println(new Date() + " ==== done sorting local [" + sortingfolder + "]");
 
 						System.out
@@ -47,47 +40,37 @@ public class Sortfactory {
 							params.put(CS.PARAM_KEY_KEY, sortingfolder);
 							params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_READ);
 							String[] iport = CS.splitiport(ipport);
-							int sortstatus = (Integer) Objectutil.convert(Theclient.request(iport[0],
+							int check = (Integer) Objectutil.convert(Theclient.request(iport[0],
 									Integer.parseInt(iport[1]), Objectutil.convert(params), null, null));
-							if (sortstatus == Sortstatus.MERGED || sortstatus == Sortstatus.SORTING) {
+							if (check == Sortcheck.SORT_INCLUDED||check==Sortdistribute.DISTRIBUTE_CONTINUE) {
 								validsortingservers.add(ipport);
-							} else if (sortstatus == Sortstatus.NOTFOUND || sortstatus == Sortcontrol.CONTINUE) {
+							} else if (check == Sortcheck.SORT_NOTINCLUDED) {
 								// do nothing
-							} else if (sortstatus == Sortcontrol.TERMINATE) {
-								throw new Exception(
-										"terminiated sorting : [" + sortingfolder + "] on [" + ipport + "]");
 							} else {
-								throw new Exception("error sort status: [" + sortstatus + "] of [" + sortingfolder
+								throw new Exception("error sort check: [" + check + "] of [" + sortingfolder
 										+ "] from [" + ipport + "]");
 							}
 						}
+						Sorthouse.sortdistributes.put(sortingfolder, new Sortdistribute(ip, port, input.isasc(), validsortingservers, sortingfolder));
+						new Thread(new Runnable() {
 
-						vs.put(sortingfolder.toString(), validsortingservers);
-
-						// distribute the first data:
-						for (String ipport : validsortingservers) {
-							Map<String, Object> params = new Hashtable<String, Object>(6);
-							params.put(CS.PARAM_KEY_KEY, sortingfolder);
-							params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_CREATE);
-							params.put(CS.PARAM_DATA_KEY, Sortfactory.next(sortingfolder));
-							String[] iport = CS.splitiport(ipport);
-							int status = (Integer) Objectutil.convert(Theclient.request(iport[0],
-									Integer.parseInt(iport[1]), Objectutil.convert(params), null, null));
-							if (status == Sortcontrol.CONTINUE) {
-								// do nothing
-							} else if (status == Sortcontrol.TERMINATE) {
-								throw new Exception(
-										"terminiated sorting : [" + sortingfolder + "] on [" + ipport + "]");
-							} else {
-								throw new Exception("error distributing status: [" + status + "] of [" + sortingfolder
-										+ "] from [" + ipport + "]");
+							@Override
+							public void run() {
+								try {
+									Sorthouse.sortdistributes.get(sortingfolder).startinathread();
+								} catch (Exception e) {
+									System.out.println(
+											new Date() + " ==== error when distributing sort folder [" + sortingfolder + "]");
+									e.printStackTrace();
+								}
 							}
-						}
+							
+						}).start();
 					} catch (Exception e) {
 						System.out.println(
-								new Date() + " ==== error when distributing sort folder [" + sortingfolder + "]");
+								new Date() + " ==== error when starting to distribute sort folder [" + sortingfolder + "]");
 						e.printStackTrace();
-						stop(sortingfolder, false);
+						Sorthouse.sortdistributes.put(sortingfolder, new Sortdistribute(ip, port, input.isasc(), null, sortingfolder));
 					}
 				}
 

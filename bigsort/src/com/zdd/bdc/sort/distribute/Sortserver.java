@@ -7,59 +7,54 @@ import java.util.Map;
 
 import com.zdd.bdc.client.util.CS;
 import com.zdd.bdc.client.util.Objectutil;
+import com.zdd.bdc.server.ex.Inputprocess;
 import com.zdd.bdc.server.ex.Theserverprocess;
-import com.zdd.bdc.sort.local.Sortcontrol;
-import com.zdd.bdc.sort.local.Sortfactory;
 
 public class Sortserver implements Theserverprocess{
 
-	private Integer returnvalue = -1;
+	public static final String sortcheckclasskey = "sortcheckclasskey";
 	
 	private String ip = null;
 	private int port = -1;
+	private Sortcheck check = null;
 	
 	@Override
-	public void init(String serverlocalip, int serverlocalport, int bigfilehash) {
-		// TODO Auto-generated method stub
+	public void init(String serverlocalip, int serverlocalport, int bigfilehash, Map<String, Object> additionalserverconfig) throws Exception {
 		ip = serverlocalip;
 		port = serverlocalport;
+		check = (Sortcheck) Class.forName(additionalserverconfig.get(sortcheckclasskey).toString()).getDeclaredConstructor().newInstance();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void request(byte[] b) throws Exception {
-		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(b);
+	public byte[] request(byte[] param) throws Exception {
+		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(param);
 		Path sortingfolder = (Path)params.get(CS.PARAM_KEY_KEY);
 		if (CS.PARAM_ACTION_READ.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
-			returnvalue = Sortfactory.getss(sortingfolder).status(sortingfolder);
+			return Objectutil.convert(check.check(sortingfolder));
 		} else if (CS.PARAM_ACTION_CREATE.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
 			try {
 				String keyamount = params.get(CS.PARAM_DATA_KEY).toString();
 				
 			}catch(Exception e) {
-				Sortcontrol.to(sortingfolder,Sortcontrol.TERMINATE);
-				returnvalue = Sortcontrol.to(sortingfolder);
 				System.out.println(new Date()+" ==== error when distributing sort folder ["+sortingfolder+"] on ["+CS.splitiport(ip, String.valueOf(port))+"]");
 				e.printStackTrace();
 			}
+			return null;
 		} else {
-			//do nothing
+			return null;
 		}
 	}
 
+
 	@Override
-	public void requests(byte[] b) throws Exception {
+	public Inputprocess requestinput(byte[] param) throws Exception {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public byte[] response() throws Exception {
-		return Objectutil.convert(returnvalue);
-	}
-
-	@Override
-	public InputStream responses() throws Exception {
+	public InputStream requestoutput(byte[] param) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

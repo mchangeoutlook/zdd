@@ -64,12 +64,20 @@ public class Theclient {
 			byte[] readbb = new byte[11];
 			is.readNBytes(readbb, 0, readbb.length);
 			Integer length = Integer.parseInt(new String(readbb));
-			readbb = new byte[Math.abs(length)];
-			is.readNBytes(readbb, 0, readbb.length);
-			byte[] returnvalue = readbb;
-			if (length < 0) {
-				throw new Exception(new String(returnvalue, "UTF-8"));
+			byte[] returnvalue = null;
+			if (length==-1) {
+				returnvalue = null;
+			} else {
+				readbb = new byte[Math.abs(length)];
+				is.readNBytes(readbb, 0, readbb.length);
+				returnvalue = readbb;
+				if (length<0) {
+					throw new Exception(new String(returnvalue, "UTF-8"));
+				} else {
+					//continue
+				}
 			}
+			
 			readbb = new byte[11];
 			is.readNBytes(readbb, 0, readbb.length);
 			length = Integer.parseInt(new String(readbb));

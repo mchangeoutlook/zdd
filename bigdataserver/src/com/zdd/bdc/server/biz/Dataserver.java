@@ -7,25 +7,23 @@ import java.util.Vector;
 
 import com.zdd.bdc.client.util.CS;
 import com.zdd.bdc.client.util.Objectutil;
+import com.zdd.bdc.server.ex.Inputprocess;
 import com.zdd.bdc.server.ex.Theserverprocess;
 import com.zdd.bdc.server.util.Filekvutil;
 
 public class Dataserver implements Theserverprocess {
 
-	private Map<String, String> readres = null;
-	private Map<String, Long> incrementres = null;
-
 	private int bigfilehash = 1000;
 
 	@Override
-	public void init(String ip, int port, int thebigfilehash) {
+	public void init(String ip, int port, int thebigfilehash, Map<String, Object> additionalserverconfig) {
 		bigfilehash = thebigfilehash;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void request(byte[] b) throws Exception {
-		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(b);
+	public byte[] request(byte[] param) throws Exception {
+		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(param);
 		if (CS.PARAM_ACTION_CREATE.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
 			String key = params.get(CS.PARAM_KEY_KEY).toString();
 			String namespace = params.get(CS.PARAM_NAMESPACE_KEY).toString();
@@ -35,28 +33,31 @@ public class Dataserver implements Theserverprocess {
 			for (String column : cvs.keySet()) {
 				Filekvutil.datacreate(key, cvs.get(column), cvmaxs.get(column), namespace, table, column, bigfilehash);
 			}
+			return null;
 		} else if (CS.PARAM_ACTION_READ.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
 			String key = params.get(CS.PARAM_KEY_KEY).toString();
 			String namespace = params.get(CS.PARAM_NAMESPACE_KEY).toString();
 			String table = params.get(CS.PARAM_TABLE_KEY).toString();
 			Vector<String> cols = (Vector<String>) params.get(CS.PARAM_COLUMNS_KEY);
-			readres = new Hashtable<String, String>(cols.size());
+			Map<String, String> readres = new Hashtable<String, String>(cols.size());
 			for (String column : cols) {
 				String result = Filekvutil.dataread(key, namespace, table, column, bigfilehash);
 				if (result != null) {
 					readres.put(column, result);
 				}
 			}
+			return Objectutil.convert(readres);
 		} else if (CS.PARAM_ACTION_INCREMENT.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
 			String key = params.get(CS.PARAM_KEY_KEY).toString();
 			String namespace = params.get(CS.PARAM_NAMESPACE_KEY).toString();
 			String table = params.get(CS.PARAM_TABLE_KEY).toString();
 			Map<String, Long> cas = (Map<String, Long>) params.get(CS.PARAM_COLUMNAMOUNTS_KEY);
-			incrementres = new Hashtable<String, Long>(cas.size());
+			Map<String, Long> incrementres = new Hashtable<String, Long>(cas.size());
 			for (String column : cas.keySet()) {
 				long result = Filekvutil.dataincrement(key, cas.get(column), namespace, table, column, bigfilehash);
 				incrementres.put(column, result);
 			}
+			return Objectutil.convert(incrementres);
 		} else if (CS.PARAM_ACTION_MODIFY.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
 			String key = params.get(CS.PARAM_KEY_KEY).toString();
 			String namespace = params.get(CS.PARAM_NAMESPACE_KEY).toString();
@@ -65,39 +66,30 @@ public class Dataserver implements Theserverprocess {
 			for (String column : cvs.keySet()) {
 				Filekvutil.datamodify(key, cvs.get(column), namespace, table, column, bigfilehash);
 			}
+			return null;
 		} else if (CS.PARAM_ACTION_DELETE.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
 			String key = params.get(CS.PARAM_KEY_KEY).toString();
 			String namespace = params.get(CS.PARAM_NAMESPACE_KEY).toString();
 			String table = params.get(CS.PARAM_TABLE_KEY).toString();
 			Vector<String> cols = (Vector<String>) params.get(CS.PARAM_COLUMNS_KEY);
-			readres = new Hashtable<String, String>(cols.size());
+			Map<String, String> readres = new Hashtable<String, String>(cols.size());
 			for (String column : cols) {
 				Filekvutil.datadelete(key, namespace, table, column, bigfilehash);
 			}
+			return Objectutil.convert(readres);
 		} else {
 			throw new Exception("notsupport-" + params.get(CS.PARAM_ACTION_KEY));
 		}
 	}
 
 	@Override
-	public byte[] response() throws Exception {
-		if (readres != null) {
-			return Objectutil.convert(readres);
-		}
-		if (incrementres != null) {
-			return Objectutil.convert(incrementres);
-		}
-		return Objectutil.convert(new Hashtable<String, String>());
-	}
-
-	@Override
-	public void requests(byte[] b) throws Exception {
+	public Inputprocess requestinput(byte[] param) throws Exception {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	@Override
-	public InputStream responses() throws Exception {
+	public InputStream requestoutput(byte[] param) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -160,7 +160,7 @@ public class Sortutil {
 		}
 	}
 
-	public static Sortelement findminmaxtodistribute(Vector<Sortelement> distributearray, boolean isasc) {
+	public static Sortelement findminmax(Vector<Sortelement> distributearray, boolean isasc) {
 		Sortelement returnvalue = null;
 		for (Sortelement t : distributearray) {
 			if (returnvalue == null) {

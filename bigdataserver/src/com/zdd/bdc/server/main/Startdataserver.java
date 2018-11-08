@@ -50,7 +50,7 @@ public class Startdataserver {
 					Theserver.startblocking(ip,
 							Integer.parseInt(port), SS.REMOTE_CONFIGVAL_PENDING, pending,
 							bigfilehash,
-							 Dataserver.class);
+							 Dataserver.class, null);
 				} catch (Exception e) {
 					System.out.println(new Date()+" ==== System exit due to below exception:");
 					e.printStackTrace();

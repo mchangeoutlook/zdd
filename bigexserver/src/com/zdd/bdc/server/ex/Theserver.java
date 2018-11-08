@@ -13,18 +13,28 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 public class Theserver {
 
-	public static void startblocking(String ip, int port, String ispending, StringBuffer pending, int bigfilehash,
-			final Class<?> c) throws Exception {
-		Theserverprocess test = null;
+	private static final Map<String, Theserverprocess> serverprocesses = new Hashtable<String, Theserverprocess>(); 
+	
+	public synchronized static void startblocking(String ip, int port, String ispending, StringBuffer pending, int bigfilehash,
+			final Class<?> c, Map<String, Object> additionalserverconfig) throws Exception {
 		try {
-			test = (Theserverprocess) c.getDeclaredConstructor().newInstance();
+			Theserverprocess ti = (Theserverprocess) c.getDeclaredConstructor().newInstance();
+			serverprocesses.put(c.getName(), ti);
 		} catch (Exception e) {
-			throw new Exception(c+" !instanceof " + Theserverprocess.class.getSimpleName());
+			throw new Exception(new Date()+" ==== "+c.getName()+" !instanceof " + Theserverprocess.class.getSimpleName());
+		}
+		try {
+			serverprocesses.get(c.getName()).init(ip, port, bigfilehash, additionalserverconfig);
+		} catch (Exception e) {
+			System.out.println(new Date()+" ==== error init "+c.getName());
+			throw e;
 		}
 		Selector acceptSelector = SelectorProvider.provider().openSelector();
 		ServerSocketChannel ssc = ServerSocketChannel.open();
@@ -33,7 +43,7 @@ public class Theserver {
 		ssc.socket().bind(isa);
 		ssc.register(acceptSelector, SelectionKey.OP_ACCEPT);
 
-		System.out.println(new Date() + " ==== " + test.getClass().getName() + " listening port [" + port + "] on ip ["
+		System.out.println(new Date() + " ==== " + c.getName() + " listening port [" + port + "] on ip ["
 				+ ip + "] and bigfilehash = ["+bigfilehash+"]");
 		while (acceptSelector.select() > 0 && !ispending.equals(pending.toString())) {
 			Set<SelectionKey> readyKeys = acceptSelector.selectedKeys();
@@ -48,42 +58,52 @@ public class Theserver {
 						InputStream is = null;
 						try {
 							is = s.getChannel().socket().getInputStream();
-							Theserverprocess ti = (Theserverprocess) c.getDeclaredConstructor().newInstance();
-							ti.init(ip, port, bigfilehash);
 							byte[] readbb = new byte[11];
 							is.readNBytes(readbb, 0, readbb.length);
 							Integer length = Integer.parseInt(new String(readbb));
-							readbb = new byte[Math.abs(length)];
-							is.readNBytes(readbb, 0, readbb.length);
-							ti.request(readbb);
-
+							byte[] parambb = new byte[Math.abs(length)];
+							is.readNBytes(parambb, 0, parambb.length);
+							
+							Theserverprocess ti = serverprocesses.get(c.getName());
+							
+							byte[] res = ti.request(parambb);
+							
+							if (res==null) {
+								ByteBuffer writebb = ByteBuffer.allocate(11);
+								writebb.put(String.format("%011d", -1).getBytes());
+								writebb.flip();
+								s.getChannel().write(writebb);
+							} else {
+								ByteBuffer writebb = ByteBuffer.allocate(11 + res.length);
+								writebb.put(String.format("%011d", res.length).getBytes());
+								writebb.put(res);
+								writebb.flip();
+								s.getChannel().write(writebb);
+							}
+							
 							readbb = new byte[11];
 							is.readNBytes(readbb, 0, readbb.length);
 							length = Integer.parseInt(new String(readbb));
+							Inputprocess inp = null;
 							while (length > 0) {
+								if (inp==null) {
+									inp = ti.requestinput(parambb);
+								}
 								readbb = new byte[length];
 								is.readNBytes(readbb, 0, readbb.length);
-								ti.requests(readbb);
+								inp.process(readbb);
 								readbb = new byte[11];
 								is.readNBytes(readbb, 0, readbb.length);
 								length = Integer.parseInt(new String(readbb));
 							}
-
-							byte[] res = ti.response();
-							ByteBuffer writebb = ByteBuffer.allocate(11 + res.length);
-							writebb.put(String.format("%011d", res.length).getBytes());
-							writebb.put(res);
-							writebb.flip();
-							s.getChannel().write(writebb);
-
-							InputStream responses = ti.responses();
+							
+							InputStream responses = ti.requestoutput(parambb);
 							if (responses != null) {
 								try {
 									byte[] readb = new byte[10240];
 									int bs = 0;
 									while ((bs = responses.read(readb)) != -1) {
-										writebb.clear();
-										writebb = ByteBuffer.allocate(11 + bs);
+										ByteBuffer writebb = ByteBuffer.allocate(11 + bs);
 										writebb.put(String.format("%011d", bs).getBytes());
 										if (bs != readb.length) {
 											readb = Arrays.copyOf(readb, bs);
@@ -98,8 +118,7 @@ public class Theserver {
 								}
 							}
 
-							writebb.clear();
-							writebb = ByteBuffer.allocate(11);
+							ByteBuffer writebb = ByteBuffer.allocate(11);
 							writebb.put(String.format("%011d", 0).getBytes());
 							writebb.flip();
 							s.getChannel().write(writebb);

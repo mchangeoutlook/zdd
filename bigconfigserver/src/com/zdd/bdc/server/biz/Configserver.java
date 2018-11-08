@@ -3,11 +3,11 @@ package com.zdd.bdc.server.biz;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.Map;
 
 import com.zdd.bdc.client.util.CS;
 import com.zdd.bdc.client.util.Objectutil;
+import com.zdd.bdc.server.ex.Inputprocess;
 import com.zdd.bdc.server.ex.Theserverprocess;
 import com.zdd.bdc.server.util.Filekvutil;
 import com.zdd.bdc.server.util.SS;
@@ -54,19 +54,17 @@ public class Configserver implements Theserverprocess {
 		}
 	}
 
-	private Map<String, Map<String, Map<String, String>>> returnvalue = new Hashtable<String, Map<String, Map<String, String>>>();
-
 	@Override
-	public void init(String ip, int port, int bigfilehash) {
+	public void init(String ip, int port, int bigfilehash, Map<String, Object> additionalserverconfig) {
 
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void request(byte[] b) throws Exception {
-		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(b);
+	public byte[] request(byte[] param) throws Exception {
+		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(param);
 		if (params.get(CS.PARAM_DATA_KEY) != null) {
-			returnvalue = (Map<String, Map<String, Map<String, String>>>) params.get(CS.PARAM_DATA_KEY);
+			Map<String, Map<String, Map<String, String>>> returnvalue = (Map<String, Map<String, Map<String, String>>>) params.get(CS.PARAM_DATA_KEY);
 			if (CS.PARAM_ACTION_READ.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
 				Object[] ns = returnvalue.keySet().toArray();
 				for (Object nsobj : ns) {
@@ -93,24 +91,20 @@ public class Configserver implements Theserverprocess {
 					}
 				}
 			}
+			return Objectutil.convert(returnvalue);
 		} else {
 			throw new Exception("notsupport-" + params.get(CS.PARAM_ACTION_KEY));
 		}
 	}
 
 	@Override
-	public void requests(byte[] b) throws Exception {
+	public Inputprocess requestinput(byte[] param) throws Exception {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	@Override
-	public byte[] response() throws Exception {
-		return Objectutil.convert(returnvalue);
-	}
-
-	@Override
-	public InputStream responses() throws Exception {
+	public InputStream requestoutput(byte[] param) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

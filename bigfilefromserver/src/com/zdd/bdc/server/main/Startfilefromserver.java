@@ -46,7 +46,7 @@ public class Startfilefromserver {
 			@Override
 			public void run() {
 				try {
-					Theserver.startblocking(ip, Integer.parseInt(port), SS.REMOTE_CONFIGVAL_PENDING, pending, 10, Filefromserver.class);
+					Theserver.startblocking(ip, Integer.parseInt(port), SS.REMOTE_CONFIGVAL_PENDING, pending, 10, Filefromserver.class, null);
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== System exit due to below exception:");
 					e.printStackTrace();

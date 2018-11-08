@@ -49,7 +49,7 @@ public class Startindexserver {
 					
 					Theserver.startblocking(ip, Integer.parseInt(port), SS.REMOTE_CONFIGVAL_PENDING, pending,
 							bigfilehash,
-							Indexserver.class);
+							Indexserver.class, null);
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== Indexserver exit due to below exception:");
 					e.printStackTrace();

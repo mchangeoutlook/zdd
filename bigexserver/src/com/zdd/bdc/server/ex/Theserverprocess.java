@@ -1,11 +1,11 @@
 package com.zdd.bdc.server.ex;
 
 import java.io.InputStream;
+import java.util.Map;
 
 public interface Theserverprocess {
-	public void init(String ip, int port, int bigfilehash);
-	public void request(byte[] b) throws Exception;
-	public void requests(byte[] b) throws Exception;
-	public byte[] response() throws Exception;
-	public InputStream responses() throws Exception;
+	public void init(String serverlocalip, int serverlocalport, int bigfilehash, Map<String, Object> additionalserverconfig) throws Exception;
+	public byte[] request(byte[] param) throws Exception;
+	public Inputprocess requestinput(byte[] param) throws Exception;
+	public InputStream requestoutput(byte[] param) throws Exception;
 }

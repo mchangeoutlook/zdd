@@ -46,7 +46,7 @@ public class Startconfigserver {
 			@Override
 			public void run() {
 				try {
-					Theserver.startblocking(ip, Integer.parseInt(Configserver.readconfig(CS.NAMESPACE_CORE, CS.REMOTE_CONFIG_CORE, CS.REMOTE_CONFIGKEY_CONFIGSERVERPORT)), SS.REMOTE_CONFIGVAL_PENDING, pending, 10, Configserver.class);
+					Theserver.startblocking(ip, Integer.parseInt(Configserver.readconfig(CS.NAMESPACE_CORE, CS.REMOTE_CONFIG_CORE, CS.REMOTE_CONFIGKEY_CONFIGSERVERPORT)), SS.REMOTE_CONFIGVAL_PENDING, pending, 10, Configserver.class, null);
 				} catch (Exception e) {
 					System.out.println(new Date()+" ==== System exit due to below exception:");
 					e.printStackTrace();
