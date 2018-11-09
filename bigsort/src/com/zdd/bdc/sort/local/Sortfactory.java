@@ -1,5 +1,6 @@
 package com.zdd.bdc.sort.local;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.Hashtable;
@@ -11,18 +12,29 @@ import com.zdd.bdc.client.util.CS;
 import com.zdd.bdc.client.util.Objectutil;
 import com.zdd.bdc.sort.distribute.Sortcheck;
 import com.zdd.bdc.sort.distribute.Sortdistribute;
-import com.zdd.bdc.sort.util.Sorthouse;
+import com.zdd.bdc.sort.util.Sortstatus;
+import com.zdd.bdc.sort.util.Sortutil;
 
-public class Sortfactory {		
-
-	public synchronized static void start(String ip, int port, Vector<String> sortingservers, Sortinput input, Sortoutput output,
-			Sortcheck check) throws Exception {
+public class Sortfactory {	
+	
+	public static Map<Path, Sortdistribute> sortdistributes = new Hashtable<Path, Sortdistribute>();
+	public static Map<Path, Thread> sortings = new Hashtable<Path, Thread>();
+	
+	public static void clear(Path sortingfolder, String status) {
+		Sortstatus.set(sortingfolder, status);
+		sortings.remove(sortingfolder);
+		try {
+			sortdistributes.remove(sortingfolder).clear();
+		}catch(Exception e) {
+			//do nothing
+		}
+	}
+	
+	public synchronized static void start(String ip, int port, Vector<String> sortingservers, Sortinput input, Sortoutput output) throws Exception {
 		Path sortingfolder = input.sortingfolder();
-		if (Sorthouse.sortoutputs.get(sortingfolder) == null) {
-			Sorthouse.sortoutputs.put(sortingfolder, output);
-			Sorthouse.sortchecks.put(sortingfolder, check);
+		if (sortings.get(sortingfolder) == null) {
+			sortings.put(sortingfolder, 
 			new Thread(new Runnable() {
-
 				@Override
 				public void run() {
 					try {
@@ -74,7 +86,8 @@ public class Sortfactory {
 					}
 				}
 
-			}).start();
+			});
+			sortings.get(sortingfolder).start();
 		} else {
 			// do nothing
 		}

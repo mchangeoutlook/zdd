@@ -6,40 +6,29 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
-import com.zdd.bdc.sort.util.Sorthouse;
+import com.zdd.bdc.sort.local.Sortoutput;
 import com.zdd.bdc.sort.util.Sortutil;
 
 public class Sortdistribute{
-
-	public static final int DISTRIBUTE_CONTINUE = 3;
-	public static final int DISTRIBUTE_TERMINATE = 4;
-	public static final int DISTRIBUTE_ACCOMPLISHED = 5;
-
+	
 	private BufferedReader mergedfilereader = null;
 	private Vector<String> sortingservers = null;
 	private Vector<Sortelement> distributearray = null;
+	private Sortoutput output = null;
 	private Long numofnotifies = 0l;
-	private int distributestatus = DISTRIBUTE_CONTINUE;
 	private Path sortingfolder = null;
 	private String ip = null;
 	private int port = -1;
 	private boolean isasc = true;
 	
-	public Sortdistribute(String theip, int theport, boolean asc, Vector<String> thesortingservers, Path thesortingfolder) {
+	public Sortdistribute(String theip, int theport, boolean asc, Vector<String> thesortingservers, Path thesortingfolder, Sortoutput theoutput) {
 		sortingfolder = thesortingfolder;
 		ip = theip;
 		port = theport;
 		isasc = asc;
 		sortingservers = thesortingservers;
-		if (sortingservers!=null&&!sortingservers.isEmpty()) {
-			distributearray = new Vector<Sortelement>(thesortingservers.size());
-		} else {
-			distributestatus = DISTRIBUTE_TERMINATE;
-		}
-	}
-	
-	public int status() {
-		return distributestatus;
+		distributearray = new Vector<Sortelement>(thesortingservers.size());
+		output = theoutput;
 	}
 
 	public synchronized void change(long increaseordecrease) {
@@ -48,9 +37,11 @@ public class Sortdistribute{
 	
 	public synchronized void addtodistribute(String fromip, int fromport, String key, long amount) {
 		
-		if () {
-			
-		}
+		this.notifyAll();
+		
+	}
+	
+	public void clear() {
 		
 	}
 	

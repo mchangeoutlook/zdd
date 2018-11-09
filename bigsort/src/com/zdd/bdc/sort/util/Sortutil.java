@@ -65,7 +65,7 @@ public class Sortutil {
 		}
 	}
 
-	private static void clearfolder(Path thefolder, String except) throws Exception {
+	public static void clearfolder(Path thefolder, String except) throws Exception {
 		String[] files = thefolder.toFile().list();
 		if (files != null) {
 			for (String file : files) {
