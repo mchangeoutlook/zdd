@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -19,7 +20,8 @@ import com.zdd.bdc.sort.distribute.Sortelement;
 
 public class Sortutil {
 
-	private static final String mergedfilename = "done";
+	public static final String mergedfilename = "done";
+	public static final String terminate = "terminate";
 
 	public static void sortintofiles(boolean isasc, Map<String, Long> tosort, Path sortingfolder) throws Exception {
 		try {
@@ -32,6 +34,11 @@ public class Sortutil {
 					// do nothing
 				}
 			}
+			
+			if (Files.exists(sortingfolder.resolve(terminate))) {
+				throw new Exception("terminate");
+			}
+				
 			Path sortintofile = sortingfolder.resolve(String.valueOf(sortingfolder.toFile().list().length));
 
 			List<Map.Entry<String, Long>> entryList = new ArrayList<Map.Entry<String, Long>>(tosort.entrySet());
@@ -53,6 +60,9 @@ public class Sortutil {
 			Iterator<Map.Entry<String, Long>> iter = entryList.iterator();
 			Map.Entry<String, Long> tmpEntry = null;
 			while (iter.hasNext()) {
+				if (Files.exists(sortingfolder.resolve(terminate))) {
+					throw new Exception("terminate");
+				}
 				tmpEntry = iter.next();
 				Files.write(sortintofile,
 						CS.tobytes(CS.splitenc(tmpEntry.getKey(), String.valueOf(tmpEntry.getValue()))
@@ -65,7 +75,7 @@ public class Sortutil {
 		}
 	}
 
-	public static void clearfolder(Path thefolder, String except) throws Exception {
+	private static void clearfolder(Path thefolder, String except) throws Exception {
 		String[] files = thefolder.toFile().list();
 		if (files != null) {
 			for (String file : files) {
@@ -77,8 +87,16 @@ public class Sortutil {
 			}
 		}
 	}
+	
+	public static void clear(Path thefolder, String status) throws Exception {
+		if (Sortstatus.ACCOMPLISHED.equals(status)) {
+			clearfolder(thefolder, null);
+		} else {
+			Files.write(thefolder.resolve(terminate), new byte[0], StandardOpenOption.CREATE);
+		}
+	}
 
-	public static Path sortmerge(boolean isasc, Path sortingfolder) throws Exception {
+	public static void sortmerge(boolean isasc, Path sortingfolder) throws Exception {
 		Vector<BufferedReader> brs = null;
 		try {
 			Path mergedfile = sortingfolder.resolve(mergedfilename);
@@ -87,6 +105,9 @@ public class Sortutil {
 			Vector<Long> amounts = new Vector<Long>(sortingfiles.length);
 			Vector<String> keys = new Vector<String>(sortingfiles.length);
 			for (String sortingfile : sortingfiles) {
+				if (Files.exists(sortingfolder.resolve(terminate))) {
+					throw new Exception("terminate");
+				}
 				BufferedReader br = Files.newBufferedReader(sortingfolder.resolve(sortingfile),
 						Charset.forName("UTF-8"));
 				brs.add(br);
@@ -99,6 +120,9 @@ public class Sortutil {
 			}
 
 			while (true) {
+				if (Files.exists(sortingfolder.resolve(terminate))) {
+					throw new Exception("terminate");
+				}
 				Long min = null;
 				int minindex = 0;
 				for (int i = 0; i < amounts.size(); i++) {
@@ -142,7 +166,6 @@ public class Sortutil {
 					keys.set(minindex, null);
 				}
 			}
-			return mergedfile;
 		} catch (Exception e) {
 			clearfolder(sortingfolder, null);
 			throw e;
@@ -160,7 +183,7 @@ public class Sortutil {
 		}
 	}
 
-	public static Sortelement findminmax(Vector<Sortelement> distributearray, boolean isasc) {
+	public static Sortelement findminmax(Collection<Sortelement> distributearray, boolean isasc) {
 		Sortelement returnvalue = null;
 		for (Sortelement t : distributearray) {
 			if (returnvalue == null) {

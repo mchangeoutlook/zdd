@@ -10,6 +10,7 @@ import com.zdd.bdc.client.util.Objectutil;
 import com.zdd.bdc.server.ex.Inputprocess;
 import com.zdd.bdc.server.ex.Theserverprocess;
 import com.zdd.bdc.sort.local.Sortfactory;
+import com.zdd.bdc.sort.util.Sortstatus;
 
 public class Sortserver implements Theserverprocess {
 
@@ -17,7 +18,7 @@ public class Sortserver implements Theserverprocess {
 
 	private String ip = null;
 	private int port = -1;
-	private static Sortcheck check = null;
+	private Sortcheck check = null;
 
 	@Override
 	public void init(String serverlocalip, int serverlocalport, int bigfilehash,
@@ -33,43 +34,41 @@ public class Sortserver implements Theserverprocess {
 	public byte[] request(byte[] param) throws Exception {
 		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(param);
 		Path sortingfolder = (Path) params.get(CS.PARAM_KEY_KEY);
-		if (Sortfactory.sortdistributes.get(sortingfolder) != null && Sortdistribute.DISTRIBUTE_TERMINATE
-				.equals(Sortfactory.sortdistributes.get(sortingfolder).status())) {
-			return Objectutil.convert(Sortdistribute.DISTRIBUTE_TERMINATE);
+		if (Sortstatus.TERMINATE.equals(Sortstatus.get(sortingfolder))) {
+			return Objectutil.convert(Sortstatus.TERMINATE);
 		} else {
 			if (CS.PARAM_ACTION_READ.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
-				String c = null;
-				try {
-					c = check.check(sortingfolder);
-				} catch (Exception e) {
-					System.out.println(new Date() + " ==== error when checking sort folder [" + sortingfolder + "] on ["
-							+ CS.splitiport(ip, String.valueOf(port)) + "]");
-					e.printStackTrace();
-					throw e;
-				}
-				if (Sortcheck.SORT_INCLUDED.equals(c)) {
-					if (Sortfactory.sortdistributes.get(sortingfolder) != null) {
-						return Objectutil.convert(Sortcheck.SORT_MERGED);
-					} else {
-						return Objectutil.convert(c);
+				if (Sortstatus.get(sortingfolder)==null) {
+					try {
+						Sortstatus.set(sortingfolder, check.check(sortingfolder));
+					} catch (Exception e) {
+						System.out.println(new Date() + " ==== error when checking sort folder [" + sortingfolder + "] on ["
+								+ CS.splitiport(ip, String.valueOf(port)) + "]");
+						e.printStackTrace();
+						Sortfactory.clear(sortingfolder, Sortstatus.TERMINATE);
 					}
 				} else {
-					return Objectutil.convert(c);
+					//do nothing
 				}
+				return Objectutil.convert(Sortstatus.get(sortingfolder));
 			} else if (CS.PARAM_ACTION_CREATE.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
 				try {
-					String[] keyamount = CS.splitenc(params.get(CS.PARAM_DATA_KEY).toString());
 					String[] ipport = CS.splitiport(params.get(CS.PARAM_INDEX_KEY).toString());
-					Sortfactory.sortdistributes.get(sortingfolder).addtodistribute(ipport[0],
-							Integer.parseInt(ipport[1]), keyamount[0], Long.parseLong(keyamount[1]));
-					return Objectutil.convert(Sortdistribute.DISTRIBUTE_CONTINUE);
+					if (params.get(CS.PARAM_DATA_KEY)==null) {
+						Sortfactory.sortdistributes.get(sortingfolder).addtodistribute(ipport[0],
+								Integer.parseInt(ipport[1]), null, -1);
+					} else {
+						String[] keyamount = CS.splitenc(params.get(CS.PARAM_DATA_KEY).toString());
+						Sortfactory.sortdistributes.get(sortingfolder).addtodistribute(ipport[0],
+								Integer.parseInt(ipport[1]), keyamount[0], Long.parseLong(keyamount[1]));
+					}
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== error when distributing sort folder [" + sortingfolder
 							+ "] on [" + CS.splitiport(ip, String.valueOf(port)) + "]");
 					e.printStackTrace();
-					Sortfactory.sortdistributes.get(sortingfolder).status(Sortdistribute.DISTRIBUTE_TERMINATE);
-					return Objectutil.convert(Sortdistribute.DISTRIBUTE_TERMINATE);
+					Sortfactory.clear(sortingfolder, Sortstatus.TERMINATE);
 				}
+				return Objectutil.convert(Sortstatus.get(sortingfolder));
 			} else {
 				return null;
 			}

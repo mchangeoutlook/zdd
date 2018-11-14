@@ -4,24 +4,29 @@ import java.nio.file.Path;
 import java.util.Hashtable;
 import java.util.Map;
 
+import com.zdd.bdc.server.util.SS;
+
 public class Sortstatus {
 	public static final String SORT_NOTINCLUDED = "sort_notincluded";
 	public static final String SORT_INCLUDED = "sort_included";
-	
-	public static final String SORTING_CONTINUE = "sorting_continue";
-	public static final String SORTING_TERMINATE = "sorting_terminate";
-	public static final String SORTING_ACCOMPLISHED = "sorting_accomplished";
-
-	public static final String DISTRIBUTE_CONTINUE = "distr_continue";
-	public static final String DISTRIBUTE_TERMINATE = "distr_terminate";
-	public static final String DISTRIBUTE_ACCOMPLISHED = "distr_accomplished";
+	public static final String READY_TO_DISTRIBUTE = "ready_to_distribute";
+	public static final String ACCOMPLISHED = "distribute_accomplished";
+	public static final String TERMINATE = "terminate";
 	
 	private static final Map<Path, String> STATUS = new Hashtable<Path, String>();
 	
 	public static String get(Path sortingfolder) {
 		return STATUS.get(sortingfolder);
 	}
-	public static void set(Path sortingfolder, String status) {
-		STATUS.put(sortingfolder, status);
+	public static void set(Path sortingfolder, String status) throws Exception {
+		synchronized(SS.syncfile(sortingfolder)) {
+			if (!TERMINATE.equals(status)&&TERMINATE.equals(get(sortingfolder))) {
+				throw new Exception("terminate");
+			} else if (READY_TO_DISTRIBUTE.equals(get(sortingfolder))&&SORT_INCLUDED.equals(status)){
+				//do nothing
+			} else {
+				STATUS.put(sortingfolder, status);
+			}
+		}
 	}
 }
