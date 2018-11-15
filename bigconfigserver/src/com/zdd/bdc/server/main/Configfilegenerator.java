@@ -33,6 +33,8 @@ public class Configfilegenerator {
 
 		Filekvutil.config("dig0.sort", CS.splitenc("namespace", "table", "col"), CS.NAMESPACE_CORE,
 				SS.REMOTE_CONFIG_DIG);
+		Filekvutil.config("dig0.ascend", "yes", CS.NAMESPACE_CORE,
+				SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig0.interval", "W01300", CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig0.period", SS.splitfromto("20180910","20180910"), CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig0.index", CS.splitenc("namespace0", "table0", "col0"), CS.NAMESPACE_CORE,
@@ -45,6 +47,8 @@ public class Configfilegenerator {
 				SS.REMOTE_CONFIG_DIG);
 
 		Filekvutil.config("dig1.sort", CS.splitenc("namespace", "table", "col"), CS.NAMESPACE_CORE,
+				SS.REMOTE_CONFIG_DIG);
+		Filekvutil.config("dig1.ascend", "no", CS.NAMESPACE_CORE,
 				SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig1.interval", "D1300", CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig1.period", SS.splitfromto("20180910","20200920"), CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);

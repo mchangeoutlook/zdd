@@ -10,10 +10,11 @@ import com.zdd.bdc.server.ex.Theserver;
 import com.zdd.bdc.server.util.SS;
 import com.zdd.bdc.server.biz.Filefromserver;
 import com.zdd.bdc.client.biz.Configclient;
+import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.CS;
 
 /**
- * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp bigfilefromserver.jar:../../commonlibs/bigcomclientutil.jar:../../commonlibs/bigcomserverutil.jar:../../commonlibs/bigexclient.jar:../../commonlibs/bigconfigclient.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.server.main.Startfilefromserver pngbigfrom > log.runbigfilefromserver &
+ * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp bigfilefromserver.jar:../../commonlibs/bigcomclientutil.jar:../../commonlibs/bigcomserverutil.jar:../../commonlibs/bigexclient.jar:../../commonlibs/bigconfigclient.jar:../../commonlibs/bigexserver.jar:../../commonlibs/bigexclient.jar com.zdd.bdc.server.main.Startfilefromserver pngbigfrom > log.runbigfilefromserver &
  */
 
 public class Startfilefromserver {
@@ -64,8 +65,15 @@ public class Startfilefromserver {
 			}
 		}
 		pending.append(SS.REMOTE_CONFIGVAL_PENDING);
-		System.out.println(new Date() + " ==== System will exit when next connection attempts.");
+		
 		Configclient.running = false;
+		
+		try {
+			Theclient.request(ip, Integer.parseInt(port), null, null, null);//connect to make the socket server stop.
+			System.out.println(new Date() + " ==== System exits and server stopped listening on ["+CS.splitiport(ip, port)+"]");
+		}catch(Exception e) {
+			//do nothing
+		}
 		
 	}
 

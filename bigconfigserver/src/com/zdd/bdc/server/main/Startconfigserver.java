@@ -6,6 +6,7 @@ import java.net.NetworkInterface;
 import java.util.Date;
 import java.util.Enumeration;
 
+import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.CS;
 import com.zdd.bdc.server.biz.Configserver;
 import com.zdd.bdc.server.ex.Theserver;
@@ -15,7 +16,7 @@ import com.zdd.bdc.server.util.SS;
 /**
  * @author mido
  * how to run: 
- * nohup /data/jdk-9.0.4/bin/java -cp bigconfigserver.jar:../../commonlibs/bigcomclientutil.jar:../../commonlibs/bigcomserverutil.jar:../../commonlibs/bigfileutil.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.server.main.Startconfigserver > log.runbigconfigserver &
+ * nohup /data/jdk-9.0.4/bin/java -cp bigconfigserver.jar:../../commonlibs/bigcomclientutil.jar:../../commonlibs/bigcomserverutil.jar:../../commonlibs/bigfileutil.jar:../../commonlibs/bigexserver.jar:../../commonlibs/bigexclient.jar com.zdd.bdc.server.main.Startconfigserver > log.runbigconfigserver &
  */
 
 public class Startconfigserver {
@@ -41,12 +42,14 @@ public class Startconfigserver {
         }
 		final String ip = localip;
 		
+		final String port = Configserver.readconfig(CS.NAMESPACE_CORE, CS.REMOTE_CONFIG_CORE, CS.REMOTE_CONFIGKEY_CONFIGSERVERPORT);
+		
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				try {
-					Theserver.startblocking(ip, Integer.parseInt(Configserver.readconfig(CS.NAMESPACE_CORE, CS.REMOTE_CONFIG_CORE, CS.REMOTE_CONFIGKEY_CONFIGSERVERPORT)), SS.REMOTE_CONFIGVAL_PENDING, pending, 10, Configserver.class, null);
+					Theserver.startblocking(ip, Integer.parseInt(port), SS.REMOTE_CONFIGVAL_PENDING, pending, 10, Configserver.class, null);
 				} catch (Exception e) {
 					System.out.println(new Date()+" ==== System exit due to below exception:");
 					e.printStackTrace();
@@ -60,6 +63,12 @@ public class Startconfigserver {
 			Thread.sleep(30000);
 		}
 		pending.append(SS.REMOTE_CONFIGVAL_PENDING);
-		System.out.println(new Date()+" ==== System will exit when next connection attempts.");
+		
+		try {
+			Theclient.request(ip, Integer.parseInt(port), null, null, null);//connect to make the socket server stop.
+			System.out.println(new Date() + " ==== System exits and server stopped listening on ["+CS.splitiport(ip, port)+"]");
+		}catch(Exception e) {
+			//do nothing
+		}
 	}
 }

@@ -5,15 +5,19 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Map;
 
 import com.zdd.bdc.biz.Digactive;
-import com.zdd.bdc.biz.Sortingserver;
 import com.zdd.bdc.client.biz.Configclient;
-import com.zdd.bdc.client.util.STATIC;
+import com.zdd.bdc.client.ex.Theclient;
+import com.zdd.bdc.client.util.CS;
 import com.zdd.bdc.server.ex.Theserver;
+import com.zdd.bdc.server.util.SS;
+import com.zdd.bdc.sort.distribute.Sortserver;
 
 /**
- * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp bigtextdig.jar:../runbigdataserver/bigtextserver.jar:../../commonlibs/bigcommonutil.jar:../../commonlibs/bigexclient.jar:../../commonlibs/bigconfigclient.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.main.Starter unicorn > log.runbigtextdig &
+ * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp bigdatadig.jar:../../commonlibs/bigdataserver.jar:../../commonlibs/bigsort.jar:../../commonlibs/bigcomclientutil.jar:../../commonlibs/bigcomserverutil.jar:../../commonlibs/bigexclient.jar:../../commonlibs/bigconfigclient.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.main.Startdatadig unicorn > log.runbigdatadig &
  */
 
 public class startdatadig {
@@ -37,7 +41,7 @@ public class startdatadig {
 		}
 		final String ip = localip;
 
-		String dataserverport = Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitenc(STATIC.PARENTFOLDER, ip));
+		String dataserverport = Configclient.getinstance(s[0], CS.REMOTE_CONFIG_BIGDATA).read(CS.splitenc(SS.PARENTFOLDER, ip));
 		
 		final String port = "1"+dataserverport;
 		
@@ -48,7 +52,9 @@ public class startdatadig {
 			@Override
 			public void run() {
 				try {
-					Theserver.startblocking(ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending, 10, Sortingserver.class);
+					Map<String, Object> additionalserverconfig = new Hashtable<String, Object>();
+					additionalserverconfig.put(Sortserver.sortcheckclasskey,"com.zdd.bdc.biz.Sortcheckimpl");
+					Theserver.startblocking(ip, Integer.parseInt(port), SS.REMOTE_CONFIGVAL_PENDING, pending, 10, Sortserver.class, additionalserverconfig);
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== System exit due to below exception:");
 					e.printStackTrace();
@@ -58,19 +64,27 @@ public class startdatadig {
 
 		}).start();
 		
-		int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitenc(ip, dataserverport)));
+		int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], CS.REMOTE_CONFIG_BIGDATA).read(CS.splitenc(ip, dataserverport)));
 		
 		new Digactive(ip, port, bigfilehash).start();
 		
-		while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING).read(STATIC.splitenc(ip, port)))) {
+		while (!SS.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING).read(CS.splitenc(ip, port)))) {
 			try {
 				Thread.sleep(30000);
 			} catch (InterruptedException e) {
 				// do nothing
 			}
 		}
-		pending.append(STATIC.REMOTE_CONFIGVAL_PENDING);
-		System.out.println(new Date() + " ==== System will exit when next connection attempts.");
+		pending.append(SS.REMOTE_CONFIGVAL_PENDING);
+		
+		Configclient.running = false;
+		
+		try {
+			Theclient.request(ip, Integer.parseInt(port), null, null, null);//connect to make the socket server stop.
+			System.out.println(new Date() + " ==== System exits and server stopped listening on ["+CS.splitiport(ip, port)+"]");
+		}catch(Exception e) {
+			//do nothing
+		}
 
 	}
 

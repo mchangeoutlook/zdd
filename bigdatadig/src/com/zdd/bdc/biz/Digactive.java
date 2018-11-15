@@ -9,8 +9,9 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import com.zdd.bdc.client.biz.Configclient;
-import com.zdd.bdc.client.util.STATIC;
+import com.zdd.bdc.client.util.CS;
 import com.zdd.bdc.server.util.Fileutil;
+import com.zdd.bdc.server.util.SS;
 
 public class Digactive extends Thread {
 
@@ -28,22 +29,22 @@ public class Digactive extends Thread {
 	public void run() {
 		String ipportpending = null;
 		try {
-			ipportpending = STATIC.splitenc(ip, port);
+			ipportpending = CS.splitenc(ip, port);
 		}catch(Exception e) {
 			System.out.println(new Date() + " ==== terminated digging due to below exception");
 			e.printStackTrace();
 			return;
 		}
 		System.out.println(new Date() + " ==== activating digging");
-		while (!STATIC.REMOTE_CONFIGVAL_PENDING
-				.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
+		while (!SS.REMOTE_CONFIGVAL_PENDING
+				.equals(Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING)
 						.read(ipportpending))) {
-			if (Files.exists(STATIC.LOCAL_DATAFOLDER) && Files.isDirectory(STATIC.LOCAL_DATAFOLDER)) {
+			if (Files.exists(SS.LOCAL_DATAFOLDER) && Files.isDirectory(SS.LOCAL_DATAFOLDER)) {
 					
 				String[] digs = null;
-				String active = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_DIG).read("active");
+				String active = Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG).read("active");
 				try {
-					digs = STATIC.splitenc(active);
+					digs = CS.splitenc(active);
 				}catch(Exception e) {
 					System.out.println(new Date()+" ==== wrong active config ["+active+"]");
 				}
@@ -91,8 +92,12 @@ public class Digactive extends Thread {
 							}
 						}
 					}
+				} else {
+					//do nothing
 				}
 				
+			} else {
+				//do nothing
 			}
 			if (!STATIC.REMOTE_CONFIGVAL_PENDING
 					.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
@@ -102,6 +107,8 @@ public class Digactive extends Thread {
 				} catch (InterruptedException e1) {
 					// do nothing;
 				}
+			} else{
+				//do nothing
 			}
 		}
 		System.out.println(new Date() + " ==== stopped activating digging");
