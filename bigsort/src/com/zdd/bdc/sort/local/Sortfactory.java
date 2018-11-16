@@ -46,7 +46,7 @@ public class Sortfactory {
 	public synchronized static void start(String ip, int port, Vector<String> sortingservers, Sortinput input,
 			Sortoutput output) throws Exception {
 		input.init();
-		Path sortingfolder = input.sortingfolder;
+		Path sortingfolder = input.sortingfolder();
 		if (sortings.get(sortingfolder) == null&&Sortstatus.get(sortingfolder)==null) {
 			Sortstatus.set(sortingfolder, Sortstatus.SORT_INCLUDED);
 			sortings.put(sortingfolder, new Thread(new Runnable() {
@@ -54,11 +54,12 @@ public class Sortfactory {
 				public void run() {
 					try {
 						System.out.println(new Date() + " ==== started sorting local [" + sortingfolder + "]");
-						input.datasource();
+						input.preparedatasource();
+						input.inputmerge();
 						System.out.println(new Date() + " ==== done sorting local [" + sortingfolder + "]");
 
 						sortdistributes.put(sortingfolder,
-								new Sortdistribute(ip, port, input.isasc, sortingservers.size(), sortingfolder, output));
+								new Sortdistribute(ip, port, input.isasc(), sortingservers.size(), sortingfolder, output));
 						
 						Sortstatus.set(sortingfolder, Sortstatus.READY_TO_DISTRIBUTE);
 						

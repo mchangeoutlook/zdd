@@ -10,7 +10,7 @@ import java.util.Map;
 
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.util.CS;
-import com.zdd.bdc.server.util.Fileutil;
+import com.zdd.bdc.server.util.Filekvutil;
 import com.zdd.bdc.server.util.SS;
 
 public class Digactive extends Thread {
@@ -50,25 +50,25 @@ public class Digactive extends Thread {
 				}
 				if (digs!=null) {
 					Date now = new Date();
-					String version = STATIC.FORMAT_yMdHms.format(now);
+					String version = SS.FORMAT_yMd.format(now);
 					for (String digname:digs) {
-						String sort = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_DIG).read(digname+".sort");
+						String sort = Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG).read(digname+".sort");
 						String[] nstbcol = null;
 						try {
-							nstbcol = STATIC.splitenc(sort);
+							nstbcol = CS.splitenc(sort);
 						}catch(Exception e) {
 							System.out.println(new Date()+" ==== wrong sort config ["+sort+"] for ["+digname+"]");
 						}
 						if (nstbcol!=null) {
 							Path folder = null;
 							try {
-								folder = Fileutil.targetfolder(nstbcol[0], nstbcol[1], nstbcol[2]);
+								folder = Filekvutil.datafolder(nstbcol[0], nstbcol[1], nstbcol[2]);
 							}catch(Exception e) {
 								System.out.println(new Date()+" ==== target data folder error before sort ["+sort+"] for ["+digname+"]");
 								e.printStackTrace();
 							}
 							if (folder!=null&&Files.exists(folder)&&Files.isDirectory(folder)) {
-								String interval = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_DIG).read(digname+".interval");
+								String interval = Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG).read(digname+".interval");
 								if (interval!=null&&interval.length()>3) {
 									if (interval.startsWith("D")) {
 										if (interval.substring(1).equals(new SimpleDateFormat("HHmm").format(now))) {
@@ -99,8 +99,8 @@ public class Digactive extends Thread {
 			} else {
 				//do nothing
 			}
-			if (!STATIC.REMOTE_CONFIGVAL_PENDING
-					.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING)
+			if (!SS.REMOTE_CONFIGVAL_PENDING
+					.equals(Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING)
 							.read(ipportpending))) {
 				try {
 					Thread.sleep(30000);

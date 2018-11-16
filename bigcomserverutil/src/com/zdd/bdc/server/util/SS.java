@@ -24,17 +24,22 @@ public class SS {
 	public static final int incrementmaxlength = String.valueOf(Long.MAX_VALUE).length() + 1;
 	
 	public static final String SORT_COMPARE_TO_STRING = "0";
-
-	public static final int SORT_PROGRESSONEFILECAPACITY = 800000;
-
-	public static final String SORT_ALL = "ALLwithoutconsideringanyfilter";
-	public static final String SORT_ROOTFOLDER = "sorting";
-	public static final String SORT_DONEFILE = "done";
-
-	public static final String SORT_STATUS_NOTFOUND = "notfound";
-	public static final String SORT_STATUS_SORTING = "sorting";
-	public static final String SORT_STATUS_DONE = "accomplished";
-
+	public static final String SORT_ALL_FOLDER = "#";
+	public static final String SORT_SEQUENCE(boolean isasc) {
+		if (isasc) {
+			return "ascending";
+		} else {
+			return "descending";
+		}
+	}
+	public static final boolean SORT_SEQUENCE(String sequence) {
+		if ("ascending".equals(sequence)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public static final String REMOTE_CONFIG_DIG = "dig";
 	public static final String REMOTE_CONFIG_PENDING = "pending";
 

@@ -28,24 +28,19 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		Filekvutil.config("active", "dig0", CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
-		Filekvutil.config("active", "dig1", CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
-
+		Filekvutil.config("active", CS.splitenc("dig0","dig1"), CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
+		
 		Filekvutil.config("dig0.sort", CS.splitenc("namespace", "table", "col"), CS.NAMESPACE_CORE,
 				SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig0.ascend", "yes", CS.NAMESPACE_CORE,
 				SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig0.interval", "W01300", CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig0.period", SS.splitfromto("20180910","20180910"), CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG);
-		Filekvutil.config("dig0.index", CS.splitenc("namespace0", "table0", "col0"), CS.NAMESPACE_CORE,
+		Filekvutil.config("dig0.index", CS.splitenc("namespace0", "table0", "col0", "table1", "col1"), CS.NAMESPACE_CORE,
 				SS.REMOTE_CONFIG_DIG);
-		Filekvutil.config("dig0.index", CS.splitenc("namespace1", "table1", "col1"), CS.NAMESPACE_CORE,
+		Filekvutil.config("dig0.filter", CS.splitenc("namespace0", "table0", "col0", "table1", "col1"), CS.NAMESPACE_CORE,
 				SS.REMOTE_CONFIG_DIG);
-		Filekvutil.config("dig0.filter", CS.splitenc("namespace0", "table0", "col0"), CS.NAMESPACE_CORE,
-				SS.REMOTE_CONFIG_DIG);
-		Filekvutil.config("dig0.filter", CS.splitenc("namespace1", "table1", "col1"), CS.NAMESPACE_CORE,
-				SS.REMOTE_CONFIG_DIG);
-
+		
 		Filekvutil.config("dig1.sort", CS.splitenc("namespace", "table", "col"), CS.NAMESPACE_CORE,
 				SS.REMOTE_CONFIG_DIG);
 		Filekvutil.config("dig1.ascend", "no", CS.NAMESPACE_CORE,

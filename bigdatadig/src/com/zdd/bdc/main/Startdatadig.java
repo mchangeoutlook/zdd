@@ -20,7 +20,12 @@ import com.zdd.bdc.sort.distribute.Sortserver;
  * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp bigdatadig.jar:../../commonlibs/bigdataserver.jar:../../commonlibs/bigsort.jar:../../commonlibs/bigcomclientutil.jar:../../commonlibs/bigcomserverutil.jar:../../commonlibs/bigexclient.jar:../../commonlibs/bigconfigclient.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.main.Startdatadig unicorn > log.runbigdatadig &
  */
 
-public class startdatadig {
+public class Startdatadig {
+	
+	public static String sortserverport(String dataserverport) {
+		return "1"+dataserverport;
+	}
+	
 	public static void main(String[] s) throws Exception {
 		String localip = null;
 		Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
@@ -43,7 +48,7 @@ public class startdatadig {
 
 		String dataserverport = Configclient.getinstance(s[0], CS.REMOTE_CONFIG_BIGDATA).read(CS.splitenc(SS.PARENTFOLDER, ip));
 		
-		final String port = "1"+dataserverport;
+		final String port = sortserverport(dataserverport);
 		
 		final StringBuffer pending = new StringBuffer();
 		
