@@ -59,20 +59,36 @@ public class SS {
 		return String.valueOf(Math.abs(tosync.hashCode() % synchash)).intern();
 	}
 
-	public static byte[] tobytes(String str) throws Exception {
-		return str.getBytes("UTF-8");
+	public static byte[] tobytes(String str) {
+		try {
+			return str.getBytes("UTF-8");
+		}catch(Exception e) {
+			return null;
+		}
 	}
 
-	public static String tostring(byte[] b) throws Exception {
-		return new String(b, "UTF-8");
+	public static String tostring(byte[] b) {
+		try {
+			return new String(b, "UTF-8");
+		}catch(Exception e) {
+			return null;
+		}
 	}
 
-	public static String urldecode(String str) throws Exception {
-		return URLDecoder.decode(str, "UTF-8");
+	public static String urldecode(String str) {
+		try {
+			return URLDecoder.decode(str, "UTF-8");
+		}catch(Exception e) {
+			return null;
+		}
 	}
 
-	public static String urlencode(String str) throws Exception {
-		return URLEncoder.encode(str, "UTF-8");
+	public static String urlencode(String str) {
+		try {
+			return URLEncoder.encode(str, "UTF-8");
+		}catch(Exception e) {
+			return null;
+		}	
 	}
 	
 	public static String[] splitfromto(String str) {
@@ -101,7 +117,7 @@ public class SS {
 		return filtersandpagenum;
 	}
 
-	public static Vector<String> filtersandpagenum(String filtersandpagenum) throws Exception {
+	public static Vector<String> filtersandpagenum(String filtersandpagenum) {
 		String[] splits = filtersandpagenum.split("#");
 		Vector<String> returnvalue = new Vector<String>(splits.length);
 		for (String s : splits) {

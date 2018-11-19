@@ -1,6 +1,7 @@
 package com.zdd.bdc.sort.local;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class Sortfactory {
 
 	}
 
-	public synchronized static void start(String ip, int port, Vector<String> sortingservers, Sortinput input,
+	public synchronized static void start(String ip, int port, Collection<String> sortingservers, Sortinput input,
 			Sortoutput output) throws Exception {
 		input.init();
 		Path sortingfolder = input.sortingfolder();

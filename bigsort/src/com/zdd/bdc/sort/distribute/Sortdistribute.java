@@ -30,12 +30,13 @@ public class Sortdistribute{
 	private boolean isasc = true;
 	private long position = 0;
 	
-	public Sortdistribute(String theip, int theport, boolean asc, int initdistributearraycapacity, Path thesortingfolder, Sortoutput theoutput) {
+	public Sortdistribute(String theip, int theport, boolean asc, int initdistributearraycapacity, Path thesortingfolder, Sortoutput theoutput) throws Exception {
 		sortingfolder = thesortingfolder;
 		ip = theip;
 		port = theport;
 		isasc = asc;
 		output = theoutput;
+		output.init(sortingfolder);
 		distributearray = new HashMap<String, Sortelement>(initdistributearraycapacity);
 	}
 	
@@ -100,7 +101,7 @@ public class Sortdistribute{
 					Sortelement se = Sortutil.findminmax(((Map<String, Sortelement>) Objectutil
 							.convert(Objectutil.convert(distributearray))).values(), isasc);
 					if (se.ip().equals(ip)&&se.port()==port) {
-						output.output(position-sortingservers.size(), se.key(), se.amount(), sortingfolder);
+						output.output(position-sortingservers.size(), se.key(), se.amount());
 						keyamount = mergedfilereader.readLine();
 						if (keyamount == null) {
 							addtoalldistribute(null);

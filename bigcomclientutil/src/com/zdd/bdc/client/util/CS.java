@@ -54,30 +54,46 @@ public class CS {
 	}
 	
 	private static final String SPLIT_ENC = "#";
-	public static final String[] splitenc(String from) throws Exception {
-		String[] returnvalue = from.split(SPLIT_ENC);
-		for (int i = 0;i < returnvalue.length;i++) {
-			returnvalue[i] = URLDecoder.decode(returnvalue[i], "UTF-8");
-		}
-		return returnvalue;
-	}
-	public static final String splitenc(String... values) throws Exception {
-		String returnvalue = "";
-		for (int i=0;i<values.length;i++) {
-			if (i!=0) {
-				returnvalue+=SPLIT_ENC;
+	public static final String[] splitenc(String from) {
+		try {
+			String[] returnvalue = from.split(SPLIT_ENC);
+			for (int i = 0;i < returnvalue.length;i++) {
+				returnvalue[i] = URLDecoder.decode(returnvalue[i], "UTF-8");
 			}
-			returnvalue+=URLEncoder.encode(values[i], "UTF-8");
+			return returnvalue;
+		}catch(Exception e) {
+			return null;
 		}
-		return returnvalue;
+	}
+	public static final String splitenc(String... values) {
+		try {
+			String returnvalue = "";
+			for (int i=0;i<values.length;i++) {
+				if (i!=0) {
+					returnvalue+=SPLIT_ENC;
+				}
+				returnvalue+=URLEncoder.encode(values[i], "UTF-8");
+			}
+			return returnvalue;
+		}catch(Exception e) {
+			return null;
+		}
 	}
 	
-	public static byte[] tobytes(String str) throws Exception {
-		return str.getBytes("UTF-8");
+	public static byte[] tobytes(String str) {
+		try {
+			return str.getBytes("UTF-8");
+		}catch(Exception e) {
+			return null;
+		}
 	}
 
-	public static String tostring(byte[] b) throws Exception {
-		return new String(b, "UTF-8");
+	public static String tostring(byte[] b) {
+		try {
+			return new String(b, "UTF-8");
+		}catch(Exception e) {
+			return null;
+		}
 	}
 	
 	public static String[] splitiport(String str) {

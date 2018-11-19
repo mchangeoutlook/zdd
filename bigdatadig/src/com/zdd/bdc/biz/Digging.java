@@ -1,10 +1,6 @@
 package com.zdd.bdc.biz;
 
-import java.nio.channels.SeekableByteChannel;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
@@ -105,132 +101,40 @@ public class Digging extends Thread {
 							e.printStackTrace();
 							return;
 						}
-						String filter = Configclient.getinstance(namespace, SS.REMOTE_CONFIG_DIG)
-								.read(digname + ".filter");
-						String[] filterarr = null;
-						try {
-							filterarr = CS.splitenc(filter);
-						} catch (Exception e) {
-							//do nothing
-						}
-						final String[] filters = filterarr;
+						
 						System.out.println(new Date() + " ==== started digging [" + digname + "][" + namespace + "]["
-								+ table + "][" + col + "] with filter ["+filter+"]");
+								+ table + "][" + col + "]");
 
 						String[] datafiles = targetfolder.toFile().list();
 						for (String datafile : datafiles) {
-							Fileutil.walkdata(targetfolder.resolve(datafile), new Filedatawalk() {
+							try {
+								Fileutil.walkdata(targetfolder.resolve(datafile), new Filedatawalk() {
 
-								@Override
-								public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1,
-										boolean isv1deleted, byte[] v2, boolean isv2deleted) {
-									if (isv1deleted || isv2deleted) {
-										return null;
-									} else {
-										String k = CS.tostring(v1);
-										Long amount = null;
-										try {
-											amount = Long.parseLong(CS.tostring(v2));
-										} catch (Exception e) {
-											amount = (long) CS.tostring(v2)
-													.compareTo(SS.SORT_COMPARE_TO_STRING);
-										}
-										
-										Sortfactory.start(ip, port, sortingserverswithinperiod, 
-												new Sortinputimpl(digname, namespace, table, col, null, version), output);
-										
-										if (Arrays.equals(value1, v1)) {
-											return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-													Filedatawalkresult.DATA_REPLACE, value1, newvalue2);
+									@Override
+									public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1,
+											boolean isv1deleted, byte[] v2, boolean isv2deleted) {
+										if (isv1deleted || isv2deleted) {
+											return null;
 										} else {
-											// ignore the data
+											String k = CS.tostring(v1);
+											try {
+												Sortfactory.start(ip, Integer.parseInt(port), sortingserverswithinperiod.values(), 
+														new Sortinputimpl(digname, namespace, table, col, Digging.getfilters(k, namespace, digname, bigfilehash), version, bigfilehash), 
+														new Sortoutputimpl(bigfilehash));
+											} catch (Exception e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
 											return null;
 										}
 									}
-								}
-								
-							}, true);
-							SeekableByteChannel sbc = null;
-							try {
-								Fileutil.findkey(
-										Files.newByteChannel(targetfolder.resolve(datafile), StandardOpenOption.READ),
-										Files.size(targetfolder.resolve(datafile)), null, new Texti() {
-
-											@Override
-											public void process(byte[] key, byte[] value) throws Exception {
-												String k = new String(key, STATIC.CHARSET_DEFAULT);
-												Long amount = null;
-												try {
-													amount = Long.parseLong(new String(value, STATIC.CHARSET_DEFAULT));
-												} catch (Exception e) {
-													amount = (long) new String(value, STATIC.CHARSET_DEFAULT)
-															.compareTo(STATIC.SORT_COMPARE_TO_STRING);
-												}
-
-												if (sorts.get(STATIC.SORT_ALL) == null) {
-													sorts.put(STATIC.SORT_ALL,
-															new Sorting(ip, port, digname, namespace, table, col,
-																	STATIC.SORT_ALL, version, sortingservers.values()));
-												}
-												sorts.get(STATIC.SORT_ALL).sortoneserverintofiles(k, amount);
-												
-												if (filters!=null) {
-													for (int i = 0; i < filters.length; i++) {
-														Vector<String> filter = new Vector<String>(i+1);
-														for (int j = 0; j <= i; j++) {
-															String[] nstbcol = STATIC.splitenc(filters[i]);
-															String f = new String(
-																	Fileutil.read(k,
-																			Fileutil.target(k, nstbcol[0],
-																					nstbcol[1], nstbcol[2], bigfilehash)),
-																	STATIC.CHARSET_DEFAULT);
-															if (f==null||f.trim().isEmpty()) {
-																filter.clear();
-																break;
-															}
-															filter.add(f);
-														}
-														if (!filter.isEmpty()) {
-															String[] filterarray = new String[filter.size()];
-															filter.toArray(filterarray);
-															String filterstr = STATIC.splitenc(filterarray);
-															if (sorts.get(filterstr) == null) {
-																sorts.put(filterstr, new Sorting(ip, port, digname, namespace, table, col,
-																		filterstr, version, sortingservers.values()));
-															}
-															sorts.get(filterstr).sortoneserverintofiles(k, amount);
-														} else {
-															System.out.println(new Date() + " ==== gave up sorting [" + digname + "][" + namespace + "][" + 
-																 table + "][" + col + "] with filter ["+filter+"]");
-														}
-													}
-												}
-											}
-										});
+									
+								}, true);
 							} catch (Exception e) {
-								System.out.println(new Date() + " ==== error when processing datafile ["
-										+ targetfolder.resolve(datafile).toAbsolutePath().toString() + "]");
-								e.printStackTrace();
-							} finally {
-								if (sbc != null) {
-									try {
-										sbc.close();
-									} catch (Exception e) {
-										// do nothing
-									}
-								}
-							}
-						}
-						for (Sorting sorting : sorts.values()) {
-							try {
-								sorting.start();
-							} catch (Exception e) {
-								System.out.println(new Date() + " ==== error when sorting into ["
-										+ sorting.sortdonefile().toAbsolutePath().toString() + "]");
+								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 						}
-						sorts.clear();
 					}
 				}
 			} else {
