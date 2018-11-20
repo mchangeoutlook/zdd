@@ -1,10 +1,14 @@
 package com.zdd.bdc.client.util;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Calendar;
+import java.util.Enumeration;
 
 public class CS {
 	
@@ -41,6 +45,8 @@ public class CS {
 	public static final String PARAM_ACTION_MODIFY = "modify";
 	public static final String PARAM_ACTION_CREATE = "create";
 	public static final String PARAM_ACTION_INCREMENT = "increment";
+	
+	public static final String PARAM_ADDITIONAL = "additional";
 
 	public static final String FORMAT_yMd(String key) {
 		return key.substring(13,17)+key.substring(7,9)+key.substring(2,4);
@@ -101,6 +107,27 @@ public class CS {
 	}
 	public static String splitiport(String ip, String port) {
 		return ip+":"+port;
+	}
+	
+	public static String localip() throws Exception {
+		String localip = null;
+		Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
+	    while (en.hasMoreElements()) {
+	        NetworkInterface i = (NetworkInterface) en.nextElement();
+	        for (Enumeration<InetAddress> en2 = i.getInetAddresses(); en2.hasMoreElements();) {
+	            InetAddress addr = (InetAddress) en2.nextElement();
+	            if (!addr.isLoopbackAddress()) {
+	                if (addr instanceof Inet4Address) {
+	                    localip = addr.getHostName();
+	                    break;
+	                }
+	            }
+	        }
+	    }
+        if (localip==null) {
+        		localip = InetAddress.getLocalHost().getHostAddress();
+        }
+        return localip;
 	}
 	
 }

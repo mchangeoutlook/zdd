@@ -1,10 +1,6 @@
 package com.zdd.bdc.main;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -17,7 +13,7 @@ import com.zdd.bdc.server.util.SS;
 import com.zdd.bdc.sort.distribute.Sortserver;
 
 /**
- * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp bigdatadig.jar:../../commonlibs/bigdataserver.jar:../../commonlibs/bigsort.jar:../../commonlibs/bigcomclientutil.jar:../../commonlibs/bigcomserverutil.jar:../../commonlibs/bigexclient.jar:../../commonlibs/bigconfigclient.jar:../../commonlibs/bigexserver.jar com.zdd.bdc.main.Startdatadig unicorn > log.runbigdatadig &
+ * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp ../../severlibs/bigdatadig.jar:../../serverlibs/bigdataserver.jar:../../commonserverlibs/bigsort.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonserverlibs/bigexserver.jar com.zdd.bdc.main.Startdatadig unicorn > log.runbigdatadig &
  */
 
 public class Startdatadig {
@@ -27,28 +23,14 @@ public class Startdatadig {
 	}
 	
 	public static void main(String[] s) throws Exception {
-		String localip = null;
-		Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-		while (en.hasMoreElements()) {
-			NetworkInterface i = (NetworkInterface) en.nextElement();
-			for (Enumeration<InetAddress> en2 = i.getInetAddresses(); en2.hasMoreElements();) {
-				InetAddress addr = (InetAddress) en2.nextElement();
-				if (!addr.isLoopbackAddress()) {
-					if (addr instanceof Inet4Address) {
-						localip = addr.getHostName();
-						break;
-					}
-				}
-			}
-		}
-		if (localip == null) {
-			localip = InetAddress.getLocalHost().getHostAddress();
-		}
-		final String ip = localip;
+		
+		final String ip = Configclient.ip;
 
 		String dataserverport = Configclient.getinstance(s[0], CS.REMOTE_CONFIG_BIGDATA).read(CS.splitenc(SS.PARENTFOLDER, ip));
 		
 		final String port = sortserverport(dataserverport);
+		
+		Configclient.port = Integer.parseInt(port);
 		
 		final StringBuffer pending = new StringBuffer();
 		

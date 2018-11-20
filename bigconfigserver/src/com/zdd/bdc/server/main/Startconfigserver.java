@@ -1,11 +1,6 @@
 package com.zdd.bdc.server.main;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.util.Date;
-import java.util.Enumeration;
-
 import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.CS;
 import com.zdd.bdc.server.biz.Configserver;
@@ -16,31 +11,15 @@ import com.zdd.bdc.server.util.SS;
 /**
  * @author mido
  * how to run: 
- * nohup /data/jdk-9.0.4/bin/java -cp bigconfigserver.jar:../../commonlibs/bigcomclientutil.jar:../../commonlibs/bigcomserverutil.jar:../../commonlibs/bigfileutil.jar:../../commonlibs/bigexserver.jar:../../commonlibs/bigexclient.jar com.zdd.bdc.server.main.Startconfigserver > log.runbigconfigserver &
+ * nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigconfigserver.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigfileutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startconfigserver > log.runbigconfigserver &
  */
 
 public class Startconfigserver {
 	public static void main(String[] s) throws Exception {
 		
 		final StringBuffer pending = new StringBuffer();
-		String localip = null;
-		Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-	    while (en.hasMoreElements()) {
-	        NetworkInterface i = (NetworkInterface) en.nextElement();
-	        for (Enumeration<InetAddress> en2 = i.getInetAddresses(); en2.hasMoreElements();) {
-	            InetAddress addr = (InetAddress) en2.nextElement();
-	            if (!addr.isLoopbackAddress()) {
-	                if (addr instanceof Inet4Address) {
-	                    localip = addr.getHostName();
-	                    break;
-	                }
-	            }
-	        }
-	    }
-        if (localip==null) {
-        		localip = InetAddress.getLocalHost().getHostAddress();
-        }
-		final String ip = localip;
+		
+		final String ip = CS.localip();
 		
 		final String port = Configserver.readconfig(CS.NAMESPACE_CORE, CS.REMOTE_CONFIG_CORE, CS.REMOTE_CONFIGKEY_CONFIGSERVERPORT);
 		

@@ -116,14 +116,21 @@ public class Digging extends Thread {
 										if (isv1deleted || isv2deleted) {
 											return null;
 										} else {
-											String k = CS.tostring(v1);
+											String key = CS.tostring(v1);
+											String filters = null;
 											try {
-												Sortfactory.start(ip, Integer.parseInt(port), sortingserverswithinperiod.values(), 
-														new Sortinputimpl(digname, namespace, table, col, Digging.getfilters(k, namespace, digname, bigfilehash), version, bigfilehash), 
-														new Sortoutputimpl(bigfilehash));
-											} catch (Exception e) {
-												// TODO Auto-generated catch block
+												filters = Digging.getfilters(key, namespace, digname, bigfilehash);
+											}catch(Exception e) {
+												System.out.println(new Date() + " ==== ignore digging [" + digname + "][" + namespace + "]["
+														+ table + "][" + col + "] due to filters error of key=["+key+"], value=["+CS.tostring(v2)+"], continue to next data");
 												e.printStackTrace();
+											}
+											if (filters != null) {
+												Sortfactory.start(ip, Integer.parseInt(port), sortingserverswithinperiod.values(), 
+														new Sortinputimpl(digname, namespace, table, col, filters, version, bigfilehash),
+														new Sortoutputimpl(bigfilehash));
+											} else {
+												//do nothing
 											}
 											return null;
 										}
@@ -131,7 +138,8 @@ public class Digging extends Thread {
 									
 								}, true);
 							} catch (Exception e) {
-								// TODO Auto-generated catch block
+								System.out.println(new Date() + " ==== ignore digging [" + digname + "][" + namespace + "]["
+										+ table + "][" + col + "] due to error walking ["+datafile+"], continue to next data file");
 								e.printStackTrace();
 							}
 						}

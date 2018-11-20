@@ -37,10 +37,11 @@ public class Sortserver implements Theserverprocess {
 		if (Sortstatus.TERMINATE.equals(Sortstatus.get(sortingfolder))) {
 			return Objectutil.convert(Sortstatus.TERMINATE);
 		} else {
+			Map<String, String> additionalconfigs  =(Map<String, String>)params.get(CS.PARAM_DATA_KEY);
 			if (CS.PARAM_ACTION_READ.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
 				if (Sortstatus.get(sortingfolder)==null) {
 					try {
-						Sortstatus.set(sortingfolder, check.check(sortingfolder));
+						Sortstatus.set(sortingfolder, check.check(sortingfolder,additionalconfigs));
 					} catch (Exception e) {
 						System.out.println(new Date() + " ==== error when checking sort folder [" + sortingfolder + "] on ["
 								+ CS.splitiport(ip, String.valueOf(port)) + "]");

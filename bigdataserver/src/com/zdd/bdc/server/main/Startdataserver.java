@@ -1,11 +1,6 @@
 package com.zdd.bdc.server.main;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.util.Date;
-import java.util.Enumeration;
-
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.CS;
@@ -16,32 +11,16 @@ import com.zdd.bdc.server.util.SS;
 /**
  * @author mido
  * how to run: 
- * nohup /data/jdk-9.0.4/bin/java -cp bigdataserver.jar:../../commonlibs/bigexclient.jar:../../commonlibs/bigconfigclient.jar:../../commonlibs/bigcomclientutil.jar:../../commonlibs/bigcomserverutil.jar:../../commonlibs/bigexserver.jar:../../commonlibs/bigexclient.jar com.zdd.bdc.server.main.Startdataserver unicorn > log.runbigdataserver &
+ * nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigdataserver.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startdataserver unicorn > log.runbigdataserver &
  */
 
 public class Startdataserver {
 	public static void main(String[] s) throws Exception {
 		final StringBuffer pending = new StringBuffer();
-		String localip = null;
-		Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-	    while (en.hasMoreElements()) {
-	        NetworkInterface i = (NetworkInterface) en.nextElement();
-	        for (Enumeration<InetAddress> en2 = i.getInetAddresses(); en2.hasMoreElements();) {
-	            InetAddress addr = (InetAddress) en2.nextElement();
-	            if (!addr.isLoopbackAddress()) {
-	                if (addr instanceof Inet4Address) {
-	                    localip = addr.getHostName();
-	                    break;
-	                }
-	            }
-	        }
-	    }
-        if (localip==null) {
-        		localip = InetAddress.getLocalHost().getHostAddress();
-        }
-		final String ip = localip;
+		
+		final String ip = Configclient.ip;
 		final String port = Configclient.getinstance(s[0], CS.REMOTE_CONFIG_BIGDATA).read(CS.splitenc(SS.PARENTFOLDER, ip));
-
+		Configclient.port = Integer.parseInt(port);
 		new Thread(new Runnable() {
 
 			@Override

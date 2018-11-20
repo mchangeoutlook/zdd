@@ -15,12 +15,16 @@ import com.zdd.bdc.client.util.Objectutil;
 
 public class Configclient {
 
+	public static String ip = null;
+	public static int port = -1;
+	
 	public static boolean running = true;
 	private static Map<String, Map<String, Map<String, String>>> nsfilekeyvalue = new Hashtable<String, Map<String, Map<String, String>>>();
 	private static Map<String, String> nsfilechanged = new Hashtable<String, String>();
 	static {
 		if (Files.exists(CS.LOCAL_CONFIGFOLDER) && Files.isDirectory(CS.LOCAL_CONFIGFOLDER)) {
 			try {
+				ip = CS.localip();
 				Files.walk(CS.LOCAL_CONFIGFOLDER).filter(Files::isRegularFile).forEach(pathfile -> {
 					if (!pathfile.getFileName().toString().startsWith(".")) {
 						try {
@@ -200,6 +204,7 @@ public class Configclient {
 		Map<String, Object> params = new Hashtable<String, Object>(2);
 		params.put(CS.PARAM_DATA_KEY, config);
 		params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_READ);
+		params.put(CS.PARAM_ADDITIONAL, CS.splitiport(ip, String.valueOf(port)));
 		Map<String, Map<String, Map<String, String>>> res = null;
 		try {
 			res = (Map<String, Map<String, Map<String, String>>>) Objectutil

@@ -45,11 +45,23 @@ public class Sortfactory {
 	}
 
 	public synchronized static void start(String ip, int port, Collection<String> sortingservers, Sortinput input,
-			Sortoutput output) throws Exception {
-		input.init();
+			Sortoutput output) {
+		try {
+			input.init();
+		}catch(Exception e) {
+			System.out.println(new Date() + " ==== error init [" + input.getClass() + "]");
+			e.printStackTrace();
+			return;
+		}
 		Path sortingfolder = input.sortingfolder();
 		if (sortings.get(sortingfolder) == null&&Sortstatus.get(sortingfolder)==null) {
-			Sortstatus.set(sortingfolder, Sortstatus.SORT_INCLUDED);
+			try {
+				Sortstatus.set(sortingfolder, Sortstatus.SORT_INCLUDED);
+			}catch(Exception e) {
+				System.out.println(new Date() + " ==== error set [" + sortingfolder + "] status to "+Sortstatus.SORT_INCLUDED);
+				e.printStackTrace();
+				return;
+			}
 			sortings.put(sortingfolder, new Thread(new Runnable() {
 				@Override
 				public void run() {
