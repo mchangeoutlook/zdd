@@ -138,24 +138,28 @@ public class Configclient {
 										Path target = targetconfigfile(namespace, file);
 										if (!Files.exists(target) || changed
 												|| nsfilechanged.get(namespace + file) != null) {
-											if (!Files.exists(target) && target.getParent() != null
-													&& !Files.exists(target.getParent())) {
-												Files.createDirectories(target.getParent());
-											}
-											Files.write(target,
-													STATIC.tobytes(STATIC.splitenc("","Auto generated on " + new Date()) + System.lineSeparator()),
-													StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
-													StandardOpenOption.SYNC);
-											Object[] configkeys = nsfilekeyvalue.get(namespace).get(file).keySet()
-													.toArray();
-											for (Object configkey : configkeys) {
+											if (STATIC.NAMESPACE_CORE.equals(namespace)&&STATIC.REMOTE_CONFIG_PENDING.equals(file)) {
+												//do nothing
+											} else {
+												if (!Files.exists(target) && target.getParent() != null
+														&& !Files.exists(target.getParent())) {
+													Files.createDirectories(target.getParent());
+												}
 												Files.write(target,
-														STATIC.tobytes(STATIC.splitenc(configkey.toString(), nsfilekeyvalue.get(namespace)
-																.get(file).get(configkey.toString())) + System.lineSeparator()),
-														StandardOpenOption.CREATE, StandardOpenOption.APPEND,
+														STATIC.tobytes(STATIC.splitenc("","Auto generated on " + new Date()) + System.lineSeparator()),
+														StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
 														StandardOpenOption.SYNC);
+												Object[] configkeys = nsfilekeyvalue.get(namespace).get(file).keySet()
+														.toArray();
+												for (Object configkey : configkeys) {
+													Files.write(target,
+															STATIC.tobytes(STATIC.splitenc(configkey.toString(), nsfilekeyvalue.get(namespace)
+																	.get(file).get(configkey.toString())) + System.lineSeparator()),
+															StandardOpenOption.CREATE, StandardOpenOption.APPEND,
+															StandardOpenOption.SYNC);
+												}
+												nsfilechanged.remove(namespace + file);
 											}
-											nsfilechanged.remove(namespace + file);
 										}
 									}
 								}

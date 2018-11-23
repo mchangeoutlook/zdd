@@ -44,9 +44,9 @@ public class Startconfigserver {
 		
 		try {
 			Theclient.request(ip, Integer.parseInt(port), null, null, null);//connect to make the socket server stop.
-			System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 		}catch(Exception e) {
 			//do nothing
 		}
+		System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 	}
 }

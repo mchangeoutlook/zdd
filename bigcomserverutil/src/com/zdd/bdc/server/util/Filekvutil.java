@@ -15,6 +15,11 @@ public class Filekvutil {
 
 	public static String config(String key, String namespace, String configfile) throws Exception {
 		byte[] val = Fileutil.readfirstvalue2byvalue1(STATIC.tobytes(key), configfile(namespace, configfile));
+		if (STATIC.NAMESPACE_CORE.equals(namespace)&&STATIC.REMOTE_CONFIG_PENDING.equals(configfile)) {
+			config(key,"",namespace,configfile);
+		} else {
+			//do nothing
+		}
 		if (val == null) {
 			return null;
 		} else {
