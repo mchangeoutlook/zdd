@@ -62,10 +62,22 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		 //Filekvutil.config(CS.splitiport("127.0.0.1","9993"), "pending", CS.NAMESPACE_CORE,
-		 //SS.REMOTE_CONFIG_PENDING);
-		 //Filekvutil.config(CS.splitiport("127.0.0.1","9994"), "pending", CS.NAMESPACE_CORE,
-		 //SS.REMOTE_CONFIG_PENDING);
+		 Filekvutil.config(STATIC.splitiport("127.0.0.1","9991"), "pending", STATIC.NAMESPACE_CORE,
+				 STATIC.REMOTE_CONFIG_PENDING);
+		 Filekvutil.config(STATIC.splitiport("127.0.0.1","9992"), "pending", STATIC.NAMESPACE_CORE,
+				 STATIC.REMOTE_CONFIG_PENDING);
+		 Filekvutil.config(STATIC.splitiport("127.0.0.1","9993"), "pending", STATIC.NAMESPACE_CORE,
+				 STATIC.REMOTE_CONFIG_PENDING);
+		 Filekvutil.config(STATIC.splitiport("127.0.0.1","9994"), "pending", STATIC.NAMESPACE_CORE,
+				 STATIC.REMOTE_CONFIG_PENDING);
+		 Filekvutil.config(STATIC.splitiport("127.0.0.1","9995"), "pending", STATIC.NAMESPACE_CORE,
+				 STATIC.REMOTE_CONFIG_PENDING);
+		 Filekvutil.config(STATIC.splitiport("127.0.0.1","9996"), "pending", STATIC.NAMESPACE_CORE,
+				 STATIC.REMOTE_CONFIG_PENDING);
+		 Filekvutil.config(STATIC.splitiport("127.0.0.1","9997"), "pending", STATIC.NAMESPACE_CORE,
+				 STATIC.REMOTE_CONFIG_PENDING);
+		 Filekvutil.config(STATIC.splitiport("127.0.0.1","9998"), "pending", STATIC.NAMESPACE_CORE,
+				 STATIC.REMOTE_CONFIG_PENDING);
 	}
 
 	private static void genpngbigfrom() throws Exception {
