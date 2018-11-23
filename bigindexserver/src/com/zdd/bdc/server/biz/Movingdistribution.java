@@ -13,16 +13,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
-import java.util.Vector;
 
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.biz.Indexclient;
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.util.Filedatawalk;
 import com.zdd.bdc.server.util.Filedatawalkresult;
 import com.zdd.bdc.server.util.Filekvutil;
 import com.zdd.bdc.server.util.Fileutil;
-import com.zdd.bdc.server.util.SS;
 
 public class Movingdistribution extends Thread {
 
@@ -34,43 +32,43 @@ public class Movingdistribution extends Thread {
 	public Movingdistribution(String theip, String theport) {
 		ip = theip;
 		port = theport;
-		iportpendingkey = CS.splitiport(ip, port);
+		iportpendingkey = STATIC.splitiport(ip, port);
 	}
 
 	@Override
 	public void run() {
 		System.out.println(new Date() + " ==== started auto redistribution");
-		while (!SS.REMOTE_CONFIGVAL_PENDING
-				.equals(Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
+		while (!STATIC.REMOTE_CONFIGVAL_PENDING
+				.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
 
-			if (Files.exists(SS.LOCAL_DATAFOLDER) && Files.isDirectory(SS.LOCAL_DATAFOLDER)) {
+			if (Files.exists(STATIC.LOCAL_DATAFOLDER) && Files.isDirectory(STATIC.LOCAL_DATAFOLDER)) {
 
-				String[] namespaces = SS.LOCAL_DATAFOLDER.toFile().list();
+				String[] namespaces = STATIC.LOCAL_DATAFOLDER.toFile().list();
 				for (String namespace : namespaces) {
-					if (SS.REMOTE_CONFIGVAL_PENDING.equals(Configclient
-							.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
+					if (STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient
+							.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
 						break;
 					} else {
-						if (Files.isDirectory(SS.LOCAL_DATAFOLDER.resolve(namespace)) && !namespace.startsWith(".")) {
-							String[] serverindexes = SS.LOCAL_DATAFOLDER.resolve(namespace).toFile().list();
+						if (Files.isDirectory(STATIC.LOCAL_DATAFOLDER.resolve(namespace)) && !namespace.startsWith(".")) {
+							String[] serverindexes = STATIC.LOCAL_DATAFOLDER.resolve(namespace).toFile().list();
 							for (String serverindex : serverindexes) {
-								if (SS.REMOTE_CONFIGVAL_PENDING
-										.equals(Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING)
+								if (STATIC.REMOTE_CONFIGVAL_PENDING
+										.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING)
 												.read(iportpendingkey))) {
 									break;
 								} else {
-									if (Files.isDirectory(SS.LOCAL_DATAFOLDER.resolve(namespace).resolve(serverindex))
+									if (Files.isDirectory(STATIC.LOCAL_DATAFOLDER.resolve(namespace).resolve(serverindex))
 											&& !serverindex.startsWith(".")) {
 										String targetiport = Configclient
-												.getinstance(namespace, CS.REMOTE_CONFIG_BIGINDEX).read(serverindex);
-										if (targetiport == null || targetiport.equals(CS.splitiport(ip, port))) {
+												.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX).read(serverindex);
+										if (targetiport == null || targetiport.equals(STATIC.splitiport(ip, port))) {
 											// do nothing
 										} else {
 											try {
 												walkfolder(namespace, serverindex);
 											} catch (Exception e) {
 												System.out.println(new Date() + " ==== error in distributing ["
-														+ SS.LOCAL_DATAFOLDER.resolve(namespace).resolve(serverindex)
+														+ STATIC.LOCAL_DATAFOLDER.resolve(namespace).resolve(serverindex)
 																.toAbsolutePath().toString()
 														+ "], will continue next folder");
 												e.printStackTrace();
@@ -88,8 +86,8 @@ public class Movingdistribution extends Thread {
 				}
 
 			}
-			if (!SS.REMOTE_CONFIGVAL_PENDING.equals(Configclient
-					.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING).read(CS.splitiport(ip, port)))) {
+			if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient
+					.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(STATIC.splitiport(ip, port)))) {
 				try {
 					Thread.sleep(120000);
 				} catch (InterruptedException e1) {
@@ -102,18 +100,18 @@ public class Movingdistribution extends Thread {
 	}
 
 	private void walkfolder(String namespace, String serverindex) throws Exception {
-		Path progressfolder = SS.LOCAL_DATAFOLDER.toAbsolutePath().getParent().resolve("movingdistribution");
+		Path progressfolder = STATIC.LOCAL_DATAFOLDER.toAbsolutePath().getParent().resolve("movingdistribution");
 		if (!Files.exists(progressfolder)) {
 			Files.createDirectories(progressfolder);
 		}
 
-		Files.walkFileTree(SS.LOCAL_DATAFOLDER.resolve(namespace).resolve(serverindex),
+		Files.walkFileTree(STATIC.LOCAL_DATAFOLDER.resolve(namespace).resolve(serverindex),
 				new java.util.HashSet<FileVisitOption>(0), 1, new FileVisitor<Object>() {
 
 					@Override
 					public FileVisitResult postVisitDirectory(Object arg0, IOException arg1) throws IOException {
-						if (!SS.REMOTE_CONFIGVAL_PENDING.equals(Configclient
-								.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
+						if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient
+								.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
 							return FileVisitResult.CONTINUE;
 						} else {
 							return FileVisitResult.TERMINATE;
@@ -123,8 +121,8 @@ public class Movingdistribution extends Thread {
 
 					@Override
 					public FileVisitResult preVisitDirectory(Object arg0, BasicFileAttributes arg1) throws IOException {
-						if (!SS.REMOTE_CONFIGVAL_PENDING.equals(Configclient
-								.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
+						if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient
+								.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
 							return FileVisitResult.CONTINUE;
 						} else {
 							return FileVisitResult.TERMINATE;
@@ -133,8 +131,8 @@ public class Movingdistribution extends Thread {
 
 					@Override
 					public FileVisitResult visitFile(Object file, BasicFileAttributes arg1) throws IOException {
-						if (!SS.REMOTE_CONFIGVAL_PENDING.equals(Configclient
-								.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
+						if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient
+								.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
 							Path filtersfolder = Paths.get(file.toString());
 
 							if (!Files.isDirectory(filtersfolder)
@@ -186,7 +184,7 @@ public class Movingdistribution extends Thread {
 											if (Files.exists(progressfile)) {
 												try {
 													Files.write(progressfile,
-															SS.tobytes(System.lineSeparator() + new Date()
+															STATIC.tobytes(System.lineSeparator() + new Date()
 																	+ " ==== error in distributing file ["
 																	+ indexfile.toAbsolutePath().toString() + "]:"
 																	+ errors.toString()),
@@ -204,7 +202,7 @@ public class Movingdistribution extends Thread {
 												}
 												try {
 													Files.write(progressfile,
-															SS.tobytes(0 + System.lineSeparator() + new Date()
+															STATIC.tobytes(0 + System.lineSeparator() + new Date()
 																	+ " ==== error in distributing file ["
 																	+ indexfile.toAbsolutePath().toString() + "]:"
 																	+ errors.toString()),
@@ -233,8 +231,8 @@ public class Movingdistribution extends Thread {
 
 					@Override
 					public FileVisitResult visitFileFailed(Object arg0, IOException arg1) throws IOException {
-						if (!SS.REMOTE_CONFIGVAL_PENDING.equals(Configclient
-								.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
+						if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient
+								.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
 							return FileVisitResult.CONTINUE;
 						} else {
 							return FileVisitResult.TERMINATE;
@@ -244,15 +242,15 @@ public class Movingdistribution extends Thread {
 	}
 
 	private void movefile(Path progressfile, String namespace, Path indexfile) throws Exception {
-		Vector<String> filterspagenum = SS.filtersandpagenum(indexfile.getParent().getFileName().toString());
-		Vector<String> filters = new Vector<String>(filterspagenum.size() - 1);
-		for (int i = 0; i < filterspagenum.size() - 1; i++) {
-			if (!filterspagenum.get(i).trim().isEmpty()) {
-				filters.add(filterspagenum.get(i));
-			}
+		String[] filters = STATIC.splitenc(indexfile.getParent().getFileName().toString());
+		
+		Long thepagenum = null;
+		try{
+			thepagenum = Long.parseLong(filters[0]);
+		}catch(Exception e) {
+			return;
 		}
-		long pagenum = Long.parseLong(filterspagenum.get(filterspagenum.size() - 1));
-
+		final Long pagenum = thepagenum;
 		long processeddata = 0;
 		if (Files.exists(progressfile)) {
 			processeddata = Integer.parseInt(Files.readAllLines(progressfile, Charset.forName("UTF-8")).get(0));
@@ -271,16 +269,15 @@ public class Movingdistribution extends Thread {
 					return null;
 				} else {
 					try {
-						String index = SS.tostring(v1);
-						String key = SS.tostring(v2);
+						String index = STATIC.tostring(v1);
+						String key = STATIC.tostring(v2);
 						Indexclient ic = Indexclient.getinstance(namespace, index);
-						if (!filters.isEmpty()) {
-							ic.filters(filters.size());
-							for (String filter : filters) {
-								ic.add(filter);
+						if (filters.length!=0) {
+							for (int i=1;i<filters.length;i++) {
+								ic.addfilter(filters[i]);
 							}
 						}
-						if (pagenum == -1) {
+						if (pagenum == STATIC.PAGENUM_UNIQUE) {
 							try {
 								ic.createunique(key);
 							} catch (Exception e) {
@@ -294,7 +291,7 @@ public class Movingdistribution extends Thread {
 						if (!Files.exists(progressfile.getParent())) {
 							Files.createDirectories(progressfile.getParent());
 						}
-						Files.write(progressfile, SS.tobytes(String.valueOf(datasequence + 1)),
+						Files.write(progressfile, STATIC.tobytes(String.valueOf(datasequence + 1)),
 								StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
 								StandardOpenOption.SYNC);
 						return null;

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.zdd.bdc.client.ex.Theclient;
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.client.util.Objectutil;
 
 public class Configclient {
@@ -22,10 +22,10 @@ public class Configclient {
 	private static Map<String, Map<String, Map<String, String>>> nsfilekeyvalue = new Hashtable<String, Map<String, Map<String, String>>>();
 	private static Map<String, String> nsfilechanged = new Hashtable<String, String>();
 	static {
-		if (Files.exists(CS.LOCAL_CONFIGFOLDER) && Files.isDirectory(CS.LOCAL_CONFIGFOLDER)) {
+		if (Files.exists(STATIC.LOCAL_CONFIGFOLDER) && Files.isDirectory(STATIC.LOCAL_CONFIGFOLDER)) {
 			try {
-				ip = CS.localip();
-				Files.walk(CS.LOCAL_CONFIGFOLDER).filter(Files::isRegularFile).forEach(pathfile -> {
+				ip = STATIC.localip();
+				Files.walk(STATIC.LOCAL_CONFIGFOLDER).filter(Files::isRegularFile).forEach(pathfile -> {
 					if (!pathfile.getFileName().toString().startsWith(".")) {
 						try {
 							String namespace = pathfile.getParent().getFileName().toString();
@@ -38,7 +38,7 @@ public class Configclient {
 							}
 							List<String> lines = Files.readAllLines(pathfile, Charset.forName("UTF-8"));
 							for (String line:lines) {
-								String[] keyval = CS.splitenc(line);
+								String[] keyval = STATIC.splitenc(line);
 								if (keyval.length > 0 && !keyval[0].isEmpty()) {
 									try {
 										if (keyval.length==1) {
@@ -69,7 +69,7 @@ public class Configclient {
 				});
 			} catch (Exception e) {
 				System.out.println(new Date() + " ==== System exited when reading folder ["
-						+ CS.LOCAL_CONFIGFOLDER.toAbsolutePath() + "] due to below exception:");
+						+ STATIC.LOCAL_CONFIGFOLDER.toAbsolutePath() + "] due to below exception:");
 				e.printStackTrace();
 				System.exit(1);
 			}
@@ -84,12 +84,12 @@ public class Configclient {
 			public void run() {
 				System.out.println(new Date() + " ==== Started auto update config every "
 						+ Integer.parseInt(
-								Configclient.getinstance(CS.NAMESPACE_CORE, CS.REMOTE_CONFIG_CORE).read(CS.REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS))
+								Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE).read(STATIC.REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS))
 						+ " seconds");
 				while (running) {
 					try {
 						Thread.sleep(Integer.parseInt(
-								Configclient.getinstance(CS.NAMESPACE_CORE, CS.REMOTE_CONFIG_CORE).read(CS.REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS))
+								Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE).read(STATIC.REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS))
 								* 1000);
 					} catch (InterruptedException e) {
 						// do nothing
@@ -98,13 +98,13 @@ public class Configclient {
 						Map<String, Map<String, Map<String, String>>> temp = (Map<String, Map<String, Map<String, String>>>) Objectutil
 								.convert(Objectutil.convert(nsfilekeyvalue));
 						Map<String, Object> params = new Hashtable<String, Object>(2);
-						params.put(CS.PARAM_DATA_KEY, temp);
-						params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_READ);
+						params.put(STATIC.PARAM_DATA_KEY, temp);
+						params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_READ);
 						Map<String, Map<String, Map<String, String>>> res = null;
 						res = (Map<String, Map<String, Map<String, String>>>) Objectutil
-								.convert(Theclient.request(nsfilekeyvalue.get(CS.NAMESPACE_CORE).get(CS.REMOTE_CONFIG_CORE).get(CS.REMOTE_CONFIGKEY_CONFIGSERVERIP),
+								.convert(Theclient.request(nsfilekeyvalue.get(STATIC.NAMESPACE_CORE).get(STATIC.REMOTE_CONFIG_CORE).get(STATIC.REMOTE_CONFIGKEY_CONFIGSERVERIP),
 										Integer.parseInt(
-												nsfilekeyvalue.get(CS.NAMESPACE_CORE).get(CS.REMOTE_CONFIG_CORE).get(CS.REMOTE_CONFIGKEY_CONFIGSERVERPORT)),
+												nsfilekeyvalue.get(STATIC.NAMESPACE_CORE).get(STATIC.REMOTE_CONFIG_CORE).get(STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT)),
 										Objectutil.convert(params), null, null));
 						for (String namespace : temp.keySet()) {
 							if (res.get(namespace) == null) {
@@ -143,14 +143,14 @@ public class Configclient {
 												Files.createDirectories(target.getParent());
 											}
 											Files.write(target,
-													CS.tobytes(CS.splitenc("","Auto generated on " + new Date()) + System.lineSeparator()),
+													STATIC.tobytes(STATIC.splitenc("","Auto generated on " + new Date()) + System.lineSeparator()),
 													StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
 													StandardOpenOption.SYNC);
 											Object[] configkeys = nsfilekeyvalue.get(namespace).get(file).keySet()
 													.toArray();
 											for (Object configkey : configkeys) {
 												Files.write(target,
-														CS.tobytes(CS.splitenc(configkey.toString(), nsfilekeyvalue.get(namespace)
+														STATIC.tobytes(STATIC.splitenc(configkey.toString(), nsfilekeyvalue.get(namespace)
 																.get(file).get(configkey.toString())) + System.lineSeparator()),
 														StandardOpenOption.CREATE, StandardOpenOption.APPEND,
 														StandardOpenOption.SYNC);
@@ -202,14 +202,14 @@ public class Configclient {
 		config.get(namespace).put(file, new Hashtable<String, String>(1));
 		config.get(namespace).get(file).put(configkey, "");
 		Map<String, Object> params = new Hashtable<String, Object>(2);
-		params.put(CS.PARAM_DATA_KEY, config);
-		params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_READ);
-		params.put(CS.PARAM_ADDITIONAL, CS.splitiport(ip, String.valueOf(port)));
+		params.put(STATIC.PARAM_DATA_KEY, config);
+		params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_READ);
+		params.put(STATIC.PARAM_ADDITIONAL, STATIC.splitiport(ip, String.valueOf(port)));
 		Map<String, Map<String, Map<String, String>>> res = null;
 		try {
 			res = (Map<String, Map<String, Map<String, String>>>) Objectutil
-					.convert(Theclient.request(nsfilekeyvalue.get(CS.NAMESPACE_CORE).get(CS.REMOTE_CONFIG_CORE).get(CS.REMOTE_CONFIGKEY_CONFIGSERVERIP),
-							Integer.parseInt(nsfilekeyvalue.get(CS.NAMESPACE_CORE).get(CS.REMOTE_CONFIG_CORE).get(CS.REMOTE_CONFIGKEY_CONFIGSERVERPORT)),
+					.convert(Theclient.request(nsfilekeyvalue.get(STATIC.NAMESPACE_CORE).get(STATIC.REMOTE_CONFIG_CORE).get(STATIC.REMOTE_CONFIGKEY_CONFIGSERVERIP),
+							Integer.parseInt(nsfilekeyvalue.get(STATIC.NAMESPACE_CORE).get(STATIC.REMOTE_CONFIG_CORE).get(STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT)),
 							Objectutil.convert(params), null, null));
 			if (res.get(namespace) == null || res.get(namespace).get(file) == null
 					|| res.get(namespace).get(file).get(configkey) == null) {
@@ -230,7 +230,7 @@ public class Configclient {
 	}
 
 	private static Path targetconfigfile(String namespace, String file) throws Exception {
-		Path folder = CS.LOCAL_CONFIGFOLDER.resolve(namespace);
+		Path folder = STATIC.LOCAL_CONFIGFOLDER.resolve(namespace);
 		if (file == null) {
 			return folder;
 		} else {

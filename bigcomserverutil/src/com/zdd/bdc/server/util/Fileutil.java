@@ -8,6 +8,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Vector;
 
+import com.zdd.bdc.client.util.STATIC;
+
 //file content format: value1maxlength(10)value1(value1000)value1length(11)value1maxlength(10)value2maxlength(10)value2(value2000)value2length(11)value2maxlength(10)
 
 public class Fileutil {
@@ -148,7 +150,7 @@ public class Fileutil {
 							} else {
 								sbc.position(sbc.position() - towrite.capacity());
 							}
-							synchronized (SS.synckey(new String(value1))) {
+							synchronized (STATIC.synckey(new String(value1))) {
 								write(sbc, towrite);
 							}
 							if (reverse) {
@@ -171,7 +173,7 @@ public class Fileutil {
 							} else {
 								sync = new String(value2);
 							}
-							synchronized (SS.synckey(sync)) {
+							synchronized (STATIC.synckey(sync)) {
 								write(sbc, towrite);
 							}
 							if (reverse) {
@@ -228,7 +230,7 @@ public class Fileutil {
 	public static void create(byte[] value1, int value1maxlength, byte[] value2, int value2maxlength, Path target)
 			throws Exception {
 		ByteBuffer towrite = formatdatapair(value1, value1maxlength, false, value2, value2maxlength, false);
-		synchronized (SS.syncfile(target)) {
+		synchronized (STATIC.syncfile(target)) {
 			if (Files.exists(target)) {
 				write(target, Files.size(target), towrite);
 			} else {

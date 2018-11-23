@@ -3,11 +3,10 @@ package com.zdd.bdc.server.main;
 import java.util.Date;
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.ex.Theclient;
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.biz.Indexserver;
 import com.zdd.bdc.server.biz.Movingdistribution;
 import com.zdd.bdc.server.ex.Theserver;
-import com.zdd.bdc.server.util.SS;
 
 /**
  * @author mido how to run: 
@@ -18,8 +17,8 @@ public class Startindexserver {
 		final StringBuffer pending = new StringBuffer();
 		
 		final String ip = Configclient.ip;
-		final String port = Configclient.getinstance(s[0], CS.REMOTE_CONFIG_BIGINDEX)
-				.read(CS.splitenc(SS.PARENTFOLDER, ip));
+		final String port = Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGINDEX)
+				.read(STATIC.splitenc(STATIC.PARENTFOLDER, ip));
 		Configclient.port = Integer.parseInt(port);
 		
 		new Thread(new Runnable() {
@@ -27,9 +26,9 @@ public class Startindexserver {
 			@Override
 			public void run() {
 				try {
-					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], CS.REMOTE_CONFIG_BIGINDEX).read(CS.splitiport(ip, port)));
+					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGINDEX).read(STATIC.splitiport(ip, port)));
 					
-					Theserver.startblocking(ip, Integer.parseInt(port), SS.REMOTE_CONFIGVAL_PENDING, pending,
+					Theserver.startblocking(ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending,
 							bigfilehash,
 							Indexserver.class, null);
 				} catch (Exception e) {
@@ -43,22 +42,22 @@ public class Startindexserver {
 		
 		new Movingdistribution(ip, port).start();
 		
-		while (!SS.REMOTE_CONFIGVAL_PENDING
-				.equals(Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING)
-						.read(CS.splitiport(ip, port)))) {
+		while (!STATIC.REMOTE_CONFIGVAL_PENDING
+				.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING)
+						.read(STATIC.splitiport(ip, port)))) {
 			try {
 				Thread.sleep(30000);
 			} catch (InterruptedException e) {
 				// do nothing
 			}
 		}
-		pending.append(SS.REMOTE_CONFIGVAL_PENDING);
+		pending.append(STATIC.REMOTE_CONFIGVAL_PENDING);
 		
 		Configclient.running = false;
 
 		try {
 			Theclient.request(ip, Integer.parseInt(port), null, null, null);//connect to make the socket server stop.
-			System.out.println(new Date() + " ==== System exits and server stopped listening on ["+CS.splitiport(ip, port)+"]");
+			System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 		}catch(Exception e) {
 			//do nothing
 		}

@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.util.Date;
 import java.util.Map;
 
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.client.util.Objectutil;
 import com.zdd.bdc.server.ex.Inputprocess;
 import com.zdd.bdc.server.ex.Theserverprocess;
@@ -33,18 +33,18 @@ public class Sortserver implements Theserverprocess {
 	@Override
 	public byte[] request(byte[] param) throws Exception {
 		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(param);
-		Path sortingfolder = (Path) params.get(CS.PARAM_KEY_KEY);
+		Path sortingfolder = (Path) params.get(STATIC.PARAM_KEY_KEY);
 		if (Sortstatus.TERMINATE.equals(Sortstatus.get(sortingfolder))) {
 			return Objectutil.convert(Sortstatus.TERMINATE);
 		} else {
-			Map<String, String> additionalconfigs  =(Map<String, String>)params.get(CS.PARAM_DATA_KEY);
-			if (CS.PARAM_ACTION_READ.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
+			Map<String, String> additionalconfigs  =(Map<String, String>)params.get(STATIC.PARAM_DATA_KEY);
+			if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
 				if (Sortstatus.get(sortingfolder)==null) {
 					try {
 						Sortstatus.set(sortingfolder, check.check(sortingfolder,additionalconfigs));
 					} catch (Exception e) {
 						System.out.println(new Date() + " ==== error when checking sort folder [" + sortingfolder + "] on ["
-								+ CS.splitiport(ip, String.valueOf(port)) + "]");
+								+ STATIC.splitiport(ip, String.valueOf(port)) + "]");
 						e.printStackTrace();
 						Sortfactory.clear(sortingfolder, Sortstatus.TERMINATE);
 					}
@@ -52,20 +52,20 @@ public class Sortserver implements Theserverprocess {
 					//do nothing
 				}
 				return Objectutil.convert(Sortstatus.get(sortingfolder));
-			} else if (CS.PARAM_ACTION_CREATE.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
+			} else if (STATIC.PARAM_ACTION_CREATE.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
 				try {
-					String[] ipport = CS.splitiport(params.get(CS.PARAM_INDEX_KEY).toString());
-					if (params.get(CS.PARAM_DATA_KEY)==null) {
+					String[] ipport = STATIC.splitiport(params.get(STATIC.PARAM_INDEX_KEY).toString());
+					if (params.get(STATIC.PARAM_DATA_KEY)==null) {
 						Sortfactory.sortdistributes.get(sortingfolder).addtodistribute(ipport[0],
 								Integer.parseInt(ipport[1]), null, -1);
 					} else {
-						String[] keyamount = CS.splitenc(params.get(CS.PARAM_DATA_KEY).toString());
+						String[] keyamount = STATIC.splitenc(params.get(STATIC.PARAM_DATA_KEY).toString());
 						Sortfactory.sortdistributes.get(sortingfolder).addtodistribute(ipport[0],
 								Integer.parseInt(ipport[1]), keyamount[0], Long.parseLong(keyamount[1]));
 					}
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== error when distributing sort folder [" + sortingfolder
-							+ "] on [" + CS.splitiport(ip, String.valueOf(port)) + "]");
+							+ "] on [" + STATIC.splitiport(ip, String.valueOf(port)) + "]");
 					e.printStackTrace();
 					Sortfactory.clear(sortingfolder, Sortstatus.TERMINATE);
 				}

@@ -6,10 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.ex.Inputprocess;
 import com.zdd.bdc.server.ex.Theserverprocess;
-import com.zdd.bdc.server.util.SS;
 
 public class Filetoserver implements Theserverprocess {
 	
@@ -26,7 +25,7 @@ public class Filetoserver implements Theserverprocess {
 	@Override
 	public Inputprocess requestinput(byte[] param) throws Exception {
 		return new Inputprocess() {
-			private Path targetpath = CS.tostring(param).startsWith("/")?SS.LOCAL_DATAFOLDER.resolve(CS.tostring(param).replaceFirst("/", "")):SS.LOCAL_DATAFOLDER.resolve(CS.tostring(param));
+			private Path targetpath = STATIC.tostring(param).startsWith("/")?STATIC.LOCAL_DATAFOLDER.resolve(STATIC.tostring(param).replaceFirst("/", "")):STATIC.LOCAL_DATAFOLDER.resolve(STATIC.tostring(param));
 			@Override
 			public void process(byte[] b) throws Exception {
 				if (!Files.exists(targetpath)&&targetpath.getParent()!=null&&!Files.exists(targetpath.getParent())) {

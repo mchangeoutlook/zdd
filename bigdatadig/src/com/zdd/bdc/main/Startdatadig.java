@@ -7,9 +7,8 @@ import java.util.Map;
 import com.zdd.bdc.biz.Digactive;
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.ex.Theclient;
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.ex.Theserver;
-import com.zdd.bdc.server.util.SS;
 import com.zdd.bdc.sort.distribute.Sortserver;
 
 /**
@@ -26,7 +25,7 @@ public class Startdatadig {
 		
 		final String ip = Configclient.ip;
 
-		String dataserverport = Configclient.getinstance(s[0], CS.REMOTE_CONFIG_BIGDATA).read(CS.splitenc(SS.PARENTFOLDER, ip));
+		String dataserverport = Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitenc(STATIC.PARENTFOLDER, ip));
 		
 		final String port = sortserverport(dataserverport);
 		
@@ -41,7 +40,7 @@ public class Startdatadig {
 				try {
 					Map<String, Object> additionalserverconfig = new Hashtable<String, Object>();
 					additionalserverconfig.put(Sortserver.sortcheckclasskey,"com.zdd.bdc.biz.Sortcheckimpl");
-					Theserver.startblocking(ip, Integer.parseInt(port), SS.REMOTE_CONFIGVAL_PENDING, pending, 10, Sortserver.class, additionalserverconfig);
+					Theserver.startblocking(ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending, 10, Sortserver.class, additionalserverconfig);
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== System exit due to below exception:");
 					e.printStackTrace();
@@ -51,24 +50,24 @@ public class Startdatadig {
 
 		}).start();
 		
-		int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], CS.REMOTE_CONFIG_BIGDATA).read(CS.splitenc(ip, dataserverport)));
+		int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitenc(ip, dataserverport)));
 		
 		new Digactive(ip, port, bigfilehash).start();
 		
-		while (!SS.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING).read(CS.splitenc(ip, port)))) {
+		while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(STATIC.splitenc(ip, port)))) {
 			try {
 				Thread.sleep(30000);
 			} catch (InterruptedException e) {
 				// do nothing
 			}
 		}
-		pending.append(SS.REMOTE_CONFIGVAL_PENDING);
+		pending.append(STATIC.REMOTE_CONFIGVAL_PENDING);
 		
 		Configclient.running = false;
 		
 		try {
 			Theclient.request(ip, Integer.parseInt(port), null, null, null);//connect to make the socket server stop.
-			System.out.println(new Date() + " ==== System exits and server stopped listening on ["+CS.splitiport(ip, port)+"]");
+			System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 		}catch(Exception e) {
 			//do nothing
 		}

@@ -4,9 +4,8 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
-import com.zdd.bdc.client.biz.Bigclient;
 import com.zdd.bdc.client.ex.Theclient;
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.client.util.Objectutil;
 
 public class Dataclient {
@@ -82,12 +81,12 @@ public class Dataclient {
 				key = Bigclient.newbigdatakey();
 			}
 			Map<String, Object> params = new Hashtable<String, Object>(6);
-			params.put(CS.PARAM_KEY_KEY, key);
-			params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_CREATE);
-			params.put(CS.PARAM_NAMESPACE_KEY, ns);
-			params.put(CS.PARAM_TABLE_KEY, tb);
-			params.put(CS.PARAM_COLUMNVALUES_KEY, cvs);
-			params.put(CS.PARAM_COLUMNMAXVALUES_KEY, cvmaxs);
+			params.put(STATIC.PARAM_KEY_KEY, key);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_CREATE);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_TABLE_KEY, tb);
+			params.put(STATIC.PARAM_COLUMNVALUES_KEY, cvs);
+			params.put(STATIC.PARAM_COLUMNMAXVALUES_KEY, cvmaxs);
 			String[] iport = Bigclient.distributebigdata(ns, key);
 			Theclient.request(iport[0], 
 					Integer.parseInt(iport[1]), Objectutil.convert(params), null, null);
@@ -103,11 +102,11 @@ public class Dataclient {
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);
-			params.put(CS.PARAM_KEY_KEY, key);
-			params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_DELETE);
-			params.put(CS.PARAM_NAMESPACE_KEY, ns);
-			params.put(CS.PARAM_TABLE_KEY, tb);
-			params.put(CS.PARAM_COLUMNS_KEY, cols);
+			params.put(STATIC.PARAM_KEY_KEY, key);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_DELETE);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_TABLE_KEY, tb);
+			params.put(STATIC.PARAM_COLUMNS_KEY, cols);
 			String[] iport = Bigclient.distributebigdata(ns, key);
 			Objectutil.convert(Theclient.request(iport[0], 
 					Integer.parseInt(iport[1]), Objectutil.convert(params), null, null));
@@ -123,11 +122,11 @@ public class Dataclient {
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);
-			params.put(CS.PARAM_KEY_KEY, key);
-			params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_MODIFY);
-			params.put(CS.PARAM_NAMESPACE_KEY, ns);
-			params.put(CS.PARAM_TABLE_KEY, tb);
-			params.put(CS.PARAM_COLUMNVALUES_KEY, cvs);
+			params.put(STATIC.PARAM_KEY_KEY, key);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_MODIFY);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_TABLE_KEY, tb);
+			params.put(STATIC.PARAM_COLUMNVALUES_KEY, cvs);
 			String[] iport = Bigclient.distributebigdata(ns, key);
 			Theclient.request(iport[0], 
 					Integer.parseInt(iport[1]), Objectutil.convert(params), null, null);
@@ -144,11 +143,11 @@ public class Dataclient {
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);
-			params.put(CS.PARAM_KEY_KEY, key);
-			params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_READ);
-			params.put(CS.PARAM_NAMESPACE_KEY, ns);
-			params.put(CS.PARAM_TABLE_KEY, tb);
-			params.put(CS.PARAM_COLUMNS_KEY, cols);
+			params.put(STATIC.PARAM_KEY_KEY, key);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_READ);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_TABLE_KEY, tb);
+			params.put(STATIC.PARAM_COLUMNS_KEY, cols);
 			String[] iport = Bigclient.distributebigdata(ns, key);
 			return (Map<String, String>) Objectutil
 					.convert(Theclient.request(iport[0], 
@@ -165,11 +164,11 @@ public class Dataclient {
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);
-			params.put(CS.PARAM_KEY_KEY, key);
-			params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_INCREMENT);
-			params.put(CS.PARAM_NAMESPACE_KEY, ns);
-			params.put(CS.PARAM_TABLE_KEY, tb);
-			params.put(CS.PARAM_COLUMNAMOUNTS_KEY, cas);
+			params.put(STATIC.PARAM_KEY_KEY, key);
+			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_INCREMENT);
+			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
+			params.put(STATIC.PARAM_TABLE_KEY, tb);
+			params.put(STATIC.PARAM_COLUMNAMOUNTS_KEY, cas);
 			String[] iport = Bigclient.distributebigdata(ns, key);
 			
 			return (Map<String, Long>) Objectutil

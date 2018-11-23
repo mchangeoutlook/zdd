@@ -9,9 +9,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import com.zdd.bdc.client.biz.Configclient;
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.util.Filekvutil;
-import com.zdd.bdc.server.util.SS;
 
 public class Digactive extends Thread {
 
@@ -29,33 +28,33 @@ public class Digactive extends Thread {
 	public void run() {
 		String ipportpending = null;
 		try {
-			ipportpending = CS.splitenc(ip, port);
+			ipportpending = STATIC.splitenc(ip, port);
 		}catch(Exception e) {
 			System.out.println(new Date() + " ==== terminated digging due to below exception");
 			e.printStackTrace();
 			return;
 		}
 		System.out.println(new Date() + " ==== activating digging");
-		while (!SS.REMOTE_CONFIGVAL_PENDING
-				.equals(Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING)
+		while (!STATIC.REMOTE_CONFIGVAL_PENDING
+				.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING)
 						.read(ipportpending))) {
-			if (Files.exists(SS.LOCAL_DATAFOLDER) && Files.isDirectory(SS.LOCAL_DATAFOLDER)) {
+			if (Files.exists(STATIC.LOCAL_DATAFOLDER) && Files.isDirectory(STATIC.LOCAL_DATAFOLDER)) {
 					
 				String[] digs = null;
-				String active = Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG).read("active");
+				String active = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG).read("active");
 				try {
-					digs = CS.splitenc(active);
+					digs = STATIC.splitenc(active);
 				}catch(Exception e) {
 					System.out.println(new Date()+" ==== wrong active config ["+active+"]");
 				}
 				if (digs!=null) {
 					Date now = new Date();
-					String version = SS.FORMAT_yMd.format(now);
+					String version = STATIC.FORMAT_yMd.format(now);
 					for (String digname:digs) {
-						String sort = Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG).read(digname+".sort");
+						String sort = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG).read(digname+".sort");
 						String[] nstbcol = null;
 						try {
-							nstbcol = CS.splitenc(sort);
+							nstbcol = STATIC.splitenc(sort);
 						}catch(Exception e) {
 							System.out.println(new Date()+" ==== wrong sort config ["+sort+"] for ["+digname+"]");
 						}
@@ -68,7 +67,7 @@ public class Digactive extends Thread {
 								e.printStackTrace();
 							}
 							if (folder!=null&&Files.exists(folder)&&Files.isDirectory(folder)) {
-								String interval = Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG).read(digname+".interval");
+								String interval = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG).read(digname+".interval");
 								if (interval!=null&&interval.length()>3) {
 									if (interval.startsWith("D")) {
 										if (interval.substring(1).equals(new SimpleDateFormat("HHmm").format(now))) {
@@ -99,8 +98,8 @@ public class Digactive extends Thread {
 			} else {
 				//do nothing
 			}
-			if (!SS.REMOTE_CONFIGVAL_PENDING
-					.equals(Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING)
+			if (!STATIC.REMOTE_CONFIGVAL_PENDING
+					.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING)
 							.read(ipportpending))) {
 				try {
 					Thread.sleep(30000);

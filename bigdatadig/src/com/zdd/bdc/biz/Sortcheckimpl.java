@@ -5,11 +5,11 @@ import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.Map;
 
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.util.Filedatawalk;
 import com.zdd.bdc.server.util.Filedatawalkresult;
 import com.zdd.bdc.server.util.Filekvutil;
 import com.zdd.bdc.server.util.Fileutil;
-import com.zdd.bdc.server.util.SS;
 import com.zdd.bdc.sort.distribute.Sortcheck;
 import com.zdd.bdc.sort.util.Sortstatus;
 
@@ -39,7 +39,7 @@ public class Sortcheckimpl implements Sortcheck{
 						return null;
 					} else {
 						try {
-							String key = SS.tostring(v1);
+							String key = STATIC.tostring(v1);
 							if (filters.equals(Digging.getfilters(key, namespace, digname, Integer.parseInt(additionalconfigs.get("bigfilehash"))))) {
 								found.append("found");
 								return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,

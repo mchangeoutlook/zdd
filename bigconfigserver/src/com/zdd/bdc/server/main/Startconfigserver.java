@@ -2,10 +2,9 @@ package com.zdd.bdc.server.main;
 
 import java.util.Date;
 import com.zdd.bdc.client.ex.Theclient;
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.biz.Configserver;
 import com.zdd.bdc.server.ex.Theserver;
-import com.zdd.bdc.server.util.SS;
 
 
 /**
@@ -19,16 +18,16 @@ public class Startconfigserver {
 		
 		final StringBuffer pending = new StringBuffer();
 		
-		final String ip = CS.localip();
+		final String ip = STATIC.localip();
 		
-		final String port = Configserver.readconfig(CS.NAMESPACE_CORE, CS.REMOTE_CONFIG_CORE, CS.REMOTE_CONFIGKEY_CONFIGSERVERPORT);
+		final String port = Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE, STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT);
 		
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				try {
-					Theserver.startblocking(ip, Integer.parseInt(port), SS.REMOTE_CONFIGVAL_PENDING, pending, 10, Configserver.class, null);
+					Theserver.startblocking(ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending, 10, Configserver.class, null);
 				} catch (Exception e) {
 					System.out.println(new Date()+" ==== System exit due to below exception:");
 					e.printStackTrace();
@@ -38,14 +37,14 @@ public class Startconfigserver {
 			
 		}).start();
 		
-		while(!SS.REMOTE_CONFIGVAL_PENDING.equals(Configserver.readconfig(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_PENDING, CS.splitiport(ip, Configserver.readconfig(CS.NAMESPACE_CORE, CS.REMOTE_CONFIG_CORE, CS.REMOTE_CONFIGKEY_CONFIGSERVERPORT))))) {
+		while(!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING, STATIC.splitiport(ip, Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE, STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT))))) {
 			Thread.sleep(30000);
 		}
-		pending.append(SS.REMOTE_CONFIGVAL_PENDING);
+		pending.append(STATIC.REMOTE_CONFIGVAL_PENDING);
 		
 		try {
 			Theclient.request(ip, Integer.parseInt(port), null, null, null);//connect to make the socket server stop.
-			System.out.println(new Date() + " ==== System exits and server stopped listening on ["+CS.splitiport(ip, port)+"]");
+			System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 		}catch(Exception e) {
 			//do nothing
 		}

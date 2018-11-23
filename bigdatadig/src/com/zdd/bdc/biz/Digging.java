@@ -8,13 +8,12 @@ import java.util.Map;
 import java.util.Vector;
 
 import com.zdd.bdc.client.biz.Configclient;
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.main.Startdatadig;
 import com.zdd.bdc.server.util.Filedatawalk;
 import com.zdd.bdc.server.util.Filedatawalkresult;
 import com.zdd.bdc.server.util.Filekvutil;
 import com.zdd.bdc.server.util.Fileutil;
-import com.zdd.bdc.server.util.SS;
 import com.zdd.bdc.sort.local.Sortfactory;
 
 public class Digging extends Thread {
@@ -43,15 +42,15 @@ public class Digging extends Thread {
 	@Override
 	public void run() {
 
-		String period = Configclient.getinstance(CS.NAMESPACE_CORE, SS.REMOTE_CONFIG_DIG)
+		String period = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG)
 				.read(digname + ".period");
 		if (period != null && !period.trim().isEmpty()) {
-			String[] startend = SS.splitfromto(period);
+			String[] startend = STATIC.splitfromto(period);
 			Date start = null;
 			Date end = null;
 			try {
-				start = SS.FORMAT_yMd.parse(startend[0]);
-				end = SS.FORMAT_yMd.parse(startend[1]);
+				start = STATIC.FORMAT_yMd.parse(startend[0]);
+				end = STATIC.FORMAT_yMd.parse(startend[1]);
 			} catch (Exception e) {
 				end = start;
 			}
@@ -61,20 +60,20 @@ public class Digging extends Thread {
 				cal.setTime(start);
 				boolean isthisserverincluded = false;
 				while (cal.getTime().compareTo(end) <= 0) {
-					String servers = Configclient.getinstance(namespace, CS.REMOTE_CONFIG_BIGDATA)
-							.read(SS.FORMAT_yMd.format(cal.getTime()));
+					String servers = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGDATA)
+							.read(STATIC.FORMAT_yMd.format(cal.getTime()));
 					if (servers == null || servers.trim().isEmpty()) {
 						break;
 					} else {
-						String[] ipports = CS.splitenc(servers);
+						String[] ipports = STATIC.splitenc(servers);
 						for (String ipportstr : ipports) {
 							try {
-								String[] ipport = CS.splitiport(ipportstr);
+								String[] ipport = STATIC.splitiport(ipportstr);
 								if (ipport[0].equals(ip) && Startdatadig.sortserverport(ipport[1]).equals(port)) {
 									isthisserverincluded = true;
 								}
 								ipport[1] = Startdatadig.sortserverport(ipport[1]);
-								sortingserverswithinperiod.put(ipportstr, CS.splitiport(ipport[0], ipport[1]));
+								sortingserverswithinperiod.put(ipportstr, STATIC.splitiport(ipport[0], ipport[1]));
 							} catch (Exception e) {
 								System.out.println(new Date() + " ==== due to below exception terminated digging ["
 										+ digname + "][" + namespace + "][" + table + "][" + col + "] wrong ip port ["+ipportstr+"]");
@@ -116,13 +115,13 @@ public class Digging extends Thread {
 										if (isv1deleted || isv2deleted) {
 											return null;
 										} else {
-											String key = CS.tostring(v1);
+											String key = STATIC.tostring(v1);
 											String filters = null;
 											try {
 												filters = Digging.getfilters(key, namespace, digname, bigfilehash);
 											}catch(Exception e) {
 												System.out.println(new Date() + " ==== ignore digging [" + digname + "][" + namespace + "]["
-														+ table + "][" + col + "] due to filters error of key=["+key+"], value=["+CS.tostring(v2)+"], continue to next data");
+														+ table + "][" + col + "] due to filters error of key=["+key+"], value=["+STATIC.tostring(v2)+"], continue to next data");
 												e.printStackTrace();
 											}
 											if (filters != null) {
@@ -154,14 +153,16 @@ public class Digging extends Thread {
 	}
 	
 	public static String getfilters(String key, String namespace, String digname, int bigfilehash) throws Exception {
-		String filterconfig = Configclient.getinstance(namespace, SS.REMOTE_CONFIG_DIG)
+		String filterconfig = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
 				.read(digname + ".filter");
+		Vector<String> filterarray = new Vector<String>(10);
+		filterarray.add(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
+				.read(digname + ".sequence"));
 		if (filterconfig==null||filterconfig.trim().isEmpty()) {
-			return SS.SORT_ALL_FOLDER;
+			//do nothing;
 		} else {
-			String[] t = CS.splitenc(filterconfig);
+			String[] t = STATIC.splitenc(filterconfig);
 			String ns = t[0];
-			Vector<String> filterarray = new Vector<String>((t.length-1)/2);
 			for (int i=1;i<t.length;i+=2) {
 				String table = t[i];
 				String col = t[i+1];
@@ -172,10 +173,8 @@ public class Digging extends Thread {
 					filterarray.add(f);
 				}
 			}
-			String[] filterarr = new String[filterarray.size()];
-			filterarray.toArray(filterarr);
-			return CS.splitenc(filterarr);
 		}
+		return STATIC.splitenc(filterarray);
 	}
 	
 }

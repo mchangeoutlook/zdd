@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import com.zdd.bdc.client.ex.Theclient;
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.client.util.Objectutil;
 import com.zdd.bdc.sort.local.Sortoutput;
 import com.zdd.bdc.sort.util.Sortstatus;
@@ -42,10 +42,10 @@ public class Sortdistribute{
 	
 	public synchronized void addtodistribute(String fromip, int fromport, String key, long amount) {
 		if (key==null) {
-			distributearray.put(CS.splitiport(fromip, String.valueOf(port)), null);
+			distributearray.put(STATIC.splitiport(fromip, String.valueOf(port)), null);
 		} else {
 			position++;
-			distributearray.put(CS.splitiport(fromip, String.valueOf(port)), new Sortelement(fromip, fromport, key, amount));
+			distributearray.put(STATIC.splitiport(fromip, String.valueOf(port)), new Sortelement(fromip, fromport, key, amount));
 		}
 		clearnumofnotifies(false);
 		notifyAll();
@@ -67,11 +67,11 @@ public class Sortdistribute{
 		for (String ipport : sortingservers) {
 			if (!stop) {
 				Map<String, Object> params = new Hashtable<String, Object>(6);
-				params.put(CS.PARAM_KEY_KEY, sortingfolder);
-				params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_CREATE);
-				params.put(CS.PARAM_DATA_KEY, keyamount);
-				params.put(CS.PARAM_INDEX_KEY, CS.splitiport(ip, String.valueOf(port)));
-				String[] iport = CS.splitiport(ipport);
+				params.put(STATIC.PARAM_KEY_KEY, sortingfolder);
+				params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_CREATE);
+				params.put(STATIC.PARAM_DATA_KEY, keyamount);
+				params.put(STATIC.PARAM_INDEX_KEY, STATIC.splitiport(ip, String.valueOf(port)));
+				String[] iport = STATIC.splitiport(ipport);
 				String res = (String) Objectutil.convert(Theclient.request(iport[0],
 						Integer.parseInt(iport[1]), Objectutil.convert(params), null, null));
 				if (Sortstatus.READY_TO_DISTRIBUTE.equals(res)||Sortstatus.ACCOMPLISHED.equals(res)) {

@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
 
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.sort.distribute.Sortelement;
 
 public class Sortutil {
@@ -65,7 +65,7 @@ public class Sortutil {
 				}
 				tmpEntry = iter.next();
 				Files.write(sortintofile,
-						CS.tobytes(CS.splitenc(tmpEntry.getKey(), String.valueOf(tmpEntry.getValue()))
+						STATIC.tobytes(STATIC.splitenc(tmpEntry.getKey(), String.valueOf(tmpEntry.getValue()))
 								+ System.lineSeparator()),
 						StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.SYNC);
 			}
@@ -112,7 +112,7 @@ public class Sortutil {
 						Charset.forName("UTF-8"));
 				brs.add(br);
 				String line = br.readLine();
-				String[] keyamount = CS.splitenc(line);
+				String[] keyamount = STATIC.splitenc(line);
 				String key = keyamount[0];
 				Long amount = Long.parseLong(keyamount[1]);
 				amounts.add(amount);
@@ -151,12 +151,12 @@ public class Sortutil {
 				}
 				String line = null;
 				Files.write(mergedfile,
-						CS.tobytes(CS.splitenc(keys.get(minindex), String.valueOf(amounts.get(minindex)))
+						STATIC.tobytes(STATIC.splitenc(keys.get(minindex), String.valueOf(amounts.get(minindex)))
 								+ System.lineSeparator()),
 						StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.SYNC);
 				line = brs.get(minindex).readLine();
 				if (line != null) {
-					String[] keyamount = CS.splitenc(line);
+					String[] keyamount = STATIC.splitenc(line);
 					String key = keyamount[0];
 					Long amount = Long.parseLong(keyamount[1]);
 					amounts.set(minindex, amount);

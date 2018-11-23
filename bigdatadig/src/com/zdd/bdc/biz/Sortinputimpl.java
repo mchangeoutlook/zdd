@@ -6,11 +6,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.zdd.bdc.client.biz.Configclient;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.util.Filedatawalk;
 import com.zdd.bdc.server.util.Filedatawalkresult;
 import com.zdd.bdc.server.util.Filekvutil;
 import com.zdd.bdc.server.util.Fileutil;
-import com.zdd.bdc.server.util.SS;
 import com.zdd.bdc.sort.local.Sortinput;
 
 public class Sortinputimpl extends Sortinput {
@@ -36,12 +36,7 @@ public class Sortinputimpl extends Sortinput {
 
 	@Override
 	protected boolean prepareisasc() {
-		if ("yes".equalsIgnoreCase(
-				Configclient.getinstance(namespace, SS.REMOTE_CONFIG_DIG).read(digname + ".ascend"))) {
-			return true;
-		} else {
-			return false;
-		}
+		return STATIC.SORT_SEQUENCE(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG).read(digname + ".sequence"));
 	}
 
 	@Override
@@ -51,8 +46,8 @@ public class Sortinputimpl extends Sortinput {
 
 	@Override
 	protected Path preparesortingfolder() throws Exception {
-		return Paths.get(SS.PARENTFOLDER).resolve(SS.REMOTE_CONFIG_DIG).resolve(digname).resolve(namespace)
-				.resolve(table).resolve(col).resolve(filters).resolve(SS.SORT_SEQUENCE(isasc())).resolve(version);
+		return Paths.get(STATIC.PARENTFOLDER).resolve(STATIC.REMOTE_CONFIG_DIG).resolve(digname).resolve(namespace)
+				.resolve(table).resolve(col).resolve(filters).resolve(version);
 	}
 
 	@Override
@@ -70,13 +65,13 @@ public class Sortinputimpl extends Sortinput {
 						return null;
 					} else {
 						try {
-							String key = SS.tostring(v1);
+							String key = STATIC.tostring(v1);
 							if (filters.equals(Digging.getfilters(key, namespace, digname, bigfilehash))) {
 								Long amount = null;
 								try {
-									amount = Long.parseLong(SS.tostring(v2));
+									amount = Long.parseLong(STATIC.tostring(v2));
 								} catch (Exception e) {
-									amount = (long) SS.tostring(v2).compareTo(SS.SORT_COMPARE_TO_STRING);
+									amount = (long) STATIC.tostring(v2).compareTo(STATIC.SORT_COMPARE_TO_STRING);
 								}
 								input(key, amount);
 							} else {

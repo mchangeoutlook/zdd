@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import com.zdd.bdc.client.ex.Theclient;
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.client.util.Objectutil;
 import com.zdd.bdc.sort.distribute.Sortdistribute;
 import com.zdd.bdc.sort.util.Sortstatus;
@@ -84,9 +84,9 @@ public class Sortfactory {
 							validsortingservers.clear();
 							for (String ipport : sortingservers) {
 								Map<String, Object> params = new Hashtable<String, Object>(6);
-								params.put(CS.PARAM_KEY_KEY, sortingfolder);
-								params.put(CS.PARAM_ACTION_KEY, CS.PARAM_ACTION_READ);
-								String[] iport = CS.splitiport(ipport);
+								params.put(STATIC.PARAM_KEY_KEY, sortingfolder);
+								params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_READ);
+								String[] iport = STATIC.splitiport(ipport);
 								String check = (String) Objectutil.convert(Theclient.request(iport[0],
 										Integer.parseInt(iport[1]), Objectutil.convert(params), null, null));
 								if (Sortstatus.READY_TO_DISTRIBUTE.equals(check)) {

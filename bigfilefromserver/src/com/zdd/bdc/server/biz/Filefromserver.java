@@ -4,10 +4,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Map;
 
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.ex.Inputprocess;
 import com.zdd.bdc.server.ex.Theserverprocess;
-import com.zdd.bdc.server.util.SS;
 
 public class Filefromserver implements Theserverprocess {
 	
@@ -28,11 +27,11 @@ public class Filefromserver implements Theserverprocess {
 
 	@Override
 	public InputStream requestoutput(byte[] param) throws Exception {
-		String path = CS.tostring(param);
+		String path = STATIC.tostring(param);
 		if (path.startsWith("/")) {
 			path = path.replaceFirst("/", "");
 		}
-		return Files.newInputStream(SS.LOCAL_DATAFOLDER.resolve(path));
+		return Files.newInputStream(STATIC.LOCAL_DATAFOLDER.resolve(path));
 	}
 
 }

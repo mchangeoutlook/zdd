@@ -7,37 +7,36 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.util.Filekvutil;
-import com.zdd.bdc.server.util.SS;
 
 public class Bigdataconfig {
 
 	private static final Map<String, Map<String, String>> config = new Hashtable<String, Map<String, String>>();
 
 	public static void init(String namespace) throws Exception {
-		String active = Filekvutil.config("active", namespace, CS.REMOTE_CONFIG_BIGDATA);
-		String[] dates = CS.splitenc(active);
+		String active = Filekvutil.config("active", namespace, STATIC.REMOTE_CONFIG_BIGDATA);
+		String[] dates = STATIC.splitenc(active);
 
 		Map<String, String> date_ipport = new Hashtable<String, String>();
 
 		Map<String, String> parentfolderip_port = new Hashtable<String, String>();
 		Map<String, String> iport_filehash = new Hashtable<String, String>();
 		for (String key : dates) {
-			Vector<String> values = Filekvutil.configs(key, namespace, CS.REMOTE_CONFIG_BIGDATA);
+			Vector<String> values = Filekvutil.configs(key, namespace, STATIC.REMOTE_CONFIG_BIGDATA);
 			Vector<String> ipports = new Vector<String>(values.size());
 			for (String val : values) {
-				String[] vals = CS.splitenc(val);
+				String[] vals = STATIC.splitenc(val);
 				String parentfolder = vals[0];
 				String filehash = vals[1];
 				String ip = vals[2];
 				String port = vals[3];
-				parentfolderip_port.put(CS.splitenc(parentfolder, ip), port);
-				iport_filehash.put(CS.splitiport(ip, port), filehash);
-				ipports.add(CS.splitiport(ip, port));
+				parentfolderip_port.put(STATIC.splitenc(parentfolder, ip), port);
+				iport_filehash.put(STATIC.splitiport(ip, port), filehash);
+				ipports.add(STATIC.splitiport(ip, port));
 			}
 			String[] ipportsarray = new String[ipports.size()];
-			date_ipport.put(key, CS.splitenc(ipports.toArray(ipportsarray)));
+			date_ipport.put(key, STATIC.splitenc(ipports.toArray(ipportsarray)));
 
 		}
 
@@ -50,17 +49,17 @@ public class Bigdataconfig {
 			date_ipport.put(key, date_ipport.get(key));
 
 			Calendar c = Calendar.getInstance();
-			c.setTime(SS.FORMAT_yMd.parse(key));
+			c.setTime(STATIC.FORMAT_yMd.parse(key));
 			c.add(Calendar.DATE, 1);
 			while (i + 1 < sortedconfigkeys.length
-					&& !SS.FORMAT_yMd.format(c.getTime()).equals(sortedconfigkeys[i + 1].toString())) {
-				date_ipport.put(SS.FORMAT_yMd.format(c.getTime()), date_ipport.get(key));
+					&& !STATIC.FORMAT_yMd.format(c.getTime()).equals(sortedconfigkeys[i + 1].toString())) {
+				date_ipport.put(STATIC.FORMAT_yMd.format(c.getTime()), date_ipport.get(key));
 				c.add(Calendar.DATE, 1);
 			}
 			if (i + 1 >= sortedconfigkeys.length) {
 				while (c.getTime().compareTo(today) <= 0) {
 					tilltoday = true;
-					date_ipport.put(SS.FORMAT_yMd.format(c.getTime()), date_ipport.get(key));
+					date_ipport.put(STATIC.FORMAT_yMd.format(c.getTime()), date_ipport.get(key));
 					c.add(Calendar.DATE, 1);
 				}
 			}
@@ -69,18 +68,18 @@ public class Bigdataconfig {
 		if (tilltoday) {
 			c.setTime(today);
 		} else {
-			c.setTime(SS.FORMAT_yMd.parse(sortedconfigkeys[sortedconfigkeys.length - 1].toString()));
+			c.setTime(STATIC.FORMAT_yMd.parse(sortedconfigkeys[sortedconfigkeys.length - 1].toString()));
 		}
 		c.add(Calendar.DATE, 1);
 		int moredays = 365 * 10;// 10years;
 		while (moredays > 0) {
 			String key = null;
 			if (tilltoday) {
-				key = SS.FORMAT_yMd.format(today);
+				key = STATIC.FORMAT_yMd.format(today);
 			} else {
 				key = sortedconfigkeys[sortedconfigkeys.length - 1].toString();
 			}
-			date_ipport.put(SS.FORMAT_yMd.format(c.getTime()), date_ipport.get(key));
+			date_ipport.put(STATIC.FORMAT_yMd.format(c.getTime()), date_ipport.get(key));
 			c.add(Calendar.DATE, 1);
 			moredays--;
 		}

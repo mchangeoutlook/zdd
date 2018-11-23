@@ -4,17 +4,16 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.util.Filekvutil;
-import com.zdd.bdc.server.util.SS;
 
 public class Bigindexconfig {
 
 	private static final Map<String, Map<String, String>> config = new Hashtable<String, Map<String, String>>();
 
 	public static void init(String namespace) throws Exception {
-		String active = Filekvutil.config("active", namespace, CS.REMOTE_CONFIG_BIGINDEX);
-		String[] hashes = CS.splitenc(active);
+		String active = Filekvutil.config("active", namespace, STATIC.REMOTE_CONFIG_BIGINDEX);
+		String[] hashes = STATIC.splitenc(active);
 
 		Map<String, String> hash_ipport = new Hashtable<String, String>();
 
@@ -22,16 +21,16 @@ public class Bigindexconfig {
 		Map<String, String> iport_filehash = new Hashtable<String, String>();
 
 		for (String key : hashes) {
-				String[] vals = CS.splitenc(Filekvutil.config(key, namespace, CS.REMOTE_CONFIG_BIGINDEX));
+				String[] vals = STATIC.splitenc(Filekvutil.config(key, namespace, STATIC.REMOTE_CONFIG_BIGINDEX));
 				String parentfolder = vals[0];
 				String filehash = vals[1];
 				String ip = vals[2];
 				String port = vals[3];
-				parentfolderip_port.put(CS.splitenc(parentfolder, ip), port);
-				iport_filehash.put(CS.splitiport(ip, port), filehash);
-				String ipport = CS.splitiport(ip, port);
+				parentfolderip_port.put(STATIC.splitenc(parentfolder, ip), port);
+				iport_filehash.put(STATIC.splitiport(ip, port), filehash);
+				String ipport = STATIC.splitiport(ip, port);
 
-				String[] fromto = SS.splitfromto(key);
+				String[] fromto = STATIC.splitfromto(key);
 				if (fromto.length==2) {
 					int start = Integer.parseInt(fromto[0]);
 					int end = Integer.parseInt(fromto[1]);
@@ -47,7 +46,7 @@ public class Bigindexconfig {
 		all.putAll(hash_ipport);
 		all.putAll(parentfolderip_port);
 		all.putAll(iport_filehash);
-		all.put(CS.REMOTE_CONFIGKEY_MAXINDEXSERVERS, String.valueOf(hash_ipport.size()));
+		all.put(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS, String.valueOf(hash_ipport.size()));
 		config.put(namespace, all);
 		System.out.println(new Date() + " ==== generated bigindexconfig ["+all+"] [" + parentfolderip_port.size()
 				+ "] index servers and [" + hash_ipport.size() + "] hashes under namespace [" + namespace + "]");

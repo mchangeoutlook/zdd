@@ -5,26 +5,25 @@ import java.nio.file.Files;
 import java.util.Date;
 import java.util.Map;
 
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.client.util.Objectutil;
 import com.zdd.bdc.server.ex.Inputprocess;
 import com.zdd.bdc.server.ex.Theserverprocess;
 import com.zdd.bdc.server.util.Filekvutil;
-import com.zdd.bdc.server.util.SS;
 
 public class Configserver implements Theserverprocess {
 
 	static {
-		if (Files.exists(SS.LOCAL_CONFIGFOLDER) && Files.isDirectory(SS.LOCAL_CONFIGFOLDER)) {
+		if (Files.exists(STATIC.LOCAL_CONFIGFOLDER) && Files.isDirectory(STATIC.LOCAL_CONFIGFOLDER)) {
 			try {
-				Files.walk(SS.LOCAL_CONFIGFOLDER).filter(Files::isRegularFile).forEach(pathfile -> {
+				Files.walk(STATIC.LOCAL_CONFIGFOLDER).filter(Files::isRegularFile).forEach(pathfile -> {
 					if (!pathfile.getFileName().toString().startsWith(".")) {
 						try {
 							String namespace = pathfile.getParent().getFileName().toString();
 							String file = pathfile.getFileName().toString();
-							if (file.equals(CS.REMOTE_CONFIG_BIGDATA)) {
+							if (file.equals(STATIC.REMOTE_CONFIG_BIGDATA)) {
 								Bigdataconfig.init(namespace);
-							} else if (file.equals(CS.REMOTE_CONFIG_BIGINDEX)) {
+							} else if (file.equals(STATIC.REMOTE_CONFIG_BIGINDEX)) {
 								Bigindexconfig.init(namespace);
 							}
 						} catch (Exception e) {
@@ -37,7 +36,7 @@ public class Configserver implements Theserverprocess {
 				});
 			} catch (Exception e) {
 				System.out.println(new Date() + " ==== System exited when reading ["
-						+ SS.LOCAL_CONFIGFOLDER.toAbsolutePath() + "] due to below exception:");
+						+ STATIC.LOCAL_CONFIGFOLDER.toAbsolutePath() + "] due to below exception:");
 				e.printStackTrace();
 				System.exit(1);
 			}
@@ -45,9 +44,9 @@ public class Configserver implements Theserverprocess {
 	}
 
 	public static String readconfig(String namespace, String file, String configkey) throws Exception {
-		if (file.equals(CS.REMOTE_CONFIG_BIGDATA)) {
+		if (file.equals(STATIC.REMOTE_CONFIG_BIGDATA)) {
 			return Bigdataconfig.read(namespace, configkey);
-		} else if (file.equals(CS.REMOTE_CONFIG_BIGINDEX)) {
+		} else if (file.equals(STATIC.REMOTE_CONFIG_BIGINDEX)) {
 			return Bigindexconfig.read(namespace, configkey);
 		} else {
 			return Filekvutil.config(configkey, namespace, file);
@@ -63,9 +62,9 @@ public class Configserver implements Theserverprocess {
 	@Override
 	public byte[] request(byte[] param) throws Exception {
 		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(param);
-		if (params.get(CS.PARAM_DATA_KEY) != null) {
-			Map<String, Map<String, Map<String, String>>> returnvalue = (Map<String, Map<String, Map<String, String>>>) params.get(CS.PARAM_DATA_KEY);
-			if (CS.PARAM_ACTION_READ.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
+		if (params.get(STATIC.PARAM_DATA_KEY) != null) {
+			Map<String, Map<String, Map<String, String>>> returnvalue = (Map<String, Map<String, Map<String, String>>>) params.get(STATIC.PARAM_DATA_KEY);
+			if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
 				Object[] ns = returnvalue.keySet().toArray();
 				for (Object nsobj : ns) {
 					String namespace = nsobj.toString();
@@ -93,7 +92,7 @@ public class Configserver implements Theserverprocess {
 			}
 			return Objectutil.convert(returnvalue);
 		} else {
-			throw new Exception("notsupport-" + params.get(CS.PARAM_ACTION_KEY));
+			throw new Exception("notsupport-" + params.get(STATIC.PARAM_ACTION_KEY));
 		}
 	}
 

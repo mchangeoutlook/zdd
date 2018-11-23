@@ -1,21 +1,19 @@
 package com.zdd.bdc.server.biz;
 
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.Vector;
 
-import com.zdd.bdc.client.biz.Bigclient;
-import com.zdd.bdc.client.util.CS;
+import com.zdd.bdc.client.util.STATIC;
+import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.util.Objectutil;
 import com.zdd.bdc.server.ex.Inputprocess;
 import com.zdd.bdc.server.ex.Theserverprocess;
 import com.zdd.bdc.server.util.Filekvutil;
-import com.zdd.bdc.server.util.SS;
 
 public class Indexserver implements Theserverprocess {
 
-	private int bigfilehash = 1000;
+	private int bigfilehash = 0;
 
 	@Override
 	public void init(String ip, int port, int thebigfilehash, Map<String, Object> additionalserverconfig) {
@@ -26,43 +24,44 @@ public class Indexserver implements Theserverprocess {
 	@Override
 	public byte[] request(byte[] param) throws Exception {
 		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(param);
-		if (CS.PARAM_ACTION_CREATE.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
-			String index = params.get(CS.PARAM_INDEX_KEY).toString();
-			String key = params.get(CS.PARAM_KEY_KEY).toString();
-			String namespace = params.get(CS.PARAM_NAMESPACE_KEY).toString();
-			Vector<String> filters = (Vector<String>) params.get(CS.PARAM_FILTERS_KEY);
-			Long pagenum = null;
-			if (params.get(CS.PARAM_PAGENUM_KEY) != null) {
-				pagenum = Long.parseLong(params.get(CS.PARAM_PAGENUM_KEY).toString());
+		if (STATIC.PARAM_ACTION_CREATE.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
+			String index = params.get(STATIC.PARAM_INDEX_KEY).toString();
+			String key = params.get(STATIC.PARAM_KEY_KEY).toString();
+			String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
+			Vector<String> filters = (Vector<String>) params.get(STATIC.PARAM_FILTERS_KEY);
+			if (params.get(STATIC.PARAM_VERSION_KEY)!=null&&!params.get(STATIC.PARAM_VERSION_KEY).toString().trim().isEmpty()) {
+				Filekvutil.indexversion(params.get(STATIC.PARAM_VERSION_KEY).toString(), index, key, filters, bigfilehash, Filekvutil.indexfolder(namespace, filters, index, Integer.parseInt(Configclient
+						.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS))));
 			} else {
-				//do nothing
-			}
-			if (params.get(CS.PARAM_VERSION_KEY)!=null&&!params.get(CS.PARAM_VERSION_KEY).toString().trim().isEmpty()) {
-				Filekvutil.indexversion(params.get(CS.PARAM_VERSION_KEY).toString(), index, key, pagenum, filters, bigfilehash, indexfolder(namespace, pagenum, index));
-			} else {
-				Filekvutil.index(index, key, pagenum, filters, bigfilehash, indexfolder(namespace, pagenum, index));
+				if (Long.parseLong(filters.get(0))==STATIC.PAGENUM_UNIQUE) {
+					Filekvutil.index(index, key, filters, bigfilehash, Filekvutil.indexfolder(namespace, filters, index, Integer.parseInt(Configclient
+							.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS))));
+				} else {
+					Filekvutil.indexes(index, key, filters, bigfilehash, Filekvutil.indexfolder(namespace, filters, index, Integer.parseInt(Configclient
+							.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS))));
+				}
 			}
 			return null;
-		} else if (CS.PARAM_ACTION_READ.equals(params.get(CS.PARAM_ACTION_KEY).toString())) {
-			String index = params.get(CS.PARAM_INDEX_KEY).toString();
-			String namespace = params.get(CS.PARAM_NAMESPACE_KEY).toString();
-			Vector<String> filters = (Vector<String>) params.get(CS.PARAM_FILTERS_KEY);
-			if (params.get(CS.PARAM_PAGENUM_KEY) == null) {
-				return Objectutil.convert(Filekvutil.index(index, filters, bigfilehash, indexfolder(namespace, null, index)));
+		} else if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
+			String index = params.get(STATIC.PARAM_INDEX_KEY).toString();
+			String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
+			Vector<String> filters = (Vector<String>) params.get(STATIC.PARAM_FILTERS_KEY);
+			if (Long.parseLong(filters.get(0))==STATIC.PAGENUM_UNIQUE) {
+				return Objectutil.convert(Filekvutil.index(index, filters, bigfilehash, Filekvutil.indexfolder(namespace, filters, index, Integer.parseInt(Configclient
+						.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS)))));
 			} else {
-				long pagenum = Long.parseLong(params.get(CS.PARAM_PAGENUM_KEY).toString());
-				int numofdata = Integer.parseInt(params.get(CS.PARAM_NUMOFDATA).toString());
-				return Objectutil.convert(Filekvutil.indexes(index, numofdata, pagenum, filters, bigfilehash, indexfolder(namespace, pagenum, index)));
+				return Objectutil.convert(Filekvutil.indexes(index, filters, bigfilehash, Filekvutil.indexfolder(namespace, filters, index, Integer.parseInt(Configclient
+						.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS)))));
 			}
+		} else if (STATIC.PARAM_ACTION_INCREMENT.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
+			String index = params.get(STATIC.PARAM_INDEX_KEY).toString();
+			String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
+			Vector<String> filters = (Vector<String>) params.get(STATIC.PARAM_FILTERS_KEY);
+			return Objectutil.convert(Filekvutil.indexincrement(index, filters, bigfilehash, Filekvutil.indexfolder(namespace, filters, index, Integer.parseInt(Configclient
+					.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS)))));
 		} else {
-			throw new Exception("notsupport-" + params.get(CS.PARAM_ACTION_KEY));
+			throw new Exception("notsupport-" + params.get(STATIC.PARAM_ACTION_KEY));
 		}
-	}
-
-
-	private static Path indexfolder(String namespace, Long pagenum, String index) {
-		return SS.LOCAL_DATAFOLDER.resolve(namespace)
-		.resolve(Bigclient.distributebigindexserveri(namespace, pagenum, index));
 	}
 
 	@Override
