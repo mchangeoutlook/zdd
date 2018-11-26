@@ -17,7 +17,7 @@ public class STATIC {
 	public static final String PARENTFOLDER = Paths.get(".").toAbsolutePath().getParent().getParent().getFileName()
 			.toString();
 
-	public static final Path LOCAL_DATAFOLDER = Paths.get(PARENTFOLDER).resolve("data");
+	public static final Path LOCAL_DATAFOLDER = Paths.get(".").toAbsolutePath().getParent().getParent().resolve("data");
 
 	public static final Path LOCAL_CONFIGFOLDER = Paths.get("config");
 

@@ -13,10 +13,10 @@ public class Dataclient {
 	private String key = null;
 	private String ns = null;
 	private String tb = null;
-	private Map<String, String> cvs = null;
-	private Map<String, Integer> cvmaxs = null;
-	private Map<String, Long> cas = null;
-	private Vector<String> cols = null;
+	private Map<String, String> cvs = new Hashtable<String, String>(100);
+	private Map<String, Integer> cvmaxs = new Hashtable<String, Integer>(100);
+	private Map<String, Long> cas = new Hashtable<String, Long>(100);
+	private Vector<String> cols = new Vector<String>(100);
 
 	private Dataclient(String namespace, String table) {
 		ns = namespace;
@@ -29,22 +29,6 @@ public class Dataclient {
 
 	public Dataclient key(String existkey) {
 		key = existkey;
-		return this;
-	}
-
-	public Dataclient columns(int numofcolumns) {
-		cols = new Vector<String>(numofcolumns);
-		return this;
-	}
-
-	public Dataclient columnvalues(int numofcolumnvalues) {
-		cvs = new Hashtable<String, String>(numofcolumnvalues);
-		cvmaxs = new Hashtable<String, Integer>(numofcolumnvalues);
-		return this;
-	}
-
-	public Dataclient columnamounts(int numofcolumnamounts) {
-		cas = new Hashtable<String, Long>(numofcolumnamounts);
 		return this;
 	}
 
@@ -74,7 +58,7 @@ public class Dataclient {
 
 	public String create() throws Exception {
 		if (cvs.isEmpty() || cvmaxs.isEmpty()) {
-			throw new Exception(".columnvalues.add4create.create");
+			throw new Exception(".add4create.create");
 		}
 		try {
 			if (key==null) {
@@ -98,7 +82,7 @@ public class Dataclient {
 
 	public void delete() throws Exception {
 		if (key == null || cols.isEmpty()) {
-			throw new Exception(".key.columns.add.delete");
+			throw new Exception(".key.add.delete");
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);
@@ -118,7 +102,7 @@ public class Dataclient {
 
 	public String modify() throws Exception {
 		if (key == null || cvs.isEmpty()) {
-			throw new Exception(".key.columnvalues.add4modify.modify");
+			throw new Exception(".key.add4modify.modify");
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);
@@ -139,7 +123,7 @@ public class Dataclient {
 	@SuppressWarnings("unchecked")
 	public Map<String, String> read() throws Exception {
 		if (key == null || cols.isEmpty()) {
-			throw new Exception(".key.columns.add.read");
+			throw new Exception(".key.add.read");
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);
@@ -160,7 +144,7 @@ public class Dataclient {
 	@SuppressWarnings("unchecked")
 	public Map<String, Long> increment() throws Exception {
 		if (key == null || cas.isEmpty()) {
-			throw new Exception(".key.columns.add4increment.increment");
+			throw new Exception(".key.add4increment.increment");
 		}
 		try {
 			Map<String, Object> params = new Hashtable<String, Object>(5);
