@@ -132,7 +132,7 @@ public class STATIC {
 		}
 	}
 
-	public static byte[] tobytes(String str) {
+	public static final byte[] tobytes(String str) {
 		try {
 			return str.getBytes("UTF-8");
 		} catch (Exception e) {
@@ -140,7 +140,7 @@ public class STATIC {
 		}
 	}
 
-	public static String tostring(byte[] b) {
+	public static final String tostring(byte[] b) {
 		try {
 			return new String(b, "UTF-8");
 		} catch (Exception e) {
@@ -148,15 +148,15 @@ public class STATIC {
 		}
 	}
 
-	public static String[] splitiport(String str) {
+	public static final String[] splitiport(String str) {
 		return str.split(":");
 	}
 
-	public static String splitiport(String ip, String port) {
+	public static final String splitiport(String ip, String port) {
 		return ip + ":" + port;
 	}
 
-	public static String localip() {
+	public static final String localip() {
 		String localip = null;
 		try {
 			Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
@@ -184,16 +184,16 @@ public class STATIC {
 	// to avoid dead lock, sync file and key on different range.
 	private static final int synchash = 10000;
 
-	public static String syncfile(Path tosync) {
+	public static final String syncfile(Path tosync) {
 
 		return String.valueOf(Math.abs(tosync.getFileName().toString().hashCode() % synchash) + synchash).intern();
 	}
 
-	public static String synckey(String tosync) {
+	public static final String synckey(String tosync) {
 		return String.valueOf(Math.abs(tosync.hashCode() % synchash)).intern();
 	}
 
-	public static String urldecode(String str) {
+	public static final String urldecode(String str) {
 		try {
 			return URLDecoder.decode(str, "UTF-8");
 		} catch (Exception e) {
@@ -201,7 +201,7 @@ public class STATIC {
 		}
 	}
 
-	public static String urlencode(String str) {
+	public static final String urlencode(String str) {
 		try {
 			return URLEncoder.encode(str, "UTF-8");
 		} catch (Exception e) {
@@ -209,15 +209,15 @@ public class STATIC {
 		}
 	}
 
-	public static String[] splitfromto(String str) {
+	public static final String[] splitfromto(String str) {
 		return str.split("-");
 	}
 
-	public static String splitfromto(String from, String to) {
+	public static final String splitfromto(String from, String to) {
 		return from + "-" + to;
 	}
 
-	public static String distributebigindexserveri(String namespace, Vector<String> filters, String index, int maxindexservers) {
+	public static final String distributebigindexserveri(String namespace, Vector<String> filters, String index, int maxindexservers) {
 		return String.valueOf(Math.abs((STATIC.splitenc(filters) + index).hashCode()) % maxindexservers);
 	}
 }

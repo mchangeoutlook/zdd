@@ -27,34 +27,27 @@ public class Movingdistribution extends Thread {
 	private String ip = null;
 	private String port = null;
 
-	private String iportpendingkey = null;
-
 	public Movingdistribution(String theip, String theport) {
 		ip = theip;
 		port = theport;
-		iportpendingkey = STATIC.splitiport(ip, port);
 	}
 
 	@Override
 	public void run() {
 		System.out.println(new Date() + " ==== started auto redistribution");
-		while (!STATIC.REMOTE_CONFIGVAL_PENDING
-				.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
+		while (Configclient.running) {
 
 			if (Files.exists(STATIC.LOCAL_DATAFOLDER) && Files.isDirectory(STATIC.LOCAL_DATAFOLDER)) {
 
 				String[] namespaces = STATIC.LOCAL_DATAFOLDER.toFile().list();
 				for (String namespace : namespaces) {
-					if (STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient
-							.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
+					if (!Configclient.running) {
 						break;
 					} else {
 						if (Files.isDirectory(STATIC.LOCAL_DATAFOLDER.resolve(namespace)) && !namespace.startsWith(".")) {
 							String[] serverindexes = STATIC.LOCAL_DATAFOLDER.resolve(namespace).toFile().list();
 							for (String serverindex : serverindexes) {
-								if (STATIC.REMOTE_CONFIGVAL_PENDING
-										.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING)
-												.read(iportpendingkey))) {
+								if (!Configclient.running) {
 									break;
 								} else {
 									if (Files.isDirectory(STATIC.LOCAL_DATAFOLDER.resolve(namespace).resolve(serverindex))
@@ -86,8 +79,7 @@ public class Movingdistribution extends Thread {
 				}
 
 			}
-			if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient
-					.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(STATIC.splitiport(ip, port)))) {
+			if (Configclient.running) {
 				try {
 					Thread.sleep(120000);
 				} catch (InterruptedException e1) {
@@ -110,8 +102,7 @@ public class Movingdistribution extends Thread {
 
 					@Override
 					public FileVisitResult postVisitDirectory(Object arg0, IOException arg1) throws IOException {
-						if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient
-								.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
+						if (Configclient.running) {
 							return FileVisitResult.CONTINUE;
 						} else {
 							return FileVisitResult.TERMINATE;
@@ -121,8 +112,7 @@ public class Movingdistribution extends Thread {
 
 					@Override
 					public FileVisitResult preVisitDirectory(Object arg0, BasicFileAttributes arg1) throws IOException {
-						if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient
-								.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
+						if (Configclient.running) {
 							return FileVisitResult.CONTINUE;
 						} else {
 							return FileVisitResult.TERMINATE;
@@ -131,8 +121,7 @@ public class Movingdistribution extends Thread {
 
 					@Override
 					public FileVisitResult visitFile(Object file, BasicFileAttributes arg1) throws IOException {
-						if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient
-								.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
+						if (Configclient.running) {
 							Path filtersfolder = Paths.get(file.toString());
 
 							if (!Files.isDirectory(filtersfolder)
@@ -231,8 +220,7 @@ public class Movingdistribution extends Thread {
 
 					@Override
 					public FileVisitResult visitFileFailed(Object arg0, IOException arg1) throws IOException {
-						if (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient
-								.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(iportpendingkey))) {
+						if (Configclient.running) {
 							return FileVisitResult.CONTINUE;
 						} else {
 							return FileVisitResult.TERMINATE;

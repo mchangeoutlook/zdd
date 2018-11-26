@@ -26,18 +26,9 @@ public class Digactive extends Thread {
 
 	@Override
 	public void run() {
-		String ipportpending = null;
-		try {
-			ipportpending = STATIC.splitenc(ip, port);
-		}catch(Exception e) {
-			System.out.println(new Date() + " ==== terminated digging due to below exception");
-			e.printStackTrace();
-			return;
-		}
+		
 		System.out.println(new Date() + " ==== activating digging");
-		while (!STATIC.REMOTE_CONFIGVAL_PENDING
-				.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING)
-						.read(ipportpending))) {
+		while (Configclient.running) {
 			if (Files.exists(STATIC.LOCAL_DATAFOLDER) && Files.isDirectory(STATIC.LOCAL_DATAFOLDER)) {
 					
 				String[] digs = null;
@@ -98,9 +89,7 @@ public class Digactive extends Thread {
 			} else {
 				//do nothing
 			}
-			if (!STATIC.REMOTE_CONFIGVAL_PENDING
-					.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING)
-							.read(ipportpending))) {
+			if (Configclient.running) {
 				try {
 					Thread.sleep(30000);
 				} catch (InterruptedException e1) {
