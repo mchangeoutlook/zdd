@@ -9,14 +9,17 @@ import com.zdd.bdc.client.util.STATIC;
 
 public class Filekvutil {
 
-	public static void config(String key, String value, String namespace, String configfile) throws Exception {
+	public static void configcreate(String key, String value, String namespace, String configfile) throws Exception {
 		Fileutil.create(STATIC.tobytes(key), 100, STATIC.tobytes(value), 500, configfile(namespace, configfile));
 	}
-
+	public static void configmodify(String key, String newvalue, String namespace, String configfile) throws Exception {
+		Fileutil.modifylastvalue2byvalue1(STATIC.tobytes(key), STATIC.tobytes(newvalue),
+				configfile(namespace, configfile));
+	}
 	public static String config(String key, String namespace, String configfile) throws Exception {
 		byte[] val = Fileutil.readfirstvalue2byvalue1(STATIC.tobytes(key), configfile(namespace, configfile));
 		if (STATIC.NAMESPACE_CORE.equals(namespace)&&STATIC.REMOTE_CONFIG_PENDING.equals(configfile)) {
-			config(key,"",namespace,configfile);
+			configmodify(key,"",namespace,configfile);
 		} else {
 			//do nothing
 		}
