@@ -78,6 +78,7 @@ public class Configfilegenerator {
 				 STATIC.REMOTE_CONFIG_PENDING);
 		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9998"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
+		 
 	}
 
 	private static void genpngbigfrom() throws Exception {
