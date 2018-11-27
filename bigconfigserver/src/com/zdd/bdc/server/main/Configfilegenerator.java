@@ -139,20 +139,20 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		//Filekvutil.configcreate("active", STATIC.splitenc(STATIC.splitfromto("0","9"),STATIC.splitfromto("10","19")), "unicorn",
+		Filekvutil.configcreate("active", STATIC.splitenc(STATIC.splitfromto("0","9"),STATIC.splitfromto("10","19")), "unicorn",
+				STATIC.REMOTE_CONFIG_BIGINDEX);
+		
+		//Filekvutil.configcreate("active", STATIC.splitenc(STATIC.splitfromto("0","19"),""), "unicorn",
+		//				STATIC.REMOTE_CONFIG_BIGINDEX);
+				
+		//Filekvutil.configcreate(STATIC.splitfromto("0","19"), STATIC.splitenc("bigindex1", "100", "127.0.0.1", "9991"), "unicorn",
 		//		STATIC.REMOTE_CONFIG_BIGINDEX);
 		
-		Filekvutil.configcreate("active", STATIC.splitenc(STATIC.splitfromto("0","19"),""), "unicorn",
-						STATIC.REMOTE_CONFIG_BIGINDEX);
-				
-		Filekvutil.configcreate(STATIC.splitfromto("0","19"), STATIC.splitenc("bigindex1", "100", "127.0.0.1", "9991"), "unicorn",
-				STATIC.REMOTE_CONFIG_BIGINDEX);
-		/*
 		Filekvutil.configcreate(STATIC.splitfromto("0","9"), STATIC.splitenc("bigindex1", "100", "127.0.0.1", "9991"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGINDEX);
 		Filekvutil.configcreate(STATIC.splitfromto("10","19"), STATIC.splitenc("bigindex2", "100", "127.0.0.1", "9992"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGINDEX);
-		*/
+		
 		//add here
 	}
 
