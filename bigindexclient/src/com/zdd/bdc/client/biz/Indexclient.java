@@ -12,7 +12,7 @@ public class Indexclient {
 
 	private String index = null;
 	private String ns = null;
-	private Vector<String> filters = new Vector<String>(10);
+	private Vector<String> filters = new Vector<String>(20);
 
 	private Indexclient(String namespace, String theindex) {
 		ns = namespace;

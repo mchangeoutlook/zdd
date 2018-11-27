@@ -15,7 +15,7 @@ public class Dataclient {
 	private String tb = null;
 	private Map<String, String> cvs = new Hashtable<String, String>(100);
 	private Map<String, Integer> cvmaxs = new Hashtable<String, Integer>(100);
-	private Map<String, Long> cas = new Hashtable<String, Long>(100);
+	private Map<String, Long> cas = new Hashtable<String, Long>(50);
 	private Vector<String> cols = new Vector<String>(100);
 
 	private Dataclient(String namespace, String table) {
@@ -58,7 +58,7 @@ public class Dataclient {
 
 	public String create() throws Exception {
 		if (cvs.isEmpty() || cvmaxs.isEmpty()) {
-			throw new Exception(".add4create.create");
+			throw new Exception("(.key).add4create.create");
 		}
 		try {
 			if (key==null) {
