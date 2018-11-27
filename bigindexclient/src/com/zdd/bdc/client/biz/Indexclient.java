@@ -72,7 +72,7 @@ public class Indexclient {
 			params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_CREATE);
 			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
 			params.put(STATIC.PARAM_INDEX_KEY, index);
-			filters.add(0, String.valueOf(indexincremented.longValue()%itemsonepage.longValue()));
+			filters.add(0, String.valueOf((indexincremented.longValue()-1)/itemsonepage.longValue()));
 			params.put(STATIC.PARAM_FILTERS_KEY, filters);
 			params.put(STATIC.PARAM_VERSION_KEY, version);
 			String[] iport = Bigclient.distributebigindex(ns, filters, index);

@@ -62,11 +62,11 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9991"), "pending", STATIC.NAMESPACE_CORE,
-				 STATIC.REMOTE_CONFIG_PENDING);
+//		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9991"), "pending", STATIC.NAMESPACE_CORE,
+//				 STATIC.REMOTE_CONFIG_PENDING);
 		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9992"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
-		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9993"), "pending", STATIC.NAMESPACE_CORE,
+/*		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9993"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
 		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9994"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
@@ -78,7 +78,7 @@ public class Configfilegenerator {
 				 STATIC.REMOTE_CONFIG_PENDING);
 		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9998"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
-		 
+*/		 
 	}
 
 	private static void genpngbigfrom() throws Exception {
@@ -139,13 +139,20 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		Filekvutil.configcreate("active", STATIC.splitenc(STATIC.splitfromto("0","9"),STATIC.splitfromto("10","19")), "unicorn",
-				STATIC.REMOTE_CONFIG_BIGINDEX);
+		//Filekvutil.configcreate("active", STATIC.splitenc(STATIC.splitfromto("0","9"),STATIC.splitfromto("10","19")), "unicorn",
+		//		STATIC.REMOTE_CONFIG_BIGINDEX);
 		
+		Filekvutil.configcreate("active", STATIC.splitenc(STATIC.splitfromto("0","19"),""), "unicorn",
+						STATIC.REMOTE_CONFIG_BIGINDEX);
+				
+		Filekvutil.configcreate(STATIC.splitfromto("0","19"), STATIC.splitenc("bigindex1", "100", "127.0.0.1", "9991"), "unicorn",
+				STATIC.REMOTE_CONFIG_BIGINDEX);
+		/*
 		Filekvutil.configcreate(STATIC.splitfromto("0","9"), STATIC.splitenc("bigindex1", "100", "127.0.0.1", "9991"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGINDEX);
 		Filekvutil.configcreate(STATIC.splitfromto("10","19"), STATIC.splitenc("bigindex2", "100", "127.0.0.1", "9992"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGINDEX);
+		*/
 		//add here
 	}
 

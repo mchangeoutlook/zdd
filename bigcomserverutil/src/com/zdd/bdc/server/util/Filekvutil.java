@@ -77,7 +77,7 @@ public class Filekvutil {
 					// do nothing
 				}
 			}
-			index(index, filters, bigfilehash, indexfolder);
+			indexes(index, value, filters, bigfilehash, indexfolder);
 		}
 	}
 

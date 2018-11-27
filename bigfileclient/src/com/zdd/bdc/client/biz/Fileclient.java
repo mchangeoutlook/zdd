@@ -14,8 +14,8 @@ public class Fileclient {
 		path = thepath;
 	}
 
-	public static Fileclient getinstance(String thepath) {
-		return new Fileclient(thepath);
+	public static Fileclient getinstance(String thepathonserver) {
+		return new Fileclient(thepathonserver);
 	}
 
 	public void write(String key, InputStream requests) throws Exception {
