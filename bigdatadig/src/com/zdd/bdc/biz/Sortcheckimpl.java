@@ -24,8 +24,8 @@ public class Sortcheckimpl implements Sortcheck{
 		String filters = sortingfolder.getParent().getParent().getFileName().toString();		
 		//String asc_seq = sortingfolder.getParent().getFileName().toString();
 		//String version = sortingfolder.getFileName().toString();
-		
 		Path datafolder = Filekvutil.datafolder(namespace, table, col);
+		System.out.println("debug ["+namespace+"]["+table+"]["+col+"]["+datafolder+"]");
 		String[] datafiles = datafolder.toFile().list();
 		for (String datafile : datafiles) {
 			StringBuffer error = new StringBuffer();

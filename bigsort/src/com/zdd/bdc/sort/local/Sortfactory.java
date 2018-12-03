@@ -39,7 +39,7 @@ public class Sortfactory {
 		} catch (Exception e) {
 			// do nothing
 		}
-		
+
 		System.out.println(new Date() + " ==== terminiated sorting [" + sortingfolder + "]");
 
 	}
@@ -48,17 +48,20 @@ public class Sortfactory {
 			Sortoutput output) {
 		try {
 			input.init();
-		}catch(Exception e) {
+		} catch (Exception e) {
 			System.out.println(new Date() + " ==== error init [" + input.getClass() + "]");
 			e.printStackTrace();
 			return;
 		}
 		Path sortingfolder = input.sortingfolder();
-		if (sortings.get(sortingfolder) == null&&Sortstatus.get(sortingfolder)==null) {
+		if (Sortstatus.get(sortingfolder) == null || Sortstatus.get(sortingfolder) == Sortstatus.ACCOMPLISHED
+				|| Sortstatus.get(sortingfolder) == Sortstatus.TERMINATE
+				|| Sortstatus.get(sortingfolder) == Sortstatus.SORT_NOTINCLUDED) {
 			try {
 				Sortstatus.set(sortingfolder, Sortstatus.SORT_INCLUDED);
-			}catch(Exception e) {
-				System.out.println(new Date() + " ==== error set [" + sortingfolder + "] status to "+Sortstatus.SORT_INCLUDED);
+			} catch (Exception e) {
+				System.out.println(
+						new Date() + " ==== error set [" + sortingfolder + "] status to " + Sortstatus.SORT_INCLUDED);
 				e.printStackTrace();
 				return;
 			}
@@ -71,20 +74,20 @@ public class Sortfactory {
 						input.inputmerge();
 						System.out.println(new Date() + " ==== done sorting local [" + sortingfolder + "]");
 
-						sortdistributes.put(sortingfolder,
-								new Sortdistribute(ip, port, input.isasc(), sortingservers.size(), sortingfolder, output));
-						
+						sortdistributes.put(sortingfolder, new Sortdistribute(ip, port, input.isasc(),
+								sortingservers.size(), sortingfolder, output));
+
 						Sortstatus.set(sortingfolder, Sortstatus.READY_TO_DISTRIBUTE);
-						
+
 						System.out.println(new Date() + " ==== started checking included sorting servers");
 						Vector<String> validsortingservers = new Vector<String>(sortingservers.size());
 						boolean waitingforlocalsortdone = true;
-						while(!Sortstatus.TERMINATE.equals(Sortstatus.get(sortingfolder))&&waitingforlocalsortdone) {
+						while (!Sortstatus.TERMINATE.equals(Sortstatus.get(sortingfolder)) && waitingforlocalsortdone) {
 							waitingforlocalsortdone = false;
 							validsortingservers.clear();
 							for (String ipport : sortingservers) {
 								Map<String, Object> params = new Hashtable<String, Object>(6);
-								params.put(STATIC.PARAM_KEY_KEY, sortingfolder);
+								params.put(STATIC.PARAM_KEY_KEY, sortingfolder.toString());
 								params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_READ);
 								String[] iport = STATIC.splitiport(ipport);
 								String check = (String) Objectutil.convert(Theclient.request(iport[0],
@@ -94,7 +97,8 @@ public class Sortfactory {
 								} else if (Sortstatus.SORT_NOTINCLUDED.equals(check)) {
 									// do nothing
 								} else if (Sortstatus.SORT_INCLUDED.equals(check)) {
-									System.out.println(new Date()+" ==== waiting for local sorting done on [" + ipport + "], recheck in 30 seconds");
+									System.out.println(new Date() + " ==== waiting for local sorting done on [" + ipport
+											+ "], recheck in 30 seconds");
 									Thread.sleep(30000);
 									waitingforlocalsortdone = true;
 									break;
@@ -112,9 +116,9 @@ public class Sortfactory {
 								public void run() {
 									try {
 										sortdistributes.get(sortingfolder).startinathread(validsortingservers);
-	
+
 										System.out.println(new Date() + " ==== started distributing sort folder ["
-												+ sortingfolder + "]");
+												+ sortingfolder + "] among ["+validsortingservers+"]");
 									} catch (Exception e) {
 										System.out.println(
 												new Date() + " ==== error when starting to distribute sort folder ["
@@ -123,11 +127,12 @@ public class Sortfactory {
 										Sortfactory.clear(sortingfolder, Sortstatus.TERMINATE);
 									}
 								}
-	
+
 							}).start();
 						}
 					} catch (Exception e) {
-						System.out.println(new Date() + " ==== error starting big sort of local [" + sortingfolder + "]");
+						System.out
+								.println(new Date() + " ==== error starting big sort of local [" + sortingfolder + "]");
 						e.printStackTrace();
 						Sortfactory.clear(sortingfolder, Sortstatus.TERMINATE);
 					}
@@ -137,8 +142,9 @@ public class Sortfactory {
 
 			try {
 				sortings.get(sortingfolder).start();
-			}catch(Exception e) {
-				System.out.println(new Date() + " ==== error starting big sort thread of local [" + sortingfolder + "]");
+			} catch (Exception e) {
+				System.out
+						.println(new Date() + " ==== error starting big sort thread of local [" + sortingfolder + "]");
 				e.printStackTrace();
 				Sortfactory.clear(sortingfolder, Sortstatus.TERMINATE);
 			}

@@ -49,17 +49,17 @@ public class Bigdataconfig {
 			date_ipport.put(key, date_ipport.get(key));
 
 			Calendar c = Calendar.getInstance();
-			c.setTime(STATIC.FORMAT_yMd.parse(key));
+			c.setTime(STATIC.yMd_FORMAT(key));
 			c.add(Calendar.DATE, 1);
 			while (i + 1 < sortedconfigkeys.length
-					&& !STATIC.FORMAT_yMd.format(c.getTime()).equals(sortedconfigkeys[i + 1].toString())) {
-				date_ipport.put(STATIC.FORMAT_yMd.format(c.getTime()), date_ipport.get(key));
+					&& !STATIC.yMd_FORMAT(c.getTime()).equals(sortedconfigkeys[i + 1].toString())) {
+				date_ipport.put(STATIC.yMd_FORMAT(c.getTime()), date_ipport.get(key));
 				c.add(Calendar.DATE, 1);
 			}
 			if (i + 1 >= sortedconfigkeys.length) {
 				while (c.getTime().compareTo(today) <= 0) {
 					tilltoday = true;
-					date_ipport.put(STATIC.FORMAT_yMd.format(c.getTime()), date_ipport.get(key));
+					date_ipport.put(STATIC.yMd_FORMAT(c.getTime()), date_ipport.get(key));
 					c.add(Calendar.DATE, 1);
 				}
 			}
@@ -68,18 +68,18 @@ public class Bigdataconfig {
 		if (tilltoday) {
 			c.setTime(today);
 		} else {
-			c.setTime(STATIC.FORMAT_yMd.parse(sortedconfigkeys[sortedconfigkeys.length - 1].toString()));
+			c.setTime(STATIC.yMd_FORMAT(sortedconfigkeys[sortedconfigkeys.length - 1].toString()));
 		}
 		c.add(Calendar.DATE, 1);
 		int moredays = 365 * 10;// 10years;
 		while (moredays > 0) {
 			String key = null;
 			if (tilltoday) {
-				key = STATIC.FORMAT_yMd.format(today);
+				key = STATIC.yMd_FORMAT(today);
 			} else {
 				key = sortedconfigkeys[sortedconfigkeys.length - 1].toString();
 			}
-			date_ipport.put(STATIC.FORMAT_yMd.format(c.getTime()), date_ipport.get(key));
+			date_ipport.put(STATIC.yMd_FORMAT(c.getTime()), date_ipport.get(key));
 			c.add(Calendar.DATE, 1);
 			moredays--;
 		}

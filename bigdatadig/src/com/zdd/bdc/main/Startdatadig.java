@@ -12,7 +12,7 @@ import com.zdd.bdc.server.ex.Theserver;
 import com.zdd.bdc.sort.distribute.Sortserver;
 
 /**
- * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp ../../severlibs/bigdatadig.jar:../../serverlibs/bigdataserver.jar:../../commonserverlibs/bigsort.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonserverlibs/bigexserver.jar com.zdd.bdc.main.Startdatadig unicorn > log.runbigdatadig &
+ * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigdatadig.jar:../../serverlibs/bigdataserver.jar:../../commonserverlibs/bigsort.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonserverlibs/bigexserver.jar com.zdd.bdc.main.Startdatadig unicorn > log.runbigdatadig &
  */
 
 public class Startdatadig {
@@ -50,11 +50,11 @@ public class Startdatadig {
 
 		}).start();
 		
-		int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitenc(ip, dataserverport)));
+		int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitiport(ip, dataserverport)));
 		
 		new Digactive(ip, port, bigfilehash).start();
 		
-		while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(STATIC.splitenc(ip, port)))) {
+		while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(STATIC.splitiport(ip, port)))) {
 			try {
 				Thread.sleep(30000);
 			} catch (InterruptedException e) {

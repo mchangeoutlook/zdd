@@ -47,7 +47,7 @@ public class Sortinputimpl extends Sortinput {
 	@Override
 	protected Path preparesortingfolder() throws Exception {
 		return Paths.get(STATIC.PARENTFOLDER).resolve(STATIC.REMOTE_CONFIG_DIG).resolve(digname).resolve(namespace)
-				.resolve(table).resolve(col).resolve(filters).resolve(version);
+				.resolve(table).resolve(col).resolve(filters).resolve(version).toAbsolutePath();
 	}
 
 	@Override

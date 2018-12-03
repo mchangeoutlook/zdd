@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -81,7 +82,13 @@ public class STATIC {
 		}
 	}
 
-	public static final SimpleDateFormat FORMAT_yMd = new SimpleDateFormat("yyyyMMdd");
+	public static final String yMd_FORMAT(Date d) {
+		return new SimpleDateFormat("yyyyMMdd").format(d);
+	}
+
+	public static final Date yMd_FORMAT(String datestr) throws Exception {
+		return new SimpleDateFormat("yyyyMMdd").parse(datestr);
+	}
 
 	public static final String FORMAT_yMd(String key) {
 		return key.substring(13, 17) + key.substring(7, 9) + key.substring(2, 4);

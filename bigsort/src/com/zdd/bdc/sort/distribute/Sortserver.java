@@ -2,6 +2,7 @@ package com.zdd.bdc.sort.distribute;
 
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class Sortserver implements Theserverprocess {
 	@Override
 	public byte[] request(byte[] param) throws Exception {
 		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(param);
-		Path sortingfolder = (Path) params.get(STATIC.PARAM_KEY_KEY);
+		Path sortingfolder = Paths.get((String) params.get(STATIC.PARAM_KEY_KEY));
 		if (Sortstatus.TERMINATE.equals(Sortstatus.get(sortingfolder))) {
 			return Objectutil.convert(Sortstatus.TERMINATE);
 		} else {

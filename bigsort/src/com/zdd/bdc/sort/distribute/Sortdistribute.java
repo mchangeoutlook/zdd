@@ -67,7 +67,7 @@ public class Sortdistribute{
 		for (String ipport : sortingservers) {
 			if (!stop) {
 				Map<String, Object> params = new Hashtable<String, Object>(6);
-				params.put(STATIC.PARAM_KEY_KEY, sortingfolder);
+				params.put(STATIC.PARAM_KEY_KEY, sortingfolder.toString());
 				params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_CREATE);
 				params.put(STATIC.PARAM_DATA_KEY, keyamount);
 				params.put(STATIC.PARAM_INDEX_KEY, STATIC.splitiport(ip, String.valueOf(port)));
