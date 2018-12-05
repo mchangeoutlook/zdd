@@ -76,24 +76,32 @@ public class Sortutil {
 		}
 	}
 
-	private static void clearfolder(Path thefolder, String except) throws Exception {
-		String[] files = thefolder.toFile().list();
+	private static void clearfolder(Path sortingfolder, String except) throws Exception {
+		Path physicalsortingfolder = STATIC.LOCAL_DATAFOLDER.getParent().resolve(sortingfolder);
+		String[] files = physicalsortingfolder.toFile().list();
 		if (files != null) {
 			for (String file : files) {
 				if (!file.equals(except)) {
-					Files.write(thefolder.resolve(file), new byte[0], StandardOpenOption.CREATE,
+					Files.write(physicalsortingfolder.resolve(file), new byte[0], StandardOpenOption.CREATE,
 							StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.SYNC);
-					Files.deleteIfExists(thefolder.resolve(file));
+					Files.deleteIfExists(physicalsortingfolder.resolve(file));
 				}
 			}
 		}
 	}
 	
-	public static void clear(Path thefolder, String status) throws Exception {
+	public static BufferedReader mergedfile(Path sortingfolder) throws Exception {
+		return Files.newBufferedReader(
+				STATIC.LOCAL_DATAFOLDER.getParent().resolve(sortingfolder).resolve(Sortutil.mergedfilename),
+				Charset.forName("UTF-8"));
+	}
+	
+	public static void clear(Path sortingfolder, String status) throws Exception {
 		if (Sortstatus.ACCOMPLISHED.equals(status)) {
-			clearfolder(thefolder, null);
+			clearfolder(sortingfolder, null);
 		} else {
-			Files.write(thefolder.resolve(terminate), new byte[0], StandardOpenOption.CREATE);
+			Path physicalsortingfolder = STATIC.LOCAL_DATAFOLDER.getParent().resolve(sortingfolder);
+			Files.write(physicalsortingfolder.resolve(terminate), new byte[0], StandardOpenOption.CREATE);
 		}
 	}
 

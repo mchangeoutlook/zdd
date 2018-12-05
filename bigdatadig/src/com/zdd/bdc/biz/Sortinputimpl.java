@@ -36,7 +36,7 @@ public class Sortinputimpl extends Sortinput {
 
 	@Override
 	protected boolean prepareisasc() {
-		return STATIC.SORT_SEQUENCE(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG).read(digname + ".sequence"));
+		return !STATIC.SORT_SEQUENCE(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG).read(digname + ".sequence"));
 	}
 
 	@Override

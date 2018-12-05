@@ -1,8 +1,6 @@
 package com.zdd.bdc.sort.distribute;
 
 import java.io.BufferedReader;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.HashMap;
@@ -106,13 +104,11 @@ public class Sortdistribute {
 	public synchronized void startinathread(Vector<String> thesortingservers) throws Exception {
 		try {
 			sortingservers = thesortingservers;
-			mergedfilereader = Files.newBufferedReader(
-					STATIC.LOCAL_DATAFOLDER.getParent().resolve(sortingfolder).resolve(Sortutil.mergedfilename),
-					Charset.forName("UTF-8"));
+			mergedfilereader = Sortutil.mergedfile(sortingfolder);
 			String keyamount = mergedfilereader.readLine();
 			addtoalldistribute(keyamount);
 			
-			System.out.println(new Date() + " ==== starting to distribute sort folder ["
+			System.out.println(new Date() + " ==== started distributing sort folder ["
 					+ sortingfolder + "] among ["+sortingservers+"]");
 			
 			while (!Sortstatus.TERMINATE.equals(Sortstatus.get(sortingfolder)) && !stop) {
@@ -138,6 +134,11 @@ public class Sortdistribute {
 				}
 			}
 			if (keyamount == null) {
+				try {
+					mergedfilereader.close();
+				} catch (Exception e) {
+					// do nothing
+				}
 				Sortutil.clear(sortingfolder, Sortstatus.ACCOMPLISHED);
 				Sortstatus.set(sortingfolder, Sortstatus.ACCOMPLISHED);
 			} else {
@@ -147,11 +148,7 @@ public class Sortdistribute {
 		} finally {
 			distributearray.clear();
 			sortingservers.clear();
-			try {
-				mergedfilereader.close();
-			} catch (Exception e) {
-				// do nothing
-			}
+			
 		}
 	}
 
