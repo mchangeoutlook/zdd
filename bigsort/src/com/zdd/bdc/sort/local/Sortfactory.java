@@ -16,9 +16,8 @@ import com.zdd.bdc.sort.util.Sortutil;
 
 public class Sortfactory {
 
-	public static Map<Path, Sortdistribute> sortdistributes = new Hashtable<Path, Sortdistribute>();
-	public static Map<Path, Thread> sortings = new Hashtable<Path, Thread>();
-
+	public static Map<String, Sortdistribute> sortdistributes = new Hashtable<String, Sortdistribute>();
+	
 	public static void clear(Path sortingfolder, String status) {
 		try {
 			Sortstatus.set(sortingfolder, status);
@@ -26,10 +25,8 @@ public class Sortfactory {
 			// do nothing
 		}
 
-		sortings.remove(sortingfolder);
-
 		try {
-			sortdistributes.remove(sortingfolder).clear();
+			sortdistributes.remove(sortingfolder.toString()).clear();
 		} catch (Exception e) {
 			// do nothing
 		}
@@ -65,7 +62,7 @@ public class Sortfactory {
 				e.printStackTrace();
 				return;
 			}
-			sortings.put(sortingfolder, new Thread(new Runnable() {
+			new Thread(new Runnable() {
 				@Override
 				public void run() {
 					try {
@@ -74,12 +71,12 @@ public class Sortfactory {
 						input.inputmerge();
 						System.out.println(new Date() + " ==== done sorting local [" + sortingfolder + "]");
 
-						sortdistributes.put(sortingfolder, new Sortdistribute(ip, port, input.isasc(),
+						sortdistributes.put(sortingfolder.toString(), new Sortdistribute(ip, port, input.isasc(),
 								sortingservers.size(), sortingfolder, output));
 
 						Sortstatus.set(sortingfolder, Sortstatus.READY_TO_DISTRIBUTE);
 
-						System.out.println(new Date() + " ==== started checking included sorting servers");
+						System.out.println(new Date() + " ==== started checking included sorting servers for ["+sortingfolder+"]");
 						Vector<String> validsortingservers = new Vector<String>(sortingservers.size());
 						boolean waitingforlocalsortdone = true;
 						while (!Sortstatus.TERMINATE.equals(Sortstatus.get(sortingfolder)) && waitingforlocalsortdone) {
@@ -97,7 +94,7 @@ public class Sortfactory {
 								} else if (Sortstatus.SORT_NOTINCLUDED.equals(check)) {
 									// do nothing
 								} else if (Sortstatus.SORT_INCLUDED.equals(check)) {
-									System.out.println(new Date() + " ==== waiting for local sorting done on [" + ipport
+									System.out.println(new Date() + " ==== waiting for local sorting ["+sortingfolder+"] done on [" + ipport
 											+ "], recheck in 30 seconds");
 									Thread.sleep(30000);
 									waitingforlocalsortdone = true;
@@ -115,10 +112,7 @@ public class Sortfactory {
 								@Override
 								public void run() {
 									try {
-										sortdistributes.get(sortingfolder).startinathread(validsortingservers);
-
-										System.out.println(new Date() + " ==== started distributing sort folder ["
-												+ sortingfolder + "] among ["+validsortingservers+"]");
+										sortdistributes.get(sortingfolder.toString()).startinathread(validsortingservers);
 									} catch (Exception e) {
 										System.out.println(
 												new Date() + " ==== error when starting to distribute sort folder ["
@@ -138,17 +132,11 @@ public class Sortfactory {
 					}
 
 				}
-			}));
-
-			try {
-				sortings.get(sortingfolder).start();
-			} catch (Exception e) {
-				System.out
-						.println(new Date() + " ==== error starting big sort thread of local [" + sortingfolder + "]");
-				e.printStackTrace();
-				Sortfactory.clear(sortingfolder, Sortstatus.TERMINATE);
-			}
-
+			}).start();
+		} else{
+			System.out
+			.println(new Date() + " ==== ignore sorting [" + sortingfolder + "] due to sort status ["+Sortstatus.get(sortingfolder)+"]");
+	
 		}
 	}
 }

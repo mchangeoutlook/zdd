@@ -36,7 +36,7 @@ public class Configfilegenerator {
 				STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig0.sequence", STATIC.SORT_SEQUENCE(true), STATIC.NAMESPACE_CORE,
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig0.interval", "W51317", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig0.interval", "W21443", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig0.period", STATIC.splitfromto("20180910","20181210"), STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig0.index", "testdigindex", STATIC.NAMESPACE_CORE,
 				STATIC.REMOTE_CONFIG_DIG);
@@ -47,7 +47,7 @@ public class Configfilegenerator {
 				STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig1.sequence", STATIC.SORT_SEQUENCE(false), STATIC.NAMESPACE_CORE,
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig1.interval", "D1317", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig1.interval", "D1443", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig1.period", STATIC.splitfromto("20180910","20200920"), STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig1.index", STATIC.splitenc("unicorn", "testable", "index"), STATIC.NAMESPACE_CORE,
 				STATIC.REMOTE_CONFIG_DIG);
@@ -58,7 +58,7 @@ public class Configfilegenerator {
 				STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig2.sequence", STATIC.SORT_SEQUENCE(false), STATIC.NAMESPACE_CORE,
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig2.interval", "D1317", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig2.interval", "D1443", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig2.period", STATIC.splitfromto("20180910","20200920"), STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig2.index", STATIC.splitenc("unicorn", "testable", "index"), STATIC.NAMESPACE_CORE,
 				STATIC.REMOTE_CONFIG_DIG);

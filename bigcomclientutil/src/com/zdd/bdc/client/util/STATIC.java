@@ -1,5 +1,7 @@
 package com.zdd.bdc.client.util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -226,5 +228,11 @@ public class STATIC {
 
 	public static final String distributebigindexserveri(String namespace, Vector<String> filters, String index, int maxindexservers) {
 		return String.valueOf(Math.abs((STATIC.splitenc(filters) + index).hashCode()) % maxindexservers);
+	}
+	
+	public static final String strackstring(Throwable t) {
+		StringWriter errors = new StringWriter();
+		t.printStackTrace(new PrintWriter(errors));
+		return errors.toString();
 	}
 }

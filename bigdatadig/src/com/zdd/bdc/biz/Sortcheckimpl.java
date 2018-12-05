@@ -3,7 +3,6 @@ package com.zdd.bdc.biz;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Path;
-import java.util.Map;
 
 import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.util.Filedatawalk;
@@ -16,16 +15,13 @@ import com.zdd.bdc.sort.util.Sortstatus;
 public class Sortcheckimpl implements Sortcheck{
 
 	@Override
-	public String check(Path sortingfolder, Map<String, String> additionalconfigs) throws Exception {
-		String digname = sortingfolder.getParent().getParent().getParent().getParent().getParent().getParent().getFileName().toString();		
-		String namespace = sortingfolder.getParent().getParent().getParent().getParent().getParent().getFileName().toString();		
-		String table = sortingfolder.getParent().getParent().getParent().getParent().getFileName().toString();		
-		String col = sortingfolder.getParent().getParent().getParent().getFileName().toString();		
-		String filters = sortingfolder.getParent().getParent().getFileName().toString();		
-		//String asc_seq = sortingfolder.getParent().getFileName().toString();
-		//String version = sortingfolder.getFileName().toString();
+	public String check(Path sortingfolder, int bigfilehash) throws Exception {
+		String digname = sortingfolder.getParent().getParent().getParent().getParent().getParent().getFileName().toString();		
+		String namespace = sortingfolder.getParent().getParent().getParent().getParent().getFileName().toString();		
+		String table = sortingfolder.getParent().getParent().getParent().getFileName().toString();		
+		String col = sortingfolder.getParent().getParent().getFileName().toString();		
+		String filters = sortingfolder.getParent().getFileName().toString();		
 		Path datafolder = Filekvutil.datafolder(namespace, table, col);
-		System.out.println("debug ["+namespace+"]["+table+"]["+col+"]["+datafolder+"]");
 		String[] datafiles = datafolder.toFile().list();
 		for (String datafile : datafiles) {
 			StringBuffer error = new StringBuffer();
@@ -40,7 +36,7 @@ public class Sortcheckimpl implements Sortcheck{
 					} else {
 						try {
 							String key = STATIC.tostring(v1);
-							if (filters.equals(Digging.getfilters(key, namespace, digname, Integer.parseInt(additionalconfigs.get("bigfilehash"))))) {
+							if (filters.equals(Digging.getfilters(key, namespace, digname, bigfilehash))) {
 								found.append("found");
 								return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
 										Filedatawalkresult.DATA_DONOTHING, null, null);

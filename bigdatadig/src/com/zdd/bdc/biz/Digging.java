@@ -116,6 +116,7 @@ public class Digging extends Thread {
 						
 						Map<String, String> sortfilters = new Hashtable<String, String>();
 						for (String datafile : datafiles) {
+							StringBuffer errors = new StringBuffer();
 							try {
 								Fileutil.walkdata(targetfolder.resolve(datafile), new Filedatawalk() {
 
@@ -130,9 +131,8 @@ public class Digging extends Thread {
 											try {
 												filters = Digging.getfilters(key, namespace, digname, bigfilehash);
 											}catch(Exception e) {
-												System.out.println(new Date() + " ==== ignore digging [" + digname + "][" + namespace + "]["
-														+ table + "][" + col + "] due to filters error of key=["+key+"], value=["+STATIC.tostring(v2)+"], continue to next data");
-												e.printStackTrace();
+												errors.append(new Date() + " ==== filters error of key=["+key+"], value=["+STATIC.tostring(v2)+"] due to "+STATIC.strackstring(e));
+												return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,Filedatawalkresult.DATA_DONOTHING,null,null);
 											}
 											if (filters != null) {
 												sortfilters.put(filters, filters);
@@ -144,10 +144,14 @@ public class Digging extends Thread {
 									}
 									
 								}, true);
+								if (errors.length()!=0) {
+									throw new Exception(errors.toString());
+								}
 							} catch (Exception e) {
-								System.out.println(new Date() + " ==== ignore digging [" + digname + "][" + namespace + "]["
-										+ table + "][" + col + "] due to error walking ["+datafile+"], continue to next data file");
+								System.out.println(new Date() + " ==== terminate digging [" + digname + "][" + namespace + "]["
+										+ table + "][" + col + "] due to error walking ["+datafile+"]");
 								e.printStackTrace();
+								return;
 							}
 						}
 						if (sortfilters.isEmpty()) {

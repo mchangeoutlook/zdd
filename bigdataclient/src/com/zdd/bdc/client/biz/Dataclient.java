@@ -44,9 +44,6 @@ public class Dataclient {
 	}
 
 	public Dataclient add4modify(String column, String value) {
-		if (value == null) {
-			value = "";
-		}
 		cvs.put(column, value);
 		return this;
 	}

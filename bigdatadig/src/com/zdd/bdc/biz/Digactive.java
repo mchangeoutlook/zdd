@@ -84,7 +84,6 @@ public class Digactive extends Thread {
 		}
 		if (digs != null) {
 			Date now = new Date();
-			String version = STATIC.yMd_FORMAT(now);
 			for (String digname : digs) {
 				String sort = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG)
 						.read(digname + ".sort");
@@ -112,6 +111,7 @@ public class Digactive extends Thread {
 							System.out.println(new Date() + " ==== wrong interval config [" + interval + "] for ["
 									+ digname + "]");
 						} else if (dayinterval.equals(interval) || weekinterval.equals(interval)) {
+							String version = "V"+STATIC.yMd_FORMAT(now)+interval;
 							addremoveactive(digname, new Digging(ip, port, digname, nstbcol[0], nstbcol[1], nstbcol[2],
 									bigfilehash, version));
 						} else {

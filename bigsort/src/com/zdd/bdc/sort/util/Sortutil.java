@@ -24,22 +24,23 @@ public class Sortutil {
 	public static final String terminate = "terminate";
 
 	public static void sortintofiles(boolean isasc, Map<String, Long> tosort, Path sortingfolder) throws Exception {
+		Path physicalsortingfolder = STATIC.LOCAL_DATAFOLDER.getParent().resolve(sortingfolder);
 		try {
-			if (!Files.exists(sortingfolder)) {
-				Files.createDirectories(sortingfolder);
+			if (!Files.exists(physicalsortingfolder)) {
+				Files.createDirectories(physicalsortingfolder);
 			} else {
-				if (Files.exists(sortingfolder.resolve(mergedfilename))) {
-					clearfolder(sortingfolder, null);
+				if (Files.exists(physicalsortingfolder.resolve(mergedfilename))) {
+					clearfolder(physicalsortingfolder, null);
 				} else {
 					// do nothing
 				}
 			}
 			
-			if (Files.exists(sortingfolder.resolve(terminate))) {
+			if (Files.exists(physicalsortingfolder.resolve(terminate))) {
 				throw new Exception("terminate");
 			}
 				
-			Path sortintofile = sortingfolder.resolve(String.valueOf(sortingfolder.toFile().list().length));
+			Path sortintofile = physicalsortingfolder.resolve(String.valueOf(physicalsortingfolder.toFile().list().length));
 
 			List<Map.Entry<String, Long>> entryList = new ArrayList<Map.Entry<String, Long>>(tosort.entrySet());
 			Collections.sort(entryList, new Comparator<Entry<String, Long>>() {
@@ -60,7 +61,7 @@ public class Sortutil {
 			Iterator<Map.Entry<String, Long>> iter = entryList.iterator();
 			Map.Entry<String, Long> tmpEntry = null;
 			while (iter.hasNext()) {
-				if (Files.exists(sortingfolder.resolve(terminate))) {
+				if (Files.exists(physicalsortingfolder.resolve(terminate))) {
 					throw new Exception("terminate");
 				}
 				tmpEntry = iter.next();
@@ -70,7 +71,7 @@ public class Sortutil {
 						StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.SYNC);
 			}
 		} catch (Exception e) {
-			clearfolder(sortingfolder, null);
+			clearfolder(physicalsortingfolder, null);
 			throw e;
 		}
 	}
@@ -97,18 +98,20 @@ public class Sortutil {
 	}
 
 	public static void sortmerge(boolean isasc, Path sortingfolder) throws Exception {
+		Path physicalsortingfolder = STATIC.LOCAL_DATAFOLDER.getParent().resolve(sortingfolder);
+		
 		Vector<BufferedReader> brs = null;
 		try {
-			Path mergedfile = sortingfolder.resolve(mergedfilename);
-			String[] sortingfiles = sortingfolder.toFile().list();
+			Path mergedfile = physicalsortingfolder.resolve(mergedfilename);
+			String[] sortingfiles = physicalsortingfolder.toFile().list();
 			brs = new Vector<BufferedReader>(sortingfiles.length);
 			Vector<Long> amounts = new Vector<Long>(sortingfiles.length);
 			Vector<String> keys = new Vector<String>(sortingfiles.length);
 			for (String sortingfile : sortingfiles) {
-				if (Files.exists(sortingfolder.resolve(terminate))) {
+				if (Files.exists(physicalsortingfolder.resolve(terminate))) {
 					throw new Exception("terminate");
 				}
-				BufferedReader br = Files.newBufferedReader(sortingfolder.resolve(sortingfile),
+				BufferedReader br = Files.newBufferedReader(physicalsortingfolder.resolve(sortingfile),
 						Charset.forName("UTF-8"));
 				brs.add(br);
 				String line = br.readLine();
@@ -120,7 +123,7 @@ public class Sortutil {
 			}
 
 			while (true) {
-				if (Files.exists(sortingfolder.resolve(terminate))) {
+				if (Files.exists(physicalsortingfolder.resolve(terminate))) {
 					throw new Exception("terminate");
 				}
 				Long min = null;
@@ -167,10 +170,10 @@ public class Sortutil {
 				}
 			}
 		} catch (Exception e) {
-			clearfolder(sortingfolder, null);
+			clearfolder(physicalsortingfolder, null);
 			throw e;
 		} finally {
-			clearfolder(sortingfolder, mergedfilename);
+			clearfolder(physicalsortingfolder, mergedfilename);
 			if (brs != null) {
 				for (BufferedReader br : brs) {
 					try {

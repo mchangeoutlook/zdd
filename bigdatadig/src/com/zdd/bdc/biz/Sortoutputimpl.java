@@ -24,18 +24,15 @@ public class Sortoutputimpl implements Sortoutput{
 	
 	@Override
 	public void init(Path sortingfolder) throws Exception {
-		digname = sortingfolder.getParent().getParent().getParent().getParent().getParent().getParent().getFileName().toString();		
-		namespace = sortingfolder.getParent().getParent().getParent().getParent().getParent().getFileName().toString();		
-		//table = sortingfolder.getParent().getParent().getParent().getParent().getFileName().toString();		
-		//col = sortingfolder.getParent().getParent().getParent().getFileName().toString();		
-		filters = sortingfolder.getParent().getParent().getFileName().toString();		
-		//asc_seq = sortingfolder.getParent().getFileName().toString();
+		digname = sortingfolder.getParent().getParent().getParent().getParent().getParent().getFileName().toString();		
+		namespace = sortingfolder.getParent().getParent().getParent().getParent().getFileName().toString();		
+		filters = sortingfolder.getParent().getFileName().toString();		
 		version = sortingfolder.getFileName().toString();
 	}
 
 	@Override
 	public void output(long position, String key, long value) throws Exception {
-		String[] toindex = STATIC.splitenc(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
+		String[] toindex = STATIC.splitenc(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG)
 				.read(digname + ".index"));
 		if (toindex.length==1) {
 			index(namespace, toindex[0], key, version);
