@@ -36,7 +36,6 @@ public class Sortfactory {
 		} catch (Exception e) {
 			// do nothing
 		}
-
 	}
 
 	public synchronized static void start(String ip, int port, Collection<String> sortingservers, Sortinput input,
