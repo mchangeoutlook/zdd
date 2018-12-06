@@ -73,35 +73,15 @@ public class Digactive extends Thread {
 	private static void active(String ip, String port, int bigfilehash, String weekinterval, String dayinterval) {
 		String[] digs = null;
 		String active = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG).read("active");
-		if (active != null && !active.trim().isEmpty()) {
-			try {
-				digs = STATIC.splitenc(active);
-			} catch (Exception e) {
-				System.out.println(new Date() + " ==== wrong active config [" + active + "]");
-			}
-		} else {
-			// do nothing
-		}
+		digs = STATIC.splitenc(active);
 		if (digs != null) {
 			Date now = new Date();
 			for (String digname : digs) {
 				String sort = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG)
 						.read(digname + ".sort");
-				String[] nstbcol = null;
-				try {
-					nstbcol = STATIC.splitenc(sort);
-				} catch (Exception e) {
-					System.out.println(new Date() + " ==== wrong sort config [" + sort + "] for [" + digname + "]");
-				}
+				String[] nstbcol = STATIC.splitenc(sort);
 				if (nstbcol != null) {
-					Path folder = null;
-					try {
-						folder = Filekvutil.datafolder(nstbcol[0], nstbcol[1], nstbcol[2]);
-					} catch (Exception e) {
-						System.out.println(new Date() + " ==== target data folder error before sort [" + sort
-								+ "] for [" + digname + "]");
-						e.printStackTrace();
-					}
+					Path folder = Filekvutil.datafolder(nstbcol[0], nstbcol[1], nstbcol[2]);
 					if (folder != null && Files.exists(folder) && Files.isDirectory(folder)) {
 						String interval = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG)
 								.read(digname + ".interval");
@@ -111,20 +91,22 @@ public class Digactive extends Thread {
 							System.out.println(new Date() + " ==== wrong interval config [" + interval + "] for ["
 									+ digname + "]");
 						} else if (dayinterval.equals(interval) || weekinterval.equals(interval)) {
-							String version = "V"+STATIC.yMd_FORMAT(now)+interval;
+							String version = "V" + STATIC.yMd_FORMAT(now) + interval;
 							addremoveactive(digname, new Digging(ip, port, digname, nstbcol[0], nstbcol[1], nstbcol[2],
 									bigfilehash, version));
 						} else {
-							//do nothing
+							// do nothing
 						}
 					} else {
-						System.out.println(
-								new Date() + " ==== invalid data folder [" + folder + "] for [" + digname + "]");
+						System.out.println(new Date() + " ==== invalid data folder for [" + digname + "] namespace=["
+								+ nstbcol[0] + "], table=[" + nstbcol[1] + "], col=[" + nstbcol[2] + "]");
 					}
+				} else {
+					System.out.println(new Date() + " ==== wrong sort config [" + sort + "] for [" + digname + "]");
 				}
 			}
 		} else {
-			// do nothing
+			System.out.println(new Date() + " ==== wrong active config [" + active + "]");
 		}
 	}
 

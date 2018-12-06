@@ -11,6 +11,7 @@ import java.util.Vector;
 import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.client.util.Objectutil;
+import com.zdd.bdc.sort.local.Sortfactory;
 import com.zdd.bdc.sort.local.Sortoutput;
 import com.zdd.bdc.sort.util.Sortstatus;
 import com.zdd.bdc.sort.util.Sortutil;
@@ -40,13 +41,14 @@ public class Sortdistribute {
 		distributearray = new HashMap<String, Sortelement>(initdistributearraycapacity);
 	}
 
-	public synchronized void addtodistribute(String fromip, int fromport, String key, long amount) {
-		if (key == null) {
+	public synchronized void addtodistribute(String fromip, int fromport, String keyamount) {
+		if (keyamount == null) {
 			distributearray.put(STATIC.splitiport(fromip, String.valueOf(fromport)), null);
 		} else {
-			position++;
+			String[] ka = STATIC.splitenc(keyamount);
 			distributearray.put(STATIC.splitiport(fromip, String.valueOf(fromport)),
-					new Sortelement(fromip, fromport, key, amount));
+					new Sortelement(fromip, fromport, ka[0], Long.parseLong(ka[1])));
+			position++;
 		}
 		clearnumofnotifies(false);
 
@@ -69,12 +71,7 @@ public class Sortdistribute {
 		for (String ipport : sortingservers) {
 			if (!stop) {
 				if (STATIC.splitiport(ip, String.valueOf(port)).equals(ipport)) {
-					if (keyamount == null) {
-						addtodistribute(ip, port, null, -1);
-					} else {
-						String[] ka = STATIC.splitenc(keyamount);
-						addtodistribute(ip, port, ka[0], Long.parseLong(ka[1]));
-					}
+					addtodistribute(ip, port, keyamount);
 				} else {
 					Map<String, Object> params = new Hashtable<String, Object>(6);
 					params.put(STATIC.PARAM_KEY_KEY, sortingfolder.toString());
@@ -106,6 +103,7 @@ public class Sortdistribute {
 			sortingservers = thesortingservers;
 			mergedfilereader = Sortutil.mergedfile(sortingfolder);
 			String keyamount = mergedfilereader.readLine();
+			
 			addtoalldistribute(keyamount);
 			
 			System.out.println(new Date() + " ==== started distributing sort folder ["
@@ -139,8 +137,7 @@ public class Sortdistribute {
 				} catch (Exception e) {
 					// do nothing
 				}
-				Sortutil.clear(sortingfolder, Sortstatus.ACCOMPLISHED);
-				Sortstatus.set(sortingfolder, Sortstatus.ACCOMPLISHED);
+				Sortfactory.clear(sortingfolder, Sortstatus.ACCOMPLISHED);
 			} else {
 				// do nothing
 			}
@@ -148,7 +145,6 @@ public class Sortdistribute {
 		} finally {
 			distributearray.clear();
 			sortingservers.clear();
-			
 		}
 	}
 

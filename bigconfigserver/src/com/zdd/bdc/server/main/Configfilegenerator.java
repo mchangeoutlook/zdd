@@ -36,7 +36,7 @@ public class Configfilegenerator {
 				STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig0.sequence", STATIC.SORT_SEQUENCE(true), STATIC.NAMESPACE_CORE,
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig0.interval", "W31124", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig0.interval", "W31644", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig0.period", STATIC.splitfromto("20180910","20181210"), STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig0.index", "testdigindex", STATIC.NAMESPACE_CORE,
 				STATIC.REMOTE_CONFIG_DIG);
@@ -47,7 +47,7 @@ public class Configfilegenerator {
 				STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig1.sequence", STATIC.SORT_SEQUENCE(false), STATIC.NAMESPACE_CORE,
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig1.interval", "D1124", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig1.interval", "D1644", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig1.period", STATIC.splitfromto("20180910","20200920"), STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig1.index", STATIC.splitenc("unicorn", "testable", "index"), STATIC.NAMESPACE_CORE,
 				STATIC.REMOTE_CONFIG_DIG);
@@ -58,7 +58,7 @@ public class Configfilegenerator {
 				STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig2.sequence", STATIC.SORT_SEQUENCE(false), STATIC.NAMESPACE_CORE,
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig2.interval", "D1124", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig2.interval", "D1644", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig2.period", STATIC.splitfromto("20180910","20200920"), STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig2.index", STATIC.splitenc("unicorn", "testable", "index"), STATIC.NAMESPACE_CORE,
 				STATIC.REMOTE_CONFIG_DIG);
@@ -102,9 +102,10 @@ public class Configfilegenerator {
 		Filekvutil.configcreate("active", STATIC.splitenc("20181023",""), "pngbigfrom",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		
-		Filekvutil.configcreate("20181023", STATIC.splitenc("bigpng1", "10", "127.0.0.1", "9998"), "pngbigfrom",
-				STATIC.REMOTE_CONFIG_BIGDATA);
+		//add here
 		Filekvutil.configcreate("20181023", STATIC.splitenc("bigpng2", "10", "127.0.0.1", "9997"), "pngbigfrom",
+				STATIC.REMOTE_CONFIG_BIGDATA);
+		Filekvutil.configcreate("20181023", STATIC.splitenc("bigpng1", "10", "127.0.0.1", "9998"), "pngbigfrom",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 	}
 
@@ -118,9 +119,10 @@ public class Configfilegenerator {
 		Filekvutil.configcreate("active", STATIC.splitenc("20181023",""), "pngbigto",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		
-		Filekvutil.configcreate("20181023", STATIC.splitenc("bigpng1", "10", "127.0.0.1", "9996"), "pngbigto",
-				STATIC.REMOTE_CONFIG_BIGDATA);
+		//add here
 		Filekvutil.configcreate("20181023", STATIC.splitenc("bigpng2", "10", "127.0.0.1", "9995"), "pngbigto",
+				STATIC.REMOTE_CONFIG_BIGDATA);
+		Filekvutil.configcreate("20181023", STATIC.splitenc("bigpng1", "10", "127.0.0.1", "9996"), "pngbigto",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 	}
 
@@ -134,9 +136,10 @@ public class Configfilegenerator {
 		Filekvutil.configcreate("active", STATIC.splitenc("20181023",""), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		
-		Filekvutil.configcreate("20181023", STATIC.splitenc("bigdata1", "100", "127.0.0.1", "9994"), "unicorn",
-				STATIC.REMOTE_CONFIG_BIGDATA);
+		//add here
 		Filekvutil.configcreate("20181023", STATIC.splitenc("bigdata2", "100", "127.0.0.1", "9993"), "unicorn",
+				STATIC.REMOTE_CONFIG_BIGDATA);
+		Filekvutil.configcreate("20181023", STATIC.splitenc("bigdata1", "100", "127.0.0.1", "9994"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 	}
 

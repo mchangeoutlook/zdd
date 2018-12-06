@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.util.STATIC;
@@ -36,7 +37,8 @@ public class Sortinputimpl extends Sortinput {
 
 	@Override
 	protected boolean prepareisasc() {
-		return !STATIC.SORT_SEQUENCE(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG).read(digname + ".sequence"));
+		return STATIC.SORT_SEQUENCE(
+				Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG).read(digname + ".sequence"));
 	}
 
 	@Override
@@ -46,8 +48,8 @@ public class Sortinputimpl extends Sortinput {
 
 	@Override
 	protected Path preparesortingfolder() throws Exception {
-		return Paths.get(STATIC.REMOTE_CONFIG_DIG).resolve(digname).resolve(namespace)
-				.resolve(table).resolve(col).resolve(filters).resolve(version);
+		return Paths.get(STATIC.REMOTE_CONFIG_DIG).resolve(digname).resolve(namespace).resolve(table).resolve(col)
+				.resolve(filters).resolve(version);
 	}
 
 	@Override
@@ -64,26 +66,32 @@ public class Sortinputimpl extends Sortinput {
 					if (isv1deleted || isv2deleted) {
 						return null;
 					} else {
-						try {
-							String key = STATIC.tostring(v1);
-							if (filters.equals(Digging.getfilters(key, namespace, digname, bigfilehash))) {
-								Long amount = null;
-								try {
-									amount = Long.parseLong(STATIC.tostring(v2));
-								} catch (Exception e) {
-									amount = (long) STATIC.tostring(v2).compareTo(STATIC.SORT_COMPARE_TO_STRING);
-								}
-								input(key, amount);
-							} else {
-								// do nothing
-							}
-							return null;
-						} catch (Exception e) {
-							StringWriter errors = new StringWriter();
-							e.printStackTrace(new PrintWriter(errors));
-							error.append(errors.toString());
+						if (!Configclient.running) {
+							error.append(new Date() + " ==== shutdown this server");
 							return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
 									Filedatawalkresult.DATA_DONOTHING, null, null);
+						} else {
+							try {
+								String key = STATIC.tostring(v1);
+								if (filters.equals(Digging.getfilters(key, namespace, digname, bigfilehash))) {
+									Long amount = null;
+									try {
+										amount = Long.parseLong(STATIC.tostring(v2));
+									} catch (Exception e) {
+										amount = (long) STATIC.tostring(v2).compareTo(STATIC.SORT_COMPARE_TO_STRING);
+									}
+									input(key, amount);
+								} else {
+									// do nothing
+								}
+								return null;
+							} catch (Exception e) {
+								StringWriter errors = new StringWriter();
+								e.printStackTrace(new PrintWriter(errors));
+								error.append(errors.toString());
+								return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
+										Filedatawalkresult.DATA_DONOTHING, null, null);
+							}
 						}
 					}
 				}

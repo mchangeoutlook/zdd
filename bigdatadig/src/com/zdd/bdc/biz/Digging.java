@@ -71,44 +71,24 @@ public class Digging extends Thread {
 					} else {
 						String[] ipports = STATIC.splitenc(servers);
 						for (String ipportstr : ipports) {
-							try {
-								String[] ipport = STATIC.splitiport(ipportstr);
-								if (ipport[0].equals(ip) && Startdatadig.sortserverport(ipport[1]).equals(port)) {
-									isthisserverincluded = true;
-								}
-								ipport[1] = Startdatadig.sortserverport(ipport[1]);
-								sortingserverswithinperiod.put(ipportstr, STATIC.splitiport(ipport[0], ipport[1]));
-							} catch (Exception e) {
-								System.out.println(new Date() + " ==== due to below exception terminated digging ["
-										+ digname + "][" + namespace + "][" + table + "][" + col + "] wrong ip port ["+ipportstr+"]");
-								e.printStackTrace();
-								Digactive.addremoveactive(digname, null);
-								return;
+							String[] ipport = STATIC.splitiport(ipportstr);
+							if (ipport[0].equals(ip) && Startdatadig.sortserverport(ipport[1]).equals(port)) {
+								isthisserverincluded = true;
 							}
+							ipport[1] = Startdatadig.sortserverport(ipport[1]);
+							sortingserverswithinperiod.put(ipportstr, STATIC.splitiport(ipport[0], ipport[1]));
 						}
 					}
 					cal.add(Calendar.DATE, 1);
 				}
 				if (sortingserverswithinperiod.isEmpty()) {
-					System.out.println(new Date() + " ==== no sorting servers for ["+digname+"]");
-					Digactive.addremoveactive(digname, null);
+					System.out.println(new Date() + " ==== no sorting servers for ["+digname+"] during period ["+period+"]");
 				} else {
 					if (!isthisserverincluded) {
 						System.out.println(new Date() + " ==== server ip [" + ip + "] port[" + port
 								+ "] is not included [" + sortingserverswithinperiod + "] for ["+digname+"]");
-						Digactive.addremoveactive(digname, null);
 					} else {
-						Path targetfolder = null;
-						try {
-							targetfolder = Filekvutil.datafolder(namespace, table, col);
-						} catch (Exception e) {
-							System.out.println(new Date() + " ==== due to below exception terminated digging ["
-									+ digname + "][" + namespace + "][" + table + "][" + col + "]");
-							e.printStackTrace();
-							Digactive.addremoveactive(digname, null);
-							return;
-						}
-						
+						Path targetfolder = Filekvutil.datafolder(namespace, table, col);
 						System.out.println(new Date() + " ==== started digging [" + digname + "][" + namespace + "]["
 								+ table + "][" + col + "]");
 
@@ -123,23 +103,28 @@ public class Digging extends Thread {
 									@Override
 									public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1,
 											boolean isv1deleted, byte[] v2, boolean isv2deleted) {
-										if (isv1deleted || isv2deleted) {
-											return null;
+										if (!Configclient.running) {
+											errors.append(new Date() + " ==== shutdown this server ["+ip+"]["+port+"]");
+											return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,Filedatawalkresult.DATA_DONOTHING,null,null);
 										} else {
-											String key = STATIC.tostring(v1);
-											String filters = null;
-											try {
-												filters = Digging.getfilters(key, namespace, digname, bigfilehash);
-											}catch(Exception e) {
-												errors.append(new Date() + " ==== filters error of key=["+key+"], value=["+STATIC.tostring(v2)+"] due to "+STATIC.strackstring(e));
-												return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,Filedatawalkresult.DATA_DONOTHING,null,null);
-											}
-											if (filters != null) {
-												sortfilters.put(filters, filters);
+											if (isv1deleted || isv2deleted) {
+												return null;
 											} else {
-												//do nothing
+												String key = STATIC.tostring(v1);
+												String filters = null;
+												try {
+													filters = Digging.getfilters(key, namespace, digname, bigfilehash);
+												}catch(Exception e) {
+													errors.append(new Date() + " ==== filters error of key=["+key+"], value=["+STATIC.tostring(v2)+"] due to "+STATIC.strackstring(e));
+													return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,Filedatawalkresult.DATA_DONOTHING,null,null);
+												}
+												if (filters != null) {
+													sortfilters.put(filters, filters);
+												} else {
+													//do nothing
+												}
+												return null;
 											}
-											return null;
 										}
 									}
 									
@@ -151,13 +136,13 @@ public class Digging extends Thread {
 								System.out.println(new Date() + " ==== terminate digging [" + digname + "][" + namespace + "]["
 										+ table + "][" + col + "] due to error walking ["+datafile+"]");
 								e.printStackTrace();
+								Digactive.addremoveactive(digname, null);
 								return;
 							}
 						}
 						if (sortfilters.isEmpty()) {
 							System.out.println(new Date() + " ==== ignore digging [" + digname + "][" + namespace + "]["
 									+ table + "][" + col + "] due to no filters ["+sortfilters+"]");
-							Digactive.addremoveactive(digname, null);
 						} else {
 							for (String filters:sortfilters.values()) {
 								Sortfactory.start(ip, Integer.parseInt(port), sortingserverswithinperiod.values(), 
@@ -169,12 +154,11 @@ public class Digging extends Thread {
 				}
 			} else {
 				System.out.println(new Date() + " ==== wrong period config [" + period + "] for ["+digname+"]");
-				Digactive.addremoveactive(digname, null);
 			}
 		} else {
 			System.out.println(new Date() + " ==== no period config [" + period + "] for ["+digname+"]");
-			Digactive.addremoveactive(digname, null);
 		}
+		Digactive.addremoveactive(digname, null);
 	}
 	
 	public static String getfilters(String key, String namespace, String digname, int bigfilehash) throws Exception {
@@ -193,7 +177,7 @@ public class Digging extends Thread {
 				String col = t[i+1];
 				String f = Filekvutil.dataread(key, ns, table, col, bigfilehash);
 				if (f==null||f.trim().isEmpty()) {
-					throw new Exception("emptyfilter");
+					throw new Exception("no filter value in col=["+col+"],table=["+table+"], namespace=["+ns+"]");
 				} else {
 					filterarray.add(f);
 				}

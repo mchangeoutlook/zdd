@@ -37,7 +37,7 @@ public class Sortutil {
 			}
 			
 			if (Files.exists(physicalsortingfolder.resolve(terminate))) {
-				throw new Exception("terminate");
+				throw new Exception("terminate local sort ["+sortingfolder+"]");
 			}
 				
 			Path sortintofile = physicalsortingfolder.resolve(String.valueOf(physicalsortingfolder.toFile().list().length));
@@ -62,7 +62,7 @@ public class Sortutil {
 			Map.Entry<String, Long> tmpEntry = null;
 			while (iter.hasNext()) {
 				if (Files.exists(physicalsortingfolder.resolve(terminate))) {
-					throw new Exception("terminate");
+					throw new Exception("terminate local sort ["+sortingfolder+"]");
 				}
 				tmpEntry = iter.next();
 				Files.write(sortintofile,
@@ -76,6 +76,12 @@ public class Sortutil {
 		}
 	}
 
+	public static BufferedReader mergedfile(Path sortingfolder) throws Exception {
+		return Files.newBufferedReader(
+				STATIC.LOCAL_DATAFOLDER.getParent().resolve(sortingfolder).resolve(Sortutil.mergedfilename),
+				Charset.forName("UTF-8"));
+	}
+	
 	private static void clearfolder(Path sortingfolder, String except) throws Exception {
 		Path physicalsortingfolder = STATIC.LOCAL_DATAFOLDER.getParent().resolve(sortingfolder);
 		String[] files = physicalsortingfolder.toFile().list();
@@ -90,18 +96,13 @@ public class Sortutil {
 		}
 	}
 	
-	public static BufferedReader mergedfile(Path sortingfolder) throws Exception {
-		return Files.newBufferedReader(
-				STATIC.LOCAL_DATAFOLDER.getParent().resolve(sortingfolder).resolve(Sortutil.mergedfilename),
-				Charset.forName("UTF-8"));
-	}
-	
 	public static void clear(Path sortingfolder, String status) throws Exception {
-		if (Sortstatus.ACCOMPLISHED.equals(status)) {
-			clearfolder(sortingfolder, null);
+		Path physicalsortingfolder = STATIC.LOCAL_DATAFOLDER.getParent().resolve(sortingfolder);
+		Files.write(physicalsortingfolder.resolve(terminate), new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC);
+		if (physicalsortingfolder.toFile().list().length==2&&Files.exists(physicalsortingfolder.resolve(mergedfilename))) {
+			clearfolder(physicalsortingfolder, null);
 		} else {
-			Path physicalsortingfolder = STATIC.LOCAL_DATAFOLDER.getParent().resolve(sortingfolder);
-			Files.write(physicalsortingfolder.resolve(terminate), new byte[0], StandardOpenOption.CREATE);
+			//do nothing
 		}
 	}
 
@@ -117,7 +118,7 @@ public class Sortutil {
 			Vector<String> keys = new Vector<String>(sortingfiles.length);
 			for (String sortingfile : sortingfiles) {
 				if (Files.exists(physicalsortingfolder.resolve(terminate))) {
-					throw new Exception("terminate");
+					throw new Exception("terminate local sort ["+sortingfolder+"]");
 				}
 				BufferedReader br = Files.newBufferedReader(physicalsortingfolder.resolve(sortingfile),
 						Charset.forName("UTF-8"));
@@ -132,7 +133,7 @@ public class Sortutil {
 
 			while (true) {
 				if (Files.exists(physicalsortingfolder.resolve(terminate))) {
-					throw new Exception("terminate");
+					throw new Exception("terminate local sort ["+sortingfolder+"]");
 				}
 				Long min = null;
 				int minindex = 0;

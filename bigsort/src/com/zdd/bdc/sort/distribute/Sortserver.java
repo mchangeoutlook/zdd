@@ -41,36 +41,23 @@ public class Sortserver implements Theserverprocess {
 			return Objectutil.convert(Sortstatus.TERMINATE);
 		} else {
 			if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
-				if (Sortstatus.get(sortingfolder)==null) {
+				if (Sortstatus.get(sortingfolder) == null) {
 					try {
-						Sortstatus.set(sortingfolder, check.check(sortingfolder,bigfilehash));
+						Sortstatus.set(sortingfolder, check.check(sortingfolder, bigfilehash));
 					} catch (Exception e) {
-						System.out.println(new Date() + " ==== error when checking sort folder [" + sortingfolder + "] on ["
-								+ STATIC.splitiport(ip, String.valueOf(port)) + "]");
+						System.out.println(new Date() + " ==== error when checking sort folder [" + sortingfolder
+								+ "] on [" + STATIC.splitiport(ip, String.valueOf(port)) + "]");
 						e.printStackTrace();
 						Sortfactory.clear(sortingfolder, Sortstatus.TERMINATE);
 					}
 				} else {
-					//do nothing
+					// do nothing
 				}
 				return Objectutil.convert(Sortstatus.get(sortingfolder));
 			} else if (STATIC.PARAM_ACTION_CREATE.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
-				try {
-					String[] ipport = STATIC.splitiport(params.get(STATIC.PARAM_INDEX_KEY).toString());
-					if (params.get(STATIC.PARAM_DATA_KEY)==null) {
-						Sortfactory.sortdistributes.get(sortingfolder.toString()).addtodistribute(ipport[0],
-								Integer.parseInt(ipport[1]), null, -1);
-					} else {
-						String[] keyamount = STATIC.splitenc(params.get(STATIC.PARAM_DATA_KEY).toString());
-						Sortfactory.sortdistributes.get(sortingfolder.toString()).addtodistribute(ipport[0],
-								Integer.parseInt(ipport[1]), keyamount[0], Long.parseLong(keyamount[1]));
-					}
-				} catch (Exception e) {
-					System.out.println(new Date() + " ==== error when distributing sort folder [" + sortingfolder
-							+ "] on [" + STATIC.splitiport(ip, String.valueOf(port)) + "]");
-					e.printStackTrace();
-					Sortfactory.clear(sortingfolder, Sortstatus.TERMINATE);
-				}
+				String[] ipport = STATIC.splitiport(params.get(STATIC.PARAM_INDEX_KEY).toString());
+				Sortfactory.sortdistributes.get(sortingfolder.toString()).addtodistribute(ipport[0],
+							Integer.parseInt(ipport[1]), (String)params.get(STATIC.PARAM_DATA_KEY));
 				return Objectutil.convert(Sortstatus.get(sortingfolder));
 			} else {
 				return null;
@@ -89,5 +76,4 @@ public class Sortserver implements Theserverprocess {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

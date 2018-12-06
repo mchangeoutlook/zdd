@@ -37,8 +37,6 @@ public class Sortfactory {
 			// do nothing
 		}
 
-		System.out.println(new Date() + " ==== terminiated sorting [" + sortingfolder + "]");
-
 	}
 
 	public synchronized static void start(String ip, int port, Collection<String> sortingservers, Sortinput input,
@@ -136,7 +134,6 @@ public class Sortfactory {
 		} else{
 			System.out
 			.println(new Date() + " ==== ignore sorting [" + sortingfolder + "] due to sort status ["+Sortstatus.get(sortingfolder)+"]");
-	
 		}
 	}
 }
