@@ -1,7 +1,5 @@
 package com.zdd.bdc.biz;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -86,9 +84,7 @@ public class Sortinputimpl extends Sortinput {
 								}
 								return null;
 							} catch (Exception e) {
-								StringWriter errors = new StringWriter();
-								e.printStackTrace(new PrintWriter(errors));
-								error.append(errors.toString());
+								error.append(STATIC.strackstring(e));
 								return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
 										Filedatawalkresult.DATA_DONOTHING, null, null);
 							}

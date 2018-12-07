@@ -37,15 +37,14 @@ public class Sortoutputimpl implements Sortoutput {
 			throw new Exception(new Date() + " ==== shutdown this server");
 		} else {
 			String[] toindex = STATIC.splitenc(
-					Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG).read(digname + ".index"));
+					Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG).read(digname + ".index"));
 			if (toindex.length == 1) {
 				index(namespace, toindex[0], key, version);
 			} else {
-				String ns = toindex[0];
-				for (int i = 1; i < toindex.length; i += 2) {
+				for (int i = 0; i < toindex.length; i += 2) {
 					String t = toindex[i];
 					String c = toindex[i + 1];
-					index(ns, Filekvutil.dataread(key, ns, t, c, bigfilehash), key, version);
+					index(namespace, Filekvutil.dataread(key, namespace, t, c, bigfilehash), key, version);
 				}
 			}
 		}

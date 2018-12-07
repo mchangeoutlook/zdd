@@ -23,46 +23,46 @@ public class Configfilegenerator {
 		Filekvutil.configcreate("itemsonepage", "100", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE);
 	}
 
-	private static void gendig() throws Exception {
-		Path configfile = Filekvutil.configfile(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
+	private static void genunicorndig() throws Exception {
+		Path configfile = Filekvutil.configfile("unicorn", STATIC.REMOTE_CONFIG_DIG);
 		if (Files.exists(configfile)) {
 			Files.write(configfile, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC,
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		Filekvutil.configcreate("active", STATIC.splitenc("dig0","dig1","dig2"), STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("active", STATIC.splitenc("dig0","dig1","dig2"), "unicorn", STATIC.REMOTE_CONFIG_DIG);
 		
-		Filekvutil.configcreate("dig0.sort", STATIC.splitenc("unicorn", "testable", "sort"), STATIC.NAMESPACE_CORE,
+		Filekvutil.configcreate("dig0.sort", STATIC.splitenc("testable", "sort"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig0.sequence", STATIC.SORT_SEQUENCE(true), STATIC.NAMESPACE_CORE,
+		Filekvutil.configcreate("dig0.sequence", STATIC.SORT_SEQUENCE(true), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig0.interval", "W31644", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig0.period", STATIC.splitfromto("20180910","20181210"), STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig0.index", "testdigindex", STATIC.NAMESPACE_CORE,
+		Filekvutil.configcreate("dig0.interval", "W31644", "unicorn", STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig0.period", STATIC.splitfromto("20180910","20181210"), "unicorn", STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig0.index", "testdigindex", "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig0.filter", STATIC.splitenc("unicorn", "testable", "filter1"), STATIC.NAMESPACE_CORE,
+		Filekvutil.configcreate("dig0.filter", STATIC.splitenc( "testable", "filter1"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
 		
-		Filekvutil.configcreate("dig1.sort", STATIC.splitenc("unicorn", "testable", "sort"), STATIC.NAMESPACE_CORE,
+		Filekvutil.configcreate("dig1.sort", STATIC.splitenc( "testable", "sort"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig1.sequence", STATIC.SORT_SEQUENCE(false), STATIC.NAMESPACE_CORE,
+		Filekvutil.configcreate("dig1.sequence", STATIC.SORT_SEQUENCE(false), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig1.interval", "D1644", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig1.period", STATIC.splitfromto("20180910","20200920"), STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig1.index", STATIC.splitenc("unicorn", "testable", "index"), STATIC.NAMESPACE_CORE,
+		Filekvutil.configcreate("dig1.interval", "D1644", "unicorn", STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig1.period", STATIC.splitfromto("20180910","20200920"), "unicorn", STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig1.index", STATIC.splitenc("testable", "index"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig1.filter", STATIC.splitenc("unicorn", "testable", "filter1", "testable", "filter2"), STATIC.NAMESPACE_CORE,
+		Filekvutil.configcreate("dig1.filter", STATIC.splitenc("testable", "filter1", "testable", "filter2"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
 
-		Filekvutil.configcreate("dig2.sort", STATIC.splitenc("unicorn", "testable", "sort"), STATIC.NAMESPACE_CORE,
+		Filekvutil.configcreate("dig2.sort", STATIC.splitenc("testable", "sort"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig2.sequence", STATIC.SORT_SEQUENCE(false), STATIC.NAMESPACE_CORE,
+		Filekvutil.configcreate("dig2.sequence", STATIC.SORT_SEQUENCE(false), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig2.interval", "D1644", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig2.period", STATIC.splitfromto("20180910","20200920"), STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig2.index", STATIC.splitenc("unicorn", "testable", "index"), STATIC.NAMESPACE_CORE,
+		Filekvutil.configcreate("dig2.interval", "D1644", "unicorn", STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig2.period", STATIC.splitfromto("20180910","20200920"), "unicorn", STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig2.index", STATIC.splitenc("testable", "index"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig2.filter", "", STATIC.NAMESPACE_CORE,
+		Filekvutil.configcreate("dig2.filter", "", "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
 }
 
@@ -169,7 +169,7 @@ public class Configfilegenerator {
 
 	public static void main(String[] s) throws Exception {
 		gencore();
-		gendig();
+		genunicorndig();
 		genpending();
 		genpngbigfrom();
 		genpngbigto();

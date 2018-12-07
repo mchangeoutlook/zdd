@@ -55,7 +55,7 @@ public class Startdatadig {
 		
 		int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitiport(ip, dataserverport)));
 		
-		new Digactive(ip, port, bigfilehash).start();
+		new Digactive(ip, port, s[0], bigfilehash).start();
 		
 		while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(STATIC.splitiport(ip, port)))) {
 			try {

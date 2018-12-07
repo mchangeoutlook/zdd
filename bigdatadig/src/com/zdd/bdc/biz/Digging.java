@@ -42,7 +42,7 @@ public class Digging extends Thread {
 	@Override
 	public void run() {
 
-		String period = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG)
+		String period = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
 				.read(digname + ".period");
 		if (period != null && !period.trim().isEmpty()) {
 			String[] startend = STATIC.splitfromto(period);
@@ -162,22 +162,21 @@ public class Digging extends Thread {
 	}
 	
 	public static String getfilters(String key, String namespace, String digname, int bigfilehash) throws Exception {
-		String filterconfig = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG)
+		String filterconfig = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
 				.read(digname + ".filter");
 		Vector<String> filterarray = new Vector<String>(10);
-		filterarray.add(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG)
+		filterarray.add(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
 				.read(digname + ".sequence"));
 		if (filterconfig==null||filterconfig.trim().isEmpty()) {
 			//do nothing;
 		} else {
 			String[] t = STATIC.splitenc(filterconfig);
-			String ns = t[0];
-			for (int i=1;i<t.length;i+=2) {
+			for (int i=0;i<t.length;i+=2) {
 				String table = t[i];
 				String col = t[i+1];
-				String f = Filekvutil.dataread(key, ns, table, col, bigfilehash);
+				String f = Filekvutil.dataread(key, namespace, table, col, bigfilehash);
 				if (f==null||f.trim().isEmpty()) {
-					throw new Exception("no filter value in col=["+col+"],table=["+table+"], namespace=["+ns+"]");
+					throw new Exception("no filter value in col=["+col+"],table=["+table+"], namespace=["+namespace+"]");
 				} else {
 					filterarray.add(f);
 				}

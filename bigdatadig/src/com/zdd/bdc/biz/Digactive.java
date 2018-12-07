@@ -17,11 +17,13 @@ public class Digactive extends Thread {
 	private String ip = null;
 	private String port = null;
 	private int bigfilehash = 0;
+	private String namespace = null;
 
-	public Digactive(String theip, String theport, int thebigfilehash) {
+	public Digactive(String theip, String theport, String thenamespace, int thebigfilehash) {
 		ip = theip;
 		port = theport;
 		bigfilehash = thebigfilehash;
+		namespace = thenamespace;
 	}
 
 	private Map<String, String> insameminute = new Hashtable<String, String>(1);
@@ -47,7 +49,7 @@ public class Digactive extends Thread {
 
 						@Override
 						public void run() {
-							active(ip, port, bigfilehash, weekinterval, dayinterval);
+							active(ip, port, namespace, bigfilehash, weekinterval, dayinterval);
 						}
 
 					}).start();
@@ -70,20 +72,20 @@ public class Digactive extends Thread {
 		System.out.println(new Date() + " ==== stopped activating digging");
 	}
 
-	private static void active(String ip, String port, int bigfilehash, String weekinterval, String dayinterval) {
+	private static void active(String ip, String port, String namespace, int bigfilehash, String weekinterval, String dayinterval) {
 		String[] digs = null;
-		String active = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG).read("active");
+		String active = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG).read("active");
 		digs = STATIC.splitenc(active);
 		if (digs != null) {
 			Date now = new Date();
 			for (String digname : digs) {
-				String sort = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG)
+				String sort = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
 						.read(digname + ".sort");
-				String[] nstbcol = STATIC.splitenc(sort);
-				if (nstbcol != null) {
-					Path folder = Filekvutil.datafolder(nstbcol[0], nstbcol[1], nstbcol[2]);
+				String[] tbcol = STATIC.splitenc(sort);
+				if (tbcol != null) {
+					Path folder = Filekvutil.datafolder(namespace, tbcol[0], tbcol[1]);
 					if (folder != null && Files.exists(folder) && Files.isDirectory(folder)) {
-						String interval = Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_DIG)
+						String interval = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
 								.read(digname + ".interval");
 						if (interval == null || !interval.startsWith("W") && !interval.startsWith("D")
 								|| interval.startsWith("D") && interval.length() != 5
@@ -92,14 +94,14 @@ public class Digactive extends Thread {
 									+ digname + "]");
 						} else if (dayinterval.equals(interval) || weekinterval.equals(interval)) {
 							String version = "V" + STATIC.yMd_FORMAT(now) + interval;
-							addremoveactive(digname, new Digging(ip, port, digname, nstbcol[0], nstbcol[1], nstbcol[2],
+							addremoveactive(digname, new Digging(ip, port, digname, namespace, tbcol[0], tbcol[1],
 									bigfilehash, version));
 						} else {
 							// do nothing
 						}
 					} else {
 						System.out.println(new Date() + " ==== invalid data folder for [" + digname + "] namespace=["
-								+ nstbcol[0] + "], table=[" + nstbcol[1] + "], col=[" + nstbcol[2] + "]");
+								+ namespace + "], table=[" + tbcol[0] + "], col=[" + tbcol[1] + "]");
 					}
 				} else {
 					System.out.println(new Date() + " ==== wrong sort config [" + sort + "] for [" + digname + "]");
