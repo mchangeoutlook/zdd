@@ -44,6 +44,17 @@ public class Sortdistribute {
 	public synchronized void addtodistribute(String fromip, int fromport, String keyamount) {
 		if (keyamount == null) {
 			distributearray.put(STATIC.splitiport(fromip, String.valueOf(fromport)), null);
+			
+				try {
+					mergedfilereader.close();
+				} catch (Exception e) {
+					// do nothing
+				}
+				Sortfactory.addorclear(sortingfolder, Sortstatus.ACCOMPLISHED, null, 0, null);
+			
+			distributearray.clear();
+			sortingservers.clear();
+		
 		} else {
 			String[] ka = STATIC.splitenc(keyamount);
 			distributearray.put(STATIC.splitiport(fromip, String.valueOf(fromport)),
@@ -67,7 +78,7 @@ public class Sortdistribute {
 		stop = true;
 	}
 
-	private void addtoalldistribute(String keyamount) throws Exception {
+	public void addtoalldistribute(String keyamount) throws Exception {
 		for (String ipport : sortingservers) {
 			if (!stop) {
 				if (STATIC.splitiport(ip, String.valueOf(port)).equals(ipport)) {
@@ -99,7 +110,6 @@ public class Sortdistribute {
 	}
 
 	public synchronized void startinathread(Vector<String> thesortingservers) throws Exception {
-		try {
 			sortingservers = thesortingservers;
 			mergedfilereader = Sortutil.mergedfile(sortingfolder);
 			String keyamount = mergedfilereader.readLine();
@@ -131,21 +141,7 @@ public class Sortdistribute {
 					}
 				}
 			}
-			if (keyamount == null) {
-				try {
-					mergedfilereader.close();
-				} catch (Exception e) {
-					// do nothing
-				}
-				Sortfactory.clear(sortingfolder, Sortstatus.ACCOMPLISHED);
-			} else {
-				// do nothing
-			}
 			
-		} finally {
-			distributearray.clear();
-			sortingservers.clear();
-		}
 	}
 
 }

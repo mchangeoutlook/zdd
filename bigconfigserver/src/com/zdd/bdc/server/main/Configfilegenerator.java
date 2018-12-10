@@ -32,35 +32,35 @@ public class Configfilegenerator {
 
 		Filekvutil.configcreate("active", STATIC.splitenc("dig0","dig1","dig2"), "unicorn", STATIC.REMOTE_CONFIG_DIG);
 		
-		Filekvutil.configcreate("dig0.sort", STATIC.splitenc("testable", "sort"), "unicorn",
+		Filekvutil.configcreate("dig0.sort", STATIC.splitenc("testable1", "sort1"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig0.sequence", STATIC.SORT_SEQUENCE(true), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig0.interval", "W31644", "unicorn", STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig0.interval", "W51245", "unicorn", STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig0.period", STATIC.splitfromto("20180910","20181210"), "unicorn", STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig0.index", "testdigindex", "unicorn",
+		Filekvutil.configcreate("dig0.index", STATIC.splitenc("testable1", "index1"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig0.filter", STATIC.splitenc( "testable", "filter1"), "unicorn",
+		Filekvutil.configcreate("dig0.filter", STATIC.splitenc( "testable1", "filter11"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
 		
 		Filekvutil.configcreate("dig1.sort", STATIC.splitenc( "testable", "sort"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig1.sequence", STATIC.SORT_SEQUENCE(false), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig1.interval", "D1644", "unicorn", STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig1.interval", "D1259", "unicorn", STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig1.period", STATIC.splitfromto("20180910","20200920"), "unicorn", STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig1.index", STATIC.splitenc("testable", "index"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig1.filter", STATIC.splitenc("testable", "filter1", "testable", "filter2"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
 
-		Filekvutil.configcreate("dig2.sort", STATIC.splitenc("testable", "sort"), "unicorn",
+		Filekvutil.configcreate("dig2.sort", STATIC.splitenc("testable3", "sort3"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig2.sequence", STATIC.SORT_SEQUENCE(false), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig2.interval", "D1644", "unicorn", STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig2.interval", "D1245", "unicorn", STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig2.period", STATIC.splitfromto("20180910","20200920"), "unicorn", STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig2.index", STATIC.splitenc("testable", "index"), "unicorn",
+		Filekvutil.configcreate("dig2.index", "testfixedindex", "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig2.filter", "", "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);

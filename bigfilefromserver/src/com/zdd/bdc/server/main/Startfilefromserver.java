@@ -27,7 +27,7 @@ public class Startfilefromserver {
 			@Override
 			public void run() {
 				try {
-					Theserver.startblocking(ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending, 10, Filefromserver.class, null);
+					Theserver.startblocking(STATIC.ES, ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending, 10, Filefromserver.class, null);
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== System exit due to below exception:");
 					e.printStackTrace();
@@ -53,6 +53,7 @@ public class Startfilefromserver {
 		}catch(Exception e) {
 			//do nothing
 		}
+		STATIC.ES.shutdownNow();
 		System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 		
 	}

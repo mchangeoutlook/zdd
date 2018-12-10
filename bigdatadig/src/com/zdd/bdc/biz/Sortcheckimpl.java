@@ -39,7 +39,9 @@ public class Sortcheckimpl implements Sortcheck {
 						if (isv1deleted || isv2deleted) {
 							return null;
 						} else {
-							if (Sortstatus.get(sortingfolder).equals(Sortstatus.SORT_INCLUDED)) {
+							if (Sortstatus.get(sortingfolder) != null
+									&& !Sortstatus.get(sortingfolder).equals(Sortstatus.SORT_NOTINCLUDED)
+									&& !Sortstatus.get(sortingfolder).equals(Sortstatus.TERMINATE)) {
 								found.append("found");
 								return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
 										Filedatawalkresult.DATA_DONOTHING, null, null);

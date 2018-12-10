@@ -27,7 +27,7 @@ public class Digactive extends Thread {
 	}
 
 	private Map<String, String> insameminute = new Hashtable<String, String>(1);
-
+	
 	@Override
 	public void run() {
 
@@ -45,14 +45,14 @@ public class Digactive extends Thread {
 				if (insameminute.get(dayinterval) == null) {
 					insameminute.clear();
 					insameminute.put(dayinterval, dayinterval);
-					new Thread(new Runnable() {
+					STATIC.ES.execute(new Runnable() {
 
 						@Override
 						public void run() {
 							active(ip, port, namespace, bigfilehash, weekinterval, dayinterval);
 						}
 
-					}).start();
+					});
 				} else {
 					// do nothing
 				}
@@ -108,7 +108,7 @@ public class Digactive extends Thread {
 				}
 			}
 		} else {
-			System.out.println(new Date() + " ==== wrong active config [" + active + "]");
+			//do nothing
 		}
 	}
 
@@ -117,10 +117,9 @@ public class Digactive extends Thread {
 	public static synchronized void addremoveactive(String digname, Digging digging) {
 		if (activedig.get(digname) == null && digging != null) {
 			activedig.put(digname, digging);
-			digging.start();
+			STATIC.ES.execute(digging);
 		} else if (digging == null) {
 			activedig.remove(digname);
-			System.out.println(new Date() + " ==== removed dig [" + digname + "]");
 		}
 	}
 

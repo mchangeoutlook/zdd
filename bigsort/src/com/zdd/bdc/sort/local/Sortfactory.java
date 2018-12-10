@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
-
 import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.client.util.Objectutil;
@@ -16,25 +15,34 @@ import com.zdd.bdc.sort.util.Sortutil;
 
 public class Sortfactory {
 
-	public static Map<String, Sortdistribute> sortdistributes = new Hashtable<String, Sortdistribute>();
+	private static Map<String, Sortdistribute> sortdistributes = new Hashtable<String, Sortdistribute>();
 	
-	public static void clear(Path sortingfolder, String status) {
-		try {
-			Sortstatus.set(sortingfolder, status);
-		} catch (Exception e) {
-			// do nothing
-		}
+		public synchronized static void addorclear(Path sortingfolder, String status, String ip, int port,
+			String keyamount) {
+		if (ip != null) {
+			if (sortdistributes.get(sortingfolder.toString()) != null) {
+				sortdistributes.get(sortingfolder.toString()).addtodistribute(ip, port, keyamount);
+			} else {
+				// do nothing
+			}
+		} else {
+			try {
+				Sortstatus.set(sortingfolder, status);
+			} catch (Exception e) {
+				// do nothing
+			}
 
-		try {
-			sortdistributes.remove(sortingfolder.toString()).clear();
-		} catch (Exception e) {
-			// do nothing
-		}
+			try {
+				sortdistributes.remove(sortingfolder.toString()).clear();
+			} catch (Exception e) {
+				// do nothing
+			}
 
-		try {
-			Sortutil.clear(sortingfolder, status);
-		} catch (Exception e) {
-			// do nothing
+			try {
+				Sortutil.clear(sortingfolder, status);
+			} catch (Exception e) {
+				// do nothing
+			}
 		}
 	}
 
@@ -48,18 +56,19 @@ public class Sortfactory {
 			return;
 		}
 		Path sortingfolder = input.sortingfolder();
-		if (Sortstatus.get(sortingfolder) == null || Sortstatus.get(sortingfolder) == Sortstatus.ACCOMPLISHED
-				|| Sortstatus.get(sortingfolder) == Sortstatus.TERMINATE
-				|| Sortstatus.get(sortingfolder) == Sortstatus.SORT_NOTINCLUDED) {
+		if (Sortstatus.get(sortingfolder) == null || Sortstatus.ACCOMPLISHED.equals(Sortstatus.get(sortingfolder))
+				|| Sortstatus.TERMINATE.equals(Sortstatus.get(sortingfolder))
+				|| Sortstatus.SORT_NOTINCLUDED.equals(Sortstatus.get(sortingfolder))
+				|| Sortstatus.SORT_INCLUDED.equals(Sortstatus.get(sortingfolder))) {
 			try {
-				Sortstatus.set(sortingfolder, Sortstatus.SORT_INCLUDED);
+				Sortstatus.set(sortingfolder, Sortstatus.SORT_INPROGRESS);
 			} catch (Exception e) {
 				System.out.println(
-						new Date() + " ==== error set [" + sortingfolder + "] status to " + Sortstatus.SORT_INCLUDED);
+						new Date() + " ==== error set [" + sortingfolder + "] status to " + Sortstatus.SORT_INPROGRESS);
 				e.printStackTrace();
 				return;
 			}
-			new Thread(new Runnable() {
+			STATIC.ES.execute(new Runnable() {
 				@Override
 				public void run() {
 					try {
@@ -73,7 +82,8 @@ public class Sortfactory {
 
 						Sortstatus.set(sortingfolder, Sortstatus.READY_TO_DISTRIBUTE);
 
-						System.out.println(new Date() + " ==== started checking included sorting servers for ["+sortingfolder+"]");
+						System.out.println(new Date() + " ==== started checking included sorting servers for ["
+								+ sortingfolder + "]");
 						Vector<String> validsortingservers = new Vector<String>(sortingservers.size());
 						boolean waitingforlocalsortdone = true;
 						while (!Sortstatus.TERMINATE.equals(Sortstatus.get(sortingfolder)) && waitingforlocalsortdone) {
@@ -90,9 +100,9 @@ public class Sortfactory {
 									validsortingservers.add(ipport);
 								} else if (Sortstatus.SORT_NOTINCLUDED.equals(check)) {
 									// do nothing
-								} else if (Sortstatus.SORT_INCLUDED.equals(check)) {
-									System.out.println(new Date() + " ==== waiting for local sorting ["+sortingfolder+"] done on [" + ipport
-											+ "], recheck in 30 seconds");
+								} else if (Sortstatus.SORT_INCLUDED.equals(check)||Sortstatus.SORT_INPROGRESS.equals(check)) {
+									System.out.println(new Date() + " ==== waiting for local sorting [" + sortingfolder
+											+ "] done on [" + ipport + "], recheck in 30 seconds");
 									Thread.sleep(30000);
 									waitingforlocalsortdone = true;
 									break;
@@ -105,34 +115,43 @@ public class Sortfactory {
 						if (validsortingservers.isEmpty()) {
 							throw new Exception("no sorting server");
 						} else {
-							new Thread(new Runnable() {
+							STATIC.ES.execute(new Runnable() {
 								@Override
 								public void run() {
 									try {
-										sortdistributes.get(sortingfolder.toString()).startinathread(validsortingservers);
+										sortdistributes.get(sortingfolder.toString())
+												.startinathread(validsortingservers);
 									} catch (Exception e) {
 										System.out.println(
 												new Date() + " ==== error when starting to distribute sort folder ["
 														+ sortingfolder + "]");
 										e.printStackTrace();
-										Sortfactory.clear(sortingfolder, Sortstatus.TERMINATE);
+										try {
+											sortdistributes.get(sortingfolder.toString()).addtoalldistribute(null);
+										} catch (Exception e1) {
+											System.out.println(
+													new Date() + " ==== error when notifying termination of sort folder ["
+															+ sortingfolder + "]");
+											e1.printStackTrace();
+										}
+										Sortfactory.addorclear(sortingfolder, Sortstatus.TERMINATE, null, 0, null);
 									}
 								}
 
-							}).start();
+							});
 						}
 					} catch (Exception e) {
 						System.out
 								.println(new Date() + " ==== error starting big sort of local [" + sortingfolder + "]");
 						e.printStackTrace();
-						Sortfactory.clear(sortingfolder, Sortstatus.TERMINATE);
+						Sortfactory.addorclear(sortingfolder, Sortstatus.TERMINATE, null, 0, null);
 					}
 
 				}
-			}).start();
-		} else{
-			System.out
-			.println(new Date() + " ==== ignore sorting [" + sortingfolder + "] due to sort status ["+Sortstatus.get(sortingfolder)+"]");
+			});
+		} else {
+			System.out.println(new Date() + " ==== ignore sorting [" + sortingfolder + "] due to sort status ["
+					+ Sortstatus.get(sortingfolder) + "]");
 		}
 	}
 }

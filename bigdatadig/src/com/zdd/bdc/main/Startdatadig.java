@@ -43,7 +43,7 @@ public class Startdatadig {
 					
 					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitiport(ip, dataserverport)));
 					
-					Theserver.startblocking(ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending, bigfilehash, Sortserver.class, additionalserverconfig);
+					Theserver.startblocking(STATIC.ES, ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending, bigfilehash, Sortserver.class, additionalserverconfig);
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== System exit due to below exception:");
 					e.printStackTrace();
@@ -73,6 +73,7 @@ public class Startdatadig {
 		}catch(Exception e) {
 			//do nothing
 		}
+		STATIC.ES.shutdownNow();
 		System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 	}
 

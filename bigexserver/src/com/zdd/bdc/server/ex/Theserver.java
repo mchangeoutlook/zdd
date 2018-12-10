@@ -17,12 +17,13 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 public class Theserver {
 
 	private static final Map<String, Theserverprocess> serverprocesses = new Hashtable<String, Theserverprocess>(); 
 	
-	public synchronized static void startblocking(String ip, int port, String ispending, StringBuffer pending, int bigfilehash,
+	public synchronized static void startblocking(ExecutorService es, String ip, int port, String ispending, StringBuffer pending, int bigfilehash,
 			final Class<?> c, Map<String, Object> additionalserverconfig) throws Exception {
 		try {
 			Theserverprocess ti = (Theserverprocess) c.getDeclaredConstructor().newInstance();
@@ -53,7 +54,7 @@ public class Theserver {
 				i.remove();
 				ServerSocketChannel nextReady = (ServerSocketChannel) sk.channel();
 				final Socket s = nextReady.accept().socket();
-				new Thread(new Runnable() {
+				es.execute(new Runnable() {
 					public void run() {
 						InputStream is = null;
 						try {
@@ -173,7 +174,7 @@ public class Theserver {
 						}
 					}
 
-				}).start();
+				});
 			}
 		}
 	}

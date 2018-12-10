@@ -48,7 +48,7 @@ public class Sortserver implements Theserverprocess {
 						System.out.println(new Date() + " ==== error when checking sort folder [" + sortingfolder
 								+ "] on [" + STATIC.splitiport(ip, String.valueOf(port)) + "]");
 						e.printStackTrace();
-						Sortfactory.clear(sortingfolder, Sortstatus.TERMINATE);
+						Sortfactory.addorclear(sortingfolder, Sortstatus.TERMINATE, null, 0, null);
 					}
 				} else {
 					// do nothing
@@ -56,7 +56,7 @@ public class Sortserver implements Theserverprocess {
 				return Objectutil.convert(Sortstatus.get(sortingfolder));
 			} else if (STATIC.PARAM_ACTION_CREATE.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
 				String[] ipport = STATIC.splitiport(params.get(STATIC.PARAM_INDEX_KEY).toString());
-				Sortfactory.sortdistributes.get(sortingfolder.toString()).addtodistribute(ipport[0],
+				Sortfactory.addorclear(sortingfolder, null, ipport[0],
 							Integer.parseInt(ipport[1]), (String)params.get(STATIC.PARAM_DATA_KEY));
 				return Objectutil.convert(Sortstatus.get(sortingfolder));
 			} else {

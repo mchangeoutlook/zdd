@@ -10,6 +10,7 @@ import com.zdd.bdc.client.util.STATIC;
 public class Sortstatus {
 	public static final String SORT_NOTINCLUDED = "sort_notincluded";
 	public static final String SORT_INCLUDED = "sort_included";
+	public static final String SORT_INPROGRESS = "sort_inprogress";
 	public static final String READY_TO_DISTRIBUTE = "ready_to_distribute";
 	public static final String ACCOMPLISHED = "distribute_accomplished";
 	public static final String TERMINATE = "terminate";
@@ -23,7 +24,7 @@ public class Sortstatus {
 		synchronized(STATIC.syncfile(sortingfolder)) {
 			if (!TERMINATE.equals(status)&&TERMINATE.equals(get(sortingfolder))) {
 				throw new Exception("terminated sorting ["+sortingfolder+"]");
-			} else if (READY_TO_DISTRIBUTE.equals(get(sortingfolder))&&SORT_INCLUDED.equals(status)){
+			} else if ((READY_TO_DISTRIBUTE.equals(get(sortingfolder))||SORT_INPROGRESS.equals(get(sortingfolder)))&&SORT_INCLUDED.equals(status)){
 				//do nothing
 			} else {
 				STATUS.put(sortingfolder.toString(), status);

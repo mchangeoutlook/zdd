@@ -14,9 +14,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class STATIC {
 
+	public static ExecutorService ES = Executors.newCachedThreadPool();
+	
 	public static final String PARENTFOLDER = Paths.get(".").toAbsolutePath().getParent().getParent().getFileName()
 			.toString();
 

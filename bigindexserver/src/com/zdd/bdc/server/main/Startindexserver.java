@@ -28,7 +28,7 @@ public class Startindexserver {
 				try {
 					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGINDEX).read(STATIC.splitiport(ip, port)));
 					
-					Theserver.startblocking(ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending,
+					Theserver.startblocking(STATIC.ES, ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending,
 							bigfilehash,
 							Indexserver.class, null);
 				} catch (Exception e) {
@@ -60,6 +60,7 @@ public class Startindexserver {
 		}catch(Exception e) {
 			//do nothing
 		}
+		STATIC.ES.shutdownNow();
 		System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 	}
 
