@@ -41,7 +41,7 @@ public class Sortinputimpl extends Sortinput {
 
 	@Override
 	protected int prepareonefilecapacity() {
-		return 1000000;
+		return 200000;
 	}
 
 	@Override
