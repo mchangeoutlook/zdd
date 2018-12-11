@@ -42,8 +42,7 @@ public class Digging extends Thread {
 	@Override
 	public void run() {
 
-		String period = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
-				.read(digname + ".period");
+		String period = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG).read(digname + ".period");
 		if (period != null && !period.trim().isEmpty()) {
 			String[] startend = STATIC.splitfromto(period);
 			Date start = null;
@@ -64,7 +63,7 @@ public class Digging extends Thread {
 							.read(STATIC.yMd_FORMAT(cal.getTime()));
 					if (servers == null || servers.trim().isEmpty()) {
 						if (sortingserverswithinperiod.isEmpty()) {
-							//do nothing
+							// do nothing
 						} else {
 							break;
 						}
@@ -82,18 +81,19 @@ public class Digging extends Thread {
 					cal.add(Calendar.DATE, 1);
 				}
 				if (sortingserverswithinperiod.isEmpty()) {
-					System.out.println(new Date() + " ==== no sorting servers for ["+digname+"] during period ["+period+"]");
+					System.out.println(new Date() + " ==== no sorting servers for [" + digname + "] during period ["
+							+ period + "]");
 				} else {
 					if (!isthisserverincluded) {
 						System.out.println(new Date() + " ==== server ip [" + ip + "] port[" + port
-								+ "] is not included [" + sortingserverswithinperiod + "] for ["+digname+"]");
+								+ "] is not included [" + sortingserverswithinperiod + "] for [" + digname + "]");
 					} else {
 						Path targetfolder = Filekvutil.datafolder(namespace, table, col);
 						System.out.println(new Date() + " ==== started digging [" + digname + "][" + namespace + "]["
 								+ table + "][" + col + "]");
 
 						String[] datafiles = targetfolder.toFile().list();
-						
+
 						Map<String, String> sortfilters = new Hashtable<String, String>();
 						for (String datafile : datafiles) {
 							StringBuffer errors = new StringBuffer();
@@ -101,11 +101,13 @@ public class Digging extends Thread {
 								Fileutil.walkdata(targetfolder.resolve(datafile), new Filedatawalk() {
 
 									@Override
-									public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1,
-											boolean isv1deleted, byte[] v2, boolean isv2deleted) {
+									public Filedatawalkresult data(long datasequence, long dataseqincludedeleted,
+											byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
 										if (!Configclient.running) {
-											errors.append(new Date() + " ==== shutdown this server ["+ip+"]["+port+"]");
-											return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,Filedatawalkresult.DATA_DONOTHING,null,null);
+											errors.append(new Date() + " ==== shutdown this server [" + ip + "][" + port
+													+ "]");
+											return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
+													Filedatawalkresult.DATA_DONOTHING, null, null);
 										} else {
 											if (isv1deleted || isv2deleted) {
 												return null;
@@ -114,27 +116,30 @@ public class Digging extends Thread {
 												String filters = null;
 												try {
 													filters = Digging.getfilters(key, namespace, digname, bigfilehash);
-												}catch(Exception e) {
-													errors.append(new Date() + " ==== filters error of key=["+key+"], value=["+STATIC.tostring(v2)+"] due to "+STATIC.strackstring(e));
-													return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,Filedatawalkresult.DATA_DONOTHING,null,null);
+												} catch (Exception e) {
+													errors.append(new Date() + " ==== filters error of key=[" + key
+															+ "], value=[" + STATIC.tostring(v2) + "] due to "
+															+ STATIC.strackstring(e));
+													return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
+															Filedatawalkresult.DATA_DONOTHING, null, null);
 												}
 												if (filters != null) {
 													sortfilters.put(filters, filters);
 												} else {
-													//do nothing
+													// do nothing
 												}
 												return null;
 											}
 										}
 									}
-									
+
 								}, true);
-								if (errors.length()!=0) {
+								if (errors.length() != 0) {
 									throw new Exception(errors.toString());
 								}
 							} catch (Exception e) {
-								System.out.println(new Date() + " ==== terminate digging [" + digname + "][" + namespace + "]["
-										+ table + "][" + col + "] due to error walking ["+datafile+"]");
+								System.out.println(new Date() + " ==== terminate digging [" + digname + "][" + namespace
+										+ "][" + table + "][" + col + "] due to error walking [" + datafile + "]");
 								e.printStackTrace();
 								Digactive.addremoveactive(digname, null);
 								return;
@@ -142,47 +147,51 @@ public class Digging extends Thread {
 						}
 						if (sortfilters.isEmpty()) {
 							System.out.println(new Date() + " ==== ignore digging [" + digname + "][" + namespace + "]["
-									+ table + "][" + col + "] due to no filters ["+sortfilters+"]");
+									+ table + "][" + col + "] due to no filters [" + sortfilters + "]");
 						} else {
-							for (String filters:sortfilters.values()) {
-								Sortfactory.start(ip, Integer.parseInt(port), sortingserverswithinperiod.values(), 
-										new Sortinputimpl(digname, namespace, table, col, filters, version, bigfilehash),
+							for (String filters : sortfilters.values()) {
+								Sortfactory.start(ip, Integer.parseInt(port), sortingserverswithinperiod.values(),
+										new Sortinputimpl(digname, namespace, table, col, filters, version,
+												bigfilehash),
 										new Sortoutputimpl(bigfilehash));
 							}
 						}
 					}
 				}
 			} else {
-				System.out.println(new Date() + " ==== wrong period config [" + period + "] for ["+digname+"]");
+				System.out.println(new Date() + " ==== wrong period config [" + period + "] for [" + digname + "]");
 			}
 		} else {
-			System.out.println(new Date() + " ==== no period config [" + period + "] for ["+digname+"]");
+			System.out.println(new Date() + " ==== no period config [" + period + "] for [" + digname + "]");
 		}
 		Digactive.addremoveactive(digname, null);
 	}
-	
+
 	public static String getfilters(String key, String namespace, String digname, int bigfilehash) throws Exception {
-		String filterconfig = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
-				.read(digname + ".filter");
+		String filterconfig = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG).read(digname + ".filter");
 		Vector<String> filterarray = new Vector<String>(10);
-		filterarray.add(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
-				.read(digname + ".sequence"));
-		if (filterconfig==null||filterconfig.trim().isEmpty()) {
-			//do nothing;
+		filterarray.add(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG).read(digname + ".sequence"));
+		if (filterconfig == null || filterconfig.trim().isEmpty()) {
+			// do nothing;
 		} else {
 			String[] t = STATIC.splitenc(filterconfig);
-			for (int i=0;i<t.length;i+=2) {
-				String table = t[i];
-				String col = t[i+1];
-				String f = Filekvutil.dataread(key, namespace, table, col, bigfilehash);
-				if (f==null||f.trim().isEmpty()) {
-					throw new Exception("no filter value in col=["+col+"],table=["+table+"], namespace=["+namespace+"]");
-				} else {
-					filterarray.add(f);
+			if (t.length == 1) {
+				filterarray.add(filterconfig);
+			} else {
+				for (int i = 0; i < t.length; i += 2) {
+					String table = t[i];
+					String col = t[i + 1];
+					String f = Filekvutil.dataread(key, namespace, table, col, bigfilehash);
+					if (f == null || f.trim().isEmpty()) {
+						throw new Exception("no filter value in col=[" + col + "],table=[" + table + "], namespace=["
+								+ namespace + "]");
+					} else {
+						filterarray.add(f);
+					}
 				}
 			}
 		}
 		return STATIC.splitenc(filterarray);
 	}
-	
+
 }

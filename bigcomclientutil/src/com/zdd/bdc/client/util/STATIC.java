@@ -191,6 +191,7 @@ public class STATIC {
 		} catch (Exception e) {
 			// do nothing
 		}
+		System.out.println(new Date()+" ==== local ip=["+localip+"]");
 		return localip;
 	}
 

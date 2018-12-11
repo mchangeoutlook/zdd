@@ -121,6 +121,7 @@ public class Sortfactory {
 									try {
 										sortdistributes.get(sortingfolder.toString())
 												.startinathread(validsortingservers);
+										Sortfactory.addorclear(sortingfolder, Sortstatus.ACCOMPLISHED, null, 0, null);
 									} catch (Exception e) {
 										System.out.println(
 												new Date() + " ==== error when starting to distribute sort folder ["

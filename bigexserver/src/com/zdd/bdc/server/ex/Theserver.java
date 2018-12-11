@@ -177,5 +177,6 @@ public class Theserver {
 				});
 			}
 		}
+		es.shutdownNow();
 	}
 }

@@ -9,9 +9,8 @@ import java.util.Map;
 import java.util.Vector;
 
 import com.zdd.bdc.client.ex.Theclient;
-import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.client.util.Objectutil;
-import com.zdd.bdc.sort.local.Sortfactory;
+import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.sort.local.Sortoutput;
 import com.zdd.bdc.sort.util.Sortstatus;
 import com.zdd.bdc.sort.util.Sortutil;
@@ -44,17 +43,6 @@ public class Sortdistribute {
 	public synchronized void addtodistribute(String fromip, int fromport, String keyamount) {
 		if (keyamount == null) {
 			distributearray.put(STATIC.splitiport(fromip, String.valueOf(fromport)), null);
-			
-				try {
-					mergedfilereader.close();
-				} catch (Exception e) {
-					// do nothing
-				}
-				Sortfactory.addorclear(sortingfolder, Sortstatus.ACCOMPLISHED, null, 0, null);
-			
-			distributearray.clear();
-			sortingservers.clear();
-		
 		} else {
 			String[] ka = STATIC.splitenc(keyamount);
 			distributearray.put(STATIC.splitiport(fromip, String.valueOf(fromport)),
@@ -74,11 +62,20 @@ public class Sortdistribute {
 		}
 	}
 
-	public void clear() {
+	public void clear() throws Exception {
 		stop = true;
+
+		try {
+			mergedfilereader.close();
+		} catch (Exception e) {
+			// do nothing
+		}
+
+		distributearray.clear();
+		sortingservers.clear();
 	}
 
-	public void addtoalldistribute(String keyamount) throws Exception {
+	public synchronized void addtoalldistribute(String keyamount) throws Exception {
 		for (String ipport : sortingservers) {
 			if (!stop) {
 				if (STATIC.splitiport(ip, String.valueOf(port)).equals(ipport)) {
@@ -87,10 +84,10 @@ public class Sortdistribute {
 					Map<String, Object> params = new Hashtable<String, Object>(6);
 					params.put(STATIC.PARAM_KEY_KEY, sortingfolder.toString());
 					params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_CREATE);
-					if (keyamount!=null) {
+					if (keyamount != null) {
 						params.put(STATIC.PARAM_DATA_KEY, keyamount);
 					} else {
-						//do nothing
+						// do nothing
 					}
 					params.put(STATIC.PARAM_INDEX_KEY, STATIC.splitiport(ip, String.valueOf(port)));
 					String[] iport = STATIC.splitiport(ipport);
@@ -110,38 +107,36 @@ public class Sortdistribute {
 	}
 
 	public synchronized void startinathread(Vector<String> thesortingservers) throws Exception {
-			sortingservers = thesortingservers;
-			mergedfilereader = Sortutil.mergedfile(sortingfolder);
-			String keyamount = mergedfilereader.readLine();
-			
-			addtoalldistribute(keyamount);
-			
-			System.out.println(new Date() + " ==== started distributing sort folder ["
-					+ sortingfolder + "] among ["+sortingservers+"]");
-			
-			while (!Sortstatus.TERMINATE.equals(Sortstatus.get(sortingfolder)) && !stop) {
-				if (numofnotifies == 0 || distributearray.size() != sortingservers.size()) {
-					wait(30000);
-				} else {
-					clearnumofnotifies(true);
-					Sortelement se = Sortutil.findminmax(
-							distributearray.values(),
-							isasc);
-					if (se.ip().equals(ip) && se.port() == port) {
-						output.output(position - sortingservers.size(), se.key(), se.amount());
-						keyamount = mergedfilereader.readLine();
-						if (keyamount == null) {
-							addtoalldistribute(null);
-							break;
-						} else {
-							addtoalldistribute(keyamount);
-						}
+		sortingservers = thesortingservers;
+		mergedfilereader = Sortutil.mergedfile(sortingfolder);
+		String keyamount = mergedfilereader.readLine();
+
+		addtoalldistribute(keyamount);
+
+		System.out.println(new Date() + " ==== started distributing sort folder [" + sortingfolder + "] among ["
+				+ sortingservers + "]");
+
+		while (!Sortstatus.TERMINATE.equals(Sortstatus.get(sortingfolder)) && !stop) {
+			if (numofnotifies == 0 || distributearray.size() != sortingservers.size()) {
+				wait(30000);
+			} else {
+				clearnumofnotifies(true);
+				Sortelement se = Sortutil.findminmax(distributearray.values(), isasc);
+				if (se.ip().equals(ip) && se.port() == port) {
+					output.output(position - sortingservers.size(), se.key(), se.amount());
+					keyamount = mergedfilereader.readLine();
+					if (keyamount == null) {
+						addtoalldistribute(null);
+						break;
 					} else {
-						// do nothing
+						addtoalldistribute(keyamount);
 					}
+				} else {
+					// do nothing
 				}
 			}
-			
+		}
+
 	}
 
 }
