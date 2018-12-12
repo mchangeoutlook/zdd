@@ -1,6 +1,8 @@
 package com.zdd.bdc.server.main;
 
 import java.util.Date;
+import java.util.concurrent.Executors;
+
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.STATIC;
@@ -28,7 +30,7 @@ public class Startindexserver {
 				try {
 					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGINDEX).read(STATIC.splitiport(ip, port)));
 					
-					Theserver.startblocking(STATIC.ES, ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending,
+					Theserver.startblocking(Executors.newCachedThreadPool(), ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending,
 							bigfilehash,
 							Indexserver.class, null);
 				} catch (Exception e) {

@@ -1,6 +1,8 @@
 package com.zdd.bdc.server.main;
 
 import java.util.Date;
+import java.util.concurrent.Executors;
+
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.STATIC;
@@ -26,7 +28,7 @@ public class Startfiletoserver {
 			@Override
 			public void run() {
 				try {
-					Theserver.startblocking(STATIC.ES, ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending, 10, Filetoserver.class, null);
+					Theserver.startblocking(Executors.newCachedThreadPool(), ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending, 10, Filetoserver.class, null);
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== System exit due to below exception:");
 					e.printStackTrace();

@@ -3,6 +3,7 @@ package com.zdd.bdc.main;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 import com.zdd.bdc.biz.Digactive;
 import com.zdd.bdc.client.biz.Configclient;
@@ -43,7 +44,7 @@ public class Startdatadig {
 					
 					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitiport(ip, dataserverport)));
 					
-					Theserver.startblocking(STATIC.ES, ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending, bigfilehash, Sortserver.class, additionalserverconfig);
+					Theserver.startblocking(Executors.newCachedThreadPool(), ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending, bigfilehash, Sortserver.class, additionalserverconfig);
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== System exit due to below exception:");
 					e.printStackTrace();

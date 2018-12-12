@@ -58,7 +58,7 @@ public class Configfilegenerator {
 				STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig2.sequence", STATIC.SORT_SEQUENCE(false), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig2.interval", "D1245", "unicorn", STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig2.interval", "D1120", "unicorn", STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig2.period", STATIC.splitfromto("20180910","20200920"), "unicorn", STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig2.index", "testfixedindex", "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
@@ -152,17 +152,17 @@ public class Configfilegenerator {
 
 		Filekvutil.configcreate("active", STATIC.splitenc(STATIC.splitfromto("0","9"),STATIC.splitfromto("10","19")), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGINDEX);
-		
-		//Filekvutil.configcreate("active", STATIC.splitenc(STATIC.splitfromto("0","19"),""), "unicorn",
-		//				STATIC.REMOTE_CONFIG_BIGINDEX);
-				
-		//Filekvutil.configcreate(STATIC.splitfromto("0","19"), STATIC.splitenc("bigindex1", "100", "127.0.0.1", "9991"), "unicorn",
-		//		STATIC.REMOTE_CONFIG_BIGINDEX);
-		
 		Filekvutil.configcreate(STATIC.splitfromto("0","9"), STATIC.splitenc("bigindex1", "100", "127.0.0.1", "9991"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGINDEX);
 		Filekvutil.configcreate(STATIC.splitfromto("10","19"), STATIC.splitenc("bigindex2", "100", "127.0.0.1", "9992"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGINDEX);
+		/*
+		Filekvutil.configcreate("active", STATIC.splitenc(STATIC.splitfromto("0","19"),""), "unicorn",
+						STATIC.REMOTE_CONFIG_BIGINDEX);
+				
+		Filekvutil.configcreate(STATIC.splitfromto("0","19"), STATIC.splitenc("bigindex1", "100", "127.0.0.1", "9991"), "unicorn",
+				STATIC.REMOTE_CONFIG_BIGINDEX);
+		*/
 		
 		//add here
 	}
