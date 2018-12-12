@@ -53,6 +53,7 @@ public class Startindexserver {
 				// do nothing
 			}
 		}
+		
 		pending.append(STATIC.REMOTE_CONFIGVAL_PENDING);
 		
 		Configclient.running = false;
