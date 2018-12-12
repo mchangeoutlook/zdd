@@ -49,6 +49,9 @@ public class Startconfigserver {
 		}catch(Exception e) {
 			//do nothing
 		}
+		
+		STATIC.ES.shutdownNow();
+
 		System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 	}
 }

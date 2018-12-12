@@ -22,6 +22,9 @@ public class Startdataserver {
 		final String ip = Configclient.ip;
 		final String port = Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitenc(STATIC.PARENTFOLDER, ip));
 		Configclient.port = Integer.parseInt(port);
+		
+		System.out.println(new Date()+" ==== starting in folder ["+STATIC.PARENTFOLDER + "]");
+		
 		new Thread(new Runnable() {
 
 			@Override
@@ -55,6 +58,9 @@ public class Startdataserver {
 		}catch(Exception e) {
 			//do nothing
 		}
+
+		STATIC.ES.shutdownNow();
+
 		System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 	}
 }

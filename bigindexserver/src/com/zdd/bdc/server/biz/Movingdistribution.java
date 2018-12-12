@@ -165,8 +165,16 @@ public class Movingdistribution extends Thread {
 												System.out.println(
 														new Date() + " ==== redistributed [" + serverindex + "]");
 											} catch (Exception ex) {
-												// do nothing
+												String[] f = indexfile.getParent().getParent().toFile().list();
+												if (f==null||f.length==0) {
+													System.out.println(
+															new Date() + " ==== redistributed [" + serverindex + "]");
+												} else {
+													//do nothing
+												}
 											}
+										
+											
 										} catch (Exception e) {
 											StringWriter errors = new StringWriter();
 											e.printStackTrace(new PrintWriter(errors));

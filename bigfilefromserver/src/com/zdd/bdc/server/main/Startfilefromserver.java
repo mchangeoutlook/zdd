@@ -24,6 +24,8 @@ public class Startfilefromserver {
 		
 		final StringBuffer pending = new StringBuffer();
 		
+		System.out.println(new Date()+" ==== starting in folder ["+STATIC.PARENTFOLDER + "]");
+		
 		new Thread(new Runnable() {
 
 			@Override
@@ -55,6 +57,9 @@ public class Startfilefromserver {
 		}catch(Exception e) {
 			//do nothing
 		}
+		
+		STATIC.ES.shutdownNow();
+
 		System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 		
 	}
