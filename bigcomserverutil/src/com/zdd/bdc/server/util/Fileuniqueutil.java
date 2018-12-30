@@ -4,15 +4,15 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.UUID;
+
 import com.zdd.bdc.client.util.STATIC;
 
 public class Fileuniqueutil {
 
-	private static final Path uniquerootfolder = Paths.get(".");// STATIC.LOCAL_DATAFOLDER;
+	private static final Path uniquerootfolder = STATIC.LOCAL_DATAFOLDER;
 	private static final int capacitykeymax = 60;
 	private static final int capacityvalue = 40;
 	private static final int[] rootrange = { 8, 16 };
