@@ -5,14 +5,14 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import com.zdd.bdc.client.util.STATIC;
-import com.zdd.bdc.server.util.Filekvutil;
+import com.zdd.bdc.server.util.Fileconfigutil;
 
-public class Bigindexconfig {
+public class Bigpagedindexconfig {
 
 	private static final Map<String, Map<String, String>> config = new Hashtable<String, Map<String, String>>();
 
 	public static void init(String namespace) throws Exception {
-		String active = Filekvutil.config("active", namespace, STATIC.REMOTE_CONFIG_BIGINDEX);
+		String active = Fileconfigutil.readone("active", namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
 		String[] hashes = STATIC.splitenc(active);
 
 		Map<String, String> hash_ipport = new Hashtable<String, String>();
@@ -21,7 +21,7 @@ public class Bigindexconfig {
 		Map<String, String> iport_filehash = new Hashtable<String, String>();
 
 		for (String key : hashes) {
-				String[] vals = STATIC.splitenc(Filekvutil.config(key, namespace, STATIC.REMOTE_CONFIG_BIGINDEX));
+				String[] vals = STATIC.splitenc(Fileconfigutil.readone(key, namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX));
 				String parentfolder = vals[0];
 				String filehash = vals[1];
 				String ip = vals[2];

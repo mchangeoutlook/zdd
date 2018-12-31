@@ -31,7 +31,9 @@ public class STATIC {
 	public static final String NAMESPACE_CORE = "core";
 	public static final String REMOTE_CONFIG_CORE = "core";
 	public static final String REMOTE_CONFIG_BIGDATA = "bigdata";
-	public static final String REMOTE_CONFIG_BIGINDEX = "bigindex";
+	public static final String REMOTE_CONFIG_BIGPAGEDINDEX = "bigpagedindex";
+	public static final String REMOTE_CONFIG_BIGUNIQUEINDEX = "biguniqueindex";
+	public static final String REMOTE_CONFIG_BIGUNIQUEINDEX_SCALE = "biguniqueindex-scale";
 
 	public static final String REMOTE_CONFIGKEY_CONFIGSERVERIP = "configserverip";
 	public static final String REMOTE_CONFIGKEY_CONFIGSERVERPORT = "configserverport";
@@ -48,7 +50,6 @@ public class STATIC {
 	public static final String PARAM_KEY_KEY = "key";
 	public static final String PARAM_NAMESPACE_KEY = "ns";
 	public static final String PARAM_INDEX_KEY = "index";
-	public static final long PAGENUM_UNIQUE = -1;
 	public static final String PARAM_FILTERS_KEY = "filters";
 	public static final String PARAM_TABLE_KEY = "tb";
 	public static final String PARAM_COLUMNS_KEY = "cols";
@@ -218,11 +219,11 @@ public class STATIC {
 		return from + "-" + to;
 	}
 
-	public static final String distributebigindexserveri(String namespace, Vector<String> filters, String index, int maxindexservers) {
+	public static final String distributebigpagedindexserveri(String namespace, Vector<String> filters, String index, int maxindexservers) {
 		return String.valueOf(Math.abs((STATIC.splitenc(filters) + index).hashCode()) % maxindexservers);
 	}
 	
-	public static final String strackstring(Throwable t) {
+	public static final String stackstring(Throwable t) {
 		StringWriter errors = new StringWriter();
 		t.printStackTrace(new PrintWriter(errors));
 		return errors.toString();

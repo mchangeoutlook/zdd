@@ -9,7 +9,7 @@ import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.client.util.Objectutil;
 import com.zdd.bdc.server.ex.Inputprocess;
 import com.zdd.bdc.server.ex.Theserverprocess;
-import com.zdd.bdc.server.util.Filekvutil;
+import com.zdd.bdc.server.util.Fileconfigutil;
 
 public class Configserver implements Theserverprocess {
 
@@ -23,8 +23,8 @@ public class Configserver implements Theserverprocess {
 							String file = pathfile.getFileName().toString();
 							if (file.equals(STATIC.REMOTE_CONFIG_BIGDATA)) {
 								Bigdataconfig.init(namespace);
-							} else if (file.equals(STATIC.REMOTE_CONFIG_BIGINDEX)) {
-								Bigindexconfig.init(namespace);
+							} else if (file.equals(STATIC.REMOTE_CONFIG_BIGPAGEDINDEX)) {
+								Bigpagedindexconfig.init(namespace);
 							}
 						} catch (Exception e) {
 							System.out.println(new Date() + " ==== System exited when reading ["
@@ -46,10 +46,10 @@ public class Configserver implements Theserverprocess {
 	public static String readconfig(String namespace, String file, String configkey) throws Exception {
 		if (file.equals(STATIC.REMOTE_CONFIG_BIGDATA)) {
 			return Bigdataconfig.read(namespace, configkey);
-		} else if (file.equals(STATIC.REMOTE_CONFIG_BIGINDEX)) {
-			return Bigindexconfig.read(namespace, configkey);
+		} else if (file.equals(STATIC.REMOTE_CONFIG_BIGPAGEDINDEX)) {
+			return Bigpagedindexconfig.read(namespace, configkey);
 		} else {
-			return Filekvutil.config(configkey, namespace, file);
+			return Fileconfigutil.readone(configkey, namespace, file);
 		}
 	}
 

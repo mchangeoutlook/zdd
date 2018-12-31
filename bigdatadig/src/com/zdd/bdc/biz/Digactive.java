@@ -10,7 +10,7 @@ import java.util.Map;
 
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.util.STATIC;
-import com.zdd.bdc.server.util.Filekvutil;
+import com.zdd.bdc.server.util.Filedatautil;
 
 public class Digactive extends Thread {
 
@@ -83,7 +83,7 @@ public class Digactive extends Thread {
 						.read(digname + ".sort");
 				String[] tbcol = STATIC.splitenc(sort);
 				if (tbcol != null) {
-					Path folder = Filekvutil.datafolder(namespace, tbcol[0], tbcol[1]);
+					Path folder = Filedatautil.folder(namespace, tbcol[0], tbcol[1]);
 					if (folder != null && Files.exists(folder) && Files.isDirectory(folder)) {
 						String interval = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
 								.read(digname + ".interval");

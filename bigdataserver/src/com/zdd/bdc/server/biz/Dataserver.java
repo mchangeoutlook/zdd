@@ -9,7 +9,7 @@ import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.client.util.Objectutil;
 import com.zdd.bdc.server.ex.Inputprocess;
 import com.zdd.bdc.server.ex.Theserverprocess;
-import com.zdd.bdc.server.util.Filekvutil;
+import com.zdd.bdc.server.util.Filedatautil;
 
 public class Dataserver implements Theserverprocess {
 
@@ -31,7 +31,7 @@ public class Dataserver implements Theserverprocess {
 			Map<String, String> cvs = (Map<String, String>) params.get(STATIC.PARAM_COLUMNVALUES_KEY);
 			Map<String, Integer> cvmaxs = (Map<String, Integer>) params.get(STATIC.PARAM_COLUMNMAXVALUES_KEY);
 			for (String column : cvs.keySet()) {
-				Filekvutil.datacreate(key, cvs.get(column), cvmaxs.get(column), namespace, table, column, bigfilehash);
+				Filedatautil.create(key, cvs.get(column), cvmaxs.get(column), namespace, table, column, bigfilehash);
 			}
 			return null;
 		} else if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
@@ -41,7 +41,7 @@ public class Dataserver implements Theserverprocess {
 			Vector<String> cols = (Vector<String>) params.get(STATIC.PARAM_COLUMNS_KEY);
 			Map<String, String> readres = new Hashtable<String, String>(cols.size());
 			for (String column : cols) {
-				String result = Filekvutil.dataread(key, namespace, table, column, bigfilehash);
+				String result = Filedatautil.read(key, namespace, table, column, bigfilehash);
 				if (result != null) {
 					readres.put(column, result);
 				}
@@ -54,7 +54,7 @@ public class Dataserver implements Theserverprocess {
 			Map<String, Long> cas = (Map<String, Long>) params.get(STATIC.PARAM_COLUMNAMOUNTS_KEY);
 			Map<String, Long> incrementres = new Hashtable<String, Long>(cas.size());
 			for (String column : cas.keySet()) {
-				long result = Filekvutil.dataincrement(key, cas.get(column), namespace, table, column, bigfilehash);
+				long result = Filedatautil.increment(key, cas.get(column), namespace, table, column, bigfilehash);
 				incrementres.put(column, result);
 			}
 			return Objectutil.convert(incrementres);
@@ -64,7 +64,7 @@ public class Dataserver implements Theserverprocess {
 			String table = params.get(STATIC.PARAM_TABLE_KEY).toString();
 			Map<String, String> cvs = (Map<String, String>) params.get(STATIC.PARAM_COLUMNVALUES_KEY);
 			for (String column : cvs.keySet()) {
-				Filekvutil.datamodify(key, cvs.get(column), namespace, table, column, bigfilehash);
+				Filedatautil.modify(key, cvs.get(column), namespace, table, column, bigfilehash);
 			}
 			return null;
 		} else if (STATIC.PARAM_ACTION_DELETE.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
@@ -74,7 +74,7 @@ public class Dataserver implements Theserverprocess {
 			Vector<String> cols = (Vector<String>) params.get(STATIC.PARAM_COLUMNS_KEY);
 			Map<String, String> readres = new Hashtable<String, String>(cols.size());
 			for (String column : cols) {
-				Filekvutil.datadelete(key, namespace, table, column, bigfilehash);
+				Filedatautil.delete(key, namespace, table, column, bigfilehash);
 			}
 			return Objectutil.convert(readres);
 		} else {

@@ -15,19 +15,19 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
 
 import com.zdd.bdc.client.biz.Configclient;
-import com.zdd.bdc.client.biz.Indexclient;
+import com.zdd.bdc.client.biz.Pagedindexclient;
 import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.util.Filedatawalk;
 import com.zdd.bdc.server.util.Filedatawalkresult;
 import com.zdd.bdc.server.util.Filekvutil;
-import com.zdd.bdc.server.util.Filekvutil;
+import com.zdd.bdc.server.util.Filepagedindexutil;
 
-public class Movingdistribution extends Thread {
+public class Movingpageddistribution extends Thread {
 
 	private String ip = null;
 	private String port = null;
 
-	public Movingdistribution(String theip, String theport) {
+	public Movingpageddistribution(String theip, String theport) {
 		ip = theip;
 		port = theport;
 	}
@@ -44,16 +44,19 @@ public class Movingdistribution extends Thread {
 					if (!Configclient.running) {
 						break;
 					} else {
-						if (Files.isDirectory(STATIC.LOCAL_DATAFOLDER.resolve(namespace)) && !namespace.startsWith(".")) {
+						if (Files.isDirectory(STATIC.LOCAL_DATAFOLDER.resolve(namespace))
+								&& !namespace.startsWith(".")) {
 							String[] serverindexes = STATIC.LOCAL_DATAFOLDER.resolve(namespace).toFile().list();
 							for (String serverindex : serverindexes) {
 								if (!Configclient.running) {
 									break;
 								} else {
-									if (Files.isDirectory(STATIC.LOCAL_DATAFOLDER.resolve(namespace).resolve(serverindex))
+									if (Files.isDirectory(
+											STATIC.LOCAL_DATAFOLDER.resolve(namespace).resolve(serverindex))
 											&& !serverindex.startsWith(".")) {
 										String targetiport = Configclient
-												.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX).read(serverindex);
+												.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX)
+												.read(serverindex);
 										if (targetiport == null || targetiport.equals(STATIC.splitiport(ip, port))) {
 											// do nothing
 										} else {
@@ -61,8 +64,8 @@ public class Movingdistribution extends Thread {
 												walkfolder(namespace, serverindex);
 											} catch (Exception e) {
 												System.out.println(new Date() + " ==== error in distributing ["
-														+ STATIC.LOCAL_DATAFOLDER.resolve(namespace).resolve(serverindex)
-																.toAbsolutePath().toString()
+														+ STATIC.LOCAL_DATAFOLDER.resolve(namespace)
+																.resolve(serverindex).toAbsolutePath().toString()
 														+ "], will continue next folder");
 												e.printStackTrace();
 											}
@@ -137,7 +140,7 @@ public class Movingdistribution extends Thread {
 										Path progressfile = progressfolder.resolve(namespace).resolve(serverindex)
 												.resolve(filtersfolder.getFileName().toString()).resolve(indexfilename);
 										try {
-											if (Filekvutil.indexversion(indexfile) != null) {
+											if (Filepagedindexutil.version(indexfile) != null) {
 												// don't move, delete directly
 											} else {
 												movefile(progressfile, namespace, indexfile);
@@ -166,15 +169,14 @@ public class Movingdistribution extends Thread {
 														new Date() + " ==== redistributed [" + serverindex + "]");
 											} catch (Exception ex) {
 												String[] f = indexfile.getParent().getParent().toFile().list();
-												if (f==null||f.length==0) {
+												if (f == null || f.length == 0) {
 													System.out.println(
 															new Date() + " ==== redistributed [" + serverindex + "]");
 												} else {
-													//do nothing
+													// do nothing
 												}
 											}
-										
-											
+
 										} catch (Exception e) {
 											StringWriter errors = new StringWriter();
 											e.printStackTrace(new PrintWriter(errors));
@@ -239,11 +241,11 @@ public class Movingdistribution extends Thread {
 
 	private void movefile(Path progressfile, String namespace, Path indexfile) throws Exception {
 		String[] filters = STATIC.splitenc(indexfile.getParent().getFileName().toString());
-		
+
 		Long thepagenum = null;
-		try{
+		try {
 			thepagenum = Long.parseLong(filters[0]);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			return;
 		}
 		final Long pagenum = thepagenum;
@@ -259,31 +261,19 @@ public class Movingdistribution extends Thread {
 		Filekvutil.walkdata(indexfile, new Filedatawalk() {
 
 			@Override
-			public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1,
-					boolean isv1deleted, byte[] v2, boolean isv2deleted) {
-				if (isv1deleted || isv2deleted || datasequence < processednumofdata) {
+			public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, String index, String key,
+					boolean isvaluedeleted) {
+				if (isvaluedeleted || datasequence < processednumofdata) {
 					return null;
 				} else {
 					try {
-						String index = STATIC.tostring(v1);
-						String key = STATIC.tostring(v2);
-						Indexclient ic = Indexclient.getinstance(namespace, index);
-						if (filters.length!=0) {
-							for (int i=1;i<filters.length;i++) {
+						Pagedindexclient ic = Pagedindexclient.getinstance(namespace, index);
+						if (filters.length != 0) {
+							for (int i = 1; i < filters.length; i++) {
 								ic.addfilter(filters[i]);
 							}
 						}
-						if (pagenum == STATIC.PAGENUM_UNIQUE) {
-							try {
-								ic.createunique(key);
-							} catch (Exception e) {
-								if (!e.getMessage().contains("duplicate")) {
-									throw e;
-								}
-							}
-						} else {
-							ic.create(key, pagenum);
-						}
+						ic.create(key, pagenum);
 						if (!Files.exists(progressfile.getParent())) {
 							Files.createDirectories(progressfile.getParent());
 						}
@@ -294,16 +284,15 @@ public class Movingdistribution extends Thread {
 					} catch (Exception e) {
 						StringWriter errors = new StringWriter();
 						e.printStackTrace(new PrintWriter(errors));
-						error.append(new Date()
-								+ " ==== error when distributing datasequence [" + datasequence + "]:"
+						error.append(new Date() + " ==== error when distributing datasequence [" + datasequence + "]:"
 								+ errors.toString());
 						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-								Filedatawalkresult.DATA_DONOTHING, null, null);
+								Filedatawalkresult.DATA_DONOTHING, null);
 					}
 				}
 			}
 
-		}, false);
+		});
 		if (error.length() != 0) {
 			throw new Exception(error.toString());
 		}

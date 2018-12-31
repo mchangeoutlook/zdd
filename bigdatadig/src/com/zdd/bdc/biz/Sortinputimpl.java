@@ -6,9 +6,9 @@ import java.util.Date;
 
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.util.STATIC;
+import com.zdd.bdc.server.util.Filedatautil;
 import com.zdd.bdc.server.util.Filedatawalk;
 import com.zdd.bdc.server.util.Filedatawalkresult;
-import com.zdd.bdc.server.util.Filekvutil;
 import com.zdd.bdc.server.util.Filekvutil;
 import com.zdd.bdc.sort.local.Sortinput;
 
@@ -52,31 +52,29 @@ public class Sortinputimpl extends Sortinput {
 
 	@Override
 	protected void preparedatasource() throws Exception {
-		Path datafolder = Filekvutil.datafolder(namespace, table, col);
+		Path datafolder = Filedatautil.folder(namespace, table, col);
 		String[] datafiles = datafolder.toFile().list();
 		for (String datafile : datafiles) {
 			StringBuffer error = new StringBuffer();
 			Filekvutil.walkdata(datafolder.resolve(datafile), new Filedatawalk() {
 
 				@Override
-				public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1,
-						boolean isv1deleted, byte[] v2, boolean isv2deleted) {
-					if (isv1deleted || isv2deleted) {
+				public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, String key, String value, boolean isvaluedeleted) {
+					if (isvaluedeleted) {
 						return null;
 					} else {
 						if (!Configclient.running) {
 							error.append(new Date() + " ==== shutdown this server");
 							return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-									Filedatawalkresult.DATA_DONOTHING, null, null);
+									Filedatawalkresult.DATA_DONOTHING, null);
 						} else {
 							try {
-								String key = STATIC.tostring(v1);
 								if (filters.equals(Digging.getfilters(key, namespace, digname, bigfilehash))) {
 									Long amount = null;
 									try {
-										amount = Long.parseLong(STATIC.tostring(v2));
+										amount = Long.parseLong(value);
 									} catch (Exception e) {
-										amount = (long) STATIC.tostring(v2).compareTo(STATIC.SORT_COMPARE_TO_STRING);
+										amount = (long) value.compareTo(STATIC.SORT_COMPARE_TO_STRING);
 									}
 									input(key, amount);
 								} else {
@@ -84,15 +82,15 @@ public class Sortinputimpl extends Sortinput {
 								}
 								return null;
 							} catch (Exception e) {
-								error.append(STATIC.strackstring(e));
+								error.append(STATIC.stackstring(e));
 								return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-										Filedatawalkresult.DATA_DONOTHING, null, null);
+										Filedatawalkresult.DATA_DONOTHING, null);
 							}
 						}
 					}
 				}
 
-			}, true);
+			});
 			if (error.length() == 0) {
 				// do nothing
 			} else {

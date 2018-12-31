@@ -8,14 +8,14 @@ import java.util.Map;
 import java.util.Vector;
 
 import com.zdd.bdc.client.util.STATIC;
-import com.zdd.bdc.server.util.Filekvutil;
+import com.zdd.bdc.server.util.Fileconfigutil;
 
 public class Bigdataconfig {
 
 	private static final Map<String, Map<String, String>> config = new Hashtable<String, Map<String, String>>();
 
 	public static void init(String namespace) throws Exception {
-		String active = Filekvutil.config("active", namespace, STATIC.REMOTE_CONFIG_BIGDATA);
+		String active = Fileconfigutil.readone("active", namespace, STATIC.REMOTE_CONFIG_BIGDATA);
 		String[] dates = STATIC.splitenc(active);
 
 		Map<String, String> date_ipport = new Hashtable<String, String>();
@@ -23,7 +23,7 @@ public class Bigdataconfig {
 		Map<String, String> parentfolderip_port = new Hashtable<String, String>();
 		Map<String, String> iport_filehash = new Hashtable<String, String>();
 		for (String key : dates) {
-			Vector<String> values = Filekvutil.configs(key, namespace, STATIC.REMOTE_CONFIG_BIGDATA);
+			Vector<String> values = Fileconfigutil.readmany(key, namespace, STATIC.REMOTE_CONFIG_BIGDATA);
 			Vector<String> ipports = new Vector<String>(values.size());
 			for (String val : values) {
 				String[] vals = STATIC.splitenc(val);

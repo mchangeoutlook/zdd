@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import com.zdd.bdc.client.util.STATIC;
+import com.zdd.bdc.server.util.Fileutil;
 
 public class Sortstatus {
 	public static final String SORT_NOTINCLUDED = "sort_notincluded";
@@ -21,7 +21,7 @@ public class Sortstatus {
 		return STATUS.get(sortingfolder.toString());
 	}
 	public static void set(Path sortingfolder, String status) throws Exception {
-		synchronized(STATIC.syncfile(sortingfolder)) {
+		synchronized(Fileutil.syncfile(sortingfolder)) {
 			if (!TERMINATE.equals(status)&&TERMINATE.equals(get(sortingfolder))) {
 				throw new Exception("terminated sorting ["+sortingfolder+"]");
 			} else if ((READY_TO_DISTRIBUTE.equals(get(sortingfolder))||SORT_INPROGRESS.equals(get(sortingfolder)))&&SORT_INCLUDED.equals(status)){

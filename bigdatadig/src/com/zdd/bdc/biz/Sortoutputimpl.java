@@ -4,9 +4,9 @@ import java.nio.file.Path;
 import java.util.Date;
 
 import com.zdd.bdc.client.biz.Configclient;
-import com.zdd.bdc.client.biz.Indexclient;
+import com.zdd.bdc.client.biz.Pagedindexclient;
 import com.zdd.bdc.client.util.STATIC;
-import com.zdd.bdc.server.util.Filekvutil;
+import com.zdd.bdc.server.util.Filedatautil;
 import com.zdd.bdc.sort.local.Sortoutput;
 
 public class Sortoutputimpl implements Sortoutput {
@@ -44,14 +44,14 @@ public class Sortoutputimpl implements Sortoutput {
 				for (int i = 0; i < toindex.length; i += 2) {
 					String t = toindex[i];
 					String c = toindex[i + 1];
-					index(namespace, Filekvutil.dataread(key, namespace, t, c, bigfilehash), key, version);
+					index(namespace, Filedatautil.read(key, namespace, t, c, bigfilehash), key, version);
 				}
 			}
 		}
 	}
 
 	private Long index(String namespace, String index, String key, String version) throws Exception {
-		Indexclient ic = Indexclient.getinstance(namespace, index);
+		Pagedindexclient ic = Pagedindexclient.getinstance(namespace, index);
 		String[] fs = STATIC.splitenc(filters);
 		for (String filter : fs) {
 			ic.addfilter(filter);

@@ -10,9 +10,9 @@ import java.util.Vector;
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.main.Startdatadig;
+import com.zdd.bdc.server.util.Filedatautil;
 import com.zdd.bdc.server.util.Filedatawalk;
 import com.zdd.bdc.server.util.Filedatawalkresult;
-import com.zdd.bdc.server.util.Filekvutil;
 import com.zdd.bdc.server.util.Filekvutil;
 import com.zdd.bdc.sort.local.Sortfactory;
 
@@ -88,7 +88,7 @@ public class Digging extends Thread {
 						System.out.println(new Date() + " ==== server ip [" + ip + "] port[" + port
 								+ "] is not included [" + sortingserverswithinperiod + "] for [" + digname + "]");
 					} else {
-						Path targetfolder = Filekvutil.datafolder(namespace, table, col);
+						Path targetfolder = Filedatautil.folder(namespace, table, col);
 						System.out.println(new Date() + " ==== started digging [" + digname + "][" + namespace + "]["
 								+ table + "][" + col + "]");
 
@@ -102,26 +102,25 @@ public class Digging extends Thread {
 
 									@Override
 									public Filedatawalkresult data(long datasequence, long dataseqincludedeleted,
-											byte[] v1, boolean isv1deleted, byte[] v2, boolean isv2deleted) {
+											String key, String value, boolean isvaluedeleted) {
 										if (!Configclient.running) {
 											errors.append(new Date() + " ==== shutdown this server [" + ip + "][" + port
 													+ "]");
 											return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-													Filedatawalkresult.DATA_DONOTHING, null, null);
+													Filedatawalkresult.DATA_DONOTHING, null);
 										} else {
-											if (isv1deleted || isv2deleted) {
+											if (isvaluedeleted) {
 												return null;
 											} else {
-												String key = STATIC.tostring(v1);
 												String filters = null;
 												try {
 													filters = Digging.getfilters(key, namespace, digname, bigfilehash);
 												} catch (Exception e) {
 													errors.append(new Date() + " ==== filters error of key=[" + key
-															+ "], value=[" + STATIC.tostring(v2) + "] due to "
-															+ STATIC.strackstring(e));
+															+ "], value=[" + value + "] due to "
+															+ STATIC.stackstring(e));
 													return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-															Filedatawalkresult.DATA_DONOTHING, null, null);
+															Filedatawalkresult.DATA_DONOTHING, null);
 												}
 												if (filters != null) {
 													sortfilters.put(filters, filters);
@@ -133,7 +132,7 @@ public class Digging extends Thread {
 										}
 									}
 
-								}, true);
+								});
 								if (errors.length() != 0) {
 									throw new Exception(errors.toString());
 								}
@@ -181,7 +180,7 @@ public class Digging extends Thread {
 				for (int i = 0; i < t.length; i += 2) {
 					String table = t[i];
 					String col = t[i + 1];
-					String f = Filekvutil.dataread(key, namespace, table, col, bigfilehash);
+					String f = Filedatautil.read(key, namespace, table, col, bigfilehash);
 					if (f == null || f.trim().isEmpty()) {
 						throw new Exception("no filter value in col=[" + col + "],table=[" + table + "], namespace=["
 								+ namespace + "]");

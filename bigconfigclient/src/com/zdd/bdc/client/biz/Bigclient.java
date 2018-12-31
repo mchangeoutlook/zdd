@@ -19,17 +19,26 @@ public class Bigclient {
 	}
 
 	// return [ip][port]
-	public static String[] distributebigindex(String namespace, Vector<String> filters, String index) {
-		return STATIC.splitiport(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX)
-				.read(STATIC.distributebigindexserveri(namespace, filters, index,Integer.parseInt(Configclient
-						.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS)))));
+	public static String[] distributebigpagedindex(String namespace, Vector<String> filters, String index) {
+		return STATIC.splitiport(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX)
+				.read(STATIC.distributebigpagedindexserveri(namespace, filters, index,Integer.parseInt(Configclient
+						.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS)))));
 	}
 
 	// return [ip][port]
-	public static String[] distributebiguniqueindex(String namespace, String index) {
-		return STATIC.splitiport(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX)
-				.read(STATIC.distributebigindexserveri(namespace, filters, index,Integer.parseInt(Configclient
-						.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS)))));
+	public static String[] distributebiguniqueindex(String namespace, String filter, String index) {
+		return distributebiguniqueindex(namespace, filter, index, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+	}
+
+	// return [ip][port]
+	public static String[] distributebiguniqueindex_scale(String namespace, String filter, String index) {
+		return distributebiguniqueindex(namespace, filter, index, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX_SCALE);
+	}
+	
+	private static String[] distributebiguniqueindex(String namespace, String filter, String index, String configfile) {
+		String[] iport = STATIC.splitenc(Configclient.getinstance(namespace, configfile)
+				.read(STATIC.urlencode(filter)));
+		return STATIC.splitiport(iport[Math.abs(index.hashCode())%iport.length]);
 	}
 
 }
