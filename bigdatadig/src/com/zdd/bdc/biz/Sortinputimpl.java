@@ -9,7 +9,7 @@ import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.util.Filedatawalk;
 import com.zdd.bdc.server.util.Filedatawalkresult;
 import com.zdd.bdc.server.util.Filekvutil;
-import com.zdd.bdc.server.util.Fileutil;
+import com.zdd.bdc.server.util.Filekvutil;
 import com.zdd.bdc.sort.local.Sortinput;
 
 public class Sortinputimpl extends Sortinput {
@@ -56,7 +56,7 @@ public class Sortinputimpl extends Sortinput {
 		String[] datafiles = datafolder.toFile().list();
 		for (String datafile : datafiles) {
 			StringBuffer error = new StringBuffer();
-			Fileutil.walkdata(datafolder.resolve(datafile), new Filedatawalk() {
+			Filekvutil.walkdata(datafolder.resolve(datafile), new Filedatawalk() {
 
 				@Override
 				public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1,

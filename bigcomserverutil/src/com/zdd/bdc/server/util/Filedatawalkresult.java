@@ -4,24 +4,21 @@ public class Filedatawalkresult {
 	private int walkaction = -1;
 	private int dataction = -1;
 
-	private byte[] value1 = null;
-	private byte[] value2 = null;
+	private String newvalue = null;
 
-	public Filedatawalkresult(int thewalkaction, int thedataction, byte[] v1, byte[] v2) {
+	public Filedatawalkresult(int thewalkaction, int thedataction, String thenewvalue) {
 		walkaction = thewalkaction;
 		dataction = thedataction;
-		value1 = v1;
-		value2 = v2;
+		newvalue = thenewvalue;
 	}
 
-	public byte[] getvalue1() {
-		return value1;
+	public String getnewvalue() {
+		if (newvalue == null) {
+			return "";
+		}
+		return newvalue;
 	}
-
-	public byte[] getvalue2() {
-		return value2;
-	}
-
+	
 	public int getwalkaction() {
 		return walkaction;
 	}

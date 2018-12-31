@@ -8,7 +8,7 @@ import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.util.Filedatawalk;
 import com.zdd.bdc.server.util.Filedatawalkresult;
 import com.zdd.bdc.server.util.Filekvutil;
-import com.zdd.bdc.server.util.Fileutil;
+import com.zdd.bdc.server.util.Filekvutil;
 import com.zdd.bdc.sort.distribute.Sortcheck;
 import com.zdd.bdc.sort.util.Sortstatus;
 
@@ -27,7 +27,7 @@ public class Sortcheckimpl implements Sortcheck {
 		StringBuffer error = new StringBuffer();
 		StringBuffer found = new StringBuffer();
 		for (String datafile : datafiles) {
-			Fileutil.walkdata(datafolder.resolve(datafile), new Filedatawalk() {
+			Filekvutil.walkdata(datafolder.resolve(datafile), new Filedatawalk() {
 				@Override
 				public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1,
 						boolean isv1deleted, byte[] v2, boolean isv2deleted) {

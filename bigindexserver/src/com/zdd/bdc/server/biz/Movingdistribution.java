@@ -20,7 +20,7 @@ import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.util.Filedatawalk;
 import com.zdd.bdc.server.util.Filedatawalkresult;
 import com.zdd.bdc.server.util.Filekvutil;
-import com.zdd.bdc.server.util.Fileutil;
+import com.zdd.bdc.server.util.Filekvutil;
 
 public class Movingdistribution extends Thread {
 
@@ -256,7 +256,7 @@ public class Movingdistribution extends Thread {
 
 		StringBuffer error = new StringBuffer();
 
-		Fileutil.walkdata(indexfile, new Filedatawalk() {
+		Filekvutil.walkdata(indexfile, new Filedatawalk() {
 
 			@Override
 			public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, byte[] v1,

@@ -13,7 +13,7 @@ import com.zdd.bdc.main.Startdatadig;
 import com.zdd.bdc.server.util.Filedatawalk;
 import com.zdd.bdc.server.util.Filedatawalkresult;
 import com.zdd.bdc.server.util.Filekvutil;
-import com.zdd.bdc.server.util.Fileutil;
+import com.zdd.bdc.server.util.Filekvutil;
 import com.zdd.bdc.sort.local.Sortfactory;
 
 public class Digging extends Thread {
@@ -98,7 +98,7 @@ public class Digging extends Thread {
 						for (String datafile : datafiles) {
 							StringBuffer errors = new StringBuffer();
 							try {
-								Fileutil.walkdata(targetfolder.resolve(datafile), new Filedatawalk() {
+								Filekvutil.walkdata(targetfolder.resolve(datafile), new Filedatawalk() {
 
 									@Override
 									public Filedatawalkresult data(long datasequence, long dataseqincludedeleted,

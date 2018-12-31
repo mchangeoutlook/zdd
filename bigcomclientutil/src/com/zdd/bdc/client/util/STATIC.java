@@ -191,20 +191,7 @@ public class STATIC {
 		} catch (Exception e) {
 			// do nothing
 		}
-		System.out.println(new Date()+" ==== local ip=["+localip+"]");
 		return localip;
-	}
-
-	// to avoid dead lock, sync file and key on different range.
-	private static final int synchash = 10000;
-
-	public static final String syncfile(Path tosync) {
-
-		return String.valueOf(Math.abs(tosync.getFileName().toString().hashCode() % synchash) + synchash).intern();
-	}
-
-	public static final String synckey(String tosync) {
-		return String.valueOf(Math.abs(tosync.hashCode() % synchash)).intern();
 	}
 
 	public static final String urldecode(String str) {

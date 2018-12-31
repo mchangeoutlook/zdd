@@ -30,7 +30,7 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		Filekvutil.configcreate("active", STATIC.splitenc("dig0","dig1","dig2"), "unicorn", STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("active", STATIC.splitenc("dig1",""), "unicorn", STATIC.REMOTE_CONFIG_DIG);
 		
 		Filekvutil.configcreate("dig0.sort", STATIC.splitenc("testable1", "sort1"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
@@ -47,7 +47,7 @@ public class Configfilegenerator {
 				STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig1.sequence", STATIC.SORT_SEQUENCE(false), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Filekvutil.configcreate("dig1.interval", "D1108", "unicorn", STATIC.REMOTE_CONFIG_DIG);
+		Filekvutil.configcreate("dig1.interval", "D1355", "unicorn", STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig1.period", STATIC.splitfromto("20180910","20200920"), "unicorn", STATIC.REMOTE_CONFIG_DIG);
 		Filekvutil.configcreate("dig1.index", STATIC.splitenc("testable", "index"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
@@ -73,7 +73,7 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		
+		/*
 		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9991"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
 		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9992"), "pending", STATIC.NAMESPACE_CORE,
@@ -82,10 +82,12 @@ public class Configfilegenerator {
 				 STATIC.REMOTE_CONFIG_PENDING);
 		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9994"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
+				 */
 		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","19993"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
 		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","19994"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
+		 /*
 		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9995"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
 		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9996"), "pending", STATIC.NAMESPACE_CORE,
@@ -94,7 +96,7 @@ public class Configfilegenerator {
 				 STATIC.REMOTE_CONFIG_PENDING);
 		 Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9998"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
-		 
+		 */
 		//Filekvutil.configcreate(STATIC.splitiport("127.0.0.1","9999"), "pending", STATIC.NAMESPACE_CORE,
 		//		 STATIC.REMOTE_CONFIG_PENDING);
 		
@@ -110,11 +112,11 @@ public class Configfilegenerator {
 		Filekvutil.configcreate("active", STATIC.splitenc("20181023",""), "pngbigfrom",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		
-		//add here
-		Filekvutil.configcreate("20181023", STATIC.splitenc("bigpng2", "10", "127.0.0.1", "9997"), "pngbigfrom",
-				STATIC.REMOTE_CONFIG_BIGDATA);
 		Filekvutil.configcreate("20181023", STATIC.splitenc("bigpng1", "10", "127.0.0.1", "9998"), "pngbigfrom",
 				STATIC.REMOTE_CONFIG_BIGDATA);
+		Filekvutil.configcreate("20181023", STATIC.splitenc("bigpng2", "10", "127.0.0.1", "9997"), "pngbigfrom",
+				STATIC.REMOTE_CONFIG_BIGDATA);
+		//add more
 	}
 
 	private static void genpngbigto() throws Exception {
@@ -127,11 +129,11 @@ public class Configfilegenerator {
 		Filekvutil.configcreate("active", STATIC.splitenc("20181023",""), "pngbigto",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		
-		//add here
-		Filekvutil.configcreate("20181023", STATIC.splitenc("bigpng2", "10", "127.0.0.1", "9995"), "pngbigto",
-				STATIC.REMOTE_CONFIG_BIGDATA);
 		Filekvutil.configcreate("20181023", STATIC.splitenc("bigpng1", "10", "127.0.0.1", "9996"), "pngbigto",
 				STATIC.REMOTE_CONFIG_BIGDATA);
+		Filekvutil.configcreate("20181023", STATIC.splitenc("bigpng2", "10", "127.0.0.1", "9995"), "pngbigto",
+				STATIC.REMOTE_CONFIG_BIGDATA);
+		//add more
 	}
 
 	private static void genunicornbigdata() throws Exception {
@@ -144,11 +146,11 @@ public class Configfilegenerator {
 		Filekvutil.configcreate("active", STATIC.splitenc("20181023",""), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		
-		//add here
-		Filekvutil.configcreate("20181023", STATIC.splitenc("bigdata2", "100", "127.0.0.1", "9993"), "unicorn",
-				STATIC.REMOTE_CONFIG_BIGDATA);
 		Filekvutil.configcreate("20181023", STATIC.splitenc("bigdata1", "100", "127.0.0.1", "9994"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGDATA);
+		Filekvutil.configcreate("20181023", STATIC.splitenc("bigdata2", "100", "127.0.0.1", "9993"), "unicorn",
+				STATIC.REMOTE_CONFIG_BIGDATA);
+		//add more
 	}
 
 	private static void genunicornbigindex() throws Exception {
@@ -174,7 +176,6 @@ public class Configfilegenerator {
 				STATIC.REMOTE_CONFIG_BIGINDEX);
 		*/
 		
-		//add here
 	}
 	
 
@@ -188,11 +189,11 @@ public class Configfilegenerator {
 		Filekvutil.configcreate("active", STATIC.splitenc("20181023",""), "jedge",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		
-		//add here
-		Filekvutil.configcreate("20181023", STATIC.splitenc("bigdata2", "100", "127.0.0.1", "9993"), "jedge",
+		Filekvutil.configcreate("20181023", STATIC.splitenc("bigdata1", "5000", "127.0.0.1", "9994"), "jedge",
 				STATIC.REMOTE_CONFIG_BIGDATA);
-		Filekvutil.configcreate("20181023", STATIC.splitenc("bigdata1", "100", "127.0.0.1", "9994"), "jedge",
+		Filekvutil.configcreate("20181023", STATIC.splitenc("bigdata2", "5000", "127.0.0.1", "9993"), "jedge",
 				STATIC.REMOTE_CONFIG_BIGDATA);
+		//add more
 	}
 
 	private static void genjedgebigindex() throws Exception {
@@ -205,9 +206,9 @@ public class Configfilegenerator {
 		
 		Filekvutil.configcreate("active", STATIC.splitenc(STATIC.splitfromto("0","9"),STATIC.splitfromto("10","19")), "jedge",
 				STATIC.REMOTE_CONFIG_BIGINDEX);
-		Filekvutil.configcreate(STATIC.splitfromto("0","9"), STATIC.splitenc("bigindex1", "100", "127.0.0.1", "9991"), "jedge",
+		Filekvutil.configcreate(STATIC.splitfromto("0","9"), STATIC.splitenc("bigindex1", "5000", "127.0.0.1", "9991"), "jedge",
 				STATIC.REMOTE_CONFIG_BIGINDEX);
-		Filekvutil.configcreate(STATIC.splitfromto("10","19"), STATIC.splitenc("bigindex2", "100", "127.0.0.1", "9992"), "jedge",
+		Filekvutil.configcreate(STATIC.splitfromto("10","19"), STATIC.splitenc("bigindex2", "5000", "127.0.0.1", "9992"), "jedge",
 				STATIC.REMOTE_CONFIG_BIGINDEX);
 				
 		/*
@@ -218,7 +219,6 @@ public class Configfilegenerator {
 				STATIC.REMOTE_CONFIG_BIGINDEX);
 		*/
 		
-		//add here
 	}
 	
 	private static void genjedgeeid() throws Exception {
@@ -228,20 +228,25 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
+		Filekvutil.configcreate("code.apikey", "NFI7cm%2B5Yuc%2Frwm7Oiolog%3D%3D", "jedge",
+				"eid");
+		Filekvutil.configcreate("code.signkey", "IGfXyBe%2BAVuc0IVteYgMZQ%3D%3D", "jedge",
+				"eid");
+		
+		Filekvutil.configcreate("code.incrementkey", "ec20eda12db9620184dd4ac295540e0857324398", "jedge",
+				"eid");
+		
+
 		Filekvutil.configcreate("pool2.incrementkey", "ec20eda12db9620184dd4ac295540e0857324398", "jedge",
 				"eid");
 		Filekvutil.configcreate("pool2.ratio", STATIC.splitenc("2","0.0212","1","0.0001034","3","0.9523","0","0.036"), "jedge",
 				"eid");
-		Filekvutil.configcreate("pool2.incrementkey", "ec20eda12db9620184dd4ac295540e0857324398", "jedge",
-				"eid");
-
+		
 		Filekvutil.configcreate("pool3.incrementkey", "ec20eda12db9620184dd4ac295540e0857324398", "jedge",
 				"eid");
 		Filekvutil.configcreate("pool3.ratio", STATIC.splitenc("2","0.312","1","0.0001034","3","0.1523","0","0.26"), "jedge",
 				"eid");
-		Filekvutil.configcreate("pool3.incrementkey", "ec20eda12db9620184dd4ac295540e0857324398", "jedge",
-				"eid");
-
+		
 	}
 
 	public static void main(String[] s) throws Exception {

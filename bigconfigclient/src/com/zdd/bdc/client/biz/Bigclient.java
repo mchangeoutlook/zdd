@@ -25,4 +25,11 @@ public class Bigclient {
 						.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS)))));
 	}
 
+	// return [ip][port]
+	public static String[] distributebiguniqueindex(String namespace, String index) {
+		return STATIC.splitiport(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX)
+				.read(STATIC.distributebigindexserveri(namespace, filters, index,Integer.parseInt(Configclient
+						.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS)))));
+	}
+
 }
