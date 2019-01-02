@@ -82,12 +82,12 @@ public class Configfilegenerator {
 				 STATIC.REMOTE_CONFIG_PENDING);
 		 Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9994"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
-				 */
+				 
 		Fileconfigutil.create(STATIC.splitiport("127.0.0.1","19993"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
 		Fileconfigutil.create(STATIC.splitiport("127.0.0.1","19994"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
-		 /*
+		 
 		 Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9995"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
 		 Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9996"), "pending", STATIC.NAMESPACE_CORE,
@@ -96,9 +96,14 @@ public class Configfilegenerator {
 				 STATIC.REMOTE_CONFIG_PENDING);
 		 Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9998"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
-		 */
-		//Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9999"), "pending", STATIC.NAMESPACE_CORE,
-		//		 STATIC.REMOTE_CONFIG_PENDING);
+		 
+		Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9999"), "pending", STATIC.NAMESPACE_CORE,
+				 STATIC.REMOTE_CONFIG_PENDING);
+		*/
+		Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9989"), "pending", STATIC.NAMESPACE_CORE,
+				 STATIC.REMOTE_CONFIG_PENDING);
+		Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9990"), "pending", STATIC.NAMESPACE_CORE,
+				 STATIC.REMOTE_CONFIG_PENDING);
 		
 	}
 
@@ -219,7 +224,7 @@ public class Configfilegenerator {
 		Fileconfigutil.create("filter1", "servergroups0", "unicorn",
 				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
 
-		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"filter1", "servergroups0", "unicorn",
+		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"filter1", "servergroups1", "unicorn",
 				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
 	}
 		

@@ -1,6 +1,7 @@
 package com.zdd.bdc.server.biz;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.biz.Uniqueindexclient;
@@ -28,7 +29,7 @@ public class Readleaf implements Theclientprocess{
 	}
 	@Override
 	public void responses(byte[] b) throws Exception {
-		String leafvalue = STATIC.tostring(b);
+		String leafvalue = STATIC.tostring(b).trim();
 		if (leafvalue==null||leafvalue.trim().isEmpty()) {
 			//do nothing
 		} else {
@@ -37,11 +38,12 @@ public class Readleaf implements Theclientprocess{
 						port, filter, leafvalue, readcollision);
 			} else {
 				String key = STATIC.tostring(Arrays.copyOf(b, capacityvalue));
-				String index = leafvalue.substring(key.length());
+				String index = leafvalue.substring(key.length()).trim();
 				try {
 					Uniqueindexclient.getinstance(namespace, index).createunique(servergroups, filter, key);
 				}catch(Exception e) {
 					if (!e.getMessage().contains(STATIC.DUPLICATE)) {
+						System.out.println(new Date()+" === fail to process leaf value ["+leafvalue+"]");
 						throw e;
 					}
 				}

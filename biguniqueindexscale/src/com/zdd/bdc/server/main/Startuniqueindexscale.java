@@ -16,7 +16,6 @@ public class Startuniqueindexscale {
 			String namespace = s[0];
 			for (int i = 1; i < s.length; i++) {
 				String filter = s[i];
-				System.out.println(new Date() + " ==== starting [" + namespace + "][" + filter + "]");
 				String scale = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX)
 						.read(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX + filter);
 				if (scale == null || scale.trim().isEmpty() || scale.equals(
@@ -28,16 +27,28 @@ public class Startuniqueindexscale {
 							Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(Configclient
 									.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(filter)));
 					for (int j = 0; j < uniqueservers; j++) {
-						String[] folderipport = STATIC.splitenc(Configclient
-								.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(Configclient
-										.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(filter) + j));
-						System.out.println(new Date() + " ==== starting [" + namespace + "][" + filter + "] on ["+folderipport[1]+"]["+folderipport[2]+"]");
-						Uniqueindexclient.getinstance(namespace, null).readallroots(folderipport[1],
-								Integer.parseInt(folderipport[2]), filter, new Readroot(namespace, filter,folderipport[1], Integer.parseInt(folderipport[2]) ));
-						System.out.println(new Date() + " ==== done [" + namespace + "][" + filter + "] on ["+folderipport[1]+"]["+folderipport[2]+"]");
+						final int server = j;
+						new Thread(new Runnable() {
+
+							@Override
+							public void run() {
+								String[] folderipport = STATIC.splitenc(Configclient
+										.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(Configclient
+												.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(filter) + server));
+								System.out.println(new Date() + " ==== starting [" + namespace + "][" + filter + "] on ["+folderipport[1]+"]["+folderipport[2]+"]");
+								try {
+									Uniqueindexclient.getinstance(namespace, null).readallroots(folderipport[1],
+											Integer.parseInt(folderipport[2]), filter, new Readroot(namespace, filter,folderipport[1], Integer.parseInt(folderipport[2]) ));
+									System.out.println(new Date() + " ==== done [" + namespace + "][" + filter + "] on ["+folderipport[1]+"]["+folderipport[2]+"]");
+								} catch (Exception e) {
+									System.out.println(new Date() + " ==== terminated [" + namespace + "][" + filter + "] on ["+folderipport[1]+"]["+folderipport[2]+"]");
+									e.printStackTrace();
+								}
+							}
+							
+						}).start();
 					}
 				}
-				System.out.println(new Date() + " ==== done [" + namespace + "][" + filter + "]");
 			}
 		} finally {
 			Configclient.running = false;
