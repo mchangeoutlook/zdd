@@ -12,7 +12,7 @@ import com.zdd.bdc.server.ex.Theserver;
 
 /**
  * @author mido how to run: 
- * nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigindexserver.jar:../../commonclientlibs/bigindexclient.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startindexserver unicorn > log.runbigindexserver &
+ * nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigpagedindexserver.jar:../../commonclientlibs/bigpagedindexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startpagedindexserver unicorn > log.runbigpagedindexserver &
  */
 public class Startpagedindexserver {
 	public static void main(String[] s) throws Exception {

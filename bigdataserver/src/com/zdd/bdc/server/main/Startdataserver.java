@@ -12,7 +12,7 @@ import com.zdd.bdc.server.ex.Theserver;
 /**
  * @author mido
  * how to run: 
- * nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigdataserver.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startdataserver unicorn > log.runbigdataserver &
+ * nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigdataserver.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startdataserver unicorn > log.runbigdataserver &
  */
 
 public class Startdataserver {

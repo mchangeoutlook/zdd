@@ -13,21 +13,18 @@ import com.zdd.bdc.client.util.STATIC;
 public class Fileuniqueutil {
 
 	private static final Path uniquerootfolder = STATIC.LOCAL_DATAFOLDER;
-	private static final int capacitykeymax = 60;
-	private static final int capacityvalue = 40;
-	private static final int[] rootrange = { 8, 16 };
-	private static final long leafmax = Long.parseLong(
-			"1" + String.format("%0" + (String.valueOf(Long.MAX_VALUE).length() - rootrange[1]) + "d", 0)) - 1;
 
 	private static long hashkey(byte[] key) {
 		return Math.abs(UUID.nameUUIDFromBytes(key).getLeastSignificantBits());
 	}
 
-	private static long hashleaf(byte[] key) {
+	private static long hashleaf(byte[] key, int[] rootrange) {
 		return Long.parseLong(String.valueOf(hashkey(key)).substring(rootrange[0], rootrange[1]));
 	}
 
-	private static long hashvalue(byte[] key, int distributions) throws Exception {
+	private static long hashvalue(byte[] key, int distributions, int[] rootrange) throws Exception {
+		long leafmax = Long.parseLong(
+				"1" + String.format("%0" + (String.valueOf(Long.MAX_VALUE).length() - rootrange[1]) + "d", 0)) - 1;
 		if (distributions <= 0) {
 			throw new Exception("distributionsnegative");
 		}
@@ -40,16 +37,20 @@ public class Fileuniqueutil {
 		return leaf - leafseg * (leaf / leafseg);
 	}
 
-	private static Path uniquefolder() throws Exception {
-		Path returnvalue = uniquerootfolder.resolve("#unique#");
+	private static Path ufolder() {
+		return uniquerootfolder.resolve("#unique#");
+	}
+
+	private static Path uniquefolder(String namespace) throws Exception {
+		Path returnvalue = ufolder().resolve(namespace);
 		if (!Files.exists(returnvalue)) {
 			Files.createDirectories(returnvalue);
 		}
 		return returnvalue;
 	}
 
-	private static Path rootfile(String filter) throws Exception {
-		Path returnvalue = uniquefolder().resolve(filterfolder(filter)).resolve("root");
+	public static Path rootfile(String namespace, String filter) throws Exception {
+		Path returnvalue = uniquefolder(namespace).resolve(filterfolder(filter)).resolve("root");
 		if (!Files.exists(returnvalue.getParent())) {
 			Files.createDirectories(returnvalue.getParent());
 		}
@@ -67,23 +68,23 @@ public class Fileuniqueutil {
 		return filterfolder;
 	}
 
-	private static Path leafolder(String filter) throws Exception {
-		Path returnvalue = uniquefolder().resolve(filterfolder(filter)).resolve("leaf");
+	public static Path leafolder(String namespace, String filter) throws Exception {
+		Path returnvalue = uniquefolder(namespace).resolve(filterfolder(filter)).resolve("leaf");
 		if (!Files.exists(returnvalue)) {
 			Files.createDirectories(returnvalue);
 		}
 		return returnvalue;
 	}
 
-	private static Path collisionfolder(String filter) throws Exception {
-		Path returnvalue = uniquefolder().resolve(filterfolder(filter)).resolve("collision");
+	public static Path collisionfolder(String namespace, String filter) throws Exception {
+		Path returnvalue = uniquefolder(namespace).resolve(filterfolder(filter)).resolve("collision");
 		if (!Files.exists(returnvalue)) {
 			Files.createDirectories(returnvalue);
 		}
 		return returnvalue;
 	}
 
-	private static ByteBuffer formatkeyvalue(byte[] key, byte[] value) throws Exception {
+	private static ByteBuffer formatkeyvalue(byte[] key, byte[] value, int capacitykeymax, int capacityvalue) throws Exception {
 		if (key == null || key.length == 0) {
 			throw new Exception("nokey");
 		}
@@ -111,7 +112,7 @@ public class Fileuniqueutil {
 		return returnvalue;
 	}
 
-	private static void collision(Path target, byte[] key, ByteBuffer towrite, ByteBuffer toread) throws Exception {
+	private static void collision(Path target, byte[] key, ByteBuffer towrite, ByteBuffer toread, int capacitykeymax, int capacityvalue) throws Exception {
 		if (!Files.exists(target)) {
 			Files.write(target, new byte[0], StandardOpenOption.CREATE);
 		}
@@ -139,7 +140,7 @@ public class Fileuniqueutil {
 						}
 					}
 					if (duplicate) {
-						throw new Exception("duplicate");
+						throw new Exception(STATIC.DUPLICATE);
 					}
 				} else {
 					boolean samekey = true;
@@ -169,36 +170,37 @@ public class Fileuniqueutil {
 		}
 	}
 
-	public static void create(String filter, byte[] key, byte[] value, int distributions) throws Exception {
-		ByteBuffer writeleaf = formatkeyvalue(key, value);
-		synchronized (Fileutil.synckey(String.valueOf(hashkey(key)))) {
+	public static void create(String namespace, String filter, byte[] key, byte[] value, int[] rootrange, int capacitykeymax, int capacityvalue, int distributions)
+			throws Exception {
+		ByteBuffer writeleaf = formatkeyvalue(key, value, capacitykeymax, capacityvalue);
+		synchronized (Fileutil.synckey(String.valueOf(hashkey(key)).substring(rootrange[0], rootrange[1]))) {
 			ByteBuffer root = ByteBuffer.allocate(1);
-			long rootstartposition = hashleaf(key) * 32;
-			Fileutil.read(rootfile(filter), rootstartposition, root);
+			long rootstartposition = hashleaf(key, rootrange) * 32;
+			Fileutil.read(rootfile(namespace, filter), rootstartposition, root);
 			if (root.array()[0] == 0) {
 				String leafile = UUID.randomUUID().toString().replaceAll("-", "");
 				ByteBuffer writeroot = ByteBuffer.allocate(32);
 				writeroot.put(STATIC.tobytes(leafile));
-				Fileutil.write(rootfile(filter), rootstartposition, writeroot);
-				Fileutil.write(leafolder(filter).resolve(leafile),
-						hashvalue(key, distributions) * (capacityvalue + capacitykeymax), writeleaf);
+				Fileutil.write(rootfile(namespace, filter), rootstartposition, writeroot);
+				Fileutil.write(leafolder(namespace, filter).resolve(leafile),
+						hashvalue(key, distributions, rootrange) * (capacityvalue + capacitykeymax), writeleaf);
 			} else {
 				ByteBuffer readleafile = ByteBuffer.allocate(32);
-				Fileutil.read(rootfile(filter), rootstartposition, readleafile);
+				Fileutil.read(rootfile(namespace, filter), rootstartposition, readleafile);
 				String leafile = STATIC.tostring(readleafile.array());
-				if (!Files.exists(leafolder(filter).resolve(leafile))) {
-					Fileutil.write(leafolder(filter).resolve(leafile),
-							hashvalue(key, distributions) * (capacityvalue + capacitykeymax), writeleaf);
+				if (!Files.exists(leafolder(namespace, filter).resolve(leafile))) {
+					Fileutil.write(leafolder(namespace, filter).resolve(leafile),
+							hashvalue(key, distributions, rootrange) * (capacityvalue + capacitykeymax), writeleaf);
 				} else {
 					ByteBuffer leaf = ByteBuffer.allocate(1);
-					long leafstartposition = hashvalue(key, distributions) * (capacityvalue + capacitykeymax);
-					Fileutil.read(leafolder(filter).resolve(leafile), leafstartposition, leaf);
+					long leafstartposition = hashvalue(key, distributions, rootrange) * (capacityvalue + capacitykeymax);
+					Fileutil.read(leafolder(namespace, filter).resolve(leafile), leafstartposition, leaf);
 					if (leaf.array()[0] == 0) {
-						Fileutil.write(leafolder(filter).resolve(leafile),
-								hashvalue(key, distributions) * (capacityvalue + capacitykeymax), writeleaf);
+						Fileutil.write(leafolder(namespace, filter).resolve(leafile),
+								hashvalue(key, distributions, rootrange) * (capacityvalue + capacitykeymax), writeleaf);
 					} else {
 						ByteBuffer readvalue = ByteBuffer.allocate(capacityvalue + capacitykeymax);
-						Fileutil.read(leafolder(filter).resolve(leafile), leafstartposition, readvalue);
+						Fileutil.read(leafolder(namespace, filter).resolve(leafile), leafstartposition, readvalue);
 						boolean duplicate = true;
 						byte[] val = readvalue.array();
 						for (int i = 0; i < key.length; i++) {
@@ -208,31 +210,34 @@ public class Fileuniqueutil {
 							}
 						}
 						if (duplicate) {
-							throw new Exception("duplicate");
+							throw new Exception(STATIC.DUPLICATE);
 						} else {
 							if (val[32] == 0) {
 								String collisionfile = STATIC.tostring(Arrays.copyOf(val, 32));
-								if (!Files.exists(collisionfolder(filter).resolve(collisionfile))) {
-									Fileutil.write(leafolder(filter).resolve(leafile),
-											hashvalue(key, distributions) * (capacityvalue + capacitykeymax),
+								if (!Files.exists(collisionfolder(namespace, filter).resolve(collisionfile))) {
+									Fileutil.write(leafolder(namespace, filter).resolve(leafile),
+											hashvalue(key, distributions, rootrange) * (capacityvalue + capacitykeymax),
 											writeleaf);
 								} else {
-									collision(collisionfolder(filter).resolve(collisionfile), null, writeleaf, null);
+									collision(collisionfolder(namespace, filter).resolve(collisionfile), null,
+											writeleaf, null, capacitykeymax, capacityvalue);
 								}
 							} else {
 								String collisionfile = UUID.randomUUID().toString().replaceAll("-", "");
 								ByteBuffer writeleafcollision = ByteBuffer.allocate(capacityvalue + capacitykeymax);
 								writeleafcollision.put(STATIC.tobytes(collisionfile));
 								writeleafcollision.put(new byte[capacityvalue + capacitykeymax - 32]);
-								Fileutil.write(leafolder(filter).resolve(leafile),
-										hashvalue(key, distributions) * (capacityvalue + capacitykeymax),
+								Fileutil.write(leafolder(namespace, filter).resolve(leafile),
+										hashvalue(key, distributions, rootrange) * (capacityvalue + capacitykeymax),
 										writeleafcollision);
 
 								ByteBuffer writecollision = ByteBuffer.allocate(2 * (capacityvalue + capacitykeymax));
 								writecollision.put(val);
 								writecollision.put(writeleaf.array());
-								Fileutil.write(collisionfolder(filter).resolve(collisionfile), 0, writecollision);
+								Fileutil.write(collisionfolder(namespace, filter).resolve(collisionfile), 0,
+										writecollision);
 							}
+
 						}
 					}
 				}
@@ -240,27 +245,27 @@ public class Fileuniqueutil {
 		}
 	}
 
-	public static byte[] read(String filter, byte[] key, int distributions) throws Exception {
+	public static byte[] read(String namespace, String filter, byte[] key, int[] rootrange, int capacitykeymax, int capacityvalue, int distributions) throws Exception {
 		ByteBuffer root = ByteBuffer.allocate(1);
-		long rootstartposition = hashleaf(key) * 32;
-		Fileutil.read(rootfile(filter), rootstartposition, root);
+		long rootstartposition = hashleaf(key, rootrange) * 32;
+		Fileutil.read(rootfile(namespace, filter), rootstartposition, root);
 		if (root.array()[0] == 0) {
 			return null;
 		} else {
 			ByteBuffer readleafile = ByteBuffer.allocate(32);
-			Fileutil.read(rootfile(filter), rootstartposition, readleafile);
+			Fileutil.read(rootfile(namespace, filter), rootstartposition, readleafile);
 			String leafile = STATIC.tostring(readleafile.array());
-			if (!Files.exists(leafolder(filter).resolve(leafile))) {
+			if (!Files.exists(leafolder(namespace, filter).resolve(leafile))) {
 				return null;
 			} else {
 				ByteBuffer leaf = ByteBuffer.allocate(1);
-				long leafstartposition = hashvalue(key, distributions) * (capacityvalue + capacitykeymax);
-				Fileutil.read(leafolder(filter).resolve(leafile), leafstartposition, leaf);
+				long leafstartposition = hashvalue(key, distributions, rootrange) * (capacityvalue + capacitykeymax);
+				Fileutil.read(leafolder(namespace, filter).resolve(leafile), leafstartposition, leaf);
 				if (leaf.array()[0] == 0) {
 					return null;
 				} else {
 					ByteBuffer readvalue = ByteBuffer.allocate(capacityvalue + capacitykeymax);
-					Fileutil.read(leafolder(filter).resolve(leafile), leafstartposition, readvalue);
+					Fileutil.read(leafolder(namespace, filter).resolve(leafile), leafstartposition, readvalue);
 					boolean samekey = true;
 					byte[] val = readvalue.array();
 					for (int i = 0; i < key.length; i++) {
@@ -274,11 +279,12 @@ public class Fileuniqueutil {
 					} else {
 						if (val[32] == 0) {
 							String collisionfile = STATIC.tostring(Arrays.copyOf(val, 32));
-							if (!Files.exists(collisionfolder(filter).resolve(collisionfile))) {
+							if (!Files.exists(collisionfolder(namespace, filter).resolve(collisionfile))) {
 								return null;
 							} else {
 								ByteBuffer returnvalue = ByteBuffer.allocate(capacityvalue);
-								collision(collisionfolder(filter).resolve(collisionfile), key, null, returnvalue);
+								collision(collisionfolder(namespace, filter).resolve(collisionfile), key, null,
+										returnvalue, capacitykeymax, capacityvalue);
 								byte[] rb = returnvalue.array();
 								if (rb[0] == 0) {
 									return null;

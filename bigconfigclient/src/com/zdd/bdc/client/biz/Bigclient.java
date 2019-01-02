@@ -24,21 +24,19 @@ public class Bigclient {
 				.read(STATIC.distributebigpagedindexserveri(namespace, filters, index,Integer.parseInt(Configclient
 						.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS)))));
 	}
-
+	
 	// return [ip][port]
-	public static String[] distributebiguniqueindex(String namespace, String filter, String index) {
-		return distributebiguniqueindex(namespace, filter, index, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
-	}
-
-	// return [ip][port]
-	public static String[] distributebiguniqueindex_scale(String namespace, String filter, String index) {
-		return distributebiguniqueindex(namespace, filter, index, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX_SCALE);
+	public static String[] distributebiguniqueindex(String namespace, String servergroups, String index) {
+		int uniqueindexservers = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX)
+				.read(servergroups));
+		String[] returnvalue = new String[2];
+		String[] ipport = STATIC.splitenc(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX)
+				.read(servergroups+(Math.abs(index.hashCode())%uniqueindexservers)));
+		returnvalue[0] = ipport[1];
+		returnvalue[1] = ipport[2];
+		return returnvalue;
 	}
 	
-	private static String[] distributebiguniqueindex(String namespace, String filter, String index, String configfile) {
-		String[] iport = STATIC.splitenc(Configclient.getinstance(namespace, configfile)
-				.read(STATIC.urlencode(filter)));
-		return STATIC.splitiport(iport[Math.abs(index.hashCode())%iport.length]);
-	}
+	
 
 }

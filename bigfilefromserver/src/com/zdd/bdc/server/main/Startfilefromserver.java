@@ -10,7 +10,7 @@ import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.STATIC;
 
 /**
- * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigfilefromserver.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startfilefromserver pngbigfrom > log.runbigfilefromserver &
+ * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigfilefromserver.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigconfigclient.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startfilefromserver pngbigfrom > log.runbigfilefromserver &
  */
 
 public class Startfilefromserver {

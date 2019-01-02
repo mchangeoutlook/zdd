@@ -163,17 +163,17 @@ public class Configfilegenerator {
 		
 		Fileconfigutil.create("active", STATIC.splitenc(STATIC.splitfromto("0","9"),STATIC.splitfromto("10","19")), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
-		Fileconfigutil.create(STATIC.splitfromto("0","9"), STATIC.splitenc("bigindex1", "100", "127.0.0.1", "9991"), "unicorn",
+		Fileconfigutil.create(STATIC.splitfromto("0","9"), STATIC.splitenc("bigpagedindex1", "100", "127.0.0.1", "9991"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
-		Fileconfigutil.create(STATIC.splitfromto("10","19"), STATIC.splitenc("bigindex2", "100", "127.0.0.1", "9992"), "unicorn",
+		Fileconfigutil.create(STATIC.splitfromto("10","19"), STATIC.splitenc("bigpagedindex2", "100", "127.0.0.1", "9992"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
 				
 		/*
 		Fileconfigutil.create("active", STATIC.splitenc(STATIC.splitfromto("0","19"),""), "unicorn",
-						STATIC.REMOTE_CONFIG_BIGINDEX);
+						STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
 				
-		Fileconfigutil.create(STATIC.splitfromto("0","19"), STATIC.splitenc("bigindex1", "100", "127.0.0.1", "9991"), "unicorn",
-				STATIC.REMOTE_CONFIG_BIGINDEX);
+		Fileconfigutil.create(STATIC.splitfromto("0","19"), STATIC.splitenc("bigpagedindex1", "100", "127.0.0.1", "9991"), "unicorn",
+				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
 		*/
 		
 	}
@@ -185,24 +185,44 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		
-		Fileconfigutil.create(STATIC.urlencode("unique1"), STATIC.splitenc(STATIC.splitiport("127.0.0.1", "9991"),STATIC.splitiport("127.0.0.1", "9992")), "unicorn",
+		Fileconfigutil.create("servergroups0", "2", "unicorn",
 				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
-				
-	}
-	
 
-	private static void genunicornbiguniqueindex_scale() throws Exception {
-		Path configfile = Fileconfigutil.file("unicorn", STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX_SCALE);
-		if (Files.exists(configfile)) {
-			Files.write(configfile, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC,
-					StandardOpenOption.TRUNCATE_EXISTING);
-		}
+		Fileconfigutil.create("servergroups0"+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_ROOTRANGESUFFIX, STATIC.splitfromto("8","16"), "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+		Fileconfigutil.create("servergroups0"+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX, "60", "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+		Fileconfigutil.create("servergroups0"+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX, "40", "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
 		
-		Fileconfigutil.create(STATIC.urlencode("unique1"), STATIC.splitenc(STATIC.splitiport("127.0.0.1", "9988"),STATIC.splitiport("127.0.0.1", "9989"),STATIC.splitiport("127.0.0.1", "9990")), "unicorn",
-				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX_SCALE);
-				
+		Fileconfigutil.create("servergroups00", STATIC.splitenc("biguniqueindex1","127.0.0.1", "9989"), "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+		Fileconfigutil.create("servergroups01", STATIC.splitenc("biguniqueindex2","127.0.0.1", "9990"), "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+
+		Fileconfigutil.create("servergroups1", "3", "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+		Fileconfigutil.create("servergroups1"+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_ROOTRANGESUFFIX, STATIC.splitfromto("8","16"), "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+		Fileconfigutil.create("servergroups1"+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX, "60", "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+		Fileconfigutil.create("servergroups1"+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX, "40", "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+		
+		Fileconfigutil.create("servergroups10", STATIC.splitenc("biguniqueindexscale1","127.0.0.1", "9986"), "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+		Fileconfigutil.create("servergroups11", STATIC.splitenc("biguniqueindexscale2","127.0.0.1", "9987"), "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);		
+		Fileconfigutil.create("servergroups12", STATIC.splitenc("biguniqueindexscale3","127.0.0.1", "9988"), "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+
+		Fileconfigutil.create("filter1", "servergroups0", "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+
+		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"filter1", "servergroups0", "unicorn",
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
 	}
+		
 	private static void genjedgebigdata() throws Exception {
 		Path configfile = Fileconfigutil.file("jedge", STATIC.REMOTE_CONFIG_BIGDATA);
 		if (Files.exists(configfile)) {
@@ -282,7 +302,6 @@ public class Configfilegenerator {
 		genunicornbigdata();
 		genunicornbigpagedindex();
 		genunicornbiguniqueindex();
-		genunicornbiguniqueindex_scale();
 		genjedgebigdata();
 		genjedgebigpagedindex();
 		genjedgeeid();

@@ -8,4 +8,5 @@ public interface Theserverprocess {
 	public byte[] request(byte[] param) throws Exception;
 	public Inputprocess requestinput(byte[] param) throws Exception;
 	public InputStream requestoutput(byte[] param) throws Exception;
+	public int requestoutputbytes(byte[] param) throws Exception;
 }

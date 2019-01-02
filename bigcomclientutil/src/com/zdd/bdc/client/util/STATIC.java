@@ -32,9 +32,15 @@ public class STATIC {
 	public static final String REMOTE_CONFIG_CORE = "core";
 	public static final String REMOTE_CONFIG_BIGDATA = "bigdata";
 	public static final String REMOTE_CONFIG_BIGPAGEDINDEX = "bigpagedindex";
+	
 	public static final String REMOTE_CONFIG_BIGUNIQUEINDEX = "biguniqueindex";
-	public static final String REMOTE_CONFIG_BIGUNIQUEINDEX_SCALE = "biguniqueindex-scale";
+	public static final String REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX = "scale.";
+	public static final String REMOTE_CONFIGKEY_BIGUNIQUEINDEX_ROOTRANGESUFFIX = ".rootrange";
+	public static final String REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX = ".capacitykeymax";
+	public static final String REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX = ".capacityvalue";
 
+	public static final String DUPLICATE = "duplicate";
+	
 	public static final String REMOTE_CONFIGKEY_CONFIGSERVERIP = "configserverip";
 	public static final String REMOTE_CONFIGKEY_CONFIGSERVERPORT = "configserverport";
 	public static final String REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS = "updateconfigcache.intervalseconds";

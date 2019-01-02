@@ -101,7 +101,7 @@ public class Theserver {
 							InputStream responses = ti.requestoutput(parambb);
 							if (responses != null) {
 								try {
-									byte[] readb = new byte[10240];
+									byte[] readb = new byte[ti.requestoutputbytes(parambb)];
 									int bs = 0;
 									while ((bs = responses.read(readb)) != -1) {
 										ByteBuffer writebb = ByteBuffer.allocate(11 + bs);
