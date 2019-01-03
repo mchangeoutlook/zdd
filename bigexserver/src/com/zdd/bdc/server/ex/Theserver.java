@@ -1,6 +1,8 @@
 package com.zdd.bdc.server.ex;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.InetAddress;
@@ -21,20 +23,22 @@ import java.util.concurrent.ExecutorService;
 
 public class Theserver {
 
-	private static final Map<String, Theserverprocess> serverprocesses = new Hashtable<String, Theserverprocess>(); 
-	
-	public synchronized static void startblocking(ExecutorService es, String ip, int port, String ispending, StringBuffer pending, int bigfilehash,
-			final Class<?> c, Map<String, Object> additionalserverconfig) throws Exception {
+	private static final Map<String, Theserverprocess> serverprocesses = new Hashtable<String, Theserverprocess>();
+
+	public synchronized static void startblocking(ExecutorService es, String ip, int port, String ispending,
+			StringBuffer pending, int bigfilehash, final Class<?> c, Map<String, Object> additionalserverconfig)
+			throws Exception {
 		try {
 			Theserverprocess ti = (Theserverprocess) c.getDeclaredConstructor().newInstance();
 			serverprocesses.put(c.getName(), ti);
 		} catch (Exception e) {
-			throw new Exception(new Date()+" ==== "+c.getName()+" !instanceof " + Theserverprocess.class.getSimpleName());
+			throw new Exception(
+					new Date() + " ==== " + c.getName() + " !instanceof " + Theserverprocess.class.getSimpleName());
 		}
 		try {
 			serverprocesses.get(c.getName()).init(ip, port, bigfilehash, additionalserverconfig);
 		} catch (Exception e) {
-			System.out.println(new Date()+" ==== error init "+c.getName());
+			System.out.println(new Date() + " ==== error init " + c.getName());
 			throw e;
 		}
 		Selector acceptSelector = SelectorProvider.provider().openSelector();
@@ -44,8 +48,8 @@ public class Theserver {
 		ssc.socket().bind(isa);
 		ssc.register(acceptSelector, SelectionKey.OP_ACCEPT);
 
-		System.out.println(new Date() + " ==== " + c.getName() + " listening port [" + port + "] on ip ["
-				+ ip + "] and bigfilehash = ["+bigfilehash+"]");
+		System.out.println(new Date() + " ==== " + c.getName() + " listening port [" + port + "] on ip [" + ip
+				+ "] and bigfilehash = [" + bigfilehash + "]");
 		while (acceptSelector.select() > 0 && !ispending.equals(pending.toString())) {
 			Set<SelectionKey> readyKeys = acceptSelector.selectedKeys();
 			Iterator<SelectionKey> i = readyKeys.iterator();
@@ -64,12 +68,12 @@ public class Theserver {
 							Integer length = Integer.parseInt(new String(readbb));
 							byte[] parambb = new byte[Math.abs(length)];
 							is.readNBytes(parambb, 0, parambb.length);
-							
+
 							Theserverprocess ti = serverprocesses.get(c.getName());
-							
+
 							byte[] res = ti.request(parambb);
-							
-							if (res==null) {
+
+							if (res == null) {
 								ByteBuffer writebb = ByteBuffer.allocate(11);
 								writebb.put(String.format("%011d", -1).getBytes());
 								writebb.flip();
@@ -81,13 +85,13 @@ public class Theserver {
 								writebb.flip();
 								s.getChannel().write(writebb);
 							}
-							
+
 							readbb = new byte[11];
 							is.readNBytes(readbb, 0, readbb.length);
 							length = Integer.parseInt(new String(readbb));
 							Inputprocess inp = null;
 							while (length > 0) {
-								if (inp==null) {
+								if (inp == null) {
 									inp = ti.requestinput(parambb);
 								}
 								readbb = new byte[length];
@@ -97,22 +101,48 @@ public class Theserver {
 								is.readNBytes(readbb, 0, readbb.length);
 								length = Integer.parseInt(new String(readbb));
 							}
-							
+
 							InputStream responses = ti.requestoutput(parambb);
 							if (responses != null) {
 								try {
-									byte[] readb = new byte[ti.requestoutputbytes(parambb)];
-									int bs = 0;
-									while ((bs = responses.read(readb)) != -1) {
-										ByteBuffer writebb = ByteBuffer.allocate(11 + bs);
-										writebb.put(String.format("%011d", bs).getBytes());
-										if (bs != readb.length) {
-											readb = Arrays.copyOf(readb, bs);
-										}
-										writebb.put(readb);
-										writebb.flip();
-										s.getChannel().write(writebb);
+									int toread = ti.requestoutputbytes(parambb);
+									if (toread > 0) {
+										byte[] readb = new byte[toread];
+										int bs = 0;
+										while ((bs = responses.read(readb)) != -1) {
+											ByteBuffer writebb = ByteBuffer.allocate(11 + bs);
+											writebb.put(String.format("%011d", bs).getBytes());
+											if (bs != readb.length) {
+												readb = Arrays.copyOf(readb, bs);
+											}
+											writebb.put(readb);
+											writebb.flip();
+											s.getChannel().write(writebb);
 
+										}
+									} else {
+										BufferedReader br = null;
+										try {
+											br = new BufferedReader(new InputStreamReader(responses));
+											String line = br.readLine();
+											while (line != null) {
+												byte[] readb = line.getBytes("UTF-8");
+												int bs = readb.length;
+												ByteBuffer writebb = ByteBuffer.allocate(11 + bs);
+												writebb.put(String.format("%011d", bs).getBytes());
+												if (bs != readb.length) {
+													readb = Arrays.copyOf(readb, bs);
+												}
+												writebb.put(readb);
+												writebb.flip();
+												s.getChannel().write(writebb);
+												line = br.readLine();
+											}
+										} finally {
+											if (br != null) {
+												br.close();
+											}
+										}
 									}
 								} finally {
 									responses.close();
@@ -127,7 +157,7 @@ public class Theserver {
 								readbb = new byte[11];
 								is.readNBytes(readbb, 0, readbb.length);
 								length = Integer.parseInt(new String(readbb));
-								if (length==0) {
+								if (length == 0) {
 									try {
 										is.close();
 									} catch (Exception e) {
@@ -140,8 +170,8 @@ public class Theserver {
 										// do nothing
 									}
 								}
-							}catch(Exception ex) {
-								//do nothing
+							} catch (Exception ex) {
+								// do nothing
 							}
 						} catch (Exception e) {
 							try {
