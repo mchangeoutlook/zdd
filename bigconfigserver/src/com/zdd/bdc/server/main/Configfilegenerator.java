@@ -173,6 +173,7 @@ public class Configfilegenerator {
 		Fileconfigutil.create(STATIC.splitfromto("10","19"), STATIC.splitenc("bigpagedindex2", "100", "127.0.0.1", "9992"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
 				
+		
 		/*
 		Fileconfigutil.create("active", STATIC.splitenc(STATIC.splitfromto("0","19"),""), "unicorn",
 						STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
