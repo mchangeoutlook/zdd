@@ -12,16 +12,19 @@ public class Fileclient {
 
 	private Fileclient(String thepath) {
 		path = thepath;
+		if (!path.endsWith("/")) {
+			path +="/";
+		}
 	}
 
-	public static Fileclient getinstance(String thepathonserver) {
-		return new Fileclient(thepathonserver);
+	public static Fileclient getinstance(String thefolderonserver) {
+		return new Fileclient(thefolderonserver);
 	}
 
 	public void write(String key, InputStream requests) throws Exception {
 		try {
 			String[] iport = Bigclient.distributebigdata("pngbigto", key);
-			Theclient.request(iport[0], Integer.parseInt(iport[1]), STATIC.tobytes(path), requests, null);
+			Theclient.request(iport[0], Integer.parseInt(iport[1]), STATIC.tobytes(path+key), requests, null);
 		} finally {
 			requests.close();
 		}
@@ -29,7 +32,7 @@ public class Fileclient {
 
 	public String read(String key, Theclientprocess cp) throws Exception {
 		String[] iport = Bigclient.distributebigdata("pngbigfrom", key);
-		Theclient.request(iport[0], Integer.parseInt(iport[1]), STATIC.tobytes(path), null, cp);
+		Theclient.request(iport[0], Integer.parseInt(iport[1]), STATIC.tobytes(path+key), null, cp);
 		return key;
 	}
 

@@ -48,10 +48,10 @@ public class Bigpagedindexconfig {
 		all.putAll(iport_filehash);
 		all.put(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS, String.valueOf(hash_ipport.size()));
 		config.put(namespace, all);
-		System.out.println(new Date() + " ==== generated bigindexconfig ["+all+"] [" + parentfolderip_port.size()
-				+ "] index servers and [" + hash_ipport.size() + "] hashes under namespace [" + namespace + "]");
+		System.out.println(new Date() + " ==== generated bigpagedindexconfig ["+all+"] [" + parentfolderip_port.size()
+				+ "] paged index servers and [" + hash_ipport.size() + "] hashes under namespace [" + namespace + "]");
 		System.out.println(
-				new Date() + " ==== please restart configserver to make new index distribution to take effect");
+				new Date() + " ==== please restart configserver to make new paged index distribution to take effect");
 	}
 
 	public static String read(String namespace, String key) {

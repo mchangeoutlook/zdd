@@ -85,8 +85,13 @@ public class Filepagedindexutil {
 			return amount;
 		}
 	}
+	
+	public static Path pagedfolder() {
+		return STATIC.LOCAL_DATAFOLDER.resolve("#paged#");
+	}
+	
 	public static Path folder(String namespace, Vector<String> filters, String index, int maxindexservers) {
-		return STATIC.LOCAL_DATAFOLDER.resolve("#paged#").resolve(namespace)
+		return pagedfolder().resolve(namespace)
 				.resolve(STATIC.distributebigpagedindexserveri(namespace, filters, index, maxindexservers));
 	}
 	

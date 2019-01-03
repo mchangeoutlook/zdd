@@ -37,22 +37,22 @@ public class Movingpageddistribution extends Thread {
 		System.out.println(new Date() + " ==== started auto redistribution");
 		while (Configclient.running) {
 
-			if (Files.exists(STATIC.LOCAL_DATAFOLDER) && Files.isDirectory(STATIC.LOCAL_DATAFOLDER)) {
+			if (Files.exists(Filepagedindexutil.pagedfolder()) && Files.isDirectory(Filepagedindexutil.pagedfolder())) {
 
-				String[] namespaces = STATIC.LOCAL_DATAFOLDER.toFile().list();
+				String[] namespaces = Filepagedindexutil.pagedfolder().toFile().list();
 				for (String namespace : namespaces) {
 					if (!Configclient.running) {
 						break;
 					} else {
-						if (Files.isDirectory(STATIC.LOCAL_DATAFOLDER.resolve(namespace))
+						if (Files.isDirectory(Filepagedindexutil.pagedfolder().resolve(namespace))
 								&& !namespace.startsWith(".")) {
-							String[] serverindexes = STATIC.LOCAL_DATAFOLDER.resolve(namespace).toFile().list();
+							String[] serverindexes = Filepagedindexutil.pagedfolder().resolve(namespace).toFile().list();
 							for (String serverindex : serverindexes) {
 								if (!Configclient.running) {
 									break;
 								} else {
 									if (Files.isDirectory(
-											STATIC.LOCAL_DATAFOLDER.resolve(namespace).resolve(serverindex))
+											Filepagedindexutil.pagedfolder().resolve(namespace).resolve(serverindex))
 											&& !serverindex.startsWith(".")) {
 										String targetiport = Configclient
 												.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX)
@@ -64,7 +64,7 @@ public class Movingpageddistribution extends Thread {
 												walkfolder(namespace, serverindex);
 											} catch (Exception e) {
 												System.out.println(new Date() + " ==== error in distributing ["
-														+ STATIC.LOCAL_DATAFOLDER.resolve(namespace)
+														+ Filepagedindexutil.pagedfolder().resolve(namespace)
 																.resolve(serverindex).toAbsolutePath().toString()
 														+ "], will continue next folder");
 												e.printStackTrace();
@@ -100,7 +100,7 @@ public class Movingpageddistribution extends Thread {
 			Files.createDirectories(progressfolder);
 		}
 
-		Files.walkFileTree(STATIC.LOCAL_DATAFOLDER.resolve(namespace).resolve(serverindex),
+		Files.walkFileTree(Filepagedindexutil.pagedfolder().resolve(namespace).resolve(serverindex),
 				new java.util.HashSet<FileVisitOption>(0), 1, new FileVisitor<Object>() {
 
 					@Override

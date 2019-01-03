@@ -221,10 +221,10 @@ public class Configfilegenerator {
 		Fileconfigutil.create("servergroups12", STATIC.splitenc("biguniqueindexscale3","127.0.0.1", "9988"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
 
-		Fileconfigutil.create("filter1", "servergroups1", "unicorn",
+		Fileconfigutil.create("filter1", "servergroups0", "unicorn",
 				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
 
-		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"filter1", "servergroups1", "unicorn",
+		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"filter1", "servergroups0", "unicorn",
 				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
 	}
 		
