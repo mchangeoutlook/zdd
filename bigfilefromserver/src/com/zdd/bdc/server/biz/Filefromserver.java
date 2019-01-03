@@ -34,4 +34,10 @@ public class Filefromserver implements Theserverprocess {
 		return Files.newInputStream(STATIC.LOCAL_DATAFOLDER.resolve(path));
 	}
 
+	@Override
+	public int requestoutputbytes(byte[] param) throws Exception {
+		// TODO Auto-generated method stub
+		return 10240;
+	}
+
 }

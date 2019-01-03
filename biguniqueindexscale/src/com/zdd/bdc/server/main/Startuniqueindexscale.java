@@ -12,7 +12,6 @@ import com.zdd.bdc.server.biz.Readroot;
 public class Startuniqueindexscale {
 	public static void main(String[] s) throws Exception {
 		try {
-			s = new String[] { "unicorn", "filter1" };
 			String namespace = s[0];
 			for (int i = 1; i < s.length; i++) {
 				String filter = s[i];
@@ -20,7 +19,7 @@ public class Startuniqueindexscale {
 						.read(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX + filter);
 				if (scale == null || scale.trim().isEmpty() || scale.equals(
 						Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(filter))) {
-					System.out.println(new Date() + " ==== ignore [" + namespace + "][" + filter + "]");
+					System.out.println(new Date() + " ==== ignore [" + namespace + "][" + filter + "] due to scale servergroups ["+scale+"] same as current ["+Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(filter)+"]");
 					continue;
 				} else {
 					int uniqueservers = Integer.parseInt(

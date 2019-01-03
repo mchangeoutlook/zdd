@@ -94,4 +94,10 @@ public class Dataserver implements Theserverprocess {
 		return null;
 	}
 
+	@Override
+	public int requestoutputbytes(byte[] param) throws Exception {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

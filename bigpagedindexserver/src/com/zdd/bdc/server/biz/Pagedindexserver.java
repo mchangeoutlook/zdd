@@ -10,7 +10,6 @@ import com.zdd.bdc.client.util.Objectutil;
 import com.zdd.bdc.server.ex.Inputprocess;
 import com.zdd.bdc.server.ex.Theserverprocess;
 import com.zdd.bdc.server.util.Filepagedindexutil;
-import com.zdd.bdc.server.util.Fileuniqueutil;
 
 public class Pagedindexserver implements Theserverprocess {
 
@@ -30,30 +29,20 @@ public class Pagedindexserver implements Theserverprocess {
 			String key = params.get(STATIC.PARAM_KEY_KEY).toString();
 			String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
 			Object filters = params.get(STATIC.PARAM_FILTERS_KEY);
-			Object distributionsobj = params.get(STATIC.PARAM_ADDITIONAL);
 			if (params.get(STATIC.PARAM_VERSION_KEY)!=null&&!params.get(STATIC.PARAM_VERSION_KEY).toString().trim().isEmpty()) {
 				Filepagedindexutil.version(params.get(STATIC.PARAM_VERSION_KEY).toString(), index, key, (Vector<String>)filters, bigfilehash, Filepagedindexutil.folder(namespace, (Vector<String>)filters, index, Integer.parseInt(Configclient
 						.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS))));
 			} else {
-				if (distributionsobj==null) {
-					Filepagedindexutil.create(index, key, (Vector<String>)filters, bigfilehash, Filepagedindexutil.folder(namespace, (Vector<String>)filters, index, Integer.parseInt(Configclient
+				Filepagedindexutil.create(index, key, (Vector<String>)filters, bigfilehash, Filepagedindexutil.folder(namespace, (Vector<String>)filters, index, Integer.parseInt(Configclient
 							.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS))));
-				} else {
-					Fileuniqueutil.create(filters.toString(), STATIC.tobytes(index), STATIC.tobytes(key), (Integer)distributionsobj);
-				}
 			}
 			return null;
 		} else if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
 			String index = params.get(STATIC.PARAM_INDEX_KEY).toString();
 			String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
 			Object filters = params.get(STATIC.PARAM_FILTERS_KEY);
-			Object distributionsobj = params.get(STATIC.PARAM_ADDITIONAL);
-			if (distributionsobj==null) {
-				return Objectutil.convert(Filepagedindexutil.read(index, (Vector<String>)filters, bigfilehash, Filepagedindexutil.folder(namespace, (Vector<String>)filters, index, Integer.parseInt(Configclient
+			return Objectutil.convert(Filepagedindexutil.read(index, (Vector<String>)filters, bigfilehash, Filepagedindexutil.folder(namespace, (Vector<String>)filters, index, Integer.parseInt(Configclient
 						.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS)))));
-			} else {
-				return Objectutil.convert(STATIC.tostring(Fileuniqueutil.read(filters.toString(), STATIC.tobytes(index), (Integer)distributionsobj)));
-			}
 		} else if (STATIC.PARAM_ACTION_INCREMENT.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
 			String index = params.get(STATIC.PARAM_INDEX_KEY).toString();
 			String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
@@ -75,5 +64,11 @@ public class Pagedindexserver implements Theserverprocess {
 	public InputStream requestoutput(byte[] param) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int requestoutputbytes(byte[] param) throws Exception {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
