@@ -101,7 +101,7 @@ public class Dataclient {
 	}
 	
 
-	public String modify() throws Exception {
+	public void modify() throws Exception {
 		if (key == null || cvs.isEmpty()) {
 			throw new Exception(".key.add4modify.modify");
 		}
@@ -115,7 +115,6 @@ public class Dataclient {
 			String[] iport = Bigclient.distributebigdata(ns, key);
 			Theclient.request(iport[0], 
 					Integer.parseInt(iport[1]), Objectutil.convert(params), null, null);
-			return key;
 		} finally {
 			clear();
 		}
