@@ -47,7 +47,7 @@ public class Configfilegenerator {
 				STATIC.REMOTE_CONFIG_DIG);
 		Fileconfigutil.create("dig1.sequence", STATIC.SORT_SEQUENCE(false), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
-		Fileconfigutil.create("dig1.interval", "D1355", "unicorn", STATIC.REMOTE_CONFIG_DIG);
+		Fileconfigutil.create("dig1.interval", "D1946", "unicorn", STATIC.REMOTE_CONFIG_DIG);
 		Fileconfigutil.create("dig1.period", STATIC.splitfromto("20180910","20200920"), "unicorn", STATIC.REMOTE_CONFIG_DIG);
 		Fileconfigutil.create("dig1.index", STATIC.splitenc("testable", "index"), "unicorn",
 				STATIC.REMOTE_CONFIG_DIG);
@@ -117,9 +117,9 @@ public class Configfilegenerator {
 		Fileconfigutil.create("active", STATIC.splitenc("20181023",""), "pngbigfrom",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		
-		Fileconfigutil.create("20181023", STATIC.splitenc("bigpng1", "10", "127.0.0.1", "9998"), "pngbigfrom",
+		Fileconfigutil.create("20181023", STATIC.splitenc("bigpng1", "0", "127.0.0.1", "9998"), "pngbigfrom",
 				STATIC.REMOTE_CONFIG_BIGDATA);
-		Fileconfigutil.create("20181023", STATIC.splitenc("bigpng2", "10", "127.0.0.1", "9997"), "pngbigfrom",
+		Fileconfigutil.create("20181023", STATIC.splitenc("bigpng2", "0", "127.0.0.1", "9997"), "pngbigfrom",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		//add more
 	}
@@ -134,9 +134,9 @@ public class Configfilegenerator {
 		Fileconfigutil.create("active", STATIC.splitenc("20181023",""), "pngbigto",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		
-		Fileconfigutil.create("20181023", STATIC.splitenc("bigpng1", "10", "127.0.0.1", "9996"), "pngbigto",
+		Fileconfigutil.create("20181023", STATIC.splitenc("bigpng1", "0", "127.0.0.1", "9996"), "pngbigto",
 				STATIC.REMOTE_CONFIG_BIGDATA);
-		Fileconfigutil.create("20181023", STATIC.splitenc("bigpng2", "10", "127.0.0.1", "9995"), "pngbigto",
+		Fileconfigutil.create("20181023", STATIC.splitenc("bigpng2", "0", "127.0.0.1", "9995"), "pngbigto",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		//add more
 	}
@@ -151,9 +151,9 @@ public class Configfilegenerator {
 		Fileconfigutil.create("active", STATIC.splitenc("20181023",""), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		
-		Fileconfigutil.create("20181023", STATIC.splitenc("bigdata1", "100", "127.0.0.1", "9994"), "unicorn",
+		Fileconfigutil.create("20181023", STATIC.splitenc("bigdata1", "5000", "127.0.0.1", "9994"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGDATA);
-		Fileconfigutil.create("20181023", STATIC.splitenc("bigdata2", "100", "127.0.0.1", "9993"), "unicorn",
+		Fileconfigutil.create("20181023", STATIC.splitenc("bigdata2", "5000", "127.0.0.1", "9993"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		//add more
 	}
@@ -165,22 +165,22 @@ public class Configfilegenerator {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		
+		/*
 		Fileconfigutil.create("active", STATIC.splitenc(STATIC.splitfromto("0","9"),STATIC.splitfromto("10","19")), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
 		Fileconfigutil.create(STATIC.splitfromto("0","9"), STATIC.splitenc("bigpagedindex1", "100", "127.0.0.1", "9991"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
 		Fileconfigutil.create(STATIC.splitfromto("10","19"), STATIC.splitenc("bigpagedindex2", "100", "127.0.0.1", "9992"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
-				
+				*/
 		
-		/*
+		
 		Fileconfigutil.create("active", STATIC.splitenc(STATIC.splitfromto("0","19"),""), "unicorn",
 						STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
 				
 		Fileconfigutil.create(STATIC.splitfromto("0","19"), STATIC.splitenc("bigpagedindex1", "100", "127.0.0.1", "9991"), "unicorn",
 				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
-		*/
+		
 		
 	}
 

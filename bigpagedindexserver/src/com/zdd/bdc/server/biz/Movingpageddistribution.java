@@ -99,7 +99,7 @@ public class Movingpageddistribution extends Thread {
 		if (!Files.exists(progressfolder)) {
 			Files.createDirectories(progressfolder);
 		}
-
+		System.out.println(new Date()+" ==== started moving ["+Filepagedindexutil.pagedfolder().resolve(namespace).resolve(serverindex)+"]");
 		Files.walkFileTree(Filepagedindexutil.pagedfolder().resolve(namespace).resolve(serverindex),
 				new java.util.HashSet<FileVisitOption>(0), 1, new FileVisitor<Object>() {
 

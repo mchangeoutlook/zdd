@@ -1,5 +1,6 @@
 package com.zdd.bdc.client.biz;
 
+import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,7 +9,6 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.STATIC;
@@ -16,16 +16,14 @@ import com.zdd.bdc.client.util.Objectutil;
 
 public class Configclient {
 
-	public static String ip = null;
-	public static int port = (new Random().nextInt(9)+1)*100+(new Random().nextInt(9)+1)*10+(new Random().nextInt(9)+1);
+	public static String ip = STATIC.localip();
+	public static int port = Integer.valueOf(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
 	
 	public static boolean running = true;
 	private static Map<String, Map<String, Map<String, String>>> nsfilekeyvalue = new Hashtable<String, Map<String, Map<String, String>>>();
 	private static Map<String, String> nsfilechanged = new Hashtable<String, String>();
 	static {
-		ip = STATIC.localip();
-		
-		System.out.println(new Date()+" ==== initing config client on ip=["+ip+"] with default port ["+port+"], which may be changed later.");
+		System.out.println(new Date()+" ==== initing config client on ip=["+ip+"] with process id ["+port+"], which is also the default port and it may be changed later.");
 		
 		if (Files.exists(STATIC.LOCAL_CONFIGFOLDER) && Files.isDirectory(STATIC.LOCAL_CONFIGFOLDER)) {
 			try {

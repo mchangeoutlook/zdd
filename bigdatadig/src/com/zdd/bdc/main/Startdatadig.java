@@ -13,7 +13,7 @@ import com.zdd.bdc.server.ex.Theserver;
 import com.zdd.bdc.sort.distribute.Sortserver;
 
 /**
- * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigdatadig.jar:../../serverlibs/bigdataserver.jar:../../commonserverlibs/bigsort.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigindexclient.jar:../../commonclientlibs/bigdataclient.jar:../../commonserverlibs/bigexserver.jar com.zdd.bdc.main.Startdatadig unicorn > log.runbigdatadig &
+ * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigdatadig.jar:../../serverlibs/bigdataserver.jar:../../commonserverlibs/bigsort.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigpagedindexclient.jar:../../commonclientlibs/bigdataclient.jar:../../commonserverlibs/bigexserver.jar com.zdd.bdc.main.Startdatadig unicorn > log.runbigdatadig &
  */
 
 public class Startdatadig {
