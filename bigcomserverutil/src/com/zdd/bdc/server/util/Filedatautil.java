@@ -26,8 +26,13 @@ public class Filedatautil {
 
 	public static void create(String key, String value, int extravaluecapacity, String namespace, String table,
 			String column, int bigfilehash) throws Exception {
-		Filekvutil.create(key, value, extravaluecapacity,
-				file(key, bigfilehash, folder(namespace, table, column)));
+		synchronized (Fileutil.synckey(key)) {
+			if (Filekvutil.readvaluebykey(key, file(key, bigfilehash, folder(namespace, table, column)))!=null) {
+				throw new Exception(STATIC.DUPLICATE);
+			}
+			Filekvutil.create(key, value, extravaluecapacity,
+					file(key, bigfilehash, folder(namespace, table, column)));
+		}
 	}
 
 	public static long increment(String key, long amount, String namespace, String table, String column,

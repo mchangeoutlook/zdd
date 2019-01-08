@@ -194,17 +194,15 @@ public class Filekvutil {
 			@Override
 			public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, String key, String value,
 					boolean isvaluedeleted) {
-				if (key.equals(thekey)) {
-					if (isvaluedeleted) {
-						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-								Filedatawalkresult.DATA_DONOTHING, null);
-					} else {
-						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE, Filedatawalkresult.DATA_DELETE,
-								null);
-					}
-				} else {
-					// ignore the data
+				if (isvaluedeleted) {
 					return null;
+				} else {
+					if (key.equals(thekey)) {
+						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE, Filedatawalkresult.DATA_DELETE,
+									null);
+					} else {
+						return null;
+					}
 				}
 			}
 
