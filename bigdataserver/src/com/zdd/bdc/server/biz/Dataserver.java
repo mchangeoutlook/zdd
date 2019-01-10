@@ -30,10 +30,23 @@ public class Dataserver implements Theserverprocess {
 			String table = params.get(STATIC.PARAM_TABLE_KEY).toString();
 			Map<String, String> cvs = (Map<String, String>) params.get(STATIC.PARAM_COLUMNVALUES_KEY);
 			Map<String, Integer> cvmaxs = (Map<String, Integer>) params.get(STATIC.PARAM_COLUMNMAXVALUES_KEY);
+			Exception duplicate = null;
 			for (String column : cvs.keySet()) {
-				Filedatautil.create(key, cvs.get(column), cvmaxs.get(column), namespace, table, column, bigfilehash);
+				try {
+					Filedatautil.create(key, cvs.get(column), cvmaxs.get(column), namespace, table, column, bigfilehash);
+				}catch(Exception e) {
+					if (!e.getMessage().contains(STATIC.DUPLICATE)) {
+						throw e;
+					} else {
+						duplicate = e;
+					}
+				}
 			}
-			return null;
+			if (duplicate!=null) {
+				throw duplicate;
+			} else {
+				return null;
+			}
 		} else if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
 			String key = params.get(STATIC.PARAM_KEY_KEY).toString();
 			String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
