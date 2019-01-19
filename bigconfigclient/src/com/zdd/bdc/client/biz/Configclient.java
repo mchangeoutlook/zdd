@@ -196,7 +196,11 @@ public class Configclient {
 			}
 			return returnvalue;
 		} catch (Exception e) {
-			return refreshcache(ns, file, configkey);
+			if ("needrefreshcache".equals(e.getMessage())) {
+				return refreshcache(ns, file, configkey);
+			} else {
+				return null;
+			}
 		}
 	}
 
