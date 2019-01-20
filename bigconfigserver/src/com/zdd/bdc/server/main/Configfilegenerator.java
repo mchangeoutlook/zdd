@@ -22,7 +22,6 @@ public class Configfilegenerator {
 		Fileconfigutil.create("sessionexpireseconds", "14400", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("itemsonepage", "100", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE);
 		
-		Fileconfigutil.create("activecoupon.eids", STATIC.splitenc("jedge", "hm"), STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("namespace.jedge", "jedge", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE);
 		
 		Fileconfigutil.create("namespace.hm", "jedge", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE);

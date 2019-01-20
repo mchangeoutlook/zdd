@@ -196,7 +196,9 @@ public class Configclient {
 			}
 			return returnvalue;
 		} catch (Exception e) {
-			if ("needrefreshcache".equals(e.getMessage())) {
+			if (ns!=null&&!ns.trim().isEmpty()&&
+					file!=null&&!file.trim().isEmpty()&&
+					configkey!=null&&!configkey.trim().isEmpty()) {
 				return refreshcache(ns, file, configkey);
 			} else {
 				return null;
