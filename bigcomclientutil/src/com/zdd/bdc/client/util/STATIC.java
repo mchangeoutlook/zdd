@@ -195,6 +195,7 @@ public class STATIC {
 			if (localip == null) {
 				localip = InetAddress.getLocalHost().getHostAddress();
 			}
+			localip = localip.replaceAll("-", ".");
 		} catch (Exception e) {
 			// do nothing
 		}
