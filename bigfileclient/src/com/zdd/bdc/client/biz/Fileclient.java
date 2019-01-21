@@ -21,17 +21,17 @@ public class Fileclient {
 		return new Fileclient(thefolderonserver);
 	}
 
-	public void write(String key, InputStream requests) throws Exception {
+	public void write(String namespace, String key, InputStream requests) throws Exception {
 		try {
-			String[] iport = Bigclient.distributebigdata("pngbigto", key);
+			String[] iport = Bigclient.distributebigdata(namespace, key);
 			Theclient.request(iport[0], Integer.parseInt(iport[1]), STATIC.tobytes(path+key), requests, null);
 		} finally {
 			requests.close();
 		}
 	}
 
-	public String read(String key, Theclientprocess cp) throws Exception {
-		String[] iport = Bigclient.distributebigdata("pngbigfrom", key);
+	public String read(String namespace, String key, Theclientprocess cp) throws Exception {
+		String[] iport = Bigclient.distributebigdata(namespace, key);
 		Theclient.request(iport[0], Integer.parseInt(iport[1]), STATIC.tobytes(path+key), null, cp);
 		return key;
 	}
