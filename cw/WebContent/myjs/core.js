@@ -42,7 +42,7 @@ $(document).ready(function(){
 	
 	$("body").append(
 		"<a href='/pew/0.htm' style='color:#bbb;text-decoration:none;' target='blank'>"+
-			"<div style='border-radius:15px;border:1px #000 solid;background:#008B8B;font:15px Arial;width:28px;height:28px;line-height:28px;color:#000;position:absolute;top:0px;left:0px;text-align:center;'>"+
+			"<div style='border-radius:15px;border:1px #000 solid;background:#008B8B;font-size:15px;width:28px;height:28px;line-height:28px;color:#000;position:absolute;top:0px;left:0px;text-align:center;'>"+
 				"+"+
 			"</div>"+
 		"</a>"
@@ -54,7 +54,7 @@ $(document).ready(function(){
 	
 	if (game!=""){
 		$("body").append(
-			"<div id='rule' style='z-index:20000;background:#000;display:none;font:15px Arial;position:absolute;top:30px;left:0px;right:0px;bottom:0px;overflow-x:hidden;overflow-y:scroll;margin-bottom:15px;'>"+
+			"<div id='rule' style='z-index:20000;background:#000;display:none;font-size:15px;position:absolute;top:30px;left:0px;right:0px;bottom:0px;overflow-x:hidden;overflow-y:scroll;margin-bottom:15px;'>"+
 			"</div>"
 		);
 		$("#rule").append(
@@ -212,7 +212,7 @@ $(document).ready(function(){
 			$("#zhrule").click();
 		}
 		$("body").append(
-			$("<div style='cursor:pointer;border:1px #000 solid;border-radius:5px;background:#008B8B;font:15px Arial;width:25px;height:28px;line-height:28px;color:#000;position:absolute;top:0px;left:30px;'>"+
+			$("<div style='cursor:pointer;border:1px #000 solid;border-radius:5px;background:#008B8B;font-size:15px;width:25px;height:28px;line-height:28px;color:#000;position:absolute;top:0px;left:30px;'>"+
 				"?"+
 			"</div>").click(function(){
 				if ($("#rule").is(":visible")){
@@ -223,7 +223,7 @@ $(document).ready(function(){
 			})
 		);
 		$("#rule").append(
-				$("<div style='cursor:pointer;border:1px #000 solid;border-radius:5px;background:#008B8B;font:15px Arial;width:25px;height:28px;line-height:28px;color:#000;position:fixed;bottom:15px;right:15px;'>"+
+				$("<div style='cursor:pointer;border:1px #000 solid;border-radius:5px;background:#008B8B;font-size:15px;width:25px;height:28px;line-height:28px;color:#000;position:fixed;bottom:15px;right:15px;'>"+
 					"X"+
 				"</div>").click(function(){
 					$("#rule").fadeOut(300);
@@ -415,7 +415,7 @@ function longpollmsg(){
 	if (!$("#talk").length){
 		$("body").append(
 			"<input id='talk' maxlength='20' style='position:absolute;top:0px;right:30px;display:none;margin:2px;width:120px;height:26px;font-size:15px;background:#ccc;border:0px;' placeholder='"+sessionStorage.getItem(game+"round")+"🥊'/>"+
-			"<div id='talkto' style='cursor:pointer;border-radius:15px;border:1px #000 solid;background:#008B8B;font:15px Arial;width:28px;height:28px;line-height:28px;color:#000;position:absolute;top:0px;right:0px;'>💬</div>"
+			"<div id='talkto' style='cursor:pointer;border-radius:15px;border:1px #000 solid;background:#008B8B;font-size:15px;width:28px;height:28px;line-height:28px;color:#000;position:absolute;top:0px;right:0px;'>💬</div>"
 		);
 		$("#talkto").unbind("click");
 		$("#talkto").bind("click",function(){
@@ -494,7 +494,7 @@ function shownotice(){
 			noticetop = 105;
 		}
 		$("body").append(
-			"<div id='notice' canplay='no' style='display:none;cursor:pointer;border:1px #000 solid;border-radius:5px;background:#008B8B;font:15px Arial;width:33px;height:38px;line-height:38px;color:#000;position:absolute;top:"+noticetop+"px;left:0px;'>🔇</div>"
+			"<div id='notice' canplay='no' style='display:none;cursor:pointer;border:1px #000 solid;border-radius:5px;background:#008B8B;font-size:15px;width:33px;height:38px;line-height:38px;color:#000;position:absolute;top:"+noticetop+"px;left:0px;'>🔇</div>"
 		);
 		$("#notice").fadeIn(1000);
 		$("#notice").unbind("click");

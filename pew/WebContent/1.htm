@@ -12,6 +12,20 @@
   		<meta name="Keywords" content="👀,甘瞪眼,老少皆宜,打发时间,联网游戏" />
   		<link rel="shortcut icon" href="image/logo.jpg" type="image/x-icon" />
 		<style type="text/css">
+			body{
+				 position:fixed;
+				 top:0px;
+				 right:0px;
+				 left:0px;
+				 bottom:0px;
+				 overflow:hidden;
+				 font-family:"Noto SansCJK", "Source Han Sans", Helvetica, Arial, sans-serif;
+				 font-size:50px;
+				 color:#bbb;
+				 text-align:center;
+				 background:#000;
+				 margin:0px;"
+			}
 			.roundcard{
 				cursor:pointer;
 				background:#008B8B;
@@ -70,7 +84,7 @@
 				cursor:pointer;
 				overflow:hidden;
 				background:#008B8B;
-				font:50px Arial;
+				font-size:50px;
 				color:#000;
 				border:0px;
 				border-radius:35px;
@@ -89,7 +103,7 @@
 				cursor:pointer;
 				overflow:hidden;
 				background:#008B8B;
-				font:17px Arial;
+				font-size:17px;
 				color:#000;
 				border:0px;
 				border-radius:20px;
@@ -108,7 +122,7 @@
 				cursor:pointer;
 				overflow:hidden;
 				background:#008B8B;
-				font:15px Arial;
+				font-size:15px;
 				color:#000;
 				border:0px;
 				border-radius:15px;
@@ -134,7 +148,7 @@
 			.player{
 				width:46px;
 				height:70px;
-				font:17px Arial;
+				font-size:17px;
 				float:left;
 				text-align:left;
 				white-space:nowrap;
@@ -154,7 +168,7 @@
 		<script type="text/javascript" src="/cw/3rdjs/qrcode.min.js"></script>
 		<script type="text/javascript" src="/cw/myjs/core.js"></script>
 		<script type="text/javascript">
-			var themes = ["#008B8B","#fff"];
+			var themes = ["#008B8B","#afb7ba"];
 			var autotimer = null;
 			
 			function submitplaygame(){
@@ -445,6 +459,7 @@
 					var datajson = {judgeid:newjudgeid};
 					post(urls[game]+'/gi',datajson,function(data){
 						refreshplayers(data.players);
+						markserver(data.judge.round);
 						refreshincards(data.judge.incards);
 						$("#joinform").remove();
 						if (data.judge.round!=0){
@@ -482,14 +497,27 @@
 				}
 				post(urls[game]+'/gi',datajson,function(data){
 					refreshplayers(data.players);
+					markserver(data.judge.round);
 					refreshincards(data.judge.incards);
 					prepareaction(data);
 					longpollcheck();
 				});
 			}
-			
+			function markserver(round){
+				if (round>0){
+					$(".player").css("border-top","2px solid #000");
+					var server = round%$(".player").length-1;
+					if (server<0){
+						server = $(".player").length-1;
+					}
+					$("#player"+server).css("border-top","2px solid "+themes[round%themes.length]);
+				} else {
+					$("#player0").css("border-top","2px solid "+themes[1%themes.length]);
+				}
+			}
 			function lpchcallback(data){
 				refreshplayers(data.players);
+				markserver(data.judge.round);
 				refreshincards(data.judge.incards);
 				prepareaction(data);
 			}
@@ -529,7 +557,7 @@
 					}
 				
 					if (players[i].meplay==players[i].index){
-						$("#player"+players[i].index).css("border-bottom","2px #008B8B solid");
+						$("#player"+players[i].index).css("border-bottom","2px #09bb07 solid");
 					} else{
 						$("#player"+players[i].index).css("border-bottom","0px");
 					}
@@ -538,6 +566,7 @@
 							$("#player"+players[i].index).attr("nick")+"<br>"+
 							$("#player"+players[i].index).attr("losts")+"</div>");
 				}
+				
 				if ($("#player0").length){
 					$("#thetitle").html($("#player0").attr("nick")+" 👀");
 				}
@@ -793,11 +822,11 @@
 			}
 		</script>
 	</head>
-	<body style="position:fixed;top:0px;right:0px;left:0px;bottom:0px;overflow:hidden;font:50px Arial;color:#bbb;text-align:center;background:#000;margin:0px;">
+	<body>
 		<div id="topmsg" style="position:fixed;white-space:nowrap;left:60px;top:0px;right:160px;height:31px;font-size:17px;text-align:left;line-height:30px;overflow:hidden;">👀</div>
 		
 		<div style="position:fixed;left:0px;top:31px;right:0px;height:72px;width:100%;">
-			<div style="top:0px;left:0px;right:0px;border:0px;height:72px;overflow-x:scroll;overflow-y:hidden;">
+			<div style="top:0px;left:0px;right:0px;border:0px;height:74px;overflow-x:scroll;overflow-y:hidden;">
 				<div id="players" style="width:100%;height:72px;border:0px;text-align:left;">
 				</div>
 			</div>
