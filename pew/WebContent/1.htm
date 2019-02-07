@@ -154,7 +154,7 @@
 		<script type="text/javascript" src="/cw/3rdjs/qrcode.min.js"></script>
 		<script type="text/javascript" src="/cw/myjs/core.js"></script>
 		<script type="text/javascript">
-			
+			var themes = ["#008B8B","#fff"];
 			var autotimer = null;
 			
 			function submitplaygame(){
@@ -673,6 +673,7 @@
 					if (data.players.length>1){
 						$(".mycards").addClass("unroundcard");
 						$(".mycards").removeClass("roundcard");
+						$(".mycards").css("background","#000");
 						$(".mycards").removeClass("selroundcard");
 						if ($(".me").attr("index")==data.judge.nextplayerindex){
 							if (data.judge.round==0){
@@ -715,6 +716,7 @@
 					if (parseInt($(".me").attr("index"))==data.judge.nextplayerindex){
 						$("#msg").html("👆");
 						$(".mycards").addClass("roundcard");
+						$(".mycards").css("background",themes[data.judge.round%themes.length]);
 						$(".mycards").removeClass("unroundcard");
 						$(".mycards").removeClass("selroundcard");
 						if ($("#incards").children().length!=0&&parseInt($("#lastincard").attr("playerindex"))!=data.judge.nextplayerindex){
@@ -736,6 +738,7 @@
 						$("#msg").html($("#player"+data.judge.nextplayerindex).attr("nick")+" 👆");
 						$(".mycards").addClass("unroundcard");
 						$(".mycards").removeClass("roundcard");
+						$(".mycards").css("background","#000");
 						$(".mycards").removeClass("selroundcard");
 					}
 				}				

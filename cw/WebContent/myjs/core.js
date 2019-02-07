@@ -39,17 +39,17 @@ $(document).ready(function(){
 	} else if (window.location.href.indexOf("/tenw/")!=-1){
 		game="ten";
 	}
+	
 	$("body").append(
-		"<a href='/ad/0.htm' style='color:#bbb;text-decoration:none;' target='blank'>"+
+		"<a href='/pew/0.htm' style='color:#bbb;text-decoration:none;' target='blank'>"+
 			"<div style='border-radius:15px;border:1px #000 solid;background:#008B8B;font:15px Arial;width:28px;height:28px;line-height:28px;color:#000;position:absolute;top:0px;left:0px;text-align:center;'>"+
-				"AD"+
+				"+"+
 			"</div>"+
 		"</a>"
 	);
-	
 	$("body").append(
-		"<div id='zhcopyright' style='display:none;font-size:9px;position:fixed;left:0px;right:0px;bottom:0px;width:100%;text-align:right;color:#999;'>© 02/09/2018-2090 getzdd@outlook.com 沪ICP备18004230号</div>"+
-		"<div id='encopyright' style='display:none;font-size:9px;position:fixed;left:0px;right:0px;bottom:0px;width:100%;text-align:right;color:#999;'>© 02/09/2018-2090 getzdd@outlook.com</div>"
+		"<div id='zhcopyright' style='display:none;font-size:9px;position:fixed;left:0px;right:0px;bottom:0px;width:100%;text-align:right;color:#999;'></div>"+//© 02/09/2018-2090 getzdd@outlook.com 沪ICP备18004230号</div>"+
+		"<div id='encopyright' style='display:none;font-size:9px;position:fixed;left:0px;right:0px;bottom:0px;width:100%;text-align:right;color:#999;'></div>"//© 02/09/2018-2090 getzdd@outlook.com</div>"
 	);
 	
 	if (game!=""){
@@ -209,7 +209,7 @@ $(document).ready(function(){
 		if (localStorage.getItem("language")!=null){
 			$("#"+localStorage.getItem("language")).click();
 		} else {
-			$("#enrule").click();
+			$("#zhrule").click();
 		}
 		$("body").append(
 			$("<div style='cursor:pointer;border:1px #000 solid;border-radius:5px;background:#008B8B;font:15px Arial;width:25px;height:28px;line-height:28px;color:#000;position:absolute;top:0px;left:30px;'>"+
