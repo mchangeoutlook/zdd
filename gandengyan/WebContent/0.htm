@@ -1,0 +1,126 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<meta name="mobileoptimized" content="0"/>
+		<title>👀</title>
+		<meta name="description" content="甘瞪眼,干瞪眼" />
+  		<meta name="Keywords" content="甘瞪眼,干瞪眼" />
+  		<style type="text/css">
+  			input[type="button"]{
+  				background:#feb800;border: none;
+  			}
+  			input[type="text"]{
+  				background:#eee;border: none;
+  			}
+  			input[type="password"]{
+  				background:#eee;border: none;
+  			}
+  			select{
+  				background:#eee;border: none;
+  			}
+  			body{
+  				position:fixed;
+  				top:0px;
+  				left:0px;
+  				right:0px;
+  				bottom:0px;
+  				overflow:hidden;
+  				font-family:"Noto SansCJK", "Source Han Sans", Helvetica, Arial, sans-serif;
+  				font-size:5.0vh;
+  				line-height:5.56vh;
+  				color:#fff;
+  				text-align:center;
+  				background:#000;
+  				margin:0px;
+  			}
+  			
+		</style>
+		<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+		<script type="text/javascript">
+		var datainterface = "http://data.jedge.cn:82";
+		//var datainterface = "http://localhost:8080/jedgeconsole";
+
+		function post(actionid, paramjson, confirmtext){
+			if (confirmtext!=null){
+				if (!confirm(confirmtext)){
+					initactions();
+					return;
+				}
+			}
+			if (sessionStorage.getItem("loginkey")!=null){
+				paramjson.loginkey = sessionStorage.getItem("loginkey");
+			}
+			if (sessionStorage.getItem("eid")!=null){
+				paramjson.eid = sessionStorage.getItem("eid");
+			}
+			var ajaxpost = $.ajax({
+				url: datainterface+"/"+actionid,  
+			　　	timeout : 20000, 
+			　　	type : 'post',  
+			　　	data :paramjson, 
+			　　	dataType:'json',
+			　　	success:function(result){
+			　　		if (result.state=="success"){
+						eval("after"+actionid+"(result.data)");
+					} else {
+						alert(result.error);
+						if (result.error=="已过期"||result.error=="账号未授权登录本控制台"){
+							logout();
+						}
+					}
+			　　	},
+			　　	complete : function(XMLHttpRequest,status){
+			　　		initactions();
+					if (status!="success"){
+			　　			ajaxpost.abort();
+				　　		alert("网络异常["+status+"],请检查网络连接后刷新页面！");
+			　　		}
+			　　	}
+			});
+		}
+
+		$(document).ready(function(){
+			
+		});
+		
+		function initactions(){
+			$("input:button").each(function(){
+				if ($(this).attr("action")!=undefined){
+					$(this).unbind($(this).attr("action"));
+					$(this).one($(this).attr("action"),eval("do"+$(this).attr("actionid")));
+				}
+			});
+			$("select").each(function(){
+				if ($(this).attr("action")!=undefined){
+					$(this).unbind($(this).attr("action"));
+					$(this).one($(this).attr("action"),eval("do"+$(this).attr("actionid")));
+				}
+			});
+		}
+		</script>
+	</head>
+	<body>
+	<font style="position:absolute;font-size:7vh;
+  				line-height:7.14vh;">好不好</font>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		<font >你好</font><br>
+		
+	</body>
+</html>	
