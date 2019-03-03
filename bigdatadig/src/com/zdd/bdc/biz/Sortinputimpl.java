@@ -56,7 +56,7 @@ public class Sortinputimpl extends Sortinput {
 		String[] datafiles = datafolder.toFile().list();
 		for (String datafile : datafiles) {
 			StringBuffer error = new StringBuffer();
-			Filekvutil.walkdata(datafolder.resolve(datafile), new Filedatawalk() {
+			Filekvutil.walkdata(STATIC.keylength, datafolder.resolve(datafile), new Filedatawalk() {
 
 				@Override
 				public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, String key, String value, boolean isvaluedeleted) {
@@ -66,7 +66,7 @@ public class Sortinputimpl extends Sortinput {
 						if (!Configclient.running) {
 							error.append(new Date() + " ==== shutdown this server");
 							return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-									Filedatawalkresult.DATA_DONOTHING, null);
+									Filedatawalkresult.DATA_DONOTHING, null, null);
 						} else {
 							try {
 								if (filters.equals(Digging.getfilters(key, namespace, digname, bigfilehash))) {
@@ -84,7 +84,7 @@ public class Sortinputimpl extends Sortinput {
 							} catch (Exception e) {
 								error.append(STATIC.stackstring(e));
 								return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-										Filedatawalkresult.DATA_DONOTHING, null);
+										Filedatawalkresult.DATA_DONOTHING, null, null);
 							}
 						}
 					}

@@ -98,7 +98,7 @@ public class Digging extends Thread {
 						for (String datafile : datafiles) {
 							StringBuffer errors = new StringBuffer();
 							try {
-								Filekvutil.walkdata(targetfolder.resolve(datafile), new Filedatawalk() {
+								Filekvutil.walkdata(STATIC.keylength, targetfolder.resolve(datafile), new Filedatawalk() {
 
 									@Override
 									public Filedatawalkresult data(long datasequence, long dataseqincludedeleted,
@@ -107,7 +107,7 @@ public class Digging extends Thread {
 											errors.append(new Date() + " ==== shutdown this server [" + ip + "][" + port
 													+ "]");
 											return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-													Filedatawalkresult.DATA_DONOTHING, null);
+													Filedatawalkresult.DATA_DONOTHING, null, null);
 										} else {
 											if (isvaluedeleted) {
 												return null;
@@ -120,7 +120,7 @@ public class Digging extends Thread {
 															+ "], value=[" + value + "] due to "
 															+ STATIC.stackstring(e));
 													return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-															Filedatawalkresult.DATA_DONOTHING, null);
+															Filedatawalkresult.DATA_DONOTHING, null, null);
 												}
 												if (filters != null) {
 													sortfilters.put(filters, filters);

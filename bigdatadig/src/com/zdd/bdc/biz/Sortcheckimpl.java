@@ -27,13 +27,13 @@ public class Sortcheckimpl implements Sortcheck {
 		StringBuffer error = new StringBuffer();
 		StringBuffer found = new StringBuffer();
 		for (String datafile : datafiles) {
-			Filekvutil.walkdata(datafolder.resolve(datafile), new Filedatawalk() {
+			Filekvutil.walkdata(STATIC.keylength, datafolder.resolve(datafile), new Filedatawalk() {
 				@Override
 				public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, String key, String value, boolean isvaluedeleted) {
 					if (!Configclient.running) {
 						error.append(new Date() + " ==== shutdown this server");
 						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-								Filedatawalkresult.DATA_DONOTHING, null);
+								Filedatawalkresult.DATA_DONOTHING, null, null);
 					} else {
 						if (isvaluedeleted) {
 							return null;
@@ -43,13 +43,13 @@ public class Sortcheckimpl implements Sortcheck {
 									&& !Sortstatus.get(sortingfolder).equals(Sortstatus.TERMINATE)) {
 								found.append("found");
 								return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-										Filedatawalkresult.DATA_DONOTHING, null);
+										Filedatawalkresult.DATA_DONOTHING, null, null);
 							} else {
 								try {
 									if (filters.equals(Digging.getfilters(key, namespace, digname, bigfilehash))) {
 										found.append("found");
 										return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-												Filedatawalkresult.DATA_DONOTHING, null);
+												Filedatawalkresult.DATA_DONOTHING, null, null);
 									} else {
 										// do nothing
 									}
@@ -57,7 +57,7 @@ public class Sortcheckimpl implements Sortcheck {
 								} catch (Exception e) {
 									error.append(STATIC.stackstring(e));
 									return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-											Filedatawalkresult.DATA_DONOTHING, null);
+											Filedatawalkresult.DATA_DONOTHING, null, null);
 								}
 							}
 						}

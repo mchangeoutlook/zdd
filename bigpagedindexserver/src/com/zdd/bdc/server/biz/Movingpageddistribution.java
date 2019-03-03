@@ -258,10 +258,10 @@ public class Movingpageddistribution extends Thread {
 
 		StringBuffer error = new StringBuffer();
 
-		Filekvutil.walkdata(indexfile, new Filedatawalk() {
+		Filekvutil.walkdata(STATIC.keylength, indexfile, new Filedatawalk() {
 
 			@Override
-			public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, String index, String key,
+			public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, String key, String index,
 					boolean isvaluedeleted) {
 				if (isvaluedeleted || datasequence < processednumofdata) {
 					return null;
@@ -287,7 +287,7 @@ public class Movingpageddistribution extends Thread {
 						error.append(new Date() + " ==== error when distributing datasequence [" + datasequence + "]:"
 								+ errors.toString());
 						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
-								Filedatawalkresult.DATA_DONOTHING, null);
+								Filedatawalkresult.DATA_DONOTHING, null, null);
 					}
 				}
 			}

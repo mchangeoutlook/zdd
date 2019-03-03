@@ -75,8 +75,6 @@ public class STATIC {
 	public static final String PARAM_ACTION_CREATE = "create";
 	public static final String PARAM_ACTION_INCREMENT = "increment";
 
-	public static final String VERSION_KEY = ":version:";
-
 	public static final String SORT_COMPARE_TO_STRING = "0";
 
 	public static final String SORT_SEQUENCE(boolean isasc) {
@@ -106,6 +104,9 @@ public class STATIC {
 	public static final String FORMAT_yMd(String key) {
 		return key.substring(13, 17) + key.substring(7, 9) + key.substring(2, 4);
 	}
+	
+	public static final int keylength = 40;
+	public static final String VERSION_KEY = String.format("%0" + keylength + "d", 0);
 
 	public static final String FORMAT_KEY(String idcontainsmorethanequal9chars) {
 		Calendar cal = Calendar.getInstance();

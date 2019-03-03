@@ -8,29 +8,29 @@ public class Filedatautil {
 
 	public static String read(String key, String namespace, String table, String column, int bigfilehash)
 			throws Exception {
-		return Filekvutil.readvaluebykey(key,
+		return Filekvutil.readvaluebykey(STATIC.keylength, key,
 				file(key, bigfilehash, folder(namespace, table, column)));
 	}
 
 	public static void delete(String key, String namespace, String table, String column, int bigfilehash)
 			throws Exception {
-		Filekvutil.deletevaluebykey(key,
+		Filekvutil.deletevaluebykey(STATIC.keylength, key,
 				file(key, bigfilehash, folder(namespace, table, column)));
 	}
 
 	public static void modify(String key, String newvalue, String namespace, String table, String column,
 			int bigfilehash) throws Exception {
-		Filekvutil.modifyvaluebykey(key, newvalue,
+		Filekvutil.modifyvaluebykey(STATIC.keylength, key, newvalue,
 				file(key, bigfilehash, folder(namespace, table, column)));
 	}
 
 	public static void create(String key, String value, int extravaluecapacity, String namespace, String table,
 			String column, int bigfilehash) throws Exception {
 		synchronized (Fileutil.synckey(key)) {
-			if (Filekvutil.readvaluebykey(key, file(key, bigfilehash, folder(namespace, table, column)))!=null) {
+			if (Filekvutil.readvaluebykey(STATIC.keylength, key, file(key, bigfilehash, folder(namespace, table, column)))!=null) {
 				throw new Exception(STATIC.DUPLICATE);
 			}
-			Filekvutil.create(key, value, extravaluecapacity,
+			Filekvutil.create(STATIC.keylength, key, value, extravaluecapacity,
 					file(key, bigfilehash, folder(namespace, table, column)));
 		}
 	}
@@ -40,7 +40,7 @@ public class Filedatautil {
 		synchronized (Fileutil.synckey(key)) {
 			String amountstr = read(key, namespace, table, column, bigfilehash);
 			if (amountstr == null) {
-				Filekvutil.create(key, String.valueOf(amount),
+				Filekvutil.create(STATIC.keylength, key, String.valueOf(amount),
 						String.valueOf(Long.MAX_VALUE).length() + 1,
 						file(key, bigfilehash, folder(namespace, table, column)));
 				return amount;
@@ -52,7 +52,7 @@ public class Filedatautil {
 					throw new Exception("nolongvalue");
 				}
 				long newamount = oldval + amount;
-				Filekvutil.modifyvaluebykey(key, String.valueOf(newamount),
+				Filekvutil.modifyvaluebykey(STATIC.keylength, key, String.valueOf(newamount),
 						file(key, bigfilehash, folder(namespace, table, column)));
 				return newamount;
 			}
