@@ -207,6 +207,7 @@ public class Configfilegenerator {
 		Fileconfigutil.create(STATIC.splitiport("127.0.0.1","19993"), "pending", STATIC.NAMESPACE_CORE,
 				 STATIC.REMOTE_CONFIG_PENDING);
 		
+		
 	}
 
 	public static void main(String[] s) throws Exception {
