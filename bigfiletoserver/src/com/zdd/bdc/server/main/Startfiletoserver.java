@@ -14,7 +14,6 @@ import com.zdd.bdc.server.ex.Theserver;
 
 public class Startfiletoserver {
 	public static void main(String[] s) throws Exception {
-		
 		final String ip = Configclient.ip;
 
 		final String port = Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitenc(STATIC.PARENTFOLDER, ip));
