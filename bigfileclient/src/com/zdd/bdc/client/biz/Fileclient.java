@@ -36,4 +36,10 @@ public class Fileclient {
 		return key;
 	}
 
+	public String delete(String namespace, String key) throws Exception {
+		String[] iport = Bigclient.distributebigdata(namespace, key);
+		Theclient.request(iport[0], Integer.parseInt(iport[1]), STATIC.tobytes(path+key+STATIC.DELETE_BIGFILE_SUFFIX), null, null);
+		return key;
+	}
+
 }

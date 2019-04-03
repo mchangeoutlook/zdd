@@ -42,6 +42,8 @@ public class STATIC {
 	public static final String DUPLICATE = "duplicate";
 	public static final String SHUTDOWN = "shutdown";
 	
+	public static final String DELETE_BIGFILE_SUFFIX = "_delete_";
+	
 	public static final String REMOTE_CONFIGKEY_CONFIGSERVERIP = "configserverip";
 	public static final String REMOTE_CONFIGKEY_CONFIGSERVERPORT = "configserverport";
 	public static final String REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS = "updateconfigcache.intervalseconds";
