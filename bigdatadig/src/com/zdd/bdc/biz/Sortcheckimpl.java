@@ -30,7 +30,7 @@ public class Sortcheckimpl implements Sortcheck {
 			Filekvutil.walkdata(STATIC.keylength, datafolder.resolve(datafile), new Filedatawalk() {
 				@Override
 				public Filedatawalkresult data(long datasequence, long dataseqincludedeleted, String key, String value, boolean isvaluedeleted) {
-					if (!Configclient.running) {
+					if (!Configclient.running()) {
 						error.append(new Date() + " ==== shutdown this server");
 						return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
 								Filedatawalkresult.DATA_DONOTHING, null, null);

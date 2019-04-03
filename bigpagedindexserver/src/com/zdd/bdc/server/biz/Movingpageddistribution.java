@@ -35,20 +35,20 @@ public class Movingpageddistribution extends Thread {
 	@Override
 	public void run() {
 		System.out.println(new Date() + " ==== started auto redistribution");
-		while (Configclient.running) {
+		while (Configclient.running()) {
 
 			if (Files.exists(Filepagedindexutil.pagedfolder()) && Files.isDirectory(Filepagedindexutil.pagedfolder())) {
 
 				String[] namespaces = Filepagedindexutil.pagedfolder().toFile().list();
 				for (String namespace : namespaces) {
-					if (!Configclient.running) {
+					if (!Configclient.running()) {
 						break;
 					} else {
 						if (Files.isDirectory(Filepagedindexutil.pagedfolder().resolve(namespace))
 								&& !namespace.startsWith(".")) {
 							String[] serverindexes = Filepagedindexutil.pagedfolder().resolve(namespace).toFile().list();
 							for (String serverindex : serverindexes) {
-								if (!Configclient.running) {
+								if (!Configclient.running()) {
 									break;
 								} else {
 									if (Files.isDirectory(
@@ -82,7 +82,7 @@ public class Movingpageddistribution extends Thread {
 				}
 
 			}
-			if (Configclient.running) {
+			if (Configclient.running()) {
 				try {
 					Thread.sleep(120000);
 				} catch (InterruptedException e1) {
@@ -105,7 +105,7 @@ public class Movingpageddistribution extends Thread {
 
 					@Override
 					public FileVisitResult postVisitDirectory(Object arg0, IOException arg1) throws IOException {
-						if (Configclient.running) {
+						if (Configclient.running()) {
 							return FileVisitResult.CONTINUE;
 						} else {
 							return FileVisitResult.TERMINATE;
@@ -115,7 +115,7 @@ public class Movingpageddistribution extends Thread {
 
 					@Override
 					public FileVisitResult preVisitDirectory(Object arg0, BasicFileAttributes arg1) throws IOException {
-						if (Configclient.running) {
+						if (Configclient.running()) {
 							return FileVisitResult.CONTINUE;
 						} else {
 							return FileVisitResult.TERMINATE;
@@ -124,7 +124,7 @@ public class Movingpageddistribution extends Thread {
 
 					@Override
 					public FileVisitResult visitFile(Object file, BasicFileAttributes arg1) throws IOException {
-						if (Configclient.running) {
+						if (Configclient.running()) {
 							Path filtersfolder = Paths.get(file.toString());
 
 							if (!Files.isDirectory(filtersfolder)
@@ -230,7 +230,7 @@ public class Movingpageddistribution extends Thread {
 
 					@Override
 					public FileVisitResult visitFileFailed(Object arg0, IOException arg1) throws IOException {
-						if (Configclient.running) {
+						if (Configclient.running()) {
 							return FileVisitResult.CONTINUE;
 						} else {
 							return FileVisitResult.TERMINATE;

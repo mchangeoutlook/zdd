@@ -103,7 +103,7 @@ public class Digging extends Thread {
 									@Override
 									public Filedatawalkresult data(long datasequence, long dataseqincludedeleted,
 											String key, String value, boolean isvaluedeleted) {
-										if (!Configclient.running) {
+										if (!Configclient.running()) {
 											errors.append(new Date() + " ==== shutdown this server [" + ip + "][" + port
 													+ "]");
 											return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,

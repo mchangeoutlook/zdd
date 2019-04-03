@@ -50,7 +50,7 @@ public class Startuniqueindexscale {
 				}
 			}
 		} finally {
-			Configclient.running = false;
+			Configclient.shutdownifpending.append(STATIC.REMOTE_CONFIGVAL_PENDING);
 		}
 	}
 

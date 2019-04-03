@@ -63,7 +63,7 @@ public class Sortinputimpl extends Sortinput {
 					if (isvaluedeleted) {
 						return null;
 					} else {
-						if (!Configclient.running) {
+						if (!Configclient.running()) {
 							error.append(new Date() + " ==== shutdown this server");
 							return new Filedatawalkresult(Filedatawalkresult.WALK_TERMINATE,
 									Filedatawalkresult.DATA_DONOTHING, null, null);

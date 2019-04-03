@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.concurrent.Executors;
 
 import com.zdd.bdc.client.biz.Configclient;
-import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.biz.Dataserver;
 import com.zdd.bdc.server.ex.Theserver;
@@ -17,8 +16,6 @@ import com.zdd.bdc.server.ex.Theserver;
 
 public class Startdataserver {
 	public static void main(String[] s) throws Exception {
-		final StringBuffer pending = new StringBuffer();
-		
 		final String ip = Configclient.ip;
 		final String port = Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitenc(STATIC.PARENTFOLDER, ip));
 		Configclient.port = Integer.parseInt(port);
@@ -32,7 +29,7 @@ public class Startdataserver {
 				try {
 					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitiport(ip, port)));
 					Theserver.startblocking(Executors.newCachedThreadPool(), ip,
-							Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending,
+							Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, Configclient.shutdownifpending,
 							bigfilehash,
 							 Dataserver.class, null);
 				} catch (Exception e) {
@@ -43,24 +40,6 @@ public class Startdataserver {
 			}
 			
 		}).start();
-		while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(STATIC.splitiport(ip, port)))) {
-			try {
-				Thread.sleep(30000);
-			} catch (InterruptedException e) {
-				// do nothing
-			}
-		}
-		pending.append(STATIC.REMOTE_CONFIGVAL_PENDING);
-		Configclient.running = false;
 		
-		try {
-			Theclient.request(ip, Integer.parseInt(port), null, null, null);//connect to make the socket server stop.
-		}catch(Exception e) {
-			//do nothing
-		}
-
-		STATIC.ES.shutdownNow();
-
-		System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 	}
 }

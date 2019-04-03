@@ -33,7 +33,7 @@ public class Sortoutputimpl implements Sortoutput {
 
 	@Override
 	public void output(long position, String key, long value) throws Exception {
-		if (!Configclient.running) {
+		if (!Configclient.running()) {
 			throw new Exception(new Date() + " ==== shutdown this server");
 		} else {
 			String[] toindex = STATIC.splitenc(

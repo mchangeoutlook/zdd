@@ -7,7 +7,6 @@ import java.util.concurrent.Executors;
 
 import com.zdd.bdc.biz.Digactive;
 import com.zdd.bdc.client.biz.Configclient;
-import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.ex.Theserver;
 import com.zdd.bdc.sort.distribute.Sortserver;
@@ -32,8 +31,6 @@ public class Startdatadig {
 		
 		Configclient.port = Integer.parseInt(port);
 		
-		final StringBuffer pending = new StringBuffer();
-		
 		System.out.println(new Date()+" ==== starting in folder ["+STATIC.PARENTFOLDER + "]");
 		
 		new Thread(new Runnable() {
@@ -46,7 +43,7 @@ public class Startdatadig {
 					
 					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitiport(ip, dataserverport)));
 					
-					Theserver.startblocking(Executors.newCachedThreadPool(), ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending, bigfilehash, Sortserver.class, additionalserverconfig);
+					Theserver.startblocking(Executors.newCachedThreadPool(), ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, Configclient.shutdownifpending, bigfilehash, Sortserver.class, additionalserverconfig);
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== System exit due to below exception:");
 					e.printStackTrace();
@@ -60,26 +57,6 @@ public class Startdatadig {
 		
 		new Digactive(ip, port, s[0], bigfilehash).start();
 		
-		while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(STATIC.splitiport(ip, port)))) {
-			try {
-				Thread.sleep(30000);
-			} catch (InterruptedException e) {
-				// do nothing
-			}
-		}
-		pending.append(STATIC.REMOTE_CONFIGVAL_PENDING);
-		
-		Configclient.running = false;
-		
-		try {
-			Theclient.request(ip, Integer.parseInt(port), null, null, null);//connect to make the socket server stop.
-		}catch(Exception e) {
-			//do nothing
-		}
-
-		STATIC.ES.shutdownNow();
-
-		System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 	}
 
 }

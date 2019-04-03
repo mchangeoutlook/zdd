@@ -62,6 +62,15 @@ public class Configserver implements Theserverprocess {
 	@Override
 	public byte[] request(byte[] param) throws Exception {
 		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(param);
+		if (params.get(STATIC.PARAM_CLIENTIPORT)!=null) {
+			String[] clientiport = STATIC.splitiport(params.get(STATIC.PARAM_CLIENTIPORT).toString());
+			if (clientiport!=null&&clientiport.length==2) {
+				if (STATIC.REMOTE_CONFIGVAL_PENDING.equals(readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING, 
+						STATIC.splitiport(clientiport[0], clientiport[1])))){
+					throw new Exception(STATIC.SHUTDOWN);
+				}
+			}
+		}
 		if (params.get(STATIC.PARAM_DATA_KEY) != null) {
 			Map<String, Map<String, Map<String, String>>> returnvalue = (Map<String, Map<String, Map<String, String>>>) params.get(STATIC.PARAM_DATA_KEY);
 			if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {

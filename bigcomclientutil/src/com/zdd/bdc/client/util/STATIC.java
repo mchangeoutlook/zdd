@@ -40,6 +40,7 @@ public class STATIC {
 	public static final String REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX = ".capacityvalue";
 
 	public static final String DUPLICATE = "duplicate";
+	public static final String SHUTDOWN = "shutdown";
 	
 	public static final String REMOTE_CONFIGKEY_CONFIGSERVERIP = "configserverip";
 	public static final String REMOTE_CONFIGKEY_CONFIGSERVERPORT = "configserverport";
@@ -64,6 +65,7 @@ public class STATIC {
 	public static final String PARAM_COLUMNMAXVALUES_KEY = "cvmaxs";
 
 	public static final String PARAM_ADDITIONAL = "additional";
+	public static final String PARAM_CLIENTIPORT = "clientiport";
 
 	public static final String PARAM_DATA_KEY = "data";
 	public static final String PARAM_VERSION_KEY = "version";

@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.concurrent.Executors;
 
 import com.zdd.bdc.client.biz.Configclient;
-import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.biz.Filetoserver;
 import com.zdd.bdc.server.ex.Theserver;
@@ -15,7 +14,6 @@ import com.zdd.bdc.server.ex.Theserver;
 
 public class Startfiletoserver {
 	public static void main(String[] s) throws Exception {
-		final StringBuffer pending = new StringBuffer();
 		
 		final String ip = Configclient.ip;
 
@@ -30,7 +28,7 @@ public class Startfiletoserver {
 			@Override
 			public void run() {
 				try {
-					Theserver.startblocking(Executors.newCachedThreadPool(), ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, pending, 10, Filetoserver.class, null);
+					Theserver.startblocking(Executors.newCachedThreadPool(), ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, Configclient.shutdownifpending, 0, Filetoserver.class, null);
 				} catch (Exception e) {
 					System.out.println(new Date() + " ==== System exit due to below exception:");
 					e.printStackTrace();
@@ -40,26 +38,6 @@ public class Startfiletoserver {
 
 		}).start();
 
-		while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING).read(STATIC.splitiport(ip, port)))) {
-			try {
-				Thread.sleep(30000);
-			} catch (InterruptedException e) {
-				// do nothing
-			}
-		}
-		pending.append(STATIC.REMOTE_CONFIGVAL_PENDING);
-		
-		Configclient.running = false;
-		
-		try {
-			Theclient.request(ip, Integer.parseInt(port), null, null, null);//connect to make the socket server stop.
-		}catch(Exception e) {
-			//do nothing
-		}
-		
-		STATIC.ES.shutdownNow();
-		
-		System.out.println(new Date() + " ==== System exits and server stopped listening on ["+STATIC.splitiport(ip, port)+"]");
 	}
 
 }

@@ -19,7 +19,7 @@ public class Sortserver implements Theserverprocess {
 
 	private String ip = null;
 	private int port = -1;
-	private int bigfilehash = 10;
+	private int bigfilehash = 0;
 	private Sortcheck check = null;
 
 	@Override

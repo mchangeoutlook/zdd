@@ -18,8 +18,14 @@ public class Configclient {
 
 	public static String ip = STATIC.localip();
 	public static int port = Integer.valueOf(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
-	
-	public static boolean running = true;
+	public static StringBuffer shutdownifpending = new StringBuffer();
+	public static boolean running() {
+		if (STATIC.REMOTE_CONFIGVAL_PENDING.equals(shutdownifpending.toString())) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 	private static Map<String, Map<String, Map<String, String>>> nsfilekeyvalue = new Hashtable<String, Map<String, Map<String, String>>>();
 	private static Map<String, String> nsfilechanged = new Hashtable<String, String>();
 	static {
@@ -88,7 +94,7 @@ public class Configclient {
 						+ Integer.parseInt(
 								Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE).read(STATIC.REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS))
 						+ " seconds");
-				while (running) {
+				while (running()) {
 					try {
 						Thread.sleep(Integer.parseInt(
 								Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE).read(STATIC.REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS))
@@ -102,12 +108,8 @@ public class Configclient {
 						Map<String, Object> params = new Hashtable<String, Object>(2);
 						params.put(STATIC.PARAM_DATA_KEY, temp);
 						params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_READ);
-						Map<String, Map<String, Map<String, String>>> res = null;
-						res = (Map<String, Map<String, Map<String, String>>>) Objectutil
-								.convert(Theclient.request(nsfilekeyvalue.get(STATIC.NAMESPACE_CORE).get(STATIC.REMOTE_CONFIG_CORE).get(STATIC.REMOTE_CONFIGKEY_CONFIGSERVERIP),
-										Integer.parseInt(
-												nsfilekeyvalue.get(STATIC.NAMESPACE_CORE).get(STATIC.REMOTE_CONFIG_CORE).get(STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT)),
-										Objectutil.convert(params), null, null));
+						Map<String, Map<String, Map<String, String>>> res = (Map<String, Map<String, Map<String, String>>>) Objectutil
+								.convert(requestconfigserver(ip, port, params));
 						for (String namespace : temp.keySet()) {
 							if (res.get(namespace) == null) {
 								nsfilekeyvalue.remove(namespace);
@@ -168,7 +170,21 @@ public class Configclient {
 							}
 						}
 					} catch (Exception e) {
-						// do nothing
+						if (e.getMessage()!=null&&e.getMessage().contains(STATIC.SHUTDOWN)) {
+							shutdownifpending.append(STATIC.REMOTE_CONFIGVAL_PENDING);
+							System.out.println(new Date() +" ==== Configclient is shutting down on ["+ip+"] port ["+port+"]");
+							try {
+								Theclient.request(ip, port, null, null, null);//connect to make the socket server stop.
+							}catch(Exception ex) {
+								//do nothing
+							}
+
+							STATIC.ES.shutdownNow();
+							System.out.println(new Date() +" ==== System is ready to shutdown on ["+ip+"] port ["+port+"]");
+							
+						} else {
+							//do nothing
+						}
 					}
 				}
 			}
@@ -206,6 +222,15 @@ public class Configclient {
 		}
 	}
 
+	private static byte[] requestconfigserver(String thisip, int thisport, Map<String, Object> params) throws Exception {
+		if (thisip!=null) {
+			params.put(STATIC.PARAM_CLIENTIPORT, STATIC.splitiport(thisip, String.valueOf(thisport)));
+		}
+		return Theclient.request(nsfilekeyvalue.get(STATIC.NAMESPACE_CORE).get(STATIC.REMOTE_CONFIG_CORE).get(STATIC.REMOTE_CONFIGKEY_CONFIGSERVERIP),
+				Integer.parseInt(nsfilekeyvalue.get(STATIC.NAMESPACE_CORE).get(STATIC.REMOTE_CONFIG_CORE).get(STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT)),
+				Objectutil.convert(params), null, null);
+	}
+	
 	@SuppressWarnings("unchecked")
 	private static synchronized String refreshcache(String namespace, String file, String configkey) {
 		Map<String, Map<String, Map<String, String>>> config = new Hashtable<String, Map<String, Map<String, String>>>(
@@ -216,13 +241,10 @@ public class Configclient {
 		Map<String, Object> params = new Hashtable<String, Object>(2);
 		params.put(STATIC.PARAM_DATA_KEY, config);
 		params.put(STATIC.PARAM_ACTION_KEY, STATIC.PARAM_ACTION_READ);
-		params.put(STATIC.PARAM_ADDITIONAL, STATIC.splitiport(ip, String.valueOf(port)));
 		Map<String, Map<String, Map<String, String>>> res = null;
 		try {
 			res = (Map<String, Map<String, Map<String, String>>>) Objectutil
-					.convert(Theclient.request(nsfilekeyvalue.get(STATIC.NAMESPACE_CORE).get(STATIC.REMOTE_CONFIG_CORE).get(STATIC.REMOTE_CONFIGKEY_CONFIGSERVERIP),
-							Integer.parseInt(nsfilekeyvalue.get(STATIC.NAMESPACE_CORE).get(STATIC.REMOTE_CONFIG_CORE).get(STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT)),
-							Objectutil.convert(params), null, null));
+					.convert(requestconfigserver(null, 0, params));
 			if (res.get(namespace) == null || res.get(namespace).get(file) == null
 					|| res.get(namespace).get(file).get(configkey) == null) {
 				return null;

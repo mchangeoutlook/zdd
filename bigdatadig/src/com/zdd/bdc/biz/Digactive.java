@@ -32,7 +32,7 @@ public class Digactive extends Thread {
 	public void run() {
 
 		System.out.println(new Date() + " ==== activating digging");
-		while (Configclient.running) {
+		while (Configclient.running()) {
 			if (Files.exists(STATIC.LOCAL_DATAFOLDER) && Files.isDirectory(STATIC.LOCAL_DATAFOLDER)) {
 				Date now = new Date();
 				String dayinterval = "D" + new SimpleDateFormat("HHmm").format(now);
@@ -59,7 +59,7 @@ public class Digactive extends Thread {
 			} else {
 				// do nothing
 			}
-			if (Configclient.running) {
+			if (Configclient.running()) {
 				try {
 					Thread.sleep(10000);
 				} catch (InterruptedException e1) {
