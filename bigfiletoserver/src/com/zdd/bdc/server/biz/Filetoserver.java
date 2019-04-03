@@ -19,9 +19,10 @@ public class Filetoserver implements Theserverprocess {
 
 	@Override
 	public byte[] request(byte[] b) throws Exception {
-		
-		if (STATIC.tostring(b).endsWith(STATIC.DELETE_BIGFILE_SUFFIX)) {
-			Path targetpath = STATIC.tostring(b).startsWith("/")?STATIC.LOCAL_DATAFOLDER.resolve(STATIC.tostring(b).replaceFirst("/", "")):STATIC.LOCAL_DATAFOLDER.resolve(STATIC.tostring(b));
+		String path = STATIC.tostring(b);
+		if (path.endsWith(STATIC.DELETE_BIGFILE_SUFFIX)) {
+			path = path.substring(0, path.length()-STATIC.DELETE_BIGFILE_SUFFIX.length());
+			Path targetpath = path.startsWith("/")?STATIC.LOCAL_DATAFOLDER.resolve(path.replaceFirst("/", "")):STATIC.LOCAL_DATAFOLDER.resolve(path);
 			targetpath.toFile().delete();
 		}
 		return null;
