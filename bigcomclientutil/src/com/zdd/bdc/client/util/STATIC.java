@@ -41,6 +41,7 @@ public class STATIC {
 
 	public static final String DUPLICATE = "duplicate";
 	public static final String SHUTDOWN = "shutdown";
+	public static final String INVALIDKEY = "invalidkey";
 	
 	public static final String DELETE_BIGFILE_SUFFIX = "_delete_";
 	

@@ -9,8 +9,16 @@ public class Bigclient {
 
 	// return [ip][port]
 	public static String[] distributebigdata(String namespace, String key) throws Exception {
-		String configkey = STATIC.FORMAT_yMd(key);
-		String[] servers = STATIC.splitenc(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGDATA).read(configkey));
+		String[] servers = null;
+		try{
+			String configkey = STATIC.FORMAT_yMd(key);
+			servers = STATIC.splitenc(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGDATA).read(configkey));
+		}catch(Exception e) {
+			//do nothing
+		}
+		if (servers==null) {
+			throw new Exception(STATIC.INVALIDKEY);
+		}
 		return STATIC.splitiport(servers[Math.abs(key.hashCode()) % servers.length]);
 	}
 
