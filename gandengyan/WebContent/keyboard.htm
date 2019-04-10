@@ -1,0 +1,173 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<meta name="mobileoptimized" content="0"/>
+		<title>Keyboard</title>
+		<meta name="description" content="Keyboard" />
+  		<meta name="Keywords" content="Keyboard" />
+  		<style type="text/css">
+  			select{
+  				border:0px;
+  				background-color:#aaa;
+  			}
+  			body{
+  				position:fixed;
+  				top:0px;
+  				left:0px;
+  				right:0px;
+  				bottom:0px;
+  				overflow:hidden;
+  				font-family:"Noto SansCJK", "Source Han Sans", Helvetica, Arial, sans-serif;
+  				font-size:5.0vh;
+  				line-height:5.56vh;
+  				color:#ddd;
+  				text-align:center;
+  				background:#000;
+  				margin:0px;
+  			}
+  			font{
+  				font-size:7vh;
+  				padding:10px;
+  			}
+  			.char{
+  				position:absolute;
+  			}
+  			@keyframes fall
+			{
+				0%   {top:-7.14vh;}
+				100%   {top:100%;}
+			}
+		</style>
+		<script type="text/javascript">
+		var fallings = [];
+		var initlevel = 1;
+		var levelinprogress = initlevel;
+		var maxlevel=10;
+		function init(){
+			var selectlevel = document.getElementById("level");
+			selectlevel.options[selectlevel.options.length] = new Option('Select a level to start', 0);
+			for (var i = 0;i < maxlevel;i++){
+				fallings.push({"animation":"fall "+(maxlevel-i)+"s ease 0s forwards"});
+				selectlevel.options[selectlevel.options.length] = new Option('Level '+(i+1), i+1);
+			}
+			
+			document.getElementById("level").addEventListener("change", function(){
+				if (parseInt(this.value)>0){
+					initlevel = parseInt(this.value);
+					levelinprogress = initlevel;
+					this.remove();
+					document.addEventListener('keyup', function(event) {
+						var found = 0;
+						var charstofind = document.getElementsByClassName(event.code);
+						if (charstofind!=undefined&&charstofind.length!=0){
+							for (var i=0;i<charstofind.length;i++){
+								if (found==0&&charstofind[i].style.backgroundColor!="rgb(0, 139, 139)"){
+									charstofind[i].style.backgroundColor = "rgb(0, 139, 139)";
+									var right = document.getElementById("right");
+									right.setAttribute("num",parseInt(right.getAttribute("num"))+1);
+									right.innerHTML=right.getAttribute("num")+" right";
+									found=1;
+								}
+							}
+						}
+						if (found==0){
+							var wrong = document.getElementById("wrong");
+							wrong.setAttribute("num",parseInt(wrong.getAttribute("num"))+1);
+							wrong.innerHTML=wrong.getAttribute("num")+" wrong";
+						}
+					});
+					initchars();
+					start();
+				}
+			});
+		}
+		var upperchars = [];
+		var lowerchars=[];
+		var chars = [];
+		var maxchars = 0;
+		function initchars(){
+			upperchars = ["A","B","C","D","E","F","G","H","J","K","L",
+				"M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+			lowerchars = ["a","b","c","d","e","f","g","h","i","j","k",
+				"m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+			maxchars = upperchars.length+lowerchars.length;
+		}
+		
+		function check(){
+			var charsfalled = document.getElementsByClassName("char");
+			if (charsfalled!=undefined&&charsfalled.length!=0){
+				for (var i=0;i<charsfalled.length;i++){
+					if (charsfalled[i].getBoundingClientRect().top==document.body.getBoundingClientRect().height){
+						if (charsfalled[i].style.backgroundColor!="rgb(0, 139, 139)"){
+							var missed = document.getElementById("missed");
+							missed.setAttribute("num",parseInt(missed.getAttribute("num"))+1);
+							missed.innerHTML=missed.getAttribute("num")+" missed";
+						}
+						charsfalled[i].remove();
+					}
+				}
+			}
+			var rights = parseInt(document.getElementById("right").getAttribute("num"));
+			var wrongs = parseInt(document.getElementById("wrong").getAttribute("num"));
+			var lastlevel = levelinprogress;
+			levelinprogress = initlevel + Math.floor((rights-wrongs)/maxchars);
+			if (levelinprogress>maxlevel){
+				levelinprogress = maxlevel;
+			}
+			if (levelinprogress<1){
+				levelinprogress = 1;
+			}
+			if (lastlevel!=levelinprogress){
+				chars = [];
+			}
+			if (chars.length==0){
+				for (var i = 0;i<maxchars;i++){
+					var charstoadd=0;
+					if (upperchars.length==0){
+						charstoadd = 1;
+					} else if (lowerchars.length==0){
+						charstoadd = 0;
+					} else {
+						var c = Math.floor(Math.random() * Math.floor(2));
+						charstoadd = c;
+					}
+					if (charstoadd==0){
+						var index = Math.floor(Math.random() * Math.floor(upperchars.length));
+						chars.push(upperchars[index]);
+						upperchars.splice(index, 1);
+					} else {
+						var index = Math.floor(Math.random() * Math.floor(lowerchars.length));
+						chars.push(lowerchars[index]);
+						lowerchars.splice(index, 1);
+					}
+				}
+				initchars();
+			}
+		}
+		
+		function start(){
+			check();
+			var chartofall = chars[0];
+			chars.splice(0, 1);
+			var f = document.createElement("font");
+			f.setAttribute("class", "Key"+chartofall.toUpperCase()+" char");
+			f.innerHTML = chartofall;
+			f.style.animation=fallings[levelinprogress-1].animation;
+			f.style.left=Math.floor(Math.random() * Math.floor(80))+5+"%";
+			document.body.appendChild(f);
+			setTimeout(function(){start();}, (maxlevel-levelinprogress+1)/levelinprogress*1000);
+		}
+		window.onload = function(e){ 
+		    init(); 
+		}
+		</script>
+	</head>
+	<body>
+		<div id="right" style="position:absolute;top:0px;right:0px;color:#aaa;" num="0">0 right</div>
+		<div id="wrong" style="position:absolute;top:5.56vh;right:0px;color:#666;" num="0">0 wrong</div>
+		<div id="missed" style="position:absolute;top:11.12vh;right:0px;color:#666;" num="0">0 missed</div>
+		<select id="level" style="position:absolute;top:50%;left:50%;font-size:5vh;transform:translateX(-50%) translateY(-50%)">
+		</select>
+	</body>
+</html>	

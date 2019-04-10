@@ -24,7 +24,7 @@ public class Actname extends HttpServlet {
 			String playerid = req.getParameter("playerid");
 			String newname = req.getParameter("newname");
 			Map<String, String> ret = new Hashtable<String, String>();
-			ret.put("newname", Judges.get(gameid).rename(playerid, newname));
+			ret.put("newname", Judges.get(gameid).actname(playerid, newname));
 			Common.respond(res, ret, null);
 		}catch(Exception e) {
 			Common.respond(res, null, e);

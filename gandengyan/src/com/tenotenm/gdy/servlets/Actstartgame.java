@@ -17,7 +17,7 @@ public class Actstartgame extends HttpServlet {
 
 		OutputStream os = null;
 		try {
-			os = res.getOutputStream();
+			os = res.getOutputStream();avabcdefghlijkjlll
 			String[] parts = req.getRequestURI().split("/");
 		} catch (Exception e) {
 			

@@ -1,0 +1,602 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<meta name="mobileoptimized" content="0"/>
+		<title>言心 你的心灵日记 记录高品质的你</title>
+		<meta name="description" content="言心 你的心灵日记 记录高品质的你" />
+  		<meta name="Keywords" content="言心 你的心灵日记 记录高品质的你" />
+  		<style type="text/css">
+  			input[type="button"]{
+  				background:#008B8B;border: none;color:#ccc;border-radius:4px 4px;font-size:16px;
+  			}
+  			input[type="text"]{
+  				background:#eee;border: 1px #ccc solid;padding:5px;border-radius:4px 4px;font-size:16px;
+  			}
+  			input[type="password"]{
+  				background:#eee;border: 1px #ccc solid;padding:5px;border-radius:4px 4px;font-size:16px;
+  			}
+  			body{
+  				position:fixed;
+  				top:0px;
+  				left:0px;
+  				right:0px;
+  				bottom:0px;
+  				overflow:hidden;
+  				font-size:16px;
+  				color:#ccc;
+  				text-align:center;
+  				background:#000;
+  				margin:0px;
+  			}
+  			
+  			.opening{
+  				position:absolute;
+  				border:0px;
+  				width:300px;
+  				height:300px;
+  				left:50%;
+  				top:50%;
+  				overflow:hidden;
+  				transform:translateX(-50%) translateY(-50%);
+  			}
+  			.book{
+  				position:absolute;
+  				border:0px;
+  				width:25px;
+  				height:2px;
+  				left:80px;
+  				top:154px;
+  			}
+  			.thick{
+  				position:absolute;
+  				border:0px;
+  				background-color:#96b6b5;
+  				width:25px;
+  				height:2px;
+  				left:0px;
+  				top:0px;
+  				animation: thicking 5s linear 0s forwards;
+  			}
+  			@keyframes thicking
+			{
+				0%{background-color:#96b6b5;}
+				99%{background-color:#96b6b5;}
+				100%{background-color:white;}
+			}
+			.text{
+				position:absolute;
+				text-align:center;
+				font-size:14px;
+				line-height:20px;
+				color:#ccc;
+				top:55%;
+				left:50%;
+				animation: texting 5s linear 0s forwards;
+  			}
+  			@keyframes texting
+			{
+				0%{transform:translateY(100%);}
+				100%{transform:translateY(-50%);}
+			}
+  			.yan{
+  				position:absolute;
+  				border:0px;
+  				color:white;
+  				font-size:7px;
+  				line-height:8px;
+  				left:5px;
+  				top:60%;
+  				transform-origin:center center;
+  				transform:rotate(-90deg);
+  			}
+  			.xin{
+  				position:absolute;
+  				border:0px;
+  				color:red;
+  				font-size:7px;
+  				line-height:8px;
+  				left:5px;
+  				top:10%;
+  				transform-origin:center center;
+  				transform:rotate(-90deg);
+  			}
+  			.cover{
+  				position:absolute;
+  				border:0px;
+  				background-color:#96b6b5;
+  				width:25px;
+  				height:20px;
+  				bottom:2px;
+  				left:0px;
+  				transform-origin:bottom center;
+  				transform:rotateX(90deg);
+  				animation: covering 5s linear 0s forwards;
+  			}
+  			@keyframes covering
+			{
+				0%{transform-origin:bottom center;transform:rotateX(90deg);}
+				80%{transform-origin:bottom center;transform:rotateX(90deg);}
+				85%{transform-origin:bottom center;transform:rotateX(20deg);}
+				95%{transform-origin:bottom center;transform:rotateX(-20deg);}
+				100%{transform-origin:bottom center;transform:rotateX(-90deg);}
+			}
+			
+			.pen{
+  				position:absolute;
+  				border:0px;
+  				border-radius:2px 2px;
+  				background-color:#aaa;
+  				width:15px;
+  				height:2px;
+  				top:155px;
+  				left:82px;
+  				animation: pening 5s linear 0s forwards;
+  			}
+  			@keyframes pening
+			{
+				0%{transform-origin:bottom right;transform:rotate(0deg);}
+				90%{transform-origin:bottom right;transform:rotate(0deg);}
+				100%{transform-origin:bottom right;transform:rotate(120deg);}
+			}
+  			
+  		 	.humancolor{
+  		 		background-color:#e0bb95;
+  		 	}
+  		 	.tshirtcolor{
+  		 		background-color:#f4a57e;
+  		 	}
+  		 	.pantscolor{
+  		 		background-color:#2891d3;
+  		 	}
+  			.human{
+  				position:absolute;
+  				border:0px;
+  				width:12px;
+  				height:100px;
+  				left:230px;
+  				top:100px;
+  				animation: humaning 5s linear 0s forwards;
+  			}
+  			@keyframes humaning
+			{
+				0%   {transform: translateX(0px)  translateY(0px);}
+				
+				10%   {transform: translateX(-20px) translateY(0px);}
+				20%   {transform: translateX(-40px) translateY(-3px);}
+				30%   {transform: translateX(-60px) translateY(0px);}
+				40%   {transform: translateX(-80px) translateY(-3px);}
+				50%   {transform: translateX(-100px) translateY(0px);}
+				60%   {transform: translateX(-120px) translateY(-3px);}
+				65%   {transform: translateX(-116px) translateY(1px);}
+				70%   {transform: translateX(-113px) translateY(7px);}
+				75%   {transform: translateX(-110px) translateY(20px);}
+			
+				100%   {transform: translateX(-110px) translateY(20px);}
+			}
+			.bodyupper{
+  				position:absolute;
+  				border:0px;
+  				width:12px;
+  				height:50px;
+  				top:0px;
+  				animation: bodyuppering 5s linear 0s forwards;
+  			}
+  			@keyframes bodyuppering
+			{
+				0%   {transform: translateX(0px) translateY(0px);}
+				100%   {transform: translateX(0px) translateY(0px);}
+			}
+		  	.head{
+  				position:absolute;
+  				border-radius:12px 12px;
+  				border:0px;
+  				width:12px;
+  				height:12px;
+  				left:0px;
+  				top:0px;
+  				animation: heading 5s linear 0s forwards;
+  			}
+  			@keyframes heading
+			{
+				0%   {transform-origin:bottom center;transform: rotate(0deg);}
+				
+				90%   {transform-origin:bottom center;transform: rotate(0deg);}
+				
+				100%   {transform-origin:bottom center;transform: rotate(-30deg);}
+			}
+	
+		  	.body{
+  				position:absolute;
+  				border-radius:8px 8px;
+  				border:0px;
+  				width:8px;
+  				height:41px;
+  				left:2px;
+  				top:16px;
+  				animation: bodying 5s linear 0s forwards;
+  			}
+  			@keyframes bodying
+			{
+				0%   {transform: translateX(0px) translateY(0px);}
+				60%   {transform: translateX(0px) translateY(0px);}
+				
+				100%   {transform: translateX(0px) translateY(0px);}
+			}
+
+		  	.armleft{
+  				position:absolute;
+  				border:0px;
+  				width:8px;
+  				height:34px;
+  				left:2px;
+  				top:16px;
+  				animation: armlefting 5s linear 0s forwards;
+  			}
+  			@keyframes armlefting
+			{
+				0%   {transform-origin:top center;transform: rotate(0deg);}
+				
+				10%   {transform-origin:4px 4px;transform: rotate(20deg);}
+				30%   {transform-origin:4px 4px;transform: rotate(-20deg);}
+				50%   {transform-origin:4px 4px;transform: rotate(20deg);}
+				60%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				80%   {transform-origin:4px 4px;transform: rotate(40deg);}
+				
+				100%   {transform-origin:4px 4px;transform: rotate(40deg);}
+			}
+
+		  	.armleftupper{
+  				position:absolute;
+  				border-radius:8px 8px;
+  				border:0px;
+  				width:8px;
+  				height:23px;
+  				top:0px;
+  				left:0px;
+  				animation: armleftuppering 5s linear 0s forwards;
+  			}
+  			@keyframes armleftuppering
+			{
+				0%   {transform-origin:top center;transform: rotate(0deg);}
+				
+				100%   {transform-origin:top center;transform: rotate(0deg);}
+			}
+
+			.armleftlower{
+  				position:absolute;
+  				border-radius:8px 8px;
+  				border:0px;
+  				width:8px;
+  				height:26px;
+  				top:16px;
+  				animation: armleftlowering 5s linear 0s forwards;
+  			}
+  			@keyframes armleftlowering
+			{
+				0%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				
+				60%   {transform-origin:4px 4px;transform: rotate(0deg) scaleY(1);}
+				65%   {transform-origin:4px 4px;transform: rotate(0deg) scaleY(0.4);}
+				70%   {transform-origin:4px 4px;transform: rotate(50deg) scaleY(0.4);}
+				80%   {transform-origin:4px 4px;transform: rotate(50deg) scaleY(0.8);}
+				
+				100%   {transform-origin:4px 4px;transform: rotate(50deg) scaleY(0.8);}
+			}
+			
+			
+		  	.armright{
+  				position:absolute;
+  				border:0px;
+  				width:8px;
+  				height:34px;
+  				left:2px;
+  				top:16px;
+  				animation: armrighting 5s linear 0s forwards;
+  			}
+  			@keyframes armrighting
+			{
+				0%   {transform-origin:top center;transform: rotate(0deg);}
+				
+				10%   {transform-origin:4px 4px;transform: rotate(-20deg);}
+				30%   {transform-origin:4px 4px;transform: rotate(20deg);}
+				50%   {transform-origin:4px 4px;transform: rotate(-20deg);}
+				60%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				80%   {transform-origin:4px 4px;transform: rotate(40deg);}
+				100%   {transform-origin:4px 4px;transform: rotate(40deg);}
+			}
+
+		  	.armrightupper{
+  				position:absolute;
+  				border-radius:8px 8px;
+  				border:0px;
+  				width:8px;
+  				height:23px;
+  				top:0px;
+  				left:0px;
+  				animation: armrightuppering 5s linear 0s forwards;
+  			}
+  			@keyframes armrightuppering
+			{
+				0%   {transform-origin:top center;transform: rotate(0deg);}
+				
+				100%   {transform-origin:top center;transform: rotate(0deg);}
+			}
+
+			.armrightlower{
+  				position:absolute;
+  				border-radius:8px 8px;
+  				border:0px;
+  				width:8px;
+  				height:26px;
+  				top:16px;
+  				animation: armrightlowering 5s linear 0s forwards;
+  			}
+  			@keyframes armrightlowering
+			{
+				0%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				60%   {transform-origin:4px 4px;transform: rotate(0deg) scaleY(1);}
+				65%   {transform-origin:4px 4px;transform: rotate(0deg) scaleY(0.4);}
+				70%   {transform-origin:4px 4px;transform: rotate(50deg) scaleY(0.4);}
+				80%   {transform-origin:4px 4px;transform: rotate(50deg) scaleY(0.8);}
+				
+				100%   {transform-origin:4px 4px;transform: rotate(50deg) scaleY(0.8);}
+			}
+			
+			.legleft{
+  				position:absolute;
+  				border:0px;
+  				width:8px;
+  				height:50px;
+  				left:2px;
+  				top:50px;
+  				animation: leglefting 5s linear 0s forwards;
+  			}
+
+  			@keyframes leglefting
+			{
+				0%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				
+				10%   {transform-origin:4px 4px;transform: rotate(-10deg);}
+				30%   {transform-origin:4px 4px;transform: rotate(25deg);}
+				50%   {transform-origin:4px 4px;transform: rotate(-10deg);}
+				60%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				75%   {transform-origin:4px 4px;transform: rotate(90deg);}
+				
+				100%   {transform-origin:4px 4px;transform: rotate(90deg);}
+			}
+			.legleftupper{
+  				position:absolute;
+  				border-radius:8px 8px;
+  				border:0px;
+  				width:8px;
+  				height:30px;
+  				top:0px;
+  				animation: legleftuppering 5s linear 0s forwards;
+  			}
+  			@keyframes legleftuppering
+			{
+				0%   {transform: translateX(0px) translateY(0px);}
+				
+				60%   {transform: translateX(0px) translateY(0px);}
+								
+				100%   {transform: translateX(0px) translateY(0px);}
+			}
+			
+			.legleftlower{
+  				position:absolute;
+  				border-radius:8px 8px;
+  				border:0px;
+  				width:8px;
+  				height:35px;
+  				top:23px;
+  				animation: legleftlowering 5s linear 0s forwards;
+  			}
+  			@keyframes legleftlowering
+			{
+				0%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				
+				10%   {transform-origin:4px 4px;transform: rotate(-20deg);}
+				20%   {transform-origin:4px 4px;transform: rotate(-40deg);}
+				30%   {transform-origin:4px 4px;transform: rotate(-10deg);}
+				40%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				50%   {transform-origin:4px 4px;transform: rotate(-20deg);}
+				60%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				75%   {transform-origin:4px 4px;transform: rotate(-90deg);}
+				
+				100%   {transform-origin:4px 4px;transform: rotate(-90deg);}
+			} 
+			
+			.legright{
+  				position:absolute;
+  				border:0px;
+  				width:8px;
+  				height:50px;
+  				left:2px;
+  				top:50px;
+  				animation: legrighting 5s linear 0s forwards;
+  			}
+
+  			@keyframes legrighting
+			{
+				0%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				
+				10%   {transform-origin:4px 4px;transform: rotate(25deg);}
+				30%   {transform-origin:4px 4px;transform: rotate(-10deg);}
+				50%   {transform-origin:4px 4px;transform: rotate(25deg);}
+				60%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				75%   {transform-origin:4px 4px;transform: rotate(90deg);}
+				
+				100%   {transform-origin:4px 4px;transform: rotate(90deg);}
+			}
+			.legrightupper{
+  				position:absolute;
+  				border-radius:8px 8px;
+  				border:0px;
+  				width:8px;
+  				height:30px;
+  				top:0px;
+  				animation: legrightuppering 5s linear 0s forwards;
+  			}
+  			@keyframes legrightuppering
+			{
+				0%   {transform: translateX(0px) translateY(0px);}
+				
+				60%   {transform: translateX(0px) translateY(0px);}
+								
+				100%   {transform: translateX(0px) translateY(0px);}
+			}
+			
+			.legrightlower{
+  				position:absolute;
+  				border-radius:8px 8px;
+  				border:0px;
+  				width:8px;
+  				height:35px;
+  				top:23px;
+  				animation: legrightlowering 5s linear 0s forwards;
+  			}
+  			@keyframes legrightlowering
+			{
+				0%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				
+				10%   {transform-origin:4px 4px;transform: rotate(-10deg);}
+				20%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				30%   {transform-origin:4px 4px;transform: rotate(-20deg);}
+				40%   {transform-origin:4px 4px;transform: rotate(-40deg);}
+				50%   {transform-origin:4px 4px;transform: rotate(-10deg);}
+				60%   {transform-origin:4px 4px;transform: rotate(0deg);}
+				75%   {transform-origin:4px 4px;transform: rotate(-90deg);}
+				
+				100%   {transform-origin:4px 4px;transform: rotate(-90deg);}
+			}  		
+		</style>
+		<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+		<script type="text/javascript">
+		var datainterface = "/";
+
+		function post(actionid, paramjson, confirmtext){
+			if (confirmtext!=null){
+				if (!confirm(confirmtext)){
+					initactions();
+					return;
+				}
+			}
+			if (sessionStorage.getItem("loginkey")!=null){
+				paramjson.loginkey = sessionStorage.getItem("loginkey");
+			}
+			if (sessionStorage.getItem("eid")!=null){
+				paramjson.eid = sessionStorage.getItem("eid");
+			}
+			var ajaxpost = $.ajax({
+				url: datainterface+"/"+actionid,  
+			　　	timeout : 20000, 
+			　　	type : 'post',  
+			　　	data :paramjson, 
+			　　	dataType:'json',
+			　　	success:function(result){
+			　　		if (result.state=="success"){
+						eval("after"+actionid+"(result.data)");
+					} else {
+						alert(result.error);
+						if (result.error=="已过期"){
+							logout();
+						}
+					}
+			　　	},
+			　　	complete : function(XMLHttpRequest,status){
+			　　		initactions();
+					if (status!="success"){
+			　　			ajaxpost.abort();
+				　　		alert("网络异常["+status+"],请检查网络连接后刷新页面！");
+			　　		}
+			　　	}
+			});
+		}
+
+		$(document).ready(function(){
+			setTimeout(function(){
+				$("#openingclosebtn").click();
+			},5200);
+		});
+		
+		function initactions(){
+			$("input:button").each(function(){
+				if ($(this).attr("action")!=undefined){
+					$(this).unbind($(this).attr("action"));
+					$(this).one($(this).attr("action"),eval("do"+$(this).attr("actionid")));
+				}
+			});
+			$("select").each(function(){
+				if ($(this).attr("action")!=undefined){
+					$(this).unbind($(this).attr("action"));
+					$(this).one($(this).attr("action"),eval("do"+$(this).attr("actionid")));
+				}
+			});
+		}
+		</script>
+	</head>
+	<body>
+	
+		<input type="text">
+	
+		<div class="openingclose" style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;background-color:black;"></div>
+		<div class="opening openingclose">
+			<input id="openingclosebtn" style="position:absolute;right:60%;bottom:0px;" type="button" value="跳过" onclick="$('.openingclose').fadeOut(1000);"/>
+			<div style="position:absolute;top:178px;left:115px;">
+				<div style="position:absolute;border:0px;border-radius:4px 4px;background-color:white;width:20px;height:4px;"></div>
+				<div style="position:absolute;border:0px;background-color:white;width:4px;height:23px;left:2px;top:4px;"></div>
+				<div style="position:absolute;border:0px;background-color:white;width:4px;height:23px;left:14px;top:4px;"></div>
+			</div>
+
+			<div class="human">
+				<div class="head humancolor"></div>
+				<div class="armleft">
+					<div class="armleftupper tshirtcolor"></div>
+					<div class="armleftlower humancolor"></div>
+				</div>
+				<div class="legleft">
+					<div class="legleftupper pantscolor"></div>
+					<div class="legleftlower humancolor"></div>
+				</div>
+				<div class="body tshirtcolor"></div>
+				<div class="legright">
+					<div class="legrightupper pantscolor"></div>
+					<div class="legrightlower humancolor"></div>
+				</div>
+				<div class="armright">
+					<div class="armrightupper tshirtcolor"></div>
+					<div class="armrightlower humancolor"></div>
+				</div>
+			</div>
+
+			<div class="pen"></div>
+
+			<div style="position:absolute;top:156px;left:70px;">
+				<div style="position:absolute;border:0px;border-radius:4px 4px;background-color:white;width:40px;height:4px;"></div>
+				<div style="position:absolute;border:0px;background-color:white;width:4px;height:45px;left:5px;top:4px;"></div>
+				<div style="position:absolute;border:0px;background-color:white;width:4px;height:45px;left:31px;top:4px;"></div>
+			</div>
+			
+			<div class="book">
+				<div class="thick"></div>
+				<div class="cover">
+					<div class="yan">言</div>
+					<div class="xin">心</div>
+				</div>
+			</div>
+			
+			<div class="text">
+				<font style="font-size:20px;color:white;">言</font>
+				<font style="font-size:20px;color:red">心</font><br>
+				你的心灵日记<br>
+				记录高品质的你<br>
+				<br>
+				<font style="font-size:10px;line-height:12px;">10o10m</font><br>
+				<font style="font-size:10px;line-height:12px;">十全十美</font><br>
+				<font style="font-size:10px;line-height:12px;">出品</font><br>
+				<font style="font-size:6px;">沪ICP备123412341234</font>
+			</div>
+		</div>
+	</body>
+</html>	

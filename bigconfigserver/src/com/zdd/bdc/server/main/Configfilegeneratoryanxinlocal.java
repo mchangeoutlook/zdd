@@ -63,6 +63,10 @@ public class Configfilegeneratoryanxinlocal {
 		}
 
 		Fileconfigutil.create("sessionexpireseconds", "3600", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("wrongpasswaitseconds", "3600", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("ipdenywaitseconds", "3600", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("freedays", "30", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("iplimitnewaccounts", "20", namespace, STATIC.REMOTE_CONFIG_CORE);
 
 	}
 	
@@ -89,7 +93,7 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("servergroups01", STATIC.splitenc("biguniqueindex2","127.0.0.1", "9993"), namespace,
 				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
 
-		Fileconfigutil.create("Yxaccountkey", "servergroups0", namespace,
+		Fileconfigutil.create("Yxaccount-ukey", "servergroups0", namespace,
 				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
 		
 		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"Yxaccountkey", "servergroups0", namespace,
@@ -114,6 +118,23 @@ public class Configfilegeneratoryanxinlocal {
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		//add more
 	}
+	
+	private static void genbigpagedindex() throws Exception {
+		String namespace = "yanxin";
+		Path configfile = Fileconfigutil.file(namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
+		if (Files.exists(configfile)) {
+			Files.write(configfile, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC,
+					StandardOpenOption.TRUNCATE_EXISTING);
+		}
+		
+		Fileconfigutil.create("active", STATIC.splitenc(STATIC.splitfromto("0","2499"),STATIC.splitfromto("2500","4999")), namespace,
+				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
+		Fileconfigutil.create(STATIC.splitfromto("0","2499"), STATIC.splitenc("bigpagedindex1", "100", "127.0.0.1", "9990"), namespace,
+				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
+		Fileconfigutil.create(STATIC.splitfromto("2500","4999"), STATIC.splitenc("bigpagedindex2", "100", "127.0.0.1", "9989"), namespace,
+				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
+		
+	}
 
 	private static void genpending() throws Exception {
 	Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9992"), "pending", STATIC.NAMESPACE_CORE,
@@ -128,5 +149,6 @@ public class Configfilegeneratoryanxinlocal {
 		genbigdata();
 		genyanxincore();
 		genpending();
+		genbigpagedindex();
 	}
 }

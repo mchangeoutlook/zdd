@@ -37,7 +37,7 @@ public class General implements Filter {
 					if (Common.isvalid(playerid)&&Judges.get(gameid).getplayerbyid(playerid)==null) {
 						throw new Exception("无效玩家编号["+playerid+"]");
 					} else {
-						if (req.getRequestURI().startsWith("/act/")&&!Common.isvalid(playerid)) {
+						if (req.getRequestURI().contains("/act/")&&!Common.isvalid(playerid)) {
 							throw new Exception("观棋不语真君子");
 						} else {
 							arg2.doFilter(req, res);

@@ -23,9 +23,10 @@ public class Querystatus extends HttpServlet {
 		try {
 			String gameid = req.getParameter("gameid");
 			String playerid = req.getParameter("playerid");
-			String newname = req.getParameter("newname");
-			Map<String, String> ret = new Hashtable<String, String>();
-			ret.put("newname", Judges.get(gameid).rename(playerid, newname));
+			String round = req.getParameter("round");
+			String queueindex = req.getParameter("queueindex");
+			Map<String, Object> ret = new Hashtable<String, Object>();
+			ret.put("statuslist", Judges.get(gameid).querystatus(playerid, Long.parseLong(round), Integer.parseInt(queueindex)));
 			Common.respond(res, ret, null);
 		}catch(Exception e) {
 			Common.respond(res, null, e);

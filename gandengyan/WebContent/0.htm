@@ -34,12 +34,23 @@
   				background:#000;
   				margin:0px;
   			}
-  			
+  			font{
+  				font-size:7vh;
+  				line-height:7.14vh;
+  			}
+  			.walking{
+  				animation: walk 4s ease 0s forwards;
+  			}
+  			@keyframes walk
+			{
+				0%   {transform: rotate(0deg) ;left:10px;top:10px;}
+				50%   {transform: rotate(45deg) ;left:50px;top:50px;}
+				100%   {transform: rotate(-45deg) ;left:100px;top:100px;}
+			}
 		</style>
 		<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
 		<script type="text/javascript">
-		var datainterface = "http://data.jedge.cn:82";
-		//var datainterface = "http://localhost:8080/jedgeconsole";
+		var datainterface = "/";
 
 		function post(actionid, paramjson, confirmtext){
 			if (confirmtext!=null){
@@ -101,26 +112,6 @@
 		</script>
 	</head>
 	<body>
-	<font style="position:absolute;font-size:7vh;
-  				line-height:7.14vh;">好不好</font>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		<font >你好</font><br>
-		
+		<div class="walking" style="position:absolute;border:1px solid;width:100px;height:200px;">你好</div>
 	</body>
 </html>	

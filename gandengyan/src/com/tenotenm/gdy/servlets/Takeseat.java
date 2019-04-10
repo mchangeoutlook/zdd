@@ -22,7 +22,7 @@ public class Takeseat extends HttpServlet {
 		try {
 			String gameid = req.getParameter("gameid");
 			String seatnostr = req.getParameter("seatno");
-			String playerid = Judges.get(gameid).joinorstartgame(Integer.parseInt(seatnostr));
+			String playerid = Judges.get(gameid).takeseat_startnextround(Integer.parseInt(seatnostr));
 			Map<String, String> ret = new Hashtable<String, String>();
 			ret.put("playerid", playerid);
 			ret.put("seatno", seatnostr);
