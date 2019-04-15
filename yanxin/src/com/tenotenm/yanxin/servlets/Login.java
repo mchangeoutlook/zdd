@@ -53,14 +53,14 @@ public class Login extends HttpServlet {
 				if (!yxlogin.getIp().equals(Reuse.getremoteip(request))
 						|| !yxlogin.getUa().equals(Reuse.getuseragent(request))) {
 					if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() < Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")) {
-						throw new Exception("已启动账号保护，请" + Reuse.yyyymmddhhmmss(new Date(yxaccount.getTimewrongpass().getTime()
+						throw new Exception("已启动账号保护，请" + Reuse.yyyyMMddHHmmss(new Date(yxaccount.getTimewrongpass().getTime()
 								+ Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")))
 								+ "后再来");
 					}
 					boolean isexpire = System.currentTimeMillis() - yxlogin.getTimeupdate().getTime() > Reuse.getsecondsmillisconfig("session.expire.seconds");
 					if (!yxlogin.getIslogout() && !isexpire) {
 						throw new Exception("已在其它地方登录，请退出其它地方的登录或"
-								+ Reuse.yyyymmddhhmmss(new Date(yxlogin.getTimeupdate().getTime() + Reuse.getsecondsmillisconfig("session.expire.seconds")))
+								+ Reuse.yyyyMMddHHmmss(new Date(yxlogin.getTimeupdate().getTime() + Reuse.getsecondsmillisconfig("session.expire.seconds")))
 								+ "后再来");
 					}
 				}
@@ -84,9 +84,12 @@ public class Login extends HttpServlet {
 				
 				Map<String, Object> ret = new Hashtable<String, Object>();
 				ret.put("daystogive", yxaccount.getDaystogive());
-				ret.put("timeexpire", Reuse.yyyymmddhhmmss(yxaccount.getTimeexpire()));
-				ret.put("timereuse", Reuse.yyyymmddhhmmss(datedenyreuseaccount(yxaccount)));
+				ret.put("timecreate", Reuse.yyyyMMddHHmmss(yxaccount.getTimecreate()));
+				ret.put("timeexpire", Reuse.yyyyMMddHHmmss(yxaccount.getTimeexpire()));
+				ret.put("timereuse", Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount)));
 				ret.put("loginkey", yxaccount.getYxloginkey());
+				ret.put("today", Reuse.yyyyMMdd(new Date()));
+				ret.put("name", yxaccount.getUniquename());
 				Reuse.respond(response, ret, null);
 			} else {
 				if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() > Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")) {

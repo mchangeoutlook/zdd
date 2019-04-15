@@ -24,20 +24,20 @@ public class Ipdeny extends Superentity{
 
 
 	protected void read_timedeny(String timedeny) {
-		this.timedeny=Reuse.yyyymmddhhmmss(timedeny);
+		this.timedeny=Reuse.yyyyMMddHHmmss(timedeny);
 	}
 	protected Object[] add4create_timedeny() {
 		if (timedeny==null) {
 			return null;
 		}
-		return new Object[] {Reuse.yyyymmddhhmmss(timedeny), 0};
+		return new Object[] {Reuse.yyyyMMddHHmmss(timedeny), 0};
 	}
 	
 	protected String add4modify_timedeny() {
 		if (timedeny==null) {
 			return null;
 		}
-		return Reuse.yyyymmddhhmmss(timedeny);
+		return Reuse.yyyyMMddHHmmss(timedeny);
 	}
 	
 	public String getKey() {

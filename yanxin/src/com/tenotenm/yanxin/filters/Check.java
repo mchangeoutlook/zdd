@@ -99,7 +99,7 @@ public class Check implements Filter {
 			
 		}
 		if (timeback != null) {
-			throw new Exception("已启动IP保护，请" + Reuse.yyyymmddhhmmss(new Date(timeback.getTime()
+			throw new Exception("已启动IP保护，请" + Reuse.yyyyMMddHHmmss(new Date(timeback.getTime()
 					+ Reuse.getsecondsmillisconfig("ipdeny.wait.seconds")))
 					+ "后再来");
 		}

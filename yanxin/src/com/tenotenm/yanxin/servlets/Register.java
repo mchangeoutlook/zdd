@@ -109,7 +109,7 @@ public class Register extends HttpServlet {
 			}
 			iplimit(Reuse.getremoteip(request), true);
 			Reuse.respond(response,
-					"请在" + Reuse.yyyymmddhhmmss(Login.dateallowfirstlogin(yxaccount))
+					"请在" + Reuse.yyyyMMddHHmmss(Login.dateallowfirstlogin(yxaccount))
 							+ "前完成首次登录，否则账号将被回收",
 					null);
 		} catch (Exception e) {

@@ -142,67 +142,67 @@ public class Yxaccount extends Superentity{
 	}
 
 	protected void read_timecreate(String timecreate) {
-		this.timecreate=Reuse.yyyymmddhhmmss(timecreate);
+		this.timecreate=Reuse.yyyyMMddHHmmss(timecreate);
 	}
 	protected Object[] add4create_timecreate() {
 		if (timecreate==null) {
 			return null;
 		}
-		return new Object[] {Reuse.yyyymmddhhmmss(timecreate), 0};
+		return new Object[] {Reuse.yyyyMMddHHmmss(timecreate), 0};
 	}
 	protected String add4modify_timecreate() {
 		if (timecreate==null) {
 			return null;
 		}
-		return Reuse.yyyymmddhhmmss(timecreate);
+		return Reuse.yyyyMMddHHmmss(timecreate);
 	}
 	
 	protected void read_timeupdate(String timeupdate) {
-		this.timeupdate=Reuse.yyyymmddhhmmss(timeupdate);
+		this.timeupdate=Reuse.yyyyMMddHHmmss(timeupdate);
 	}
 	protected Object[] add4create_timeupdate() {
 		if (timeupdate==null) {
 			return null;
 		}
-		return new Object[] {Reuse.yyyymmddhhmmss(timeupdate), 0};
+		return new Object[] {Reuse.yyyyMMddHHmmss(timeupdate), 0};
 	}
 	protected String add4modify_timeupdate() {
 		if (timeupdate==null) {
 			return null;
 		}
-		return Reuse.yyyymmddhhmmss(timeupdate);
+		return Reuse.yyyyMMddHHmmss(timeupdate);
 	}
 	
 	protected void read_timeexpire(String timeexpire) {
-		this.timeexpire=Reuse.yyyymmddhhmmss(timeexpire);
+		this.timeexpire=Reuse.yyyyMMddHHmmss(timeexpire);
 	}
 	protected Object[] add4create_timeexpire() {
 		if (timeexpire==null) {
 			return null;
 		}
-		return new Object[] {Reuse.yyyymmddhhmmss(timeexpire), 0};
+		return new Object[] {Reuse.yyyyMMddHHmmss(timeexpire), 0};
 	}
 	protected String add4modify_timeexpire() {
 		if (timeexpire==null) {
 			return null;
 		}
-		return Reuse.yyyymmddhhmmss(timeexpire);
+		return Reuse.yyyyMMddHHmmss(timeexpire);
 	}
 	
 	protected void read_timewrongpass(String timewrongpass) {
-		this.timewrongpass=Reuse.yyyymmddhhmmss(timewrongpass);
+		this.timewrongpass=Reuse.yyyyMMddHHmmss(timewrongpass);
 	}
 	protected Object[] add4create_timewrongpass() {
 		if (timewrongpass==null) {
 			return null;
 		}
-		return new Object[] {Reuse.yyyymmddhhmmss(timewrongpass), 0};
+		return new Object[] {Reuse.yyyyMMddHHmmss(timewrongpass), 0};
 	}
 	protected String add4modify_timewrongpass() {
 		if (timewrongpass==null) {
 			return null;
 		}
-		return Reuse.yyyymmddhhmmss(timewrongpass);
+		return Reuse.yyyyMMddHHmmss(timewrongpass);
 	}
 
 	protected void read_daystogive(String daystogive) {

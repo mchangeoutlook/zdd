@@ -22,28 +22,28 @@ public class Reuse {
 	public static final String namespace_bigfilefrom = "bigfilefrom";
 	public static final String namespace_bigfileto = "bigfileto";
 	
-	private static final String yyyymmddhhmmss = "yyyy-MM-dd HH:mm:ss";
-	private static final String yyyymmdd = "yyyy-MM-dd";
+	private static final String yyyyMMddHHmmss = "yyyy-MM-dd HH:mm:ss";
+	private static final String yyyyMMdd = "yyyy-MM-dd";
 
-	public static String yyyymmddhhmmss(Date date) {
-		return new SimpleDateFormat(yyyymmddhhmmss).format(date);
+	public static String yyyyMMddHHmmss(Date date) {
+		return new SimpleDateFormat(yyyyMMddHHmmss).format(date);
 	}
 
-	public static Date yyyymmddhhmmss(String datestr) {
+	public static Date yyyyMMddHHmmss(String datestr) {
 		try {
-			return new SimpleDateFormat(yyyymmddhhmmss).parse(datestr);
+			return new SimpleDateFormat(yyyyMMddHHmmss).parse(datestr);
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
-	public static String yyyymmdd(Date date) {
-		return new SimpleDateFormat(yyyymmdd).format(date);
+	public static String yyyyMMdd(Date date) {
+		return new SimpleDateFormat(yyyyMMdd).format(date);
 	}
 
-	public static Date yyyymmdd(String datestr) {
+	public static Date yyyyMMdd(String datestr) {
 		try {
-			return new SimpleDateFormat(yyyymmdd).parse(datestr);
+			return new SimpleDateFormat(yyyyMMdd).parse(datestr);
 		} catch (Exception e) {
 			return null;
 		}

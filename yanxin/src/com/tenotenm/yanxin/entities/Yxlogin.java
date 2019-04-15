@@ -53,29 +53,29 @@ public class Yxlogin extends Superentity{
 	}
 
 	protected void read_timecreate(String timecreate) {
-		this.timecreate=Reuse.yyyymmddhhmmss(timecreate);
+		this.timecreate=Reuse.yyyyMMddHHmmss(timecreate);
 	}
 	protected Object[] add4create_timecreate() {
 		if (timecreate==null) {
 			return null;
 		}
-		return new Object[] {Reuse.yyyymmddhhmmss(timecreate), 0};
+		return new Object[] {Reuse.yyyyMMddHHmmss(timecreate), 0};
 	}
 	
 	protected void read_timeupdate(String timeupdate) {
-		this.timeupdate=Reuse.yyyymmddhhmmss(timeupdate);
+		this.timeupdate=Reuse.yyyyMMddHHmmss(timeupdate);
 	}
 	protected Object[] add4create_timeupdate() {
 		if (timeupdate==null) {
 			return null;
 		}
-		return new Object[] {Reuse.yyyymmddhhmmss(timeupdate), 0};
+		return new Object[] {Reuse.yyyyMMddHHmmss(timeupdate), 0};
 	}
 	protected String add4modify_timeupdate() {
 		if (timeupdate==null) {
 			return null;
 		}
-		return Reuse.yyyymmddhhmmss(timeupdate);
+		return Reuse.yyyyMMddHHmmss(timeupdate);
 	}
 	
 	protected void read_islogout(String islogout) {

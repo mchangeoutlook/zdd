@@ -27,13 +27,13 @@ public class Yxyanxin extends Superentity{
 	}
 	
 	protected void read_timecreate(String timecreate) {
-		this.timecreate=Reuse.yyyymmddhhmmss(timecreate);
+		this.timecreate=Reuse.yyyyMMddHHmmss(timecreate);
 	}
 	protected Object[] add4create_timecreate() {
 		if (timecreate==null) {
 			return null;
 		}
-		return new Object[] {Reuse.yyyymmddhhmmss(timecreate), 0};
+		return new Object[] {Reuse.yyyyMMddHHmmss(timecreate), 0};
 	}
 	
 	protected void read_weather(String weather) {
@@ -75,7 +75,7 @@ public class Yxyanxin extends Superentity{
 		if (photo==null) {
 			return null;
 		}
-		return new Object[] {photo, 0};
+		return new Object[] {photo, 51};
 	}
 	protected String add4modify_photo() {
 		if (photo==null) {

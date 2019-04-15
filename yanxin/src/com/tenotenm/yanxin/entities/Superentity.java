@@ -84,7 +84,7 @@ public abstract class Superentity {
 			if (m.getName().startsWith("add4incrementtoday_")) {
 				Object o = m.invoke(this);
 				if (o!=null) {
-					dc.add4increment(m.getName().substring(19)+"_"+Reuse.yyyymmdd(today), Long.parseLong(o.toString()));
+					dc.add4increment(m.getName().substring(19)+"_"+Reuse.yyyyMMdd(today), Long.parseLong(o.toString()));
 					read_4increments.add("readtoday_"+m.getName().substring(19));
 				}
 			}
@@ -98,8 +98,8 @@ public abstract class Superentity {
 					}
 				}
 				if (m.getName().startsWith("readtoday_")) {
-					if (data.get(m.getName().substring(10)+"_"+Reuse.yyyymmdd(today))!=null) {
-						m.invoke(this, String.valueOf(data.get(m.getName().substring(10)+"_"+Reuse.yyyymmdd(today))));
+					if (data.get(m.getName().substring(10)+"_"+Reuse.yyyyMMdd(today))!=null) {
+						m.invoke(this, String.valueOf(data.get(m.getName().substring(10)+"_"+Reuse.yyyyMMdd(today))));
 					}
 				}
 			}
@@ -116,7 +116,7 @@ public abstract class Superentity {
 				dc.add(m.getName().substring(5));
 			}
 			if (m.getName().startsWith("readtoday_")) {
-				dc.add(m.getName().substring(10)+"_"+Reuse.yyyymmdd(today));
+				dc.add(m.getName().substring(10)+"_"+Reuse.yyyyMMdd(today));
 			}
 		}
 		Map<String, String> data = dc.read();
@@ -127,8 +127,8 @@ public abstract class Superentity {
 				}
 			}
 			if (m.getName().startsWith("readtoday_")) {
-				if (data.get(m.getName().substring(10)+"_"+Reuse.yyyymmdd(today))!=null) {
-					m.invoke(this, data.get(m.getName().substring(10)+"_"+Reuse.yyyymmdd(today)));
+				if (data.get(m.getName().substring(10)+"_"+Reuse.yyyyMMdd(today))!=null) {
+					m.invoke(this, data.get(m.getName().substring(10)+"_"+Reuse.yyyyMMdd(today)));
 				}
 			}
 		}
