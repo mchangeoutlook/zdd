@@ -15,8 +15,6 @@ import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.entities.Yxlogin;
 import com.tenotenm.yanxin.filters.Check;
 import com.tenotenm.yanxin.util.Reuse;
-import com.zdd.bdc.client.biz.Configclient;
-import com.zdd.bdc.client.util.STATIC;
 
 @SuppressWarnings("serial")
 @WebServlet("/freego/login")
@@ -37,7 +35,12 @@ public class Login extends HttpServlet {
 				Check.ipdeny(Reuse.getremoteip(request), true);
 				throw new Exception("账号或密码或格言不正确，请重新登录");
 			}
-			
+			if (isfirstlogindenied(yxaccount)) {
+				throw new Exception("未及时完成首次登录，账号已被回收");
+			}
+			if (isreusing(yxaccount)) {
+				throw new Exception("未及时延长账号有效期，账号已被回收");
+			}
 			if (yxaccount.getYxloginkey().isEmpty()) {// first time login
 				if (!yxaccount.getIp().equals(Reuse.getremoteip(request))
 						|| !yxaccount.getUa().equals(Reuse.getuseragent(request))) {
@@ -49,28 +52,19 @@ public class Login extends HttpServlet {
 				yxlogin.read(yxaccount.getYxloginkey());
 				if (!yxlogin.getIp().equals(Reuse.getremoteip(request))
 						|| !yxlogin.getUa().equals(Reuse.getuseragent(request))) {
-					if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() < Long.parseLong(Configclient
-							.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("wrongpasswaitseconds"))
-							* 1000) {
+					if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() < Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")) {
 						throw new Exception("已启动账号保护，请" + Reuse.yyyymmddhhmmss(new Date(yxaccount.getTimewrongpass().getTime()
-								+ Long.parseLong(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE)
-										.read("wrongpasswaitseconds")) * 1000))
+								+ Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")))
 								+ "后再来");
 					}
-					boolean isexpire = System.currentTimeMillis() - yxlogin.getTimeupdate().getTime() > Long
-							.parseLong(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE)
-									.read("sessionexpireseconds"))
-							* 1000;
+					boolean isexpire = System.currentTimeMillis() - yxlogin.getTimeupdate().getTime() > Reuse.getsecondsmillisconfig("session.expire.seconds");
 					if (!yxlogin.getIslogout() && !isexpire) {
-						Check.ipdeny(Reuse.getremoteip(request), true);
-						throw new Exception("请退出其它地方的登录或"
-								+ Reuse.yyyymmddhhmmss(new Date(yxlogin.getTimeupdate().getTime() + Long.parseLong(
-										Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE)
-												.read("sessionexpireseconds"))
-										* 1000))
+						throw new Exception("已在其它地方登录，请退出其它地方的登录或"
+								+ Reuse.yyyymmddhhmmss(new Date(yxlogin.getTimeupdate().getTime() + Reuse.getsecondsmillisconfig("session.expire.seconds")))
 								+ "后再来");
 					}
 				}
+				Logout.logout(yxlogin);
 			}
 
 			String pass = request.getParameter("pass");
@@ -84,19 +78,52 @@ public class Login extends HttpServlet {
 				yxlogin.create(null);
 				yxaccount.setYxloginkey(yxlogin.getKey());
 				yxaccount.modify(yxaccount.getKey());
+				
+				yxaccount = new Yxaccount();
+				yxaccount.readunique(name);
+				
 				Map<String, Object> ret = new Hashtable<String, Object>();
 				ret.put("daystogive", yxaccount.getDaystogive());
-				ret.put("timeexpire", yxaccount.getTimeexpire());
-				ret.put("loginkey", yxlogin.getKey());
-				ret.put("accountkey", yxaccount.getKey());
+				ret.put("timeexpire", Reuse.yyyymmddhhmmss(yxaccount.getTimeexpire()));
+				ret.put("timereuse", Reuse.yyyymmddhhmmss(datedenyreuseaccount(yxaccount)));
+				ret.put("loginkey", yxaccount.getYxloginkey());
 				Reuse.respond(response, ret, null);
 			} else {
-				yxaccount.setTimewrongpass(new Date());
-				yxaccount.modify(yxaccount.getKey());
-				throw new Exception("账号或密码或格言不正确，请重新登录");
+				if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() > Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")) {
+					yxaccount.setTimewrongpass(new Date());
+					yxaccount.modify(yxaccount.getKey());
+				}
+				throw new Exception("密码或格言或账号不正确，请重新登录");
 			}
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);
 		}
 	}
+	
+	public static boolean isfirstlogindenied(Yxaccount yxaccount) {
+		return yxaccount.getYxloginkey().isEmpty()&dateallowfirstlogin(yxaccount).before(new Date());
+	}
+	public static boolean iswaitingfirstlogin(Yxaccount yxaccount) {
+		return yxaccount.getYxloginkey().isEmpty()&datedenyfirstlogin(yxaccount).after(new Date());
+	}
+	public static boolean isreusing(Yxaccount yxaccount) {
+		return !yxaccount.getYxloginkey().isEmpty()&datedenyreuseaccount(yxaccount).before(new Date());
+	}
+	public static boolean isbeforereusedate(Yxaccount yxaccount) {
+		return !yxaccount.getYxloginkey().isEmpty()&dateallowreuseaccount(yxaccount).after(new Date());
+	}
+	public static Date dateallowfirstlogin(Yxaccount yxaccount) {
+		return new Date(datedenyfirstlogin(yxaccount).getTime()-60000);
+	}
+	public static Date datedenyfirstlogin(Yxaccount yxaccount) {
+		return new Date(yxaccount.getTimecreate().getTime() + Reuse.getsecondsmillisconfig("first.login.in.seconds"));
+	}
+	
+	public static Date datedenyreuseaccount(Yxaccount yxaccount) {
+		return new Date(dateallowreuseaccount(yxaccount).getTime()-60000);
+	}
+	public static Date dateallowreuseaccount(Yxaccount yxaccount) {
+		return new Date(yxaccount.getTimeexpire().getTime() + Reuse.getdaysmillisconfig("account.reuse.in.days"));
+	}
+	
 }

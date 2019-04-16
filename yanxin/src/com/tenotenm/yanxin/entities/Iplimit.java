@@ -1,16 +1,10 @@
 package com.tenotenm.yanxin.entities;
 
-import java.util.Date;
-
-import com.tenotenm.yanxin.util.Reuse;
-
 public class Iplimit extends Superentity{
 	
 	private String key=null;
 	
 	private String ip=null;
-	
-	private Date timedeny=new Date();
 	
 	private Long newaccounts=null;
 	
@@ -26,24 +20,6 @@ public class Iplimit extends Superentity{
 		return new Object[] {ip, 0};
 	}
 
-
-	protected void read_timedeny(String timedeny) {
-		this.timedeny=Reuse.yyyymmddhhmmss(timedeny);
-	}
-	protected Object[] add4create_timedeny() {
-		if (timedeny==null) {
-			return null;
-		}
-		return new Object[] {Reuse.yyyymmddhhmmss(timedeny), 0};
-	}
-	
-	protected String add4modify_timedeny() {
-		if (timedeny==null) {
-			return null;
-		}
-		return Reuse.yyyymmddhhmmss(timedeny);
-	}
-	
 	protected void readtoday_newaccounts(String newaccounts) {
 		this.newaccounts=Long.parseLong(newaccounts);
 	}
@@ -71,14 +47,6 @@ public class Iplimit extends Superentity{
 		this.ip = ip;
 	}
 
-	public Date getTimedeny() {
-		return timedeny;
-	}
-
-	public void setTimedeny(Date timedeny) {
-		this.timedeny = timedeny;
-	}
-	
 	public Long getNewaccounts() {
 		return newaccounts;
 	}

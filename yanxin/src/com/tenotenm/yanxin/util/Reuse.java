@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zdd.bdc.client.biz.Configclient;
+import com.zdd.bdc.client.util.STATIC;
 
 public class Reuse {
 	
@@ -103,6 +105,22 @@ public class Reuse {
 		return request.getHeader("User-Agent");
 	}
 	
+	public static long getdaysmillisconfig(String configkey) {
+		return Long.parseLong(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE)
+				.read(configkey)) * 24 * 60 * 60 * 1000;
+	}
+	
+	public static long getsecondsmillisconfig(String configkey) {
+		return Long.parseLong(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE)
+				.read(configkey)) * 1000;
+	}
+
+	public static long getlongconfig(String configkey) {
+		return Long.parseLong(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE)
+				.read(configkey));
+	}
+	
+	
 	public static String sign(String raw) {
 		try {
 			MessageDigest crypt = MessageDigest.getInstance("MD5");
@@ -135,4 +153,5 @@ public class Reuse {
 		}
 		return result;
 	}
+	
 }

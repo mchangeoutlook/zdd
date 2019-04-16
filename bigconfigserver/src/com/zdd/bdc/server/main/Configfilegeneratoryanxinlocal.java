@@ -61,12 +61,22 @@ public class Configfilegeneratoryanxinlocal {
 			Files.write(configfile, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC,
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
-
-		Fileconfigutil.create("sessionexpireseconds", "3600", namespace, STATIC.REMOTE_CONFIG_CORE);
-		Fileconfigutil.create("wrongpasswaitseconds", "3600", namespace, STATIC.REMOTE_CONFIG_CORE);
-		Fileconfigutil.create("ipdenywaitseconds", "3600", namespace, STATIC.REMOTE_CONFIG_CORE);
-		Fileconfigutil.create("freedays", "30", namespace, STATIC.REMOTE_CONFIG_CORE);
-		Fileconfigutil.create("iplimitnewaccounts", "20", namespace, STATIC.REMOTE_CONFIG_CORE);
+/*
+		Fileconfigutil.create("session.expire.seconds", "3600", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("wrongpass.wait.seconds", "3600", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("ipdeny.wait.seconds", "3600", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("freeuse.days", "30", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("account.reuse.in.days", "60", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("first.login.in.seconds", "600", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("everyday.everyip.newaccounts.max", "100", namespace, STATIC.REMOTE_CONFIG_CORE);
+*/
+		Fileconfigutil.create("session.expire.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("wrongpass.wait.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("ipdeny.wait.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("freeuse.days", "1", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("account.reuse.in.days", "1", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("first.login.in.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("everyday.everyip.newaccounts.max", "2", namespace, STATIC.REMOTE_CONFIG_CORE);
 
 	}
 	

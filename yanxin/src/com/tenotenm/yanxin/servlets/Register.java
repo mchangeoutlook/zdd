@@ -2,6 +2,7 @@ package com.tenotenm.yanxin.servlets;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,11 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.tenotenm.yanxin.entities.Iplimit;
 import com.tenotenm.yanxin.entities.Yxaccount;
-import com.tenotenm.yanxin.filters.Check;
+import com.tenotenm.yanxin.entities.Yxlogin;
 import com.tenotenm.yanxin.util.Reuse;
 import com.zdd.bdc.client.biz.Bigclient;
-import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.util.STATIC;
 
 @SuppressWarnings("serial")
@@ -23,7 +24,7 @@ public class Register extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			Check.iplimit(Reuse.getremoteip(request), false);
+			iplimit(Reuse.getremoteip(request), false);
 
 			String name = request.getParameter("name");
 			if (name == null || name.trim().isEmpty()) {
@@ -51,7 +52,7 @@ public class Register extends HttpServlet {
 			if (motto == null || motto.trim().isEmpty()) {
 				throw new Exception("缺少格言");
 			}
-			if (remotto==null||!motto.toLowerCase().trim().equals(remotto.toLowerCase().trim())) {
+			if (remotto == null || !motto.toLowerCase().trim().equals(remotto.toLowerCase().trim())) {
 				throw new Exception("两次输入的格言不一致");
 			}
 			motto = motto.toLowerCase().trim();
@@ -64,14 +65,12 @@ public class Register extends HttpServlet {
 				yxaccount.setIp(Reuse.getremoteip(request));
 				yxaccount.setMotto(Reuse.sign(motto));
 				yxaccount.setPass(Reuse.sign(pass));
-				Date timeexpire = new Date(yxaccount.getTimecreate().getTime() + (Long.parseLong(
-						Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("freedays"))
-						+ 1) * 24 * 60 * 60 * 1000);
+				Date timeexpire = new Date(yxaccount.getTimecreate().getTime()
+						+ Reuse.getdaysmillisconfig("freeuse.days"));
 				yxaccount.setTimeexpire(timeexpire);
 				yxaccount.setUa(Reuse.getuseragent(request));
-				yxaccount.setTimewrongpass(new Date(yxaccount.getTimecreate().getTime()-Long.parseLong(Configclient
-						.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("wrongpasswaitseconds"))
-						* 1000));
+				yxaccount.setTimewrongpass(new Date(yxaccount.getTimecreate().getTime()
+						- Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")));
 				yxaccount.setUniquename(name);
 				yxaccount.setYxloginkey("");
 				yxaccount.setYxyanxinuniquekeyprefix(Bigclient.newbigdatakey());
@@ -79,35 +78,70 @@ public class Register extends HttpServlet {
 			} catch (Exception e) {
 				if (e.getMessage() != null && e.getMessage().contains(STATIC.DUPLICATE)) {
 					yxaccount.readunique(name);
-					if (System.currentTimeMillis()-yxaccount.getTimeexpire().getTime()<(Long.parseLong(
-							Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("freedays"))
-							+ 1) * 24 * 60 * 60 * 1000) {
+					if (Login.iswaitingfirstlogin(yxaccount)||Login.isbeforereusedate(yxaccount)) {
 						throw new Exception("账号名称被占用，请换一个名称");
-					} else {
-						yxaccount.setIp(Reuse.getremoteip(request));
-						yxaccount.setMotto(Reuse.sign(motto));
-						yxaccount.setPass(Reuse.sign(pass));
-						Date timeexpire = new Date(yxaccount.getTimecreate().getTime() + (Long.parseLong(
-								Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("freedays"))
-								+ 1) * 24 * 60 * 60 * 1000);
-						yxaccount.setTimeexpire(timeexpire);
-						yxaccount.setUa(Reuse.getuseragent(request));
-						yxaccount.setTimewrongpass(new Date(yxaccount.getTimecreate().getTime()-Long.parseLong(Configclient
-								.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("wrongpasswaitseconds"))
-								* 1000));
-						yxaccount.setUniquename(name);
-						yxaccount.setYxloginkey("");
-						yxaccount.setYxyanxinuniquekeyprefix(Bigclient.newbigdatakey());
-						yxaccount.modify(yxaccount.getKey());
 					}
+					if (!yxaccount.getYxloginkey().isEmpty()) {
+						Yxlogin yxlogin = new Yxlogin();
+						yxlogin.read(yxaccount.getYxloginkey());
+						Logout.logout(yxlogin);
+					}
+					Date now = new Date();
+					yxaccount.setTimecreate(now);
+					yxaccount.setTimeupdate(now);
+					yxaccount.setIp(Reuse.getremoteip(request));
+					yxaccount.setMotto(Reuse.sign(motto));
+					yxaccount.setPass(Reuse.sign(pass));
+					Date timeexpire = new Date(yxaccount.getTimecreate().getTime()
+							+ Reuse.getdaysmillisconfig("freeuse.days"));
+					yxaccount.setTimeexpire(timeexpire);
+					yxaccount.setUa(Reuse.getuseragent(request));
+					yxaccount.setTimewrongpass(new Date(yxaccount.getTimecreate().getTime()
+							- Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")));
+					yxaccount.setUniquename(name);
+					yxaccount.setYxloginkey("");
+					yxaccount.setYxyanxinuniquekeyprefix(Bigclient.newbigdatakey());
+					yxaccount.modify(yxaccount.getKey());
+
 				} else {
 					throw e;
 				}
 			}
-			Check.iplimit(Reuse.getremoteip(request), true);
-			Reuse.respond(response, null, null);
+			iplimit(Reuse.getremoteip(request), true);
+			Reuse.respond(response,
+					"请在" + Reuse.yyyymmddhhmmss(Login.dateallowfirstlogin(yxaccount))
+							+ "前完成首次登录，否则账号将被回收",
+					null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);
+		}
+	
+	}
+
+	public static void iplimit(String ip, boolean toincrementnewaccountstoday) throws Exception {
+		Iplimit ipd = new Iplimit();
+		Vector<String> ipdkeys = ipd.readpaged(ip);
+		boolean islimited = false;
+		if (ipdkeys.isEmpty()) {
+			if (toincrementnewaccountstoday) {
+				ipd.setIp(ip);
+				ipd.createpaged(null, ip);
+				ipd.setNewaccounts4increment(1l);
+				ipd.increment(ipd.getKey());
+			}
+		} else {
+			ipd.read(ipdkeys.get(0));
+			if (ipd.getNewaccounts()!=null&&ipd.getNewaccounts() >= Reuse.getlongconfig("everyday.everyip.newaccounts.max")) {
+				islimited = true;
+			}
+			if (!islimited&&toincrementnewaccountstoday) {
+				ipd.setNewaccounts4increment(1l);
+				ipd.increment(ipd.getKey());
+			}
+		}
+
+		if (islimited) {
+			throw new Exception("已启动账号保护，请明天再来");
 		}
 	}
 }

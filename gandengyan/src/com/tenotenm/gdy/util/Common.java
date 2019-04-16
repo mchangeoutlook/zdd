@@ -52,7 +52,7 @@ public class Common {
 				if (t.getMessage()!=null) {
 					ret.put("error", t.getMessage());
 				} else {
-					ret.put("error", "NullPointerException");
+					ret.put("error", "throwable.getMessage() is null");
 				}
 				ret.put("detail", errors.toString());
 			}

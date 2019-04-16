@@ -98,8 +98,8 @@ public abstract class Superentity {
 					}
 				}
 				if (m.getName().startsWith("readtoday_")) {
-					if (data.get(m.getName().substring(10))!=null) {
-						m.invoke(this, data.get(m.getName().substring(10)+"_"+Reuse.yyyymmdd(today)));
+					if (data.get(m.getName().substring(10)+"_"+Reuse.yyyymmdd(today))!=null) {
+						m.invoke(this, String.valueOf(data.get(m.getName().substring(10)+"_"+Reuse.yyyymmdd(today))));
 					}
 				}
 			}
@@ -127,7 +127,7 @@ public abstract class Superentity {
 				}
 			}
 			if (m.getName().startsWith("readtoday_")) {
-				if (data.get(m.getName().substring(10))!=null) {
+				if (data.get(m.getName().substring(10)+"_"+Reuse.yyyymmdd(today))!=null) {
 					m.invoke(this, data.get(m.getName().substring(10)+"_"+Reuse.yyyymmdd(today)));
 				}
 			}

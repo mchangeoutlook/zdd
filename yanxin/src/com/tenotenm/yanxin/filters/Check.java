@@ -13,11 +13,10 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.tenotenm.yanxin.entities.Iplimit;
+import com.tenotenm.yanxin.entities.Ipdeny;
 import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.entities.Yxlogin;
 import com.tenotenm.yanxin.util.Reuse;
-import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.util.STATIC;
 
 @WebFilter("/check/*")
@@ -44,25 +43,30 @@ public class Check implements Filter {
 			if (yxlogin.getIslogout()) {
 				throw new Exception("已退出，请重新登录");
 			}
-			if (System.currentTimeMillis() - yxlogin.getTimeupdate().getTime() > Long.parseLong(Configclient
-					.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("sessionexpireseconds"))
-					* 1000) {
+			if (System.currentTimeMillis() - yxlogin.getTimeupdate().getTime() > Reuse.getsecondsmillisconfig("session.expire.seconds")) {
 				throw new Exception("已过期，请重新登录");
 			}
 
 			Yxaccount yxaccount = new Yxaccount();
 			yxaccount.read(yxlogin.getYxaccountkey());
 
+			if (!yxaccount.getYxloginkey().equals(yxlogin.getKey())) {
+				throw new Exception("非法访问，请重新登录");
+			}
+			
 			yxlogin.setTimeupdate(new Date());
 			yxlogin.modify(yxlogin.getKey());
 
 			req.setAttribute(Yxaccount.class.getSimpleName(), yxaccount);
 			req.setAttribute(Yxlogin.class.getSimpleName(), yxlogin);
-
+			
+			arg2.doFilter(req, res);
+			
 		} catch (Exception e) {
 			if (e.getMessage() != null && e.getMessage().contains(STATIC.INVALIDKEY)) {
 				try {
 					ipdeny(ip, true);
+					throw new Exception("无效访问，请重新登录");
 				} catch (Exception e1) {
 					Reuse.respond(res, null, e1);
 				}
@@ -73,7 +77,7 @@ public class Check implements Filter {
 	}
 
 	public static void ipdeny(String ip, boolean todeny) throws Exception {
-		Iplimit ipd = new Iplimit();
+		Ipdeny ipd = new Ipdeny();
 		Vector<String> ipdkeys = ipd.readpaged(ip);
 		Date timeback = null;
 		if (ipdkeys.isEmpty()) {
@@ -83,10 +87,9 @@ public class Check implements Filter {
 			}
 		} else {
 			ipd.read(ipdkeys.get(0));
+			
 			if (System.currentTimeMillis() - ipd.getTimedeny()
-					.getTime() < Long.parseLong(Configclient
-							.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("ipdenywaitseconds"))
-							* 1000) {
+					.getTime() < Reuse.getsecondsmillisconfig("ipdeny.wait.seconds")) {
 				timeback = ipd.getTimedeny();
 			}
 			if (timeback == null&&todeny) {
@@ -97,37 +100,9 @@ public class Check implements Filter {
 		}
 		if (timeback != null) {
 			throw new Exception("已启动IP保护，请" + Reuse.yyyymmddhhmmss(new Date(timeback.getTime()
-					+ Long.parseLong(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE)
-							.read("ipdenywaitseconds")) * 1000))
+					+ Reuse.getsecondsmillisconfig("ipdeny.wait.seconds")))
 					+ "后再来");
 		}
 	}
 
-	public static void iplimit(String ip, boolean toincrementnewaccountstoday) throws Exception {
-		Iplimit ipd = new Iplimit();
-		Vector<String> ipdkeys = ipd.readpaged(ip);
-		boolean islimited = false;
-		if (ipdkeys.isEmpty()) {
-			if (toincrementnewaccountstoday) {
-				ipd.setIp(ip);
-				ipd.createpaged(null, ip);
-				ipd.setNewaccounts4increment(1l);
-				ipd.increment(ipd.getKey());
-			}
-		} else {
-			ipd.read(ipdkeys.get(0));
-			if (ipd.getNewaccounts() > Long.parseLong(Configclient
-					.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("iplimitnewaccounts"))) {
-				islimited = true;
-			}
-			if (!islimited&&toincrementnewaccountstoday) {
-				ipd.setNewaccounts4increment(1l);
-				ipd.increment(ipd.getKey());
-			}
-		}
-
-		if (islimited) {
-			throw new Exception("已启动账号保护，请明天再来");
-		}
-	}
 }

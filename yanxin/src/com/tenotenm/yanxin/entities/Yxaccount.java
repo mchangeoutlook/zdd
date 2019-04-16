@@ -44,6 +44,12 @@ public class Yxaccount extends Superentity{
 		}
 		return new Object[] {yxloginkey, 40};
 	}
+	protected String add4modify_yxloginkey() {
+		if (yxloginkey==null) {
+			return null;
+		}
+		return yxloginkey;
+	}
 	
 	protected void read_yxyanxinuniquekeyprefix(String yxyanxinuniquekeyprefix) {
 		this.yxyanxinuniquekeyprefix=yxyanxinuniquekeyprefix;
@@ -78,13 +84,13 @@ public class Yxaccount extends Superentity{
 		if (pass==null) {
 			return null;
 		}
-		return new Object[] {Reuse.sign(pass), 60};
+		return new Object[] {pass, 60};
 	}
 	protected String add4modify_pass() {
 		if (pass==null) {
 			return null;
 		}
-		return Reuse.sign(pass);
+		return pass;
 	}
 	
 	protected void read_motto(String motto) {
@@ -112,6 +118,12 @@ public class Yxaccount extends Superentity{
 		}
 		return new Object[] {ip, 0};
 	}
+	protected String add4modify_ip() {
+		if (ip==null) {
+			return null;
+		}
+		return ip;
+	}
 
 	protected void read_ua(String ua) {
 		this.ua=ua;
@@ -122,6 +134,12 @@ public class Yxaccount extends Superentity{
 		}
 		return new Object[] {ua, 0};
 	}
+	protected String add4modify_ua() {
+		if (ua==null) {
+			return null;
+		}
+		return ua;
+	}
 
 	protected void read_timecreate(String timecreate) {
 		this.timecreate=Reuse.yyyymmddhhmmss(timecreate);
@@ -131,6 +149,12 @@ public class Yxaccount extends Superentity{
 			return null;
 		}
 		return new Object[] {Reuse.yyyymmddhhmmss(timecreate), 0};
+	}
+	protected String add4modify_timecreate() {
+		if (timecreate==null) {
+			return null;
+		}
+		return Reuse.yyyymmddhhmmss(timecreate);
 	}
 	
 	protected void read_timeupdate(String timeupdate) {

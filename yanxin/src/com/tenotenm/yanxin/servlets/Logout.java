@@ -20,12 +20,16 @@ public class Logout extends HttpServlet {
 			throws ServletException, IOException {
 		try {
 			Yxlogin yxlogin = (Yxlogin)request.getAttribute(Yxlogin.class.getSimpleName());
-			yxlogin.setIslogout(true);
-			yxlogin.setTimeupdate(new Date());
-			yxlogin.modify(yxlogin.getKey());
+			logout(yxlogin);
 			Reuse.respond(response, null, null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);
 		}
+	}
+	
+	public static void logout(Yxlogin yxlogin) throws Exception {
+		yxlogin.setIslogout(true);
+		yxlogin.setTimeupdate(new Date());
+		yxlogin.modify(yxlogin.getKey());
 	}
 }
