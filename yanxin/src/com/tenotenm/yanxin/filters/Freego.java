@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 
 @WebFilter("/freego/*")
@@ -26,7 +27,7 @@ public class Freego implements Filter {
 		res.setHeader("Access-Control-Allow-Origin", "*");
 		String ip = Reuse.getremoteip(req);
 		try {
-			Check.ipdeny(ip, false);
+			Bizutil.ipdeny(ip, false);
 			arg2.doFilter(req, res);
 		}catch(Exception e) {
 			Reuse.respond(res, null, e);

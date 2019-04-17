@@ -13,18 +13,20 @@ import com.tenotenm.yanxin.entities.Yxlogin;
 import com.tenotenm.yanxin.util.Reuse;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/logout")
-public class Logout extends HttpServlet {
+@WebServlet("/check/write")
+public class Write extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
 			Yxlogin yxlogin = (Yxlogin)request.getAttribute(Yxlogin.class.getSimpleName());
-			logout(yxlogin);
+			//logout(yxlogin);
+			newdayiscoming(yxlogin, false);
 			Reuse.respond(response, null, null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);
 		}
 	}
 	
+
 }

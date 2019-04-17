@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.entities.Yxlogin;
-import com.tenotenm.yanxin.filters.Check;
+import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 
 @SuppressWarnings("serial")
@@ -32,19 +32,18 @@ public class Login extends HttpServlet {
 			try {
 				yxaccount.readunique(name);
 			} catch (Exception e) {
-				Check.ipdeny(Reuse.getremoteip(request), true);
+				Bizutil.ipdeny(Reuse.getremoteip(request), true);
 				throw new Exception("账号或密码或格言不正确，请重新登录");
 			}
-			if (isfirstlogindenied(yxaccount)) {
-				throw new Exception("未及时完成首次登录，账号已被回收");
-			}
-			if (isreusing(yxaccount)) {
-				throw new Exception("未及时延长账号有效期，账号已被回收");
-			}
+			
+			Bizutil.refreshaccount(yxaccount, null, null, null, null, null, null, null, null);
+			
+			Bizutil.checkaccountreused(yxaccount);
+			
 			if (yxaccount.getYxloginkey().isEmpty()) {// first time login
 				if (!yxaccount.getIp().equals(Reuse.getremoteip(request))
 						|| !yxaccount.getUa().equals(Reuse.getuseragent(request))) {
-					Check.ipdeny(Reuse.getremoteip(request), true);
+					Bizutil.ipdeny(Reuse.getremoteip(request), true);
 					throw new Exception("请使用注册时的IP和浏览器完成首次登录");
 				}
 			} else {
@@ -64,7 +63,7 @@ public class Login extends HttpServlet {
 								+ "后再来");
 					}
 				}
-				Logout.logout(yxlogin);
+				Bizutil.logout(yxlogin);
 			}
 
 			String pass = request.getParameter("pass");
@@ -82,13 +81,24 @@ public class Login extends HttpServlet {
 				yxaccount = new Yxaccount();
 				yxaccount.readunique(name);
 				
+				
 				Map<String, Object> ret = new Hashtable<String, Object>();
 				ret.put("daystogive", yxaccount.getDaystogive());
 				ret.put("timecreate", Reuse.yyyyMMddHHmmss(yxaccount.getTimecreate()));
 				ret.put("timeexpire", Reuse.yyyyMMddHHmmss(yxaccount.getTimeexpire()));
-				ret.put("timereuse", Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount)));
+				ret.put("timereuse", Reuse.yyyyMMddHHmmss(Bizutil.datedenyreuseaccount(yxaccount)));
 				ret.put("loginkey", yxaccount.getYxloginkey());
 				ret.put("today", Reuse.yyyyMMdd(new Date()));
+				if (Bizutil.isadmin(yxaccount)) {
+					ret.put("isadmin", "t");
+				} else {
+					ret.put("isadmin", "f");
+				}
+				if (Bizutil.isaccountexpired(yxaccount)) {
+					ret.put("isexpired", "t");
+				} else {
+					ret.put("isexpired", "f");
+				}
 				ret.put("name", yxaccount.getUniquename());
 				Reuse.respond(response, ret, null);
 			} else {
@@ -103,30 +113,5 @@ public class Login extends HttpServlet {
 		}
 	}
 	
-	public static boolean isfirstlogindenied(Yxaccount yxaccount) {
-		return yxaccount.getYxloginkey().isEmpty()&dateallowfirstlogin(yxaccount).before(new Date());
-	}
-	public static boolean iswaitingfirstlogin(Yxaccount yxaccount) {
-		return yxaccount.getYxloginkey().isEmpty()&datedenyfirstlogin(yxaccount).after(new Date());
-	}
-	public static boolean isreusing(Yxaccount yxaccount) {
-		return !yxaccount.getYxloginkey().isEmpty()&datedenyreuseaccount(yxaccount).before(new Date());
-	}
-	public static boolean isbeforereusedate(Yxaccount yxaccount) {
-		return !yxaccount.getYxloginkey().isEmpty()&dateallowreuseaccount(yxaccount).after(new Date());
-	}
-	public static Date dateallowfirstlogin(Yxaccount yxaccount) {
-		return new Date(datedenyfirstlogin(yxaccount).getTime()-60000);
-	}
-	public static Date datedenyfirstlogin(Yxaccount yxaccount) {
-		return new Date(yxaccount.getTimecreate().getTime() + Reuse.getsecondsmillisconfig("first.login.in.seconds"));
-	}
-	
-	public static Date datedenyreuseaccount(Yxaccount yxaccount) {
-		return new Date(dateallowreuseaccount(yxaccount).getTime()-60000);
-	}
-	public static Date dateallowreuseaccount(Yxaccount yxaccount) {
-		return new Date(yxaccount.getTimeexpire().getTime() + Reuse.getdaysmillisconfig("account.reuse.in.days"));
-	}
 	
 }

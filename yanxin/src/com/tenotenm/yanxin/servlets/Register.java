@@ -118,30 +118,4 @@ public class Register extends HttpServlet {
 	
 	}
 
-	public static void iplimit(String ip, boolean toincrementnewaccountstoday) throws Exception {
-		Iplimit ipd = new Iplimit();
-		Vector<String> ipdkeys = ipd.readpaged(ip);
-		boolean islimited = false;
-		if (ipdkeys.isEmpty()) {
-			if (toincrementnewaccountstoday) {
-				ipd.setIp(ip);
-				ipd.createpaged(null, ip);
-				ipd.setNewaccounts4increment(1l);
-				ipd.increment(ipd.getKey());
-			}
-		} else {
-			ipd.read(ipdkeys.get(0));
-			if (ipd.getNewaccounts()!=null&&ipd.getNewaccounts() >= Reuse.getlongconfig("everyday.everyip.newaccounts.max")) {
-				islimited = true;
-			}
-			if (!islimited&&toincrementnewaccountstoday) {
-				ipd.setNewaccounts4increment(1l);
-				ipd.increment(ipd.getKey());
-			}
-		}
-
-		if (islimited) {
-			throw new Exception("已启动账号保护，请明天再来");
-		}
-	}
 }

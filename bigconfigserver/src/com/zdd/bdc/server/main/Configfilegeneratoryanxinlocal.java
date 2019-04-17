@@ -68,7 +68,10 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("freeuse.days", "30", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("account.reuse.in.days", "60", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("first.login.in.seconds", "600", namespace, STATIC.REMOTE_CONFIG_CORE);
-		Fileconfigutil.create("everyday.everyip.newaccounts.max", "100", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("everyday.everyip.newaccounts.max", "200", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("extend.expire.in.days", "30", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("extend.expire.days.max", "180", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("days.togive.max", "10000", namespace, STATIC.REMOTE_CONFIG_CORE);
 */
 		Fileconfigutil.create("session.expire.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("wrongpass.wait.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
@@ -77,6 +80,11 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("account.reuse.in.days", "1", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("first.login.in.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("everyday.everyip.newaccounts.max", "2", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("extend.expire.in.days", "2", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("extend.expire.days.max", "2", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("days.togive.max", "100", namespace, STATIC.REMOTE_CONFIG_CORE);
+
+		Fileconfigutil.create("admins", STATIC.splitenc("afs",""), namespace, STATIC.REMOTE_CONFIG_CORE);
 
 	}
 	

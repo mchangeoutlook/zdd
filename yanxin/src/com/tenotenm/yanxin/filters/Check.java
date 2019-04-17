@@ -2,8 +2,6 @@ package com.tenotenm.yanxin.filters;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Vector;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -13,9 +11,9 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.tenotenm.yanxin.entities.Ipdeny;
 import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.entities.Yxlogin;
+import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 import com.zdd.bdc.client.util.STATIC;
 
@@ -32,7 +30,7 @@ public class Check implements Filter {
 		res.setHeader("Access-Control-Allow-Origin", "*");
 		String ip = Reuse.getremoteip(req);
 		try {
-			ipdeny(ip, false);
+			Bizutil.ipdeny(ip, false);
 			Yxlogin yxlogin = new Yxlogin();
 			yxlogin.read(req.getParameter("loginkey"));
 
@@ -54,9 +52,17 @@ public class Check implements Filter {
 				throw new Exception("非法访问，请重新登录");
 			}
 			
-			yxlogin.setTimeupdate(new Date());
-			yxlogin.modify(yxlogin.getKey());
+			if (Reuse.yyyyMMdd(new Date()).equals(Reuse.yyyyMMdd(yxlogin.getTimeupdate()))) {
+				yxlogin.setTimeupdate(new Date());
+				yxlogin.modify(yxlogin.getKey());
+			} else {
+				throw new Exception("迎接新的一天，请重新登录");
+			}
 
+			Bizutil.refreshaccount(yxaccount, null, null, null, null, null, null, null, null);
+			
+			Bizutil.checkaccountreused(yxaccount);
+						
 			req.setAttribute(Yxaccount.class.getSimpleName(), yxaccount);
 			req.setAttribute(Yxlogin.class.getSimpleName(), yxlogin);
 			
@@ -65,7 +71,7 @@ public class Check implements Filter {
 		} catch (Exception e) {
 			if (e.getMessage() != null && e.getMessage().contains(STATIC.INVALIDKEY)) {
 				try {
-					ipdeny(ip, true);
+					Bizutil.ipdeny(ip, true);
 					throw new Exception("无效访问，请重新登录");
 				} catch (Exception e1) {
 					Reuse.respond(res, null, e1);
@@ -76,33 +82,5 @@ public class Check implements Filter {
 		}
 	}
 
-	public static void ipdeny(String ip, boolean todeny) throws Exception {
-		Ipdeny ipd = new Ipdeny();
-		Vector<String> ipdkeys = ipd.readpaged(ip);
-		Date timeback = null;
-		if (ipdkeys.isEmpty()) {
-			if (todeny) {
-				ipd.setIp(ip);
-				ipd.createpaged(null, ip);
-			}
-		} else {
-			ipd.read(ipdkeys.get(0));
-			
-			if (System.currentTimeMillis() - ipd.getTimedeny()
-					.getTime() < Reuse.getsecondsmillisconfig("ipdeny.wait.seconds")) {
-				timeback = ipd.getTimedeny();
-			}
-			if (timeback == null&&todeny) {
-				ipd.setTimedeny(new Date());
-				ipd.modify(ipd.getKey());
-			}
-			
-		}
-		if (timeback != null) {
-			throw new Exception("已启动IP保护，请" + Reuse.yyyyMMddHHmmss(new Date(timeback.getTime()
-					+ Reuse.getsecondsmillisconfig("ipdeny.wait.seconds")))
-					+ "后再来");
-		}
-	}
 
 }

@@ -14,10 +14,16 @@ import com.zdd.bdc.client.biz.Uniqueindexclient;
 public abstract class Superentity {
 	
 	public abstract void setKey(String key);
+	public abstract String getKey();
 	
 	public void create(String key) throws Exception {
 		if (key==null) {
-			key = Bigclient.newbigdatakey();
+			if (getKey()==null) {
+				key = Bigclient.newbigdatakey();
+				setKey(key);
+			} else {
+				key = getKey();
+			}
 		}
 		String tablename =  this.getClass().getSimpleName();
 		Dataclient dc = Dataclient.getinstance(Reuse.namespace_yanxin, tablename).key(key);
@@ -36,7 +42,12 @@ public abstract class Superentity {
 	
 	public void createunique(String key, String uniqueindex) throws Exception {
 		if (key==null) {
-			key = Bigclient.newbigdatakey();
+			if (getKey()==null) {
+				key = Bigclient.newbigdatakey();
+				setKey(key);
+			} else {
+				key = getKey();
+			}
 		}
 		String tablename =  this.getClass().getSimpleName();
 		Uniqueindexclient.getinstance(Reuse.namespace_yanxin, uniqueindex).createunique(tablename+"-ukey", key);
@@ -45,7 +56,12 @@ public abstract class Superentity {
 
 	public void createpaged(String key, String pagedindex) throws Exception {
 		if (key==null) {
-			key = Bigclient.newbigdatakey();
+			if (getKey()==null) {
+				key = Bigclient.newbigdatakey();
+				setKey(key);
+			} else {
+				key = getKey();
+			}
 		}
 		String tablename =  this.getClass().getSimpleName();
 		Pagedindexclient.getinstance(Reuse.namespace_yanxin, pagedindex).addfilter(tablename+"-pkey").create(key, 0);
@@ -53,6 +69,9 @@ public abstract class Superentity {
 	}
 
 	public void modify(String key) throws Exception {
+		if (key==null&&getKey()!=null) {
+			key = getKey();
+		}
 		String tablename =  this.getClass().getSimpleName();
 		Dataclient dc = Dataclient.getinstance(Reuse.namespace_yanxin, tablename).key(key);
 		Method[] M = this.getClass().getDeclaredMethods();
@@ -68,6 +87,9 @@ public abstract class Superentity {
 	}
 
 	public void increment(String key) throws Exception {
+		if (key==null&&getKey()!=null) {
+			key = getKey();
+		}
 		String tablename =  this.getClass().getSimpleName();
 		Dataclient dc = Dataclient.getinstance(Reuse.namespace_yanxin, tablename).key(key);
 		Method[] M = this.getClass().getDeclaredMethods();
@@ -107,6 +129,9 @@ public abstract class Superentity {
 	}
 
 	public void read(String key) throws Exception {
+		if (key==null&&getKey()!=null) {
+			key = getKey();
+		}
 		String tablename =  this.getClass().getSimpleName();
 		Dataclient dc = Dataclient.getinstance(Reuse.namespace_yanxin, tablename).key(key);
 		Method[] M = this.getClass().getDeclaredMethods();
