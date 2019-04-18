@@ -183,6 +183,12 @@ public class Bizutil {
 		}
 	}
 
+	public static void checkaccountavailability(Yxaccount yxaccount) throws Exception {
+		if (!isadmin(yxaccount)&&isaccountexpired(yxaccount)) {
+			throw new Exception("账号已过期，请在"+Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))+"之前延长有效期，否则账号将被回收，回收后该账号的所有日记都将无法找回。");
+		}
+	}
+
 	public static boolean isaccountexpired(Yxaccount yxaccount) throws Exception {
 		Date now = new Date();
 		return yxaccount.getTimeexpire().before(now)&&now.before(datedenyreuseaccount(yxaccount));
