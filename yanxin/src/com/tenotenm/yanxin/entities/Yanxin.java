@@ -4,11 +4,13 @@ import java.util.Date;
 
 import com.tenotenm.yanxin.util.Reuse;
 
-public class Yxyanxin extends Superentity{
+public class Yanxin extends Superentity{
 	
 	private String key=null;
 	
 	private String yxloginkey=null;
+	
+	private String uniquekeyprefix=null;
 	
 	private Date timecreate=null;
 	private String weather=null;
@@ -25,7 +27,17 @@ public class Yxyanxin extends Superentity{
 		}
 		return new Object[] {yxloginkey, 0};
 	}
-	
+
+	protected void read_uniquekeyprefix(String uniquekeyprefix) {
+		this.uniquekeyprefix=uniquekeyprefix;
+	}
+	protected Object[] add4create_uniquekeyprefix() {
+		if (uniquekeyprefix==null) {
+			return null;
+		}
+		return new Object[] {uniquekeyprefix, 0};
+	}
+
 	protected void read_timecreate(String timecreate) {
 		this.timecreate=Reuse.yyyyMMddHHmmss(timecreate);
 	}
@@ -105,6 +117,12 @@ public class Yxyanxin extends Superentity{
 	}
 	public void setYxloginkey(String yxloginkey) {
 		this.yxloginkey = yxloginkey;
+	}
+	public String getUniquekeyprefix() {
+		return uniquekeyprefix;
+	}
+	public void setUniquekeyprefix(String uniquekeyprefix) {
+		this.uniquekeyprefix = uniquekeyprefix;
 	}
 	public Date getTimecreate() {
 		return timecreate;

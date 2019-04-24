@@ -36,7 +36,7 @@ public class Login extends HttpServlet {
 				throw new Exception("账号或密码或格言不正确，请重新登录");
 			}
 			
-			Bizutil.refreshaccount(yxaccount, null, null, null, null, null, null, null, null);
+			Bizutil.refreshadminaccount(yxaccount);
 			
 			Bizutil.checkaccountreused(yxaccount);
 			
@@ -63,7 +63,6 @@ public class Login extends HttpServlet {
 								+ "后再来");
 					}
 				}
-				Bizutil.logout(yxlogin);
 			}
 
 			String pass = request.getParameter("pass");
@@ -93,12 +92,18 @@ public class Login extends HttpServlet {
 					ret.put("isadmin", "t");
 				} else {
 					ret.put("isadmin", "f");
+					if (yxaccount.getDaystogive()>0&&new Date().after(new Date(yxaccount.getTimeexpire().getTime()-Reuse.getlongvalueconfig("extend.expire.in.days")*24*60*60*1000))) {
+						ret.put("accountkey", yxaccount.getKey());
+					} else {
+						ret.put("extendselfaftertime", Reuse.yyyyMMddHHmmss(new Date(yxaccount.getTimeexpire().getTime()-Reuse.getlongvalueconfig("extend.expire.in.days")*24*60*60*1000)));
+					}
 				}
 				if (Bizutil.isaccountexpired(yxaccount)) {
 					ret.put("isexpired", "t");
 				} else {
 					ret.put("isexpired", "f");
 				}
+
 				ret.put("name", yxaccount.getUniquename());
 				Reuse.respond(response, ret, null);
 			} else {

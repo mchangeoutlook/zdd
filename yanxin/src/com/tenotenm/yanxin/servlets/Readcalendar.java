@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.tenotenm.yanxin.entities.Yxaccount;
-import com.tenotenm.yanxin.entities.Yxlogin;
-import com.tenotenm.yanxin.entities.Yxyanxin;
 import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 
@@ -27,7 +25,6 @@ public class Readcalendar extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			Yxlogin yxlogin = (Yxlogin)request.getAttribute(Yxlogin.class.getSimpleName());
 			Yxaccount yxaccount = (Yxaccount)request.getAttribute(Yxaccount.class.getSimpleName());
 			
 			Bizutil.checkaccountavailability(yxaccount);
@@ -82,13 +79,19 @@ public class Readcalendar extends HttpServlet {
 				try {
 					Date theday = Reuse.yyyyMMddHHmmss(year+"-"+month+"-"+(i+1)+" 23:59:59");
 					if (yxaccount.getTimecreate().before(theday)) {
-						Yxyanxin yxyanxin = new Yxyanxin();
-						yxyanxin.readunique(yxaccount.getYxyanxinuniquekeyprefix()+"-"+Reuse.yyyyMMdd(theday));
-						theweek.get(weekday-1).putAll(Bizutil.readyanxin(yxlogin, yxaccount, theday));
+						Map<String, String> yanxin = Bizutil.convert(Bizutil.readyanxin(yxaccount, theday));
+						theweek.get(weekday-1).put("day", Reuse.yyyyMMdd(theday));
+						if (yanxin.get("key")!=null) {
+							theweek.get(weekday-1).put("photo", yanxin.get("photo"));
+							theweek.get(weekday-1).put("key", yanxin.get("key"));
+						}
 					}
 				}catch(Exception e) {
 					//do nothing
 				}
+			}
+			if (onemonth.get(5).get(0).isEmpty()) {
+				onemonth.remove(5);
 			}
 			Map<String, Object> ret = new Hashtable<String, Object>();
 			ret.put("onemonth", onemonth);
@@ -107,7 +110,7 @@ public class Readcalendar extends HttpServlet {
 			if (new Date().after(Reuse.yyyyMMdd((yearint+1)+"-01-01"))) {
 				ret.put("rightyear", yearint+1);
 			}
-			
+			ret.put("today", Reuse.yyyyMMdd(new Date()));
 			Reuse.respond(response, ret, null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);

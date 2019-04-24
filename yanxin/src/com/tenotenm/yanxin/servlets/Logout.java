@@ -1,7 +1,6 @@
 package com.tenotenm.yanxin.servlets;
 
 import java.io.IOException;
-import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.tenotenm.yanxin.entities.Yxlogin;
+import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 
 @SuppressWarnings("serial")
@@ -20,7 +20,7 @@ public class Logout extends HttpServlet {
 			throws ServletException, IOException {
 		try {
 			Yxlogin yxlogin = (Yxlogin)request.getAttribute(Yxlogin.class.getSimpleName());
-			logout(yxlogin);
+			Bizutil.logout(yxlogin);
 			Reuse.respond(response, null, null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);

@@ -145,6 +145,9 @@ public abstract class Superentity {
 			}
 		}
 		Map<String, String> data = dc.read();
+		if (data==null||data.isEmpty()) {
+			throw new Exception(Reuse.NOTFOUND);
+		}
 		for (Method m:M) {
 			if (m.getName().startsWith("read_")) {
 				if (data.get(m.getName().substring(5))!=null) {
@@ -163,6 +166,9 @@ public abstract class Superentity {
 	public void readunique(String uniqueindex) throws Exception {
 		String tablename =  this.getClass().getSimpleName();
 		String key = Uniqueindexclient.getinstance(Reuse.namespace_yanxin, uniqueindex).readunique(tablename+"-ukey");
+		if (key==null||key.trim().isEmpty()) {
+			throw new Exception(Reuse.NOTFOUND);
+		}
 		read(key);
 	}
 

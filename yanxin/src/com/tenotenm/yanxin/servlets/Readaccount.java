@@ -1,7 +1,6 @@
 package com.tenotenm.yanxin.servlets;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -12,20 +11,33 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.tenotenm.yanxin.entities.Yxaccount;
-import com.tenotenm.yanxin.entities.Yxlogin;
-import com.tenotenm.yanxin.entities.Yxyanxin;
 import com.tenotenm.yanxin.util.Reuse;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/readtoday")
+@WebServlet("/check/readaccount")
 public class Readaccount extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			Yxlogin yxlogin = (Yxlogin)request.getAttribute(Yxlogin.class.getSimpleName());
 			Yxaccount yxaccount = (Yxaccount)request.getAttribute(Yxaccount.class.getSimpleName());
-			Reuse.respond(response, read(yxlogin, yxaccount, new Date()), null);
+			if (yxaccount.getDaystogive()<=0) {
+				throw new Exception("无权查询账号");
+			}
+			
+			Yxaccount target = new Yxaccount();
+			try {
+				target.readunique(request.getParameter("targetname"));
+			}catch(Exception e) {
+				throw new Exception("该账号不存在");
+			}
+			Map<String, String> ret = new Hashtable<String, String>();
+			ret.put("key", target.getKey());
+			ret.put("name", target.getUniquename());
+			ret.put("daystogive", String.valueOf(target.getDaystogive()));
+			ret.put("timeexpire", Reuse.yyyyMMddHHmmss(target.getTimeexpire()));
+			
+			Reuse.respond(response, ret, null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);
 		}

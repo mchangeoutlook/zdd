@@ -12,7 +12,7 @@ import com.tenotenm.yanxin.util.Downloading;
 import com.zdd.bdc.client.biz.Fileclient;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/download/*")
+@WebServlet("/check/download")
 public class Download extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
@@ -28,10 +28,10 @@ public class Download extends HttpServlet {
 		OutputStream os = null;
 		try {
 			os = res.getOutputStream();
-			String[] parts = req.getRequestURI().split("/");
-			Fileclient.getinstance(parts[parts.length-2]).read("bigfilefrom", parts[parts.length-1], new Downloading(os));
+			String thefolderonserver=req.getParameter("folder");
+			String filekey = req.getParameter("filekey");
+			Fileclient.getinstance(thefolderonserver).read("bigfilefrom", filekey, new Downloading(os));
 		} catch (Exception e) {
-			
 			throw new IOException(e);
 		} finally {
 			try {

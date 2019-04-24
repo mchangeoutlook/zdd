@@ -1,15 +1,27 @@
 package com.tenotenm.yanxin.util;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 
 import com.tenotenm.yanxin.entities.Ipdeny;
 import com.tenotenm.yanxin.entities.Iplimit;
 import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.entities.Yxlogin;
-import com.tenotenm.yanxin.entities.Yxyanxin;
+import com.tenotenm.yanxin.entities.Yanxin;
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.util.STATIC;
 
@@ -21,6 +33,14 @@ public class Bizutil {
 			return (int) (millistotomorrow / 60000);
 		} else {
 			return null;
+		}
+	}
+
+	public static void logout(Yxlogin yxlogin) throws Exception {
+		if (!yxlogin.getIslogout()) {
+			yxlogin.setIslogout(true);
+			yxlogin.setTimeupdate(new Date());
+			yxlogin.modify(yxlogin.getKey());
 		}
 	}
 
@@ -68,7 +88,7 @@ public class Bizutil {
 		} else {
 			ipd.read(ipdkeys.get(0));
 			if (ipd.getNewaccounts() != null
-					&& ipd.getNewaccounts() >= Reuse.getlongconfig("everyday.everyip.newaccounts.max")) {
+					&& ipd.getNewaccounts() >= Reuse.getlongvalueconfig("everyday.everyip.newaccounts.max")) {
 				islimited = true;
 			}
 			if (!islimited && toincrementnewaccountstoday) {
@@ -82,45 +102,41 @@ public class Bizutil {
 		}
 	}
 
-	public static Map<String, String> readyanxin(Yxlogin yxlogin, Yxaccount yxaccount, Date day) throws Exception {
-		boolean istoday = Reuse.yyyyMMdd(day).equals(Reuse.yyyyMMdd(new Date()));
-		Map<String, String> ret = new Hashtable<String, String>();
-		if (istoday) {
-			ret.put("istoday", "t");
-		} else {
-			ret.put("istoday", "f");
+	public static Yanxin readyanxin(Yxaccount yxaccount, String key) throws Exception {
+		Yanxin yxyanxin = new Yanxin();
+		yxyanxin.read(key);
+		if (!yxyanxin.getUniquekeyprefix().equals(yxaccount.getYxyanxinuniquekeyprefix())) {
+			throw new Exception("无权查看别人的日记");
 		}
-		Yxyanxin yxyanxin = new Yxyanxin();
-		try {
-			yxyanxin.readunique(yxaccount.getYxyanxinuniquekeyprefix() + "-" + Reuse.yyyyMMdd(day));
-		} catch (Exception e) {
-			if (istoday) {
-				yxyanxin.setContent("");
-				yxyanxin.setLocation("");
-				yxyanxin.setPhoto("");
-				yxyanxin.setWeather("");
-				yxyanxin.setYxloginkey(yxlogin.getKey());
-				yxyanxin.createunique(null, yxaccount.getYxyanxinuniquekeyprefix() + "-" + Reuse.yyyyMMdd(day));
-			} else {
-				ret.put("key", "");
-				return ret;
-			}
-		}
-		ret.put("content", yxyanxin.getContent());
-		ret.put("key", yxyanxin.getKey());
-		ret.put("location", yxyanxin.getLocation());
-		ret.put("photo", yxyanxin.getPhoto());
-		ret.put("weather", yxyanxin.getWeather());
-		ret.put("timecreate", Reuse.yyyyMMdd(yxyanxin.getTimecreate()));
-		return ret;
+		return yxyanxin;
 	}
 
-	public static void logout(Yxlogin yxlogin) throws Exception {
-		if (!yxlogin.getIslogout()) {
-			yxlogin.setIslogout(true);
-			yxlogin.setTimeupdate(new Date());
-			yxlogin.modify(yxlogin.getKey());
+	public static Map<String, String> convert(Yanxin yanxin){
+		Map<String, String> ret = new Hashtable<String, String>();
+		if (yanxin==null) {
+			return ret;
 		}
+		ret.put("content", yanxin.getContent());
+		ret.put("key", yanxin.getKey());
+		ret.put("location", yanxin.getLocation());
+		ret.put("photo", yanxin.getPhoto());
+		ret.put("weather", yanxin.getWeather());
+		ret.put("timecreate", Reuse.yyyyMMdd(yanxin.getTimecreate()));
+		return ret;
+	}
+	
+	public static String yanxinkey(Yxaccount yxaccount, Date day) {
+		return yxaccount.getYxyanxinuniquekeyprefix() + "-" + Reuse.yyyyMMdd(day);
+	}
+	
+	public static Yanxin readyanxin(Yxaccount yxaccount, Date day) throws Exception {
+		Yanxin yxyanxin = new Yanxin();
+		try {
+			yxyanxin.readunique(yanxinkey(yxaccount, day));
+		} catch (Exception e) {
+			return null;
+		}
+		return yxyanxin;
 	}
 
 	public static boolean isadmin(Yxaccount yxaccount) {
@@ -129,49 +145,67 @@ public class Bizutil {
 						.contains(yxaccount.getKey());
 	}
 
-	public static Yxaccount refreshaccount(Yxaccount yxaccount, String loginkey, Date timecreate, String ip, String ua,
-			String name, String pass, String motto, String yxyanxinuniquekeyprefix) throws Exception {
-		if (timecreate != null) {
-			yxaccount.setTimecreate(timecreate);
-			yxaccount.setTimeupdate(timecreate);
-			Date timeexpire = new Date(yxaccount.getTimecreate().getTime() + Reuse.getdaysmillisconfig("freeuse.days"));
-			yxaccount.setTimeexpire(timeexpire);
-			yxaccount.setTimewrongpass(new Date(
-					yxaccount.getTimecreate().getTime() - Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")));
-		}
-		if (ip != null) {
-			yxaccount.setIp(ip);
-		}
+	public static void settimecreate(Yxaccount yxaccount) {
+		yxaccount.setTimecreate(new Date());
+		yxaccount.setTimeupdate(yxaccount.getTimecreate());
+		Date timeexpire = new Date(yxaccount.getTimecreate().getTime() + Reuse.getdaysmillisconfig("freeuse.days"));
+		yxaccount.setTimeexpire(timeexpire);
+		yxaccount.setTimewrongpass(
+				new Date(yxaccount.getTimecreate().getTime() - Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")));
+	}
+
+	public static boolean setpassandmotto(Yxaccount yxaccount, String name, String pass, String repass, String motto,
+			String remotto) throws Exception {
+		boolean isupdated = false;
 		if (motto != null) {
+			if (remotto == null || !motto.toLowerCase().trim().equals(remotto.toLowerCase().trim())) {
+				throw new Exception("两次输入的格言不一致");
+			}
+			motto = motto.toLowerCase().trim();
+			if (Reuse.sign(motto).getBytes("UTF-8").length > 300) {
+				throw new Exception("格言过长");
+			}
 			yxaccount.setMotto(Reuse.sign(motto));
+			isupdated = true;
 		}
 		if (pass != null) {
+			if (!pass.equals(repass)) {
+				throw new Exception("两次输入的密码不一致");
+			}
+			if (Reuse.sign(pass).getBytes("UTF-8").length > 60) {
+				throw new Exception("密码过长");
+			}
 			yxaccount.setPass(Reuse.sign(pass));
-		}
-		if (ua != null) {
-			yxaccount.setUa(ua);
-		}
-		if (yxyanxinuniquekeyprefix != null) {
-			yxaccount.setYxyanxinuniquekeyprefix(yxyanxinuniquekeyprefix);
+			isupdated = true;
 		}
 		if (name != null) {
+			name = name.toLowerCase().trim();
+			if (name.getBytes("UTF-8").length > 60) {
+				throw new Exception("账号名称过长");
+			}
 			yxaccount.setUniquename(name);
+			isupdated = true;
 		}
-		if (loginkey != null) {
-			yxaccount.setYxloginkey(loginkey);
+		if (isupdated) {
+			yxaccount.setTimeupdate(new Date());
 		}
+		return isupdated;
+	}
+
+	public static void refreshadminaccount(Yxaccount yxaccount) throws Exception {
 		if (isadmin(yxaccount)) {
-			if (yxaccount.getDaystogive() < Reuse.getlongconfig("days.togive.max")) {
-				yxaccount.setDaystogive4increment(Reuse.getlongconfig("days.togive.max") - yxaccount.getDaystogive());
+			if (yxaccount.getDaystogive() < Reuse.getlongvalueconfig("days.togive.max")) {
+				yxaccount.setDaystogive4increment(
+						Reuse.getlongvalueconfig("days.togive.max") - yxaccount.getDaystogive());
 				yxaccount.increment(yxaccount.getKey());
 			}
 			if (yxaccount.getTimeexpire().before(new Date())) {
 				Date timeexpire = new Date(new Date().getTime() + Reuse.getdaysmillisconfig("freeuse.days"));
 				yxaccount.setTimeexpire(timeexpire);
+				yxaccount.setTimeupdate(new Date());
 				yxaccount.modify(yxaccount.getKey());
 			}
 		}
-		return yxaccount;
 	}
 
 	public static void checkaccountreused(Yxaccount yxaccount) throws Exception {
@@ -184,14 +218,15 @@ public class Bizutil {
 	}
 
 	public static void checkaccountavailability(Yxaccount yxaccount) throws Exception {
-		if (!isadmin(yxaccount)&&isaccountexpired(yxaccount)) {
-			throw new Exception("账号已过期，请在"+Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))+"之前延长有效期，否则账号将被回收，回收后该账号的所有日记都将无法找回。");
+		if (!isadmin(yxaccount) && isaccountexpired(yxaccount)) {
+			throw new Exception("账号已过期，请在" + Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))
+					+ "之前延长有效期，否则账号将被回收，回收后该账号的所有日记都将无法找回。");
 		}
 	}
 
 	public static boolean isaccountexpired(Yxaccount yxaccount) throws Exception {
 		Date now = new Date();
-		return yxaccount.getTimeexpire().before(now)&&now.before(datedenyreuseaccount(yxaccount));
+		return yxaccount.getTimeexpire().before(now) && now.before(datedenyreuseaccount(yxaccount));
 	}
 
 	private static boolean isfirstlogindenied(Yxaccount yxaccount) {
@@ -225,4 +260,54 @@ public class Bizutil {
 	private static Date dateallowreuseaccount(Yxaccount yxaccount) {
 		return new Date(yxaccount.getTimeexpire().getTime() + Reuse.getdaysmillisconfig("account.reuse.in.days"));
 	}
+
+	public static byte[] compress(InputStream is, float compressrate) throws Exception {
+		ByteArrayOutputStream convertedos = null;
+		ByteArrayOutputStream compressedos = null;
+		ImageWriter compressedwriter = null;
+		try {
+			BufferedImage toconvertimage = ImageIO.read(is);
+			convertedos = new ByteArrayOutputStream();
+
+			BufferedImage converted = new BufferedImage(toconvertimage.getWidth(), toconvertimage.getHeight(),
+					BufferedImage.TYPE_INT_RGB);
+			converted.createGraphics().drawImage(toconvertimage, 0, 0, Color.BLACK, null);
+			ImageIO.write(converted, "jpg", convertedos);
+
+			BufferedImage image = ImageIO.read(new ByteArrayInputStream(convertedos.toByteArray()));
+
+			compressedos = new ByteArrayOutputStream();
+
+			Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+			compressedwriter = (ImageWriter) writers.next();
+
+			ImageOutputStream ios = ImageIO.createImageOutputStream(compressedos);
+			compressedwriter.setOutput(ios);
+
+			ImageWriteParam param = compressedwriter.getDefaultWriteParam();
+			param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+			param.setCompressionQuality(compressrate);// 0.2f
+			compressedwriter.write(null, new IIOImage(image, null, null), param);
+			return compressedos.toByteArray();
+		} finally {
+			try {
+				is.close();
+			} catch (Exception e) {
+			}
+			try {
+				convertedos.close();
+			} catch (Exception e) {
+			}
+			try {
+				compressedos.close();
+			} catch (Exception e) {
+			}
+			try {
+				compressedwriter.dispose();
+			} catch (Exception e) {
+			}
+
+		}
+	}
+	
 }

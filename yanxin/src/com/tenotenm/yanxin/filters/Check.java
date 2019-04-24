@@ -59,7 +59,7 @@ public class Check implements Filter {
 				throw new Exception("迎接新的一天，请重新登录");
 			}
 
-			Bizutil.refreshaccount(yxaccount, null, null, null, null, null, null, null, null);
+			Bizutil.refreshadminaccount(yxaccount);
 			
 			Bizutil.checkaccountreused(yxaccount);
 						
@@ -69,7 +69,7 @@ public class Check implements Filter {
 			arg2.doFilter(req, res);
 			
 		} catch (Exception e) {
-			if (e.getMessage() != null && e.getMessage().contains(STATIC.INVALIDKEY)) {
+			if (e.getMessage() != null && (e.getMessage().contains(STATIC.INVALIDKEY)||e.getMessage().contains(Reuse.NOTFOUND))) {
 				try {
 					Bizutil.ipdeny(ip, true);
 					throw new Exception("无效访问，请重新登录");

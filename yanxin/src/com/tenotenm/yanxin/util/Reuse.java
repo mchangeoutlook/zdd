@@ -22,6 +22,8 @@ public class Reuse {
 	public static final String namespace_bigfilefrom = "bigfilefrom";
 	public static final String namespace_bigfileto = "bigfileto";
 	
+	public static final String NOTFOUND = "YX_NOTFOUND";
+	
 	private static final String yyyyMMddHHmmss = "yyyy-MM-dd HH:mm:ss";
 	private static final String yyyyMMdd = "yyyy-MM-dd";
 
@@ -115,7 +117,7 @@ public class Reuse {
 				.read(configkey)) * 1000;
 	}
 
-	public static long getlongconfig(String configkey) {
+	public static long getlongvalueconfig(String configkey) {
 		return Long.parseLong(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE)
 				.read(configkey));
 	}
