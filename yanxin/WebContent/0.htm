@@ -3,9 +3,10 @@
 		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 		<meta name="mobileoptimized" content="0"/>
-		<title>言心 你的心灵日记 记录你的真谛</title>
-		<meta name="description" content="言心 你的心灵日记 记录你的真谛" />
-  		<meta name="Keywords" content="言心 你的心灵日记 记录你的真谛" />
+		<link rel="shortcut icon" href="logo.png" type="image/x-icon" />
+		<title>言心 你的心灵日记 陪伴有故事的你</title>
+		<meta name="description" content="言心 你的心灵日记 陪伴有故事的你" />
+  		<meta name="Keywords" content="言心 你的心灵日记 陪伴有故事的你" />
   		<style type="text/css">
   			input[type="button"]{
   				background:#008B8B;border: none;color:#ccc;border-radius:4px 4px;font-size:16px;
@@ -45,7 +46,7 @@
   				border:0px;
   				width:25px;
   				height:2px;
-  				left:80px;
+  				left:52px;
   				top:154px;
   			}
   			.thick{
@@ -67,39 +68,52 @@
 			.text{
 				position:absolute;
 				text-align:center;
-				font-size:14px;
-				line-height:20px;
+				font-size:12px;
+				width:150px;
 				color:#ccc;
-				top:55%;
-				left:50%;
-				animation: texting 5s linear 0s forwards;
+				top:50%;
+				left:100%;
+				animation: texting 3s linear 0s forwards;
   			}
   			@keyframes texting
 			{
-				0%{transform:translateY(100%);}
-				100%{transform:translateY(-50%);}
+				0%{transform:translateX(0%) translateY(-50%);}
+				100%{transform:translateX(-100%) translateY(-50%);}
+			}
+			.footer{
+				position:absolute;
+				text-align:center;
+				width:150px;
+				font-size:12px;
+				color:#ccc;
+				top:100%;
+				right:0px;
+				animation: footering 1s linear 4s forwards;
+  			}
+  			@keyframes footering
+			{
+				0%{transform:translateY(0%) scale(0.5);}
+				100%{transform:translateY(-100%) scale(0.5);}
 			}
   			.yan{
   				position:absolute;
   				border:0px;
   				color:white;
-  				font-size:7px;
-  				line-height:8px;
+  				font-size:12px;
   				left:5px;
-  				top:60%;
+  				top:75%;
   				transform-origin:center center;
-  				transform:rotate(-90deg);
+  				transform:rotate(-90deg) scale(0.8) translateX(60%);
   			}
   			.xin{
   				position:absolute;
   				border:0px;
   				color:red;
-  				font-size:7px;
-  				line-height:8px;
+  				font-size:12px;
   				left:5px;
-  				top:10%;
+  				top:25%;
   				transform-origin:center center;
-  				transform:rotate(-90deg);
+  				transform:rotate(-90deg) scale(0.8) translateX(60%);
   			}
   			.cover{
   				position:absolute;
@@ -130,7 +144,7 @@
   				width:15px;
   				height:2px;
   				top:155px;
-  				left:82px;
+  				left:54px;
   				animation: pening 5s linear 0s forwards;
   			}
   			@keyframes pening
@@ -154,7 +168,7 @@
   				border:0px;
   				width:12px;
   				height:100px;
-  				left:230px;
+  				left:202px;
   				top:100px;
   				animation: humaning 5s linear 0s forwards;
   			}
@@ -540,10 +554,12 @@
 	
 		<input type="text">
 	
+	
+	
 		<div class="openingclose" style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;background-color:black;"></div>
 		<div class="opening openingclose">
-			<input id="openingclosebtn" style="position:absolute;right:60%;bottom:0px;" type="button" value="跳过" onclick="$('.openingclose').fadeOut(1000);"/>
-			<div style="position:absolute;top:178px;left:115px;">
+			<input id="openingclosebtn" style="position:absolute;left:25%;bottom:0px;transform:translateX(-50%)" type="button" value="跳过" onclick="$('.openingclose').fadeOut(1000);"/>
+			<div style="position:absolute;top:178px;left:87px;">
 				<div style="position:absolute;border:0px;border-radius:4px 4px;background-color:white;width:20px;height:4px;"></div>
 				<div style="position:absolute;border:0px;background-color:white;width:4px;height:23px;left:2px;top:4px;"></div>
 				<div style="position:absolute;border:0px;background-color:white;width:4px;height:23px;left:14px;top:4px;"></div>
@@ -572,7 +588,7 @@
 
 			<div class="pen"></div>
 
-			<div style="position:absolute;top:156px;left:70px;">
+			<div style="position:absolute;top:156px;left:42px;">
 				<div style="position:absolute;border:0px;border-radius:4px 4px;background-color:white;width:40px;height:4px;"></div>
 				<div style="position:absolute;border:0px;background-color:white;width:4px;height:45px;left:5px;top:4px;"></div>
 				<div style="position:absolute;border:0px;background-color:white;width:4px;height:45px;left:31px;top:4px;"></div>
@@ -587,15 +603,19 @@
 			</div>
 			
 			<div class="text">
-				<font style="font-size:20px;color:white;">言</font>
-				<font style="font-size:20px;color:red">心</font><br>
+				<div style="margin:auto;width:50px;text-align:right;">®️</div>
+				<img src="logo.png" style="width:40px;height:40px;"><br><br>
+				言心<br>
 				你的心灵日记<br>
-				记录你的真谛<br>
+				陪伴有故事的你<br>
 				<br>
-				<font style="font-size:10px;line-height:12px;">10o10m</font><br>
-				<font style="font-size:10px;line-height:12px;">十全十美</font><br>
-				<font style="font-size:10px;line-height:12px;">出品</font><br>
-				<font style="font-size:6px;">沪ICP备123412341234</font>
+				<br>
+				10o10m<br>
+				十全十美<br>
+				出品©
+			</div>
+			<div class="footer">
+				沪ICP备123412341234
 			</div>
 		</div>
 	</body>
