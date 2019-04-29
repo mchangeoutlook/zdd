@@ -9,13 +9,16 @@
   		<meta name="Keywords" content="言心 你的心灵日记 陪伴有故事的你" />
   		<style type="text/css">
   			input[type="button"]{
-  				background:#008B8B;border: none;color:#ccc;border-radius:4px 4px;font-size:16px;
+  				background:#008B8B;border: none;color:#ccc;border-radius:4px 4px;font-size:14px;
   			}
   			input[type="text"]{
-  				background:#eee;border: 1px #ccc solid;padding:5px;border-radius:4px 4px;font-size:16px;
+  				background:#eee;border: none;padding:4px;border-radius:4px 4px;font-size:14px;
+  			}
+  			textarea{
+  				background:#eee;border: none;padding:4px;border-radius:4px 4px;font-size:14px;
   			}
   			input[type="password"]{
-  				background:#eee;border: 1px #ccc solid;padding:5px;border-radius:4px 4px;font-size:16px;
+  				background:#eee;border: none;padding:4px;border-radius:4px 4px;font-size:14px;
   			}
   			body{
   				position:fixed;
@@ -24,15 +27,219 @@
   				right:0px;
   				bottom:0px;
   				overflow:hidden;
-  				font-size:16px;
+  				font-size:14px;
   				color:#ccc;
   				text-align:center;
   				background:#000;
   				margin:0px;
   			}
   			
+  			.content{
+  				position:fixed;
+  				display:block;
+  				text-align:center;
+  				overflow:hidden;
+  				top:0px;
+  				left:0px;
+  				right:0px;
+  				bottom:72px;
+  				border:0px;
+  			}
+  			
+  			.footbtns{
+  				position:fixed;
+  				display:block;
+  				text-align:center;
+  				bottom:42px;
+  				height:25px;
+  				width:100%;
+				border:0px;
+  			}
+  			
+  			.msgfoot{
+  				position:fixed;
+  				text-align:center;
+  				word-wrap:break-word;
+  				bottom:-42px;
+				width:90%;
+				padding-left:5%;
+				padding-right:5%;
+				height:42px;
+				font-size:12px;
+				line-height:14px;
+  				border:0px;
+  				overflow-x:hidden;
+  				overflow-y:auto;
+  				color:#f4a57e;
+  				text-align:left;
+  				animation: msgfooting 0.8s ease 0s forwards;
+  			}  			
+			@keyframes msgfooting
+			{
+				0%{transform:translateY(0%);}
+				100%{transform:translateY(-100%);}
+			}
+
+			.msgpop{
+				position:fixed;
+				text-align:center;
+				border-radius:4px;
+				word-wrap:break-word;
+				padding:20px;
+				width:80%;
+				background-color:#e0bb95;
+				color:#000;
+				font-size:14px;
+				top:50%;
+				left:50%;
+				transform:translateX(-50%) translateY(-50%) scale(0);
+				border:0px;
+				text-align:left;
+				animation: msgpoping 0.8s ease 0s forwards;
+			}  			
+			@keyframes msgpoping
+			{
+				0%{transform:translateX(-50%) translateY(-50%) scale(0);}
+				100%{transform:translateX(-50%) translateY(-50%) scale(1);}
+			}
+			.yximgwrite{
+				position:absolute;
+				top:0px;
+				left:0px;
+				width:100vw;
+				height:100vw;
+			}
+			
+			.yxinputswrite{
+				position:absolute;
+				top:calc(100vw + 30px);
+				left:0px;
+				right:0px;
+				bottom:0px;
+				background-color:black;
+			}
+			.yximgread{
+				position:absolute;
+				top:60px;
+				left:0px;
+				width:100vw;
+				height:100vw;
+			}
+			
+			.yxinputsread{
+				position:absolute;
+				top:calc(100vw + 65px);
+				left:0px;
+				right:0px;
+				bottom:0px;
+				overflow-y:auto;
+				overflow-x:hidden;
+				word-wrap:break-word;
+			}
+			.yxinputsreadbg{
+				position:absolute;
+				top:calc(100vw + 65px);
+				left:0px;
+				right:0px;
+				bottom:0px;
+				background-color:black;
+				opacity:0.6;
+				word-wrap:break-word;
+			}
+			@media (min-aspect-ratio: 2/3){
+				.content{
+	  				position:fixed;
+	  				display:block;
+	  				text-align:center;
+	  				overflow:hidden;
+	  				top:0px;
+	  				width:300px;
+	  				bottom:72px;
+	  				left:50%;
+	  				transform:translateX(-50%);
+	  				border:0px;
+  				}	
+  				.yximgwrite{
+					position:absolute;
+					top:0px;
+					left:0px;
+					width:300px;
+					height:300px;
+				}
+				
+				.yxinputswrite{
+					position:absolute;
+					top:330px;
+					left:0px;
+					right:0px;
+					bottom:0px;
+					background-color:black;
+				}
+				.yximgread{
+					position:absolute;
+					top:60px;
+					left:0px;
+					width:300px;
+					height:300px;
+				}
+				
+				.yxinputsread{
+					position:absolute;
+					top:365px;
+					left:0px;
+					right:0px;
+					bottom:0px;
+					overflow-x:hidden;
+					overflow-y:auto;
+					word-wrap:break-word;
+				}
+				.yxinputsreadbg{
+					position:absolute;
+					top:365px;
+					left:0px;
+					right:0px;
+					bottom:0px;
+					background-color:black;
+					opacity:0.6;
+					word-wrap:break-word;
+				}
+			}
+			
+			@media (max-height: 500px){
+				.yxinputswrite{
+					position:absolute;
+					top:0px;
+					left:0px;
+					right:0px;
+					bottom:0px;
+					opacity:0.8;
+					background-color:black;
+				}
+				.yxinputsreadbg{
+					position:absolute;
+					top:0px;
+					left:0px;
+					right:0px;
+					bottom:0px;
+					background-color:black;
+					opacity:0.4;
+					word-wrap:break-word;
+				}
+				.yxinputsread{
+					position:absolute;
+					top:0px;
+					left:0px;
+					right:0px;
+					bottom:0px;
+					overflow-y:auto;
+					overflow-x:hidden;
+					word-wrap:break-word;
+				}
+			}			
+			
   			.opening{
   				position:absolute;
+  				display:none;
   				border:0px;
   				width:300px;
   				height:300px;
@@ -88,11 +295,12 @@
 				color:#ccc;
 				top:100%;
 				right:0px;
-				animation: footering 1s linear 4s forwards;
+				animation: footering 0.8s linear 4.2s forwards;
   			}
   			@keyframes footering
 			{
 				0%{transform:translateY(0%) scale(0.5);}
+				50%{transform:translateY(-100%) scale(0.5);}
 				100%{transform:translateY(-100%) scale(0.5);}
 			}
   			.yan{
@@ -532,6 +740,9 @@
 			setTimeout(function(){
 				$("#openingclosebtn").click();
 			},5200);
+			$("#contentwrite").bind("change",function(){
+				console.log($(this).val());
+			});
 		});
 		
 		function initactions(){
@@ -541,20 +752,75 @@
 					$(this).one($(this).attr("action"),eval("do"+$(this).attr("actionid")));
 				}
 			});
-			$("select").each(function(){
-				if ($(this).attr("action")!=undefined){
-					$(this).unbind($(this).attr("action"));
-					$(this).one($(this).attr("action"),eval("do"+$(this).attr("actionid")));
-				}
-			});
+		}
+		function popmsg(content){
+			$(".hidemsgpop").remove();
+			$("body").append("<div id='msgpopform' class='hidemsgpop' style='position:fixed;display:none;top:0px;left:0px;right:0px;bottom:0px;background-color:black;opacity:0.8'></div>");
+			$("#msgpopform").fadeIn(800);
+			$("body").append("<div class='msgpop hidemsgpop'>"+content+
+					"<input onclick=\"$('.hidemsgpop').remove();\" style='position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(-50%);' type='button' value='知道了'/>"+
+				"</div>");
+		}
+		function footmsg(content){
+			$(".msgfoot").remove();
+			$("body").append("<div class='msgfoot'>"+content+
+				"</div>");
+			
 		}
 		</script>
 	</head>
 	<body>
 	
-		<input type="text">
-	
-	
+		<div class="content">
+			<div id="yanxinwriteform" class="hideall" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;">
+				<div class="yximgwrite">
+					<img id="dayimgwrite" src="logo.png" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
+					<input id="filebtn" style="position:absolute;top:100%;left:0px;" type="file"/>
+				</div>
+				<div class="yxinputswrite">
+					<div id="daywrite" style="position:absolute;line-height:30px;height:30px;width:80px;top:0px;left:0px;overflow:hidden;"></div>
+					<div style="position:absolute;line-height:30px;height:30px;width:calc(100% - 80px);top:0px;left:80px;">
+						<input id="weatherwrite" style="width:calc(30% - 8px);" type="text" maxlength="10" placeholder="天气"/>
+						<input id="locationwrite" style="width:calc(70% - 8px);" type="text" maxlength="20" placeholder="地点"/>
+					</div>
+					<textarea id="contentwrite" style="position:absolute;top:30px;left:0px;height:calc(100% - 31px);width:100%;resize:none;" maxlength="1000" placeholder="日记，限1000字"></textarea>
+				</div>
+			</div>
+			<div id="yanxinreadform" class="hideall" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
+				<div class="yximgread">
+					<div id="dayread" style="position:absolute;top:-55px;left:5px;height:15px;line-height:15px;"></div>
+					<div id="weatherread" style="position:absolute;top:-40px;left:5px;height:20px;line-height:20px;"></div>
+					<div id="locationread"style="position:absolute;top:-20px;left:5px;height:20px;line-height:20px;overflow:hidden;"></div>
+					<img id="dayimgread" src="1_2.jpg" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
+				</div>
+				<div class="yxinputsreadbg"></div>
+				<div class="yxinputsread">
+					<div id="contentread" style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;padding-left:5px;padding-right:5px;">
+					</div>
+				</div>
+			</div>
+			<div id="loginform" class="hideall" style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
+				<div style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);text-align:center;">
+					<div style="width:50px;margin:auto;text-align:right;font-size:12px;">™️</div>
+					<img src="logo.png" style="width:40px;height:40px;"><br>
+					<div style="padding:5px;">言心 你的心灵日记</div>
+					<input id="weatherwrite" style="margin:5px;" size="20" type="text" maxlength="20" placeholder="账号"/><br>
+					<input id="weatherwrite" style="margin:5px;" size="20" type="password" maxlength="20" placeholder="密码"/><br>
+					<input id="weatherwrite" style="margin:5px;" size="20" type="text" maxlength="100" placeholder="格言"/><br>
+					<div id="forgetpassbtn" style="position:absolute;top:100%;font-size:12px;margin-left:5px;" 
+					forgetpass="我们不提供任何找回密码的方式，因为任何找回密码的方式都有可能泄露你的隐私，不过我们允许你使用密码或者格言登录，所以除了密码要保密，也不要随便向别人透露你的格言。" 
+					onclick="popmsg($(this).attr('forgetpass'));">忘记密码?</div>
+					<input type="button" style="position:absolute;top:100%;left:50%;transform:translateX(-50%);" value="登录"/>
+				</div>
+			</div>
+		</div>
+		
+		<div class="footbtns">
+			<input id="accountbtn" type="button" style="display:none;" value="账号"/>
+			<input id="calendarbtn" type="button" style="display:none;" value="日历"/>
+			<input id="todaybtn" type="button" style="display:none;" value="今天"/>
+			<input id="newuserbtn" type="button" style="display:none;" value="新用户"/>
+		</div>
 	
 		<div class="openingclose" style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;background-color:black;"></div>
 		<div class="opening openingclose">
@@ -603,16 +869,15 @@
 			</div>
 			
 			<div class="text">
-				<div style="margin:auto;width:50px;text-align:right;">®️</div>
+				<div style="margin:auto;width:50px;text-align:right;">™️️</div>
 				<img src="logo.png" style="width:40px;height:40px;"><br><br>
 				言心<br>
 				你的心灵日记<br>
 				陪伴有故事的你<br>
 				<br>
 				<br>
-				10o10m<br>
-				十全十美<br>
-				出品©
+				© 10o10m<br>
+				出品
 			</div>
 			<div class="footer">
 				沪ICP备123412341234
