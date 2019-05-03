@@ -83,7 +83,7 @@ public class Configclient {
 			}
 		}
 
-		System.out.println(new Date() + " ==== loaded local config cache ["+nsfilekeyvalue+"] under [" + nsfilekeyvalue.size() + "] namespaces");
+		System.out.println(new Date() + " ==== loaded local config cache ["+nsfilekeyvalue+"] from folder ["+STATIC.LOCAL_CONFIGFOLDER.toFile().getAbsolutePath()+"] under [" + nsfilekeyvalue.size() + "] namespaces");
 
 		new Thread(new Runnable() {
 

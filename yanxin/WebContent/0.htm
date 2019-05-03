@@ -730,7 +730,14 @@
 					} else {
 						footmsg(result.error);
 						if (result.error.indexOf("重新登录")!=-1){
+							localStorage.removeItem("yanxinloginkey");
 							dologout();
+						}
+						if (result.error.indexOf("延长有效期")!=-1){
+							$(".hideallforms").hide();
+							$(".hideallbtns").hide();
+							$("#accountbtn").click();
+							$("#accountbtn").show();
 						}
 					}
 			　　	},
@@ -743,43 +750,6 @@
 			　　		}
 			　　	}
 			});
-		}
-		
-		function dologout(){
-			if (localStorage.getItem("yanxinloginkey")!=null){
-				post("check","logout",{});
-			}
-			localStorage.removeItem("yanxinloginkey");
-			if (localStorage.getItem("yanxinname")!=null){
-				$("#loginuser").val(localStorage.getItem("yanxinname"));
-			} else {
-				$("#loginuser").val("");
-			}
-			$("#loginpass").val("");
-			$("#loginmotto").val("");
-			$(".hideallforms").hide();
-			$(".hideallbtns").hide();
-			$("#loginform").fadeIn(500);
-			$("#newuserbtn").show();
-		}
-		
-		function afterlogout(data){
-			//do nothing
-		}
-		
-		function dologin(){
-			post("freego","login",{"name":$("#loginuser").val(),"pass":$("#loginpass").val(),"motto":$("#loginmotto").val()})
-		}
-		function afterlogin(data){
-			localStorage.setItem("yanxinloginkey",data.loginkey);
-			init();
-		}
-		
-		function showregisterform(){
-			$(".hideallforms").hide();
-			$(".hideallbtns").hide();
-			$("#registerform").fadeIn(500);
-			$("#existuserbtn").show();
 		}
 		
 		function load(photo){
@@ -805,7 +775,14 @@
 					} else {
 						footmsg(result.error);
 						if (result.error.indexOf("重新登录")!=-1){
+							localStorage.removeItem("yanxinloginkey");
 							dologout();
+						}
+						if (result.error.indexOf("延长有效期")!=-1){
+							$(".hideallforms").hide();
+							$(".hideallbtns").hide();
+							$("#accountbtn").click();
+							$("#accountbtn").show();
 						}
 					}
 				},
@@ -829,11 +806,65 @@
 		
 		function init(){
 			initactions();
+			if (localStorage.getItem("yanxinname")!=null){
+				$("#accountbtn").attr("targetname",localStorage.getItem("yanxinname"));
+			}
 			if (localStorage.getItem("yanxinloginkey")==null){
 				$("#logoutbtn").click();
 			} else {
 				$("#todaybtn").click();
 			}
+		}
+		
+		function dologout(){
+			if (localStorage.getItem("yanxinloginkey")!=null){
+				post("check","logout",{});
+			}
+			localStorage.removeItem("yanxinloginkey");
+			if (localStorage.getItem("yanxinname")!=null){
+				$("#loginuser").val(localStorage.getItem("yanxinname"));
+			} else {
+				$("#loginuser").val("");
+			}
+			$("#loginpass").val("");
+			$("#loginmotto").val("");
+			$(".hideallforms").hide();
+			$(".hideallbtns").hide();
+			$("#loginform").fadeIn(500);
+			$("#newuserbtn").show();
+		}
+		
+		function afterlogout(data){
+			footmsg("");
+		}
+		
+		function dologin(){
+			loading(true);
+			post("freego","login",{"name":$("#loginuser").val(),"pass":$("#loginpass").val(),"motto":$("#loginmotto").val()})
+		}
+		function afterlogin(data){
+			localStorage.setItem("yanxinloginkey",data.loginkey);
+			footmsg(data.name+" 欢迎回来");
+			localStorage.setItem("yanxinname",data.name);
+			$("#accountbtn").attr("targetname",data.name);
+			$(".hideallforms").hide();
+			$(".hideallbtns").hide();
+			if (data.isexpired=="t"){
+				$("#accountbtn").click();
+				$("#accountbtn").show();
+			} else {
+				$("#todaybtn").click();
+				$("#todaybtn").show();
+				$("#accountbtn").show();
+				$("#calendarbtn").show();
+			}
+		}
+		
+		function showregisterform(){
+			$(".hideallforms").hide();
+			$(".hideallbtns").hide();
+			$("#registerform").fadeIn(500);
+			$("#existuserbtn").show();
 		}
 		
 		function doregister(){
@@ -849,8 +880,27 @@
 			$("#registerremotto").val("");
 			footmsg(data);
 			agreement();
-			loading(false);
 			dologout();
+		}
+		
+		function doreadself(){
+			loading(true);
+			post("check","readself",{});
+		}
+		function afterreadself(data){
+			$(".hideallforms").hide();
+			$("#accountform").fadeIn(500);
+			$("#accountname").html(data.name);
+			$("#accountexpiretime").html("到期时间 "+data.timeexpire);
+			$("#accountreusetime").html("回收时间 "+data.timereuse);
+			if (data.daystogive!="0"){
+				$("#accountdaystogive").html("库存天数 "+data.daystogive);
+				$("#accountdaystogiveandextend").show();
+				$("#accountdaystogiveandspend").show();
+			} else {
+				$("#accountdaystogiveandextend").hide();
+				$("#accountdaystogiveandspend").hide();
+			}
 		}
 		
 		function agreement(){
@@ -866,10 +916,29 @@
 			post("check","readtoday",{})
 		}
 		function afterreadtoday(data){
-			
-			loading(false);
+			$("#todaybtn").show();
+			$("#accountbtn").show();
+			$("#calendarbtn").show();
 		}
-		
+
+		function dochangepass(){
+			post("check","changepass",{"pass":$("#changepass").val(),"repass":$("#changerepass").val()})
+		}
+		function afterchangepass(data){
+			$("#changepass").val("");
+			$("#changerepass").val("");
+			footmsg("密码修改成功");
+		}
+
+		function dochangemotto(){
+			post("check","changemotto",{"motto":$("#changemotto").val(),"remotto":$("#changeremotto").val()})
+		}
+		function afterchangemotto(data){
+			$("#changemotto").val("");
+			$("#changeremotto").val("");
+			footmsg("格言修改成功");
+		}
+
 		function initactions(){
 			$("input:button").each(function(){
 				if ($(this).attr("action")!=undefined){
@@ -941,8 +1010,8 @@
 					<img src="logo.png" style="width:40px;height:40px;"><br>
 					<div style="padding:5px;">言心 你的心灵日记</div>
 					<input id="loginuser" style="margin-top:5px;" size="24" type="text" maxlength="20" placeholder="账号"/><br>
-					<input id="loginpass" style="margin-top:5px;" size="24" type="password" maxlength="20" placeholder="只需密码即可登录"/><br>
-					<input id="loginmotto" style="margin-top:5px;" size="24" type="text" maxlength="100" placeholder="或只需格言即可登录"/><br>
+					<input id="loginpass" style="margin-top:5px;" size="24" type="password" maxlength="20" placeholder="只填写密码即可登录"/><br>
+					<input id="loginmotto" style="margin-top:5px;" size="24" type="text" maxlength="100" placeholder="或只填写格言也可登录"/><br>
 					<div id="forgetpassbtn" style="position:absolute;top:100%;font-size:12px;left:25%;transform:translateX(-50%) translateY(50%);" 
 					forgetpass="我们不提供任何方式帮你找回密码，因为任何找回密码的方式都有可能泄露你的隐私，不过我们允许你使用密码或者格言之一登录，所以除了密码要牢记且保密外，也要牢记你的格言且不要随便向别人透露你的格言" 
 					onclick="popmsg($(this).attr('forgetpass'));">忘记密码?</div>
@@ -964,19 +1033,19 @@
 			</div>
 			<div id="accountform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
 				<div style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);width:300px;text-align:left;">
-					<div style="padding-top:5px;width:100%;text-align:center;">账号名账号账号名账号账号名账号账号名账号<br><input id="logoutbtn" actionid="logout" action="click" type="button" value="退出登录"/></div>
-					<div style="padding-top:5px;width:100%;"><input id="changepass" style="margin-right:5px;" size="10" type="password" maxlength="20" placeholder="密码"/><input id="changerepass" style="margin-right:5px;" size="10" type="password" maxlength="20" placeholder="再次输入密码"/><input type="button" value="修改"/></div>
-					<div style="padding-top:5px;width:100%;"><input id="changemotto" style="margin-right:5px;" size="10" type="text" maxlength="100" placeholder="格言"/><input id="changeremotto" style="margin-right:5px;" size="10" type="text" maxlength="100" placeholder="再次输入格言"/><input type="button" value="修改"/></div>
-					<div style="padding-top:5px;width:100%;">库存天数：10000 <input id="extendself" style="margin-right:5px;" size="5" type="text" maxlength="5" placeholder="延长天数"/><input type="button" value="自延有效期"/></div>
-					<div style="padding:5px;margin:5px;text-align:left;border:1px #ccc solid;border-radius:4px;">
+					<div style="padding-top:5px;width:100%;text-align:center;"><font id="accountname"></font><br><input id="logoutbtn" actionid="logout" action="click" type="button" value="退出登录"/></div>
+					<div style="padding-top:5px;width:100%;"><input id="changepass" style="margin-right:5px;" size="10" type="password" maxlength="20" placeholder="密码"/><input id="changerepass" style="margin-right:5px;" size="10" type="password" maxlength="20" placeholder="再次输入密码"/><input actionid="changepass" action="click" type="button" value="修改"/></div>
+					<div style="padding-top:5px;width:100%;"><input id="changemotto" style="margin-right:5px;" size="10" type="text" maxlength="100" placeholder="格言"/><input id="changeremotto" style="margin-right:5px;" size="10" type="text" maxlength="100" placeholder="再次输入格言"/><input actionid="changemotto" action="click" type="button" value="修改"/></div>
+					<div id="accountdaystogiveandextend" style="display:none;padding-top:5px;width:100%;"><font id="accountdaystogive"></font> <input id="extendself" style="margin-right:5px;" size="5" type="text" maxlength="5" placeholder="延长天数"/><input type="button" value="自延有效期"/></div>
+					<div id="accountdaystogiveandspend" style="display:none;padding:5px;margin:5px;text-align:left;border:1px #ccc solid;border-radius:4px;">
 						<input id="searchaccount" style="margin-right:5px;" size="10" type="password" maxlength="20" placeholder="其它查询账号"/><input type="button" value="查询"/><br>
 						<input id="extendother" style="margin-top:5px;margin-right:5px;" size="5" type="text" maxlength="5" placeholder="延长天数"/><input type="button" value="延长有效期"/><br>
 						<div style="width:100%;text-align:left;">库存天数：10000 <input id="giveother" style="margin-top:5px;margin-right:5px;" size="5" type="text" maxlength="5" placeholder="给予天数"/><input type="button" value="给予"/></div>
 						<div style="width:100%;text-align:left;">到期时间：2019-10-10 10:10:10</div>
 						<div style="width:100%;text-align:left;">回收时间：2019-10-10 10:10:10</div>
 					</div>
-					<div style="width:100%;text-align:left;">到期时间：2019-10-10 10:10:10 <input type="button" value="延长"/></div>
-					<div style="width:100%;text-align:left;margin-top:5px;">回收时间：2019-10-10 10:10:10 <input onclick="agreement(true)" type="button" value="用户协议"/></div>
+					<div style="width:100%;text-align:left;margin-top:5px;"><font id="accountexpiretime"></font> <input onclick="popmsg('淘宝搜索言心店铺可购买有效期延长券')" type="button" value="延长"/></div>
+					<div style="width:100%;text-align:left;margin-top:5px;"><font id="accountreusetime"></font> <input onclick="agreement(true)" type="button" value="用户协议"/></div>
 				</div>
 			</div>
 			<div id="calendarform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
@@ -985,7 +1054,7 @@
 		</div>
 		
 		<div class="footbtns">
-			<input id="accountbtn" class="hideallbtns" type="button" style="display:none;" value="账号"/>
+			<input id="accountbtn" actionid="readself" action="click" class="hideallbtns" type="button" style="display:none;" value="账号"/>
 			<input id="calendarbtn" class="hideallbtns" type="button" style="display:none;" value="日历"/>
 			<input id="todaybtn" actionid="readtoday" action="click" class="hideallbtns" type="button" style="display:none;" value="今天"/>
 			<input id="newuserbtn" onclick="showregisterform()" class="hideallbtns" type="button" style="display:none;" value="注册新账号"/>

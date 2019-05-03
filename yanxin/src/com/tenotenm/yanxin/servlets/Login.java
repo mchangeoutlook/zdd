@@ -40,6 +40,7 @@ public class Login extends HttpServlet {
 			
 			Bizutil.checkaccountreused(yxaccount);
 			
+			boolean isipuasame= true;
 			if (yxaccount.getYxloginkey().isEmpty()) {// first time login
 				if (!yxaccount.getIp().equals(Reuse.getremoteip(request))
 						|| !yxaccount.getUa().equals(Reuse.getuseragent(request))) {
@@ -51,6 +52,7 @@ public class Login extends HttpServlet {
 				yxlogin.read(yxaccount.getYxloginkey());
 				if (!yxlogin.getIp().equals(Reuse.getremoteip(request))
 						|| !yxlogin.getUa().equals(Reuse.getuseragent(request))) {
+					isipuasame = false;
 					if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() < Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")) {
 						throw new Exception("已启动账号保护，请" + Reuse.yyyyMMddHHmmss(new Date(yxaccount.getTimewrongpass().getTime()
 								+ Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")))
@@ -62,11 +64,19 @@ public class Login extends HttpServlet {
 								+ Reuse.yyyyMMddHHmmss(new Date(yxlogin.getTimeupdate().getTime() + Reuse.getsecondsmillisconfig("session.expire.seconds")))
 								+ "后再来");
 					}
+				} else {
+					if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() < 60000) {
+						throw new Exception("已启动账号保护，请在" + (60-(System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime())/1000)
+								+ "秒后再来");
+					}
 				}
 			}
 
 			String pass = request.getParameter("pass");
 			String motto = request.getParameter("motto");
+			if ((pass==null||pass.trim().isEmpty())&&(motto==null||motto.trim().isEmpty())) {
+				throw new Exception("请填写密码或格言之一");
+			}
 			if (pass != null && !pass.trim().isEmpty() && yxaccount.getPass().equals(Reuse.sign(pass)) || motto != null
 					&& !motto.trim().isEmpty() && yxaccount.getMotto().equals(Reuse.sign(motto.toLowerCase().trim()))) {
 				Yxlogin yxlogin = new Yxlogin();
@@ -91,9 +101,16 @@ public class Login extends HttpServlet {
 				ret.put("name", yxaccount.getName());
 				Reuse.respond(response, ret, null);
 			} else {
-				if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() > Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")) {
-					yxaccount.setTimewrongpass(new Date());
-					yxaccount.modify(yxaccount.getKey());
+				if (!isipuasame) {
+					if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() > Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")) {
+						yxaccount.setTimewrongpass(new Date());
+						yxaccount.modify(yxaccount.getKey());
+					}
+				} else {
+					if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() > 60000) {
+						yxaccount.setTimewrongpass(new Date());
+						yxaccount.modify(yxaccount.getKey());
+					}
 				}
 				throw new Exception("密码或格言或账号不正确，请重新登录");
 			}

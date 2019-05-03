@@ -17,7 +17,7 @@ public class Fileconfigutil {
 		Properties p = new Properties();
 		Properties pmultivalues = new Properties();
 		
-		Path target = file(namespace, configfile);
+		Path target = file(namespace, configfile, true);
 		
 		InputStream is = null;
 		InputStream ismultivalues = null;
@@ -33,7 +33,7 @@ public class Fileconfigutil {
 			if (p.getProperty(key)==null) {
 				p.put(key, value);
 			} else {
-				Path targetmultivalues = file(namespace, configfile+"."+key);
+				Path targetmultivalues = file(namespace, configfile+"."+key, true);
 				if (p.getProperty(key).equalsIgnoreCase(multivalues)) {
 					ismultivalues = Files.newInputStream(targetmultivalues);
 					pmultivalues.load(ismultivalues);
@@ -75,8 +75,10 @@ public class Fileconfigutil {
 		Properties p = new Properties();
 		Properties pmultivalues = new Properties();
 		
-		Path target = file(namespace, configfile);
-		
+		Path target = file(namespace, configfile, false);
+		if (!Files.exists(target.getParent())) {
+			return null;
+		}
 		InputStream is = null;
 		InputStream ismultivalues = null;
 		
@@ -90,9 +92,8 @@ public class Fileconfigutil {
 			if (p.getProperty(key)==null) {
 				return null;
 			} else {
-				Path targetmultivalues = file(namespace, configfile+"."+key);
 				if (p.getProperty(key).equalsIgnoreCase(multivalues)) {
-					ismultivalues = Files.newInputStream(targetmultivalues);
+					ismultivalues = Files.newInputStream(file(namespace, configfile+"."+key, false));
 					pmultivalues.load(ismultivalues);
 					Vector<String> ret = new Vector<String>(pmultivalues.size());
 					int i = 0;
@@ -139,9 +140,9 @@ public class Fileconfigutil {
 		return read(key, namespace, configfile);
 	}
 
-	public static Path file(String namespace, String configfile) throws Exception {
+	public static Path file(String namespace, String configfile, boolean createfolder) throws Exception {
 		Path folder = STATIC.LOCAL_CONFIGFOLDER.resolve(namespace);
-		if (!Files.exists(folder)) {
+		if (createfolder&&!Files.exists(folder)) {
 			Files.createDirectories(folder);
 		}
 		return folder.resolve(configfile);

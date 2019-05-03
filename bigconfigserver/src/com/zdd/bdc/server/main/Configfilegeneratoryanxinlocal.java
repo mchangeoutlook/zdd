@@ -9,7 +9,7 @@ import com.zdd.bdc.server.util.Fileconfigutil;
 
 public class Configfilegeneratoryanxinlocal {
 	private static void gencore() throws Exception {
-		Path configfile = Fileconfigutil.file(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE);
+		Path configfile = Fileconfigutil.file(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE, true);
 		if (Files.exists(configfile)) {
 			Files.write(configfile, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC,
 					StandardOpenOption.TRUNCATE_EXISTING);
@@ -21,7 +21,7 @@ public class Configfilegeneratoryanxinlocal {
 	}
 	
 	private static void genbigfilefrom() throws Exception {
-		Path configfile = Fileconfigutil.file("bigfilefrom", STATIC.REMOTE_CONFIG_BIGDATA);
+		Path configfile = Fileconfigutil.file("bigfilefrom", STATIC.REMOTE_CONFIG_BIGDATA, true);
 		if (Files.exists(configfile)) {
 			Files.write(configfile, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC,
 					StandardOpenOption.TRUNCATE_EXISTING);
@@ -38,7 +38,7 @@ public class Configfilegeneratoryanxinlocal {
 	}
 
 	private static void genbigfileto() throws Exception {
-		Path configfile = Fileconfigutil.file("bigfileto", STATIC.REMOTE_CONFIG_BIGDATA);
+		Path configfile = Fileconfigutil.file("bigfileto", STATIC.REMOTE_CONFIG_BIGDATA, true);
 		if (Files.exists(configfile)) {
 			Files.write(configfile, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC,
 					StandardOpenOption.TRUNCATE_EXISTING);
@@ -56,7 +56,7 @@ public class Configfilegeneratoryanxinlocal {
 
 	private static void genyanxincore() throws Exception {
 		String namespace = "yanxin";
-		Path configfile = Fileconfigutil.file(namespace, STATIC.REMOTE_CONFIG_CORE);
+		Path configfile = Fileconfigutil.file(namespace, STATIC.REMOTE_CONFIG_CORE, true);
 		if (Files.exists(configfile)) {
 			Files.write(configfile, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC,
 					StandardOpenOption.TRUNCATE_EXISTING);
@@ -84,13 +84,13 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("extend.expire.days.max", "2", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("days.togive.max", "100", namespace, STATIC.REMOTE_CONFIG_CORE);
 
-		Fileconfigutil.create("admins", STATIC.splitenc("afs",""), namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("admins", STATIC.splitenc("f90239205cf9820193a64524bc0d69e67a5a8b34",""), namespace, STATIC.REMOTE_CONFIG_CORE);
 
 	}
 	
 	private static void genbiguniqueindex() throws Exception {
 		String namespace = "yanxin";
-		Path configfile = Fileconfigutil.file(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+		Path configfile = Fileconfigutil.file(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX, true);
 		if (Files.exists(configfile)) {
 			Files.write(configfile, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC,
 					StandardOpenOption.TRUNCATE_EXISTING);
@@ -121,7 +121,7 @@ public class Configfilegeneratoryanxinlocal {
 		
 	private static void genbigdata() throws Exception {
 		String namespace = "yanxin";
-		Path configfile = Fileconfigutil.file(namespace, STATIC.REMOTE_CONFIG_BIGDATA);
+		Path configfile = Fileconfigutil.file(namespace, STATIC.REMOTE_CONFIG_BIGDATA, true);
 		if (Files.exists(configfile)) {
 			Files.write(configfile, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC,
 					StandardOpenOption.TRUNCATE_EXISTING);
@@ -139,7 +139,7 @@ public class Configfilegeneratoryanxinlocal {
 	
 	private static void genbigpagedindex() throws Exception {
 		String namespace = "yanxin";
-		Path configfile = Fileconfigutil.file(namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
+		Path configfile = Fileconfigutil.file(namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX, true);
 		if (Files.exists(configfile)) {
 			Files.write(configfile, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC,
 					StandardOpenOption.TRUNCATE_EXISTING);

@@ -97,6 +97,10 @@ public class Bigdataconfig {
 	}
 
 	public static String read(String namespace, String key) {
-		return config.get(namespace).get(key);
+		try {
+			return config.get(namespace).get(key);
+		}catch(Exception e) {
+			return null;
+		}
 	}
 }
