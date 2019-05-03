@@ -107,7 +107,7 @@ public class Login extends HttpServlet {
 						yxaccount.modify(yxaccount.getKey());
 					}
 				} else {
-					if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() > 60000) {
+					if (!yxaccount.getYxloginkey().isEmpty() &&System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() > 60000) {
 						yxaccount.setTimewrongpass(new Date());
 						yxaccount.modify(yxaccount.getKey());
 					}
