@@ -41,7 +41,7 @@ public class Filedatautil {
 			String amountstr = read(key, namespace, table, column, bigfilehash);
 			if (amountstr == null) {
 				Filekvutil.create(STATIC.keylength, key, String.valueOf(amount),
-						String.valueOf(Long.MAX_VALUE).length() + 1,
+						String.valueOf(Long.MAX_VALUE).length() + 1-String.valueOf(amount).length(),
 						file(key, bigfilehash, folder(namespace, table, column)));
 				return amount;
 			} else {
@@ -50,6 +50,12 @@ public class Filedatautil {
 					oldval = Long.parseLong(amountstr);
 				} catch (Exception e) {
 					throw new Exception("nolongvalue");
+				}
+				if (oldval>0&&Long.MAX_VALUE-oldval<amount) {
+					throw new Exception("exceedmaxlong");
+				}
+				if (oldval<0&&Long.MIN_VALUE-oldval>amount) {
+					throw new Exception("exceedminlong");
 				}
 				long newamount = oldval + amount;
 				Filekvutil.modifyvaluebykey(STATIC.keylength, key, String.valueOf(newamount),

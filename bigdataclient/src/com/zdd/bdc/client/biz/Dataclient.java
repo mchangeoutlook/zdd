@@ -34,11 +34,7 @@ public class Dataclient {
 
 	public Dataclient add4create(String column, String value, int morecapacity) {
 		cvs.put(column, value);
-		if (value==null) {
-			cvmaxs.put(column, morecapacity);
-		} else {
-			cvmaxs.put(column, value.length()+morecapacity);
-		}
+		cvmaxs.put(column, morecapacity);
 		return this;
 	}
 

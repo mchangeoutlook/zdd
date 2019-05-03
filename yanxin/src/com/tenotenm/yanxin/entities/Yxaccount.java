@@ -12,7 +12,7 @@ public class Yxaccount extends Superentity{
 
 	private String yxyanxinuniquekeyprefix=null;
 
-	private String uniquename=null;
+	private String name=null;
 	
 	private String pass=null;
 	
@@ -42,7 +42,7 @@ public class Yxaccount extends Superentity{
 		if (yxloginkey==null) {
 			return null;
 		}
-		return new Object[] {yxloginkey, 40};
+		return new Object[] {yxloginkey, calcextravaluecapcity(yxloginkey, 40)};
 	}
 	protected String add4modify_yxloginkey() {
 		if (yxloginkey==null) {
@@ -67,14 +67,14 @@ public class Yxaccount extends Superentity{
 		return yxyanxinuniquekeyprefix;
 	}
 	
-	protected void read_uniquename(String uniquename) {
-		this.uniquename=uniquename;
+	protected void read_name(String name) {
+		this.name=name;
 	}
-	protected Object[] add4create_uniquename() {
-		if (uniquename==null) {
+	protected Object[] add4create_name() {
+		if (name==null) {
 			return null;
 		}
-		return new Object[] {uniquename, 0};
+		return new Object[] {name, 0};
 	}
 	
 	protected void read_pass(String pass) {
@@ -84,7 +84,7 @@ public class Yxaccount extends Superentity{
 		if (pass==null) {
 			return null;
 		}
-		return new Object[] {pass, 60};
+		return new Object[] {pass, 0};
 	}
 	protected String add4modify_pass() {
 		if (pass==null) {
@@ -100,7 +100,7 @@ public class Yxaccount extends Superentity{
 		if (motto==null) {
 			return null;
 		}
-		return new Object[] {motto, 300};
+		return new Object[] {motto, 0};
 	}
 	protected String add4modify_motto() {
 		if (motto==null) {
@@ -232,28 +232,68 @@ public class Yxaccount extends Superentity{
 		this.yxloginkey = yxloginkey;
 	}
 
-	public String getUniquename() {
-		return uniquename;
+	public String getName() {
+		return name;
 	}
 
-	public void setUniquename(String uniquename) {
-		this.uniquename = uniquename;
+	public String getUniquename() {
+		return name.toLowerCase().trim();
+	}
+
+	public void setName(String name) throws Exception {
+		name = name.trim();
+		if (name.length()<4||name.length()>20) {
+			throw new Exception("账号长度需在4到20之间");
+		}
+		this.name = name;
 	}
 
 	public String getPass() {
 		return pass;
 	}
 
-	public void setPass(String pass) {
-		this.pass = pass;
+	public void setPass(String pass) throws Exception {
+		if (pass.length()<4||pass.length()>20) {
+			throw new Exception("密码长度需在4到20之间");
+		}
+		boolean isallsamechar = true;
+		for (int i=0;i<pass.length();i++) {
+			if (i<pass.length()-1&&pass.charAt(i)!=pass.charAt(i+1)) {
+				isallsamechar = false;
+				break;
+			}
+		}
+		if (isallsamechar) {
+			throw new Exception("密码太简单了，请重新填写密码，密码也可以是中文");
+		}
+		this.pass = Reuse.sign(pass);
 	}
-
+	
+	public boolean ispasssame(String pass) {
+		if (pass!=null&&Reuse.sign(pass).equals(this.pass)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	public String getMotto() {
 		return motto;
 	}
 
-	public void setMotto(String motto) {
-		this.motto = motto;
+	public void setMotto(String motto) throws Exception {
+		motto = motto.toLowerCase().trim();
+		if (motto.length()<4||motto.length()>100) {
+			throw new Exception("格言长度需在4到100之间");
+		}
+		this.motto = Reuse.sign(motto);
+	}
+	
+	public boolean ismottosame(String motto) {
+		if (motto!=null&&Reuse.sign(motto.toLowerCase().trim()).equals(this.motto)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public String getIp() {
@@ -278,6 +318,9 @@ public class Yxaccount extends Superentity{
 
 	public void setTimecreate(Date timecreate) {
 		this.timecreate = timecreate;
+		this.timeupdate = timecreate;
+		this.timeexpire = new Date(timecreate.getTime() + Reuse.getdaysmillisconfig("freeuse.days"));
+		this.timewrongpass = new Date(timecreate.getTime() - Reuse.getsecondsmillisconfig("wrongpass.wait.seconds"));
 	}
 
 	public Date getTimeupdate() {

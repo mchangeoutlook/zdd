@@ -13,22 +13,22 @@ import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.util.Reuse;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/changepass")
-public class Changepass extends HttpServlet {
+@WebServlet("/check/changemotto")
+public class Changemotto extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
 			Yxaccount yxaccount = (Yxaccount) request.getAttribute(Yxaccount.class.getSimpleName());
-			String pass = request.getParameter("pass");
-			String repass = request.getParameter("repass");
-			if (pass == null) {
-				throw new Exception("缺少密码");
+			String motto = request.getParameter("motto");
+			String remotto = request.getParameter("remotto");
+			if (motto == null) {
+				throw new Exception("缺少格言");
 			}
-			if (!pass.equals(repass)) {
-				throw new Exception("两次输入的密码不一致");
+			if (!motto.toLowerCase().trim().equals(remotto.toLowerCase().trim())) {
+				throw new Exception("两次输入的格言不一致");
 			}
-			yxaccount.setPass(pass);
+			yxaccount.setMotto(motto);
 			yxaccount.setTimeupdate(new Date());
 			yxaccount.modify(yxaccount.getKey());
 			Reuse.respond(response, null, null);

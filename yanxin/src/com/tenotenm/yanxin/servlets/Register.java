@@ -1,6 +1,8 @@
 package com.tenotenm.yanxin.servlets;
 
 import java.io.IOException;
+import java.util.Date;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,44 +27,56 @@ public class Register extends HttpServlet {
 
 			String name = request.getParameter("name");
 			if (name == null || name.trim().isEmpty()) {
-				throw new Exception("缺少账号名称");
+				throw new Exception("请填写账号");
 			}
 			
 			String pass = request.getParameter("pass");
 			String repass = request.getParameter("repass");
 			if (pass == null || pass.trim().isEmpty()||repass==null||repass.trim().isEmpty()) {
-				throw new Exception("缺少密码");
+				throw new Exception("请填写密码");
+			}
+			
+			if (!pass.equals(repass)) {
+				throw new Exception("两次填写的密码不一致");
 			}
 			
 			String motto = request.getParameter("motto");
 			String remotto = request.getParameter("remotto");
 			if (motto == null || motto.trim().isEmpty()||motto==null||remotto.trim().isEmpty()) {
-				throw new Exception("缺少格言");
+				throw new Exception("请填写格言");
+			}
+			
+			if (!motto.toLowerCase().trim().equals(remotto.toLowerCase().trim())) {
+				throw new Exception("两次填写的格言不一致");
 			}
 			
 			Yxaccount yxaccount = new Yxaccount();
 			try {
 				yxaccount.setIp(Reuse.getremoteip(request));
-				Bizutil.setpassandmotto(yxaccount, name, pass, repass, motto, remotto);
-				Bizutil.settimecreate(yxaccount);
+				yxaccount.setName(name);
+				yxaccount.setPass(pass);
+				yxaccount.setMotto(motto);
+				yxaccount.setTimecreate(new Date());
 				yxaccount.setUa(Reuse.getuseragent(request));
 				yxaccount.setYxloginkey("");
 				yxaccount.setYxyanxinuniquekeyprefix(Bigclient.newbigdatakey());
-				yxaccount.createunique(null, name);
+				yxaccount.createunique(null, yxaccount.getUniquename());
 			} catch (Exception e) {
 				if (e.getMessage() != null && e.getMessage().contains(STATIC.DUPLICATE)) {
-					yxaccount.readunique(name);
+					yxaccount.readunique(yxaccount.getUniquename());
 					if (Bizutil.iswaitingfirstlogin(yxaccount)||Bizutil.isbeforereusedate(yxaccount)) {
-						throw new Exception("账号名称被占用，请换一个名称");
+						throw new Exception("账号被占用，请换一个名称");
 					}
 					if (!yxaccount.getYxloginkey().isEmpty()) {
 						Yxlogin yxlogin = new Yxlogin();
 						yxlogin.read(yxaccount.getYxloginkey());
 						Bizutil.logout(yxlogin);
 					}
-					Bizutil.settimecreate(yxaccount);
-					Bizutil.setpassandmotto(yxaccount, null, pass, repass, motto, remotto);
 					yxaccount.setIp(Reuse.getremoteip(request));
+					yxaccount.setName(name);
+					yxaccount.setPass(pass);
+					yxaccount.setMotto(motto);
+					yxaccount.setTimecreate(new Date());
 					yxaccount.setUa(Reuse.getuseragent(request));
 					yxaccount.setYxloginkey("");
 					yxaccount.setYxyanxinuniquekeyprefix(Bigclient.newbigdatakey());

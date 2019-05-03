@@ -25,12 +25,12 @@ public class Login extends HttpServlet {
 		try {
 			String name = request.getParameter("name");
 			if (name == null || name.trim().isEmpty()) {
-				throw new Exception("缺少账号名称");
+				throw new Exception("请填写账号");
 			}
-			name = name.toLowerCase().trim();
 			Yxaccount yxaccount = new Yxaccount();
+			yxaccount.setName(name);
 			try {
-				yxaccount.readunique(name);
+				yxaccount.readunique(yxaccount.getUniquename());
 			} catch (Exception e) {
 				Bizutil.ipdeny(Reuse.getremoteip(request), true);
 				throw new Exception("账号或密码或格言不正确，请重新登录");
@@ -80,31 +80,15 @@ public class Login extends HttpServlet {
 				yxaccount = new Yxaccount();
 				yxaccount.readunique(name);
 				
-				
 				Map<String, Object> ret = new Hashtable<String, Object>();
-				ret.put("daystogive", yxaccount.getDaystogive());
-				ret.put("timecreate", Reuse.yyyyMMddHHmmss(yxaccount.getTimecreate()));
-				ret.put("timeexpire", Reuse.yyyyMMddHHmmss(yxaccount.getTimeexpire()));
-				ret.put("timereuse", Reuse.yyyyMMddHHmmss(Bizutil.datedenyreuseaccount(yxaccount)));
 				ret.put("loginkey", yxaccount.getYxloginkey());
-				ret.put("today", Reuse.yyyyMMdd(new Date()));
-				if (Bizutil.isadmin(yxaccount)) {
-					ret.put("isadmin", "t");
-				} else {
-					ret.put("isadmin", "f");
-					if (yxaccount.getDaystogive()>0&&new Date().after(new Date(yxaccount.getTimeexpire().getTime()-Reuse.getlongvalueconfig("extend.expire.in.days")*24*60*60*1000))) {
-						ret.put("accountkey", yxaccount.getKey());
-					} else {
-						ret.put("extendselfaftertime", Reuse.yyyyMMddHHmmss(new Date(yxaccount.getTimeexpire().getTime()-Reuse.getlongvalueconfig("extend.expire.in.days")*24*60*60*1000)));
-					}
-				}
 				if (Bizutil.isaccountexpired(yxaccount)) {
 					ret.put("isexpired", "t");
 				} else {
 					ret.put("isexpired", "f");
 				}
 
-				ret.put("name", yxaccount.getUniquename());
+				ret.put("name", yxaccount.getName());
 				Reuse.respond(response, ret, null);
 			} else {
 				if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() > Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")) {

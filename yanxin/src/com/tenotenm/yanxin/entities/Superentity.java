@@ -176,4 +176,17 @@ public abstract class Superentity {
 		String tablename =  this.getClass().getSimpleName();
 		return Pagedindexclient.getinstance(Reuse.namespace_yanxin, pagedindex).addfilter(tablename+"-pkey").read(0);
 	}
+	
+	protected int calcextravaluecapcity(String initvalue, int limitsize) {
+		try{
+			byte[] b = initvalue.getBytes("UTF-8");
+			if (b.length>=limitsize) {
+				return 0;
+			} else {
+				return limitsize-b.length;
+			}
+		}catch(Exception e) {
+			return limitsize;
+		}
+	}
 }

@@ -289,7 +289,7 @@
 				color:#ccc;
 				top:50%;
 				left:100%;
-				animation: texting 3s linear 0s forwards;
+				animation: texting 3s ease 0s forwards;
   			}
   			@keyframes texting
 			{
@@ -704,7 +704,8 @@
 		</style>
 		<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
 		<script type="text/javascript">
-		var datainterface = "/";
+		//var datainterface = "/";
+		var datainterface = "http://localhost:8080/yanxin/";
 
 		function post(context, actionid, paramjson, confirmtext){
 			if (confirmtext!=null){
@@ -713,8 +714,8 @@
 					return;
 				}
 			}
-			if (localStorage.getItem("loginkey")!=null){
-				paramjson.loginkey = localStorage.getItem("loginkey");
+			if (localStorage.getItem("yanxinloginkey")!=null){
+				paramjson.loginkey = localStorage.getItem("yanxinloginkey");
 			}
 			
 			var ajaxpost = $.ajax({
@@ -735,6 +736,7 @@
 			　　	},
 			　　	complete : function(XMLHttpRequest,status){
 			　　		initactions();
+			　　		loading(false);
 					if (status!="success"){
 			　　			ajaxpost.abort();
 				　　		footmsg("网络异常["+status+"],请检查网络连接后刷新页面！");
@@ -744,18 +746,20 @@
 		}
 		
 		function dologout(){
-			if (localStorage.getItem("loginkey")!=null){
+			if (localStorage.getItem("yanxinloginkey")!=null){
 				post("check","logout",{});
 			}
-			localStorage.removeItem("loginkey");
-			if (localStorage.getItem("name")!=null){
-				$("#loginuser").val(localStorage.getItem("name"));
+			localStorage.removeItem("yanxinloginkey");
+			if (localStorage.getItem("yanxinname")!=null){
+				$("#loginuser").val(localStorage.getItem("yanxinname"));
 			} else {
 				$("#loginuser").val("");
 			}
 			$("#loginpass").val("");
 			$("#loginmotto").val("");
-			$("#loginform").show();
+			$(".hideallforms").hide();
+			$(".hideallbtns").hide();
+			$("#loginform").fadeIn(500);
 			$("#newuserbtn").show();
 		}
 		
@@ -763,9 +767,24 @@
 			//do nothing
 		}
 		
+		function dologin(){
+			post("freego","login",{"name":$("#loginuser").val(),"pass":$("#loginpass").val(),"motto":$("#loginmotto").val()})
+		}
+		function afterlogin(data){
+			localStorage.setItem("yanxinloginkey",data.loginkey);
+			init();
+		}
+		
+		function showregisterform(){
+			$(".hideallforms").hide();
+			$(".hideallbtns").hide();
+			$("#registerform").fadeIn(500);
+			$("#existuserbtn").show();
+		}
+		
 		function load(photo){
 			var folderkey = photo.split("/");
-			return "/check/download?folder="+folderkey[0]+"&filekey="+folderkey[1]+"&loginkey="+localStorage.getItem("loginkey");
+			return "/check/download?folder="+folderkey[0]+"&filekey="+folderkey[1]+"&loginkey="+localStorage.getItem("yanxinloginkey");
 		}
 		
 		function upload(){
@@ -773,7 +792,7 @@
 			var paramdata = new FormData($("#dayimgwriteform")[0]);
 			
 			var ajaxpost = $.ajax({
-				url: datainterface+"check/upload?loginkey="+localStorage.getItem("loginkey"),  
+				url: datainterface+"check/upload?loginkey="+localStorage.getItem("yanxinloginkey"),  
 			　　	timeout : 40000, 
 			　　	type : 'post',  
 			　　	data :paramdata, 
@@ -792,6 +811,7 @@
 				},
 			　　	complete : function(XMLHttpRequest,status){
 			　　		initactions();
+			　　		loading(false);
 					if (status!="success"){
 			　　			ajaxpost.abort();
 				　　		footmsg("网络异常或上传图片过大，请浏览本地小于4M的图片(正方形图片将获得最佳显示效果),大于100K的图片将会被压缩存储，压缩后图片质量有所损失");
@@ -801,19 +821,49 @@
 		}
 
 		$(document).ready(function(){
-			initactions();
+			init();
 			setTimeout(function(){
 				$("#openingclosebtn").click();
-				if (localStorage.getItem("loginkey")==null){
-					$("#logoutbtn").click();
-				} else {
-					$("#todaybtn").click();
-				}
 			},5000);
 		});
 		
-		function doreadtoday(){
+		function init(){
+			initactions();
+			if (localStorage.getItem("yanxinloginkey")==null){
+				$("#logoutbtn").click();
+			} else {
+				$("#todaybtn").click();
+			}
+		}
+		
+		function doregister(){
 			loading(true);
+			post("freego","register",{"name":$("#registeruser").val(),"pass":$("#registerpass").val(),"repass":$("#registerrepass").val(),"motto":$("#registermotto").val(),"remotto":$("#registerremotto").val()});
+		}
+		function afterregister(data){
+			localStorage.setItem("yanxinname",$("#registeruser").val());
+			$("#registeruser").val("");
+			$("#registerpass").val("");
+			$("#registerrepass").val("");
+			$("#registermotto").val("");
+			$("#registerremotto").val("");
+			footmsg(data);
+			agreement();
+			loading(false);
+			dologout();
+		}
+		
+		function agreement(){
+			popmsg(
+					"<div style='width:100%;text-align:center;'><b>言心用户协议(10o10m科技)</b></div>1.有效期到期前你可查看你的所有日记和编辑当天的日记，到期后不可查看和编辑任何日记<br>"+
+					"2.如果在账号回收时间之前没有及时延长有效期，你的账号将被回收，回收后不能再延长有效期，你的所有日记和资料也将无法找回<br>"+
+					"3."+$("#forgetpassbtn").attr('forgetpass')+"<br>"+
+					"4.我们时刻确保你的日记和资料安全，如果由于第三方不可抗力导致你的日记和资料损失，我们除了深表遗憾和抱歉外，无法向你做出任何挽救和赔偿的承诺<br>"+
+					"5.账号一旦注册成功，视为你已经同意以上所有条款");
+		}
+		
+		function doreadtoday(){
+			post("check","readtoday",{})
 		}
 		function afterreadtoday(data){
 			
@@ -831,7 +881,7 @@
 		function loading(show){
 			$(".hideloading").remove();
 			if (show){
-				$("body").append("<div id='loadingform' class='hideloading' style='position:fixed;display:none;top:0px;left:0px;right:0px;bottom:0px;background-color:black;opacity:0.8;'>"+
+				$("body").append("<div id='loadingform' class='hideloading' style='position:fixed;display:none;top:0px;left:0px;right:0px;bottom:42px;background-color:black;opacity:0.8;'>"+
 				"<div class='load' style='position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-100%);'>请稍后......</div>"+
 				"</div>");
 				$("#loadingform").fadeIn(800);
@@ -839,31 +889,11 @@
 		}
 		function popmsg(content){
 			$(".hidemsgpop").remove();
-			$("body").append("<div id='msgpopform' class='hidemsgpop' style='position:fixed;display:none;top:0px;left:0px;right:0px;bottom:0px;background-color:black;opacity:0.8'></div>");
+			$("body").append("<div id='msgpopform' class='hidemsgpop' style='position:fixed;display:none;top:0px;left:0px;right:0px;bottom:42px;background-color:black;opacity:0.8'></div>");
 			$("#msgpopform").fadeIn(800);
 			$("body").append("<div class='msgpop hidemsgpop'>"+content+
 					"<input onclick=\"$('.hidemsgpop').remove();\" style='position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(-50%);' type='button' value='知道了'/>"+
 				"</div>");
-		}
-		function agreement(confirm){
-			$(".hideagreement").remove();
-			$("body").append("<div id='agreementform' class='hideagreement' style='position:fixed;display:none;top:0px;left:0px;right:0px;bottom:0px;background-color:black;opacity:0.8'></div>");
-			$("#agreementform").fadeIn(800);
-			var content = "<div style='width:100%;margin:auto;text-align:center;'><b>言心用户协议(10o10m科技)</b></div>1.有效期到期前你可查看你的所有日记和编辑当天的日记，到期后不可查看和编辑任何日记<br>"+
-								"2.如果在账号回收时间之前没有及时延长有效期，你的账号将被回收，回收后不能再延长有效期，你的所有日记和资料也将无法找回<br>"+
-								"3."+$("#forgetpassbtn").attr('forgetpass')+"<br>"+
-								"4.我们时刻确保你的日记和资料安全，如果由于第三方不可抗力导致你的日记和资料损失，我们除了深表遗憾和抱歉外，无法向你做出任何挽救和赔偿的承诺<br>"+
-								"5.账号一旦注册成功，视为你已经同意以上所有条款";
-			if (confirm){
-				$("body").append("<div class='msgpop hideagreement'>"+content+
-						"<input onclick=\"$('.hideagreement').remove();\" style='position:absolute;top:100%;right:10px;transform:translateY(-50%);' type='button' value='同意'/>"+
-						"<input onclick=\"$('.hideagreement').remove();\" style='position:absolute;top:100%;left:10px;transform:translateY(-50%);' type='button' value='不同意'/>"+
-						"</div>");
-			} else {
-				$("body").append("<div class='msgpop hideagreement'>"+content+
-						"<input onclick=\"$('.hideagreement').remove();\" style='position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(-50%);' type='button' value='知道了'/>"+
-					"</div>");
-			}
 		}
 		function footmsg(content){
 			$(".msgfoot").remove();
@@ -876,7 +906,7 @@
 	<body>
 	
 		<div class="content">
-			<div id="yanxinwriteform" class="hideall" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;">
+			<div id="yanxinwriteform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;">
 				<div class="yximgwrite">
 					<img id="dayimgwrite" src="logo.png" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
 					<form method="POST" enctype="multipart/form-data" id="dayimgwriteform">
@@ -892,7 +922,7 @@
 					<textarea id="contentwrite" style="position:absolute;top:30px;left:0px;height:calc(100% - 31px);width:100%;resize:none;" maxlength="1000" placeholder="日记，限1000字"></textarea>
 				</div>
 			</div>
-			<div id="yanxinreadform" class="hideall" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
+			<div id="yanxinreadform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
 				<div class="yximgread">
 					<div id="dayread" style="position:absolute;top:-55px;left:5px;height:15px;line-height:15px;"></div>
 					<div id="weatherread" style="position:absolute;top:-40px;left:5px;height:20px;line-height:20px;"></div>
@@ -905,21 +935,21 @@
 					</div>
 				</div>
 			</div>
-			<div id="loginform" class="hideall" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
-				<div style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);text-align:center;">
+			<div id="loginform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
+				<div style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);width:300px;text-align:center;">
 					<div style="width:50px;margin:auto;text-align:right;font-size:12px;">®️</div>
 					<img src="logo.png" style="width:40px;height:40px;"><br>
 					<div style="padding:5px;">言心 你的心灵日记</div>
-					<input id="loginuser" style="margin:5px;" size="20" type="text" maxlength="20" placeholder="账号"/><br>
-					<input id="loginpass" style="margin:5px;" size="20" type="password" maxlength="20" placeholder="密码"/><br>
-					<input id="loginmotto" style="margin:5px;" size="20" type="text" maxlength="100" placeholder="格言"/><br>
-					<div id="forgetpassbtn" style="position:absolute;top:100%;font-size:12px;margin-left:5px;" 
+					<input id="loginuser" style="margin-top:5px;" size="24" type="text" maxlength="20" placeholder="账号"/><br>
+					<input id="loginpass" style="margin-top:5px;" size="24" type="password" maxlength="20" placeholder="只需密码即可登录"/><br>
+					<input id="loginmotto" style="margin-top:5px;" size="24" type="text" maxlength="100" placeholder="或只需格言即可登录"/><br>
+					<div id="forgetpassbtn" style="position:absolute;top:100%;font-size:12px;left:25%;transform:translateX(-50%) translateY(50%);" 
 					forgetpass="我们不提供任何方式帮你找回密码，因为任何找回密码的方式都有可能泄露你的隐私，不过我们允许你使用密码或者格言之一登录，所以除了密码要牢记且保密外，也要牢记你的格言且不要随便向别人透露你的格言" 
 					onclick="popmsg($(this).attr('forgetpass'));">忘记密码?</div>
-					<input type="button" style="position:absolute;top:100%;left:50%;transform:translateX(-50%);" value="登录"/>
+					<input actionid="login" action="click" type="button" style="position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(50%);" value="登录"/>
 				</div>
 			</div>
-			<div id="registerform" class="hideall" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
+			<div id="registerform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
 				<div style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);width:300px;text-align:center;">
 					<div style="width:50px;margin:auto;text-align:right;font-size:12px;">®️</div>
 					<img src="logo.png" style="width:40px;height:40px;"><br>
@@ -927,10 +957,12 @@
 					<input id="registeruser" style="margin-top:5px;" size="24" type="text" maxlength="20" placeholder="账号"/><br>
 					<input id="registerpass" style="margin-top:5px;margin-right:10px;" size="10" type="password" maxlength="20" placeholder="密码"/><input id="registerrepass" style="margin-top:5px;" size="10" type="password" maxlength="20" placeholder="再次输入密码"/><br>
 					<input id="registermotto" style="margin-top:5px;margin-right:10px;" size="10" type="text" maxlength="100" placeholder="格言"/><input id="registerremotto" style="margin-top:5px;" size="10" type="text" maxlength="100" placeholder="再次输入格言"/><br>
-					<input type="button" style="position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);" value="注册"/>
+					<div style="position:absolute;top:100%;font-size:12px;left:25%;transform:translateX(-50%) translateY(50%);" 
+					onclick="agreement();">用户协议</div>
+					<input actionid="register" action="click" type="button" style="position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(50%);" value="注册"/>
 				</div>
 			</div>
-			<div id="accountform" class="hideall" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
+			<div id="accountform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
 				<div style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);width:300px;text-align:left;">
 					<div style="padding-top:5px;width:100%;text-align:center;">账号名账号账号名账号账号名账号账号名账号<br><input id="logoutbtn" actionid="logout" action="click" type="button" value="退出登录"/></div>
 					<div style="padding-top:5px;width:100%;"><input id="changepass" style="margin-right:5px;" size="10" type="password" maxlength="20" placeholder="密码"/><input id="changerepass" style="margin-right:5px;" size="10" type="password" maxlength="20" placeholder="再次输入密码"/><input type="button" value="修改"/></div>
@@ -947,17 +979,17 @@
 					<div style="width:100%;text-align:left;margin-top:5px;">回收时间：2019-10-10 10:10:10 <input onclick="agreement(true)" type="button" value="用户协议"/></div>
 				</div>
 			</div>
-			<div id="calendarform" class="hideall" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
+			<div id="calendarform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
 
 			</div>
 		</div>
 		
 		<div class="footbtns">
-			<input id="accountbtn" type="button" style="display:none;" value="账号"/>
-			<input id="calendarbtn" type="button" style="display:none;" value="日历"/>
-			<input id="todaybtn" actionid="readtoday" action="click" type="button" style="display:none;" value="今天"/>
-			<input id="newuserbtn" type="button" style="display:none;" value="新用户"/>
-			<input id="existuserbtn" type="button" style="display:none;" value="已有账号"/>
+			<input id="accountbtn" class="hideallbtns" type="button" style="display:none;" value="账号"/>
+			<input id="calendarbtn" class="hideallbtns" type="button" style="display:none;" value="日历"/>
+			<input id="todaybtn" actionid="readtoday" action="click" class="hideallbtns" type="button" style="display:none;" value="今天"/>
+			<input id="newuserbtn" onclick="showregisterform()" class="hideallbtns" type="button" style="display:none;" value="注册新账号"/>
+			<input id="existuserbtn" onclick="dologout()" class="hideallbtns" type="button" style="display:none;" value="已有账号"/>
 		</div>
 	
 		<div class="openingclose" style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;background-color:black;"></div>

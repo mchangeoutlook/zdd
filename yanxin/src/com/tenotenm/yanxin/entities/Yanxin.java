@@ -3,6 +3,7 @@ package com.tenotenm.yanxin.entities;
 import java.util.Date;
 
 import com.tenotenm.yanxin.util.Reuse;
+import com.tenotenm.yanxin.util.Secret;
 
 public class Yanxin extends Superentity{
 	
@@ -55,7 +56,7 @@ public class Yanxin extends Superentity{
 		if (weather==null) {
 			return null;
 		}
-		return new Object[] {weather, 30};
+		return new Object[] {weather, calcextravaluecapcity(weather, 30)};
 	}
 	protected String add4modify_weather() {
 		if (weather==null) {
@@ -71,7 +72,7 @@ public class Yanxin extends Superentity{
 		if (location==null) {
 			return null;
 		}
-		return new Object[] {location, 300};
+		return new Object[] {location, calcextravaluecapcity(location, 300)};
 	}
 	protected String add4modify_location() {
 		if (location==null) {
@@ -87,7 +88,7 @@ public class Yanxin extends Superentity{
 		if (photo==null) {
 			return null;
 		}
-		return new Object[] {photo, 51};
+		return new Object[] {photo, calcextravaluecapcity(photo, 51)};
 	}
 	protected String add4modify_photo() {
 		if (photo==null) {
@@ -103,7 +104,7 @@ public class Yanxin extends Superentity{
 		if (content==null) {
 			return null;
 		}
-		return new Object[] {content, 3000};
+		return new Object[] {content, calcextravaluecapcity(content, 6000)};
 	}
 	protected String add4modify_content() {
 		if (content==null) {
@@ -133,26 +134,38 @@ public class Yanxin extends Superentity{
 	public String getWeather() {
 		return weather;
 	}
-	public void setWeather(String weather) {
+	public void setWeather(String weather) throws Exception {
+		if (weather.length()>10) {
+			throw new Exception("天气限10字");
+		}
 		this.weather = weather;
 	}
 	public String getLocation() {
 		return location;
 	}
-	public void setLocation(String location) {
+	public void setLocation(String location) throws Exception {
+		if (location.length()>20) {
+			throw new Exception("地点限20字");
+		}
 		this.location = location;
 	}
 	public String getPhoto() {
 		return photo;
 	}
-	public void setPhoto(String photo) {
+	public void setPhoto(String photo) throws Exception {
+		if (photo.length()>51) {
+			throw new Exception("图片路径限51字");
+		}
 		this.photo = photo;
 	}
 	public String getContent() {
-		return content;
+		return Secret.dec(content);
 	}
-	public void setContent(String content) {
-		this.content = content;
+	public void setContent(String content) throws Exception {
+		if (content.length()>1000) {
+			throw new Exception("日记限1000字");
+		}
+		this.content = Secret.enc(content);
 	}
 	
 	public String getKey() {

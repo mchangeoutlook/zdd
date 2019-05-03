@@ -145,53 +145,6 @@ public class Bizutil {
 						.contains(yxaccount.getKey());
 	}
 
-	public static void settimecreate(Yxaccount yxaccount) {
-		yxaccount.setTimecreate(new Date());
-		yxaccount.setTimeupdate(yxaccount.getTimecreate());
-		Date timeexpire = new Date(yxaccount.getTimecreate().getTime() + Reuse.getdaysmillisconfig("freeuse.days"));
-		yxaccount.setTimeexpire(timeexpire);
-		yxaccount.setTimewrongpass(
-				new Date(yxaccount.getTimecreate().getTime() - Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")));
-	}
-
-	public static boolean setpassandmotto(Yxaccount yxaccount, String name, String pass, String repass, String motto,
-			String remotto) throws Exception {
-		boolean isupdated = false;
-		if (motto != null) {
-			if (remotto == null || !motto.toLowerCase().trim().equals(remotto.toLowerCase().trim())) {
-				throw new Exception("两次输入的格言不一致");
-			}
-			motto = motto.toLowerCase().trim();
-			if (Reuse.sign(motto).getBytes("UTF-8").length > 300) {
-				throw new Exception("格言过长");
-			}
-			yxaccount.setMotto(Reuse.sign(motto));
-			isupdated = true;
-		}
-		if (pass != null) {
-			if (!pass.equals(repass)) {
-				throw new Exception("两次输入的密码不一致");
-			}
-			if (Reuse.sign(pass).getBytes("UTF-8").length > 60) {
-				throw new Exception("密码过长");
-			}
-			yxaccount.setPass(Reuse.sign(pass));
-			isupdated = true;
-		}
-		if (name != null) {
-			name = name.toLowerCase().trim();
-			if (name.getBytes("UTF-8").length > 60) {
-				throw new Exception("账号名称过长");
-			}
-			yxaccount.setUniquename(name);
-			isupdated = true;
-		}
-		if (isupdated) {
-			yxaccount.setTimeupdate(new Date());
-		}
-		return isupdated;
-	}
-
 	public static void refreshadminaccount(Yxaccount yxaccount) throws Exception {
 		if (isadmin(yxaccount)) {
 			if (yxaccount.getDaystogive() < Reuse.getlongvalueconfig("days.togive.max")) {
@@ -309,5 +262,5 @@ public class Bizutil {
 
 		}
 	}
-	
+			
 }
