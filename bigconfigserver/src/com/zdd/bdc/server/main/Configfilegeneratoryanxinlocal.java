@@ -93,7 +93,7 @@ public class Configfilegeneratoryanxinlocal {
 				, namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("agreement.item.3", "4.在你的账号回收时间之前，我们时刻努力确保该账号的日记和资料安全，但如果由于外界不可抗力因素导致该账号的日记和资料损失，我们深感抱歉，并且我们会根据具体原因和损失情况竭尽全力进行挽救和补偿，在无法完成100%挽救和补偿的情况下，我们会坦诚的把原因和结果告知你，但我们不承担任何赔偿责任，感谢你的支持和理解", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("agreement.item.4", "5.账号一旦注册成功，视为你已经同意以上所有条款", namespace, STATIC.REMOTE_CONFIG_CORE);
-		Fileconfigutil.create("buyhint", "购买过期时间延长券，请前往淘宝搜索店铺：言心", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("buyhint", "购买过期时间延长券，请前往：淘宝，搜索店铺：言心", namespace, STATIC.REMOTE_CONFIG_CORE);
 		
 		Fileconfigutil.create("admins", STATIC.splitenc("f90239205cf9820193a64524bc0d69e67a5a8b34",""), namespace, STATIC.REMOTE_CONFIG_CORE);
 
