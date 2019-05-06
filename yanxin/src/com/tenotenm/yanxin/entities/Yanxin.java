@@ -72,7 +72,7 @@ public class Yanxin extends Superentity{
 		if (location==null) {
 			return null;
 		}
-		return new Object[] {location, calcextravaluecapcity(location, 300)};
+		return new Object[] {location, calcextravaluecapcity(location, 60)};
 	}
 	protected String add4modify_location() {
 		if (location==null) {
@@ -136,7 +136,7 @@ public class Yanxin extends Superentity{
 	}
 	public void setWeather(String weather) throws Exception {
 		if (weather.length()>10) {
-			throw new Exception("天气限10字");
+			throw new Exception("天气未保存，天气限10字");
 		}
 		this.weather = weather;
 	}
@@ -145,7 +145,7 @@ public class Yanxin extends Superentity{
 	}
 	public void setLocation(String location) throws Exception {
 		if (location.length()>20) {
-			throw new Exception("地点限20字");
+			throw new Exception("地点未保存，地点限20字");
 		}
 		this.location = location;
 	}
@@ -154,7 +154,7 @@ public class Yanxin extends Superentity{
 	}
 	public void setPhoto(String photo) throws Exception {
 		if (photo.length()>51) {
-			throw new Exception("图片路径限51字");
+			throw new Exception("图片未保存，图片路径限51字");
 		}
 		this.photo = photo;
 	}
@@ -163,9 +163,12 @@ public class Yanxin extends Superentity{
 	}
 	public void setContent(String content) throws Exception {
 		if (content.length()>1000) {
-			throw new Exception("日记限1000字");
+			throw new Exception("日记未保存，日记限1000字");
 		}
 		this.content = Secret.enc(content);
+		if (this.content.length()>6000) {
+			throw new Exception("日记未保存，日记字数过多");
+		}
 	}
 	
 	public String getKey() {

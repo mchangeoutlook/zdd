@@ -116,7 +116,7 @@ public class Yxaccount extends Superentity{
 		if (ip==null) {
 			return null;
 		}
-		return new Object[] {ip, 0};
+		return new Object[] {ip, 50};
 	}
 	protected String add4modify_ip() {
 		if (ip==null) {
@@ -124,7 +124,7 @@ public class Yxaccount extends Superentity{
 		}
 		return ip;
 	}
-
+	
 	protected void read_ua(String ua) {
 		this.ua=ua;
 	}
@@ -132,7 +132,7 @@ public class Yxaccount extends Superentity{
 		if (ua==null) {
 			return null;
 		}
-		return new Object[] {ua, 0};
+		return new Object[] {ua, 200};
 	}
 	protected String add4modify_ua() {
 		if (ua==null) {
@@ -309,7 +309,11 @@ public class Yxaccount extends Superentity{
 	}
 
 	public void setUa(String ua) {
-		this.ua = ua;
+		if (ua.length()>200) {
+			this.ua = ua.substring(0,200);
+		} else {
+			this.ua = ua;
+		}
 	}
 
 	public Date getTimecreate() {

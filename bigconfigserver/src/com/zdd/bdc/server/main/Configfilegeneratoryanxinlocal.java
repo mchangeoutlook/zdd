@@ -84,6 +84,17 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("extend.expire.days.max", "2", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("days.togive.max", "100", namespace, STATIC.REMOTE_CONFIG_CORE);
 
+		Fileconfigutil.create("forgetpass", "我们不提供任何方式帮你找回密码，因为任何找回密码的方式都有可能泄露你的隐私，不过我们允许你使用密码或者格言之一登录，所以除了密码要牢记且保密外，也要牢记你的格言且不要随便向别人透露你的格言", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("agreement.items", "5", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("agreement.title", "言心用户协议(10o10m科技)", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("agreement.item.0", "1.有效期到期前你可查看你的所有日记和编辑当天的日记，到期后不可查看和编辑任何日记", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("agreement.item.1", "2.如果在账号回收时间之前没有及时延长有效期，你的账号将被回收，回收后你无法登录你的账号，更无法延长有效期，你的所有日记和资料也将无法找回", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("agreement.item.2", "3.{0}"
+				, namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("agreement.item.3", "4.我们时刻确保你的日记和资料安全，如果由于第三方不可抗力导致你的日记和资料损失，我们除了深表遗憾和抱歉外，无法向你做出任何挽救和赔偿的承诺", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("agreement.item.4", "5.账号一旦注册成功，视为你已经同意以上所有条款", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("buyhint", "购买有效期延长券，请前往淘宝搜索店铺：言心", namespace, STATIC.REMOTE_CONFIG_CORE);
+		
 		Fileconfigutil.create("admins", STATIC.splitenc("f90239205cf9820193a64524bc0d69e67a5a8b34",""), namespace, STATIC.REMOTE_CONFIG_CORE);
 
 	}
@@ -114,7 +125,13 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("Yxaccount-ukey", "servergroups0", namespace,
 				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
 		
-		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"Yxaccountkey", "servergroups0", namespace,
+		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"Yxaccount-ukey", "servergroups0", namespace,
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+
+		Fileconfigutil.create("Yanxin-ukey", "servergroups0", namespace,
+				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
+		
+		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"Yanxin-ukey", "servergroups0", namespace,
 				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
 
 	}

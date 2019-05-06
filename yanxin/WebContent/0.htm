@@ -875,8 +875,26 @@
 			$("#registermotto").val("");
 			$("#registerremotto").val("");
 			footmsg(data);
-			agreement();
+			post("freego","agreement",{});
 			dologout();
+		}
+		
+		function afteragreement(data){
+			var content="<div style='text-align:center;'><b>"+data.title+"</b></div>";
+			for (var i=0;i<data.items.length;i++){
+				if (i==data.items.length-1){
+					content+="<b>"+data.items[i]+"</b>";
+				} else {
+					content+=data.items[i]+"<br>";
+				}
+			}
+			popmsg(content);
+		}
+		function afterforgetpass(data){
+			popmsg(data);
+		}
+		function afterbuyhint(data){
+			popmsg(data);
 		}
 		
 		function doreadself(){
@@ -897,15 +915,6 @@
 				$("#accountdaystogiveandextend").hide();
 				$("#accountdaystogiveandspend").hide();
 			}
-		}
-		
-		function agreement(){
-			popmsg(
-					"<div style='width:100%;text-align:center;'><b>言心用户协议(10o10m科技)</b></div>1.有效期到期前你可查看你的所有日记和编辑当天的日记，到期后不可查看和编辑任何日记<br>"+
-					"2.如果在账号回收时间之前没有及时延长有效期，你的账号将被回收，回收后不能再延长有效期，你的所有日记和资料也将无法找回<br>"+
-					"3."+$("#forgetpassbtn").attr('forgetpass')+"<br>"+
-					"4.我们时刻确保你的日记和资料安全，如果由于第三方不可抗力导致你的日记和资料损失，我们除了深表遗憾和抱歉外，无法向你做出任何挽救和赔偿的承诺<br>"+
-					"5.<b>账号一旦注册成功，视为你已经同意以上所有条款</b>");
 		}
 		
 		function doreadtoday(){
@@ -1008,9 +1017,8 @@
 					<input id="loginuser" style="margin-top:5px;" size="24" type="text" maxlength="20" placeholder="填写账号"/><br>
 					<input id="loginpass" style="margin-top:5px;" size="24" type="password" maxlength="20" placeholder="只填写密码即可登录"/><br>
 					<input id="loginmotto" style="margin-top:5px;" size="24" type="text" maxlength="100" placeholder="或只填写格言也可登录"/><br>
-					<div id="forgetpassbtn" style="position:absolute;top:100%;font-size:12px;left:25%;transform:translateX(-50%) translateY(50%);" 
-					forgetpass="我们不提供任何方式帮你找回密码，因为任何找回密码的方式都有可能泄露你的隐私，不过我们允许你使用密码或者格言之一登录，所以除了密码要牢记且保密外，也要牢记你的格言且不要随便向别人透露你的格言" 
-					onclick="popmsg($(this).attr('forgetpass'));">忘记密码?</div>
+					<div style="position:absolute;top:100%;font-size:12px;left:25%;transform:translateX(-50%) translateY(50%);" 
+					onclick="post('freego','forgetpass',{})">忘记密码?</div>
 					<input actionid="login" action="click" type="button" style="position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(50%);" value="登录"/>
 				</div>
 			</div>
@@ -1023,7 +1031,7 @@
 					<input id="registerpass" style="margin-top:5px;margin-right:10px;" size="10" type="password" maxlength="20" placeholder="填写密码"/><input id="registerrepass" style="margin-top:5px;" size="10" type="password" maxlength="20" placeholder="再次填写密码"/><br>
 					<input id="registermotto" style="margin-top:5px;margin-right:10px;" size="10" type="text" maxlength="100" placeholder="填写格言"/><input id="registerremotto" style="margin-top:5px;" size="10" type="text" maxlength="100" placeholder="再次填写格言"/><br>
 					<div style="position:absolute;top:100%;font-size:12px;left:25%;transform:translateX(-50%) translateY(50%);" 
-					onclick="agreement();">用户协议</div>
+					onclick="post('freego','agreement',{})">用户协议</div>
 					<input actionid="register" action="click" type="button" style="position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(50%);" value="注册"/>
 				</div>
 			</div>
@@ -1040,8 +1048,8 @@
 						<div style="width:100%;text-align:left;">到期时间：2019-10-10 10:10:10</div>
 						<div style="width:100%;text-align:left;">回收时间：2019-10-10 10:10:10</div>
 					</div>
-					<div style="width:100%;text-align:left;margin-top:5px;"><font id="accountexpiretime"></font> <input onclick="popmsg('购买有效期延长券，请前往淘宝搜索店铺：言心')" type="button" value="延长"/></div>
-					<div style="width:100%;text-align:left;margin-top:5px;"><font id="accountreusetime"></font> <input onclick="agreement()" type="button" value="用户协议"/></div>
+					<div style="width:100%;text-align:left;margin-top:5px;"><font id="accountexpiretime"></font> <input onclick="post('freego','buyhint',{})" type="button" value="延长"/></div>
+					<div style="width:100%;text-align:left;margin-top:5px;"><font id="accountreusetime"></font> <input onclick="post('freego','agreement',{})" type="button" value="用户协议"/></div>
 				</div>
 			</div>
 			<div id="calendarform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
