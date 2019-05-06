@@ -163,17 +163,17 @@ public class Bizutil {
 
 	public static void checkaccountreused(Yxaccount yxaccount) throws Exception {
 		if (isfirstlogindenied(yxaccount)) {
-			throw new Exception(yxaccount.getName()+"未及时完成首次登录，账号已被回收");
+			throw new Exception("账号 "+yxaccount.getName()+" 未及时完成首次登录，已被回收");
 		}
 		if (isreusing(yxaccount)) {
-			throw new Exception(yxaccount.getName()+"未及时延长账号有效期，账号已被回收");
+			throw new Exception("账号 "+yxaccount.getName()+" 未及时延长过期时间，已被回收");
 		}
 	}
 
 	public static void checkaccountavailability(Yxaccount yxaccount) throws Exception {
 		if (!isadmin(yxaccount) && isaccountexpired(yxaccount)) {
-			throw new Exception(yxaccount.getName()+"的账号已过期，请在" + Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))
-					+ "之前延长有效期，否则账号将被回收，回收后该账号的所有日记和其它关联资源都将无法找回");
+			throw new Exception("账号 "+yxaccount.getName()+" 已过期，请在" + Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))
+					+ "之前延长过期时间，否则该账号将被回收，回收后该账号的所有日记和资源都将无法找回");
 		}
 	}
 

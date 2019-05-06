@@ -88,7 +88,7 @@ public class Register extends HttpServlet {
 			Bizutil.iplimit(Reuse.getremoteip(request), true);
 			Reuse.respond(response,
 					"注册成功！请在" + Reuse.yyyyMMddHHmmss(Bizutil.dateallowfirstlogin(yxaccount))
-							+ "前完成首次登录，否则账号将被回收",
+							+ "前完成首次登录，否则该账号将被回收",
 					null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);

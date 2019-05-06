@@ -99,7 +99,7 @@
 				width:80%;
 				background-color:#e0bb95;
 				color:#000;
-				font-size:14px;
+				font-size:12px;
 				top:50%;
 				left:50%;
 				transform:translateX(-50%) translateY(-50%) scale(0);
@@ -733,7 +733,7 @@
 							localStorage.removeItem("yanxinloginkey");
 							dologout();
 						}
-						if (result.error.indexOf("延长有效期")!=-1){
+						if (result.error.indexOf("延长")!=-1){
 							$(".hideallforms").hide();
 							$(".hideallbtns").hide();
 							$("#accountbtn").click();
@@ -778,7 +778,7 @@
 							localStorage.removeItem("yanxinloginkey");
 							dologout();
 						}
-						if (result.error.indexOf("延长有效期")!=-1){
+						if (result.error.indexOf("延长")!=-1){
 							$(".hideallforms").hide();
 							$(".hideallbtns").hide();
 							$("#accountbtn").click();
@@ -905,7 +905,7 @@
 			$(".hideallforms").hide();
 			$("#accountform").fadeIn(500);
 			$("#accountname").html(data.name);
-			$("#accountexpiretime").html("到期时间 "+data.timeexpire);
+			$("#accountexpiretime").html("过期时间 "+data.timeexpire);
 			$("#accountreusetime").html("回收时间 "+data.timereuse);
 			if (data.daystogive!="0"){
 				$("#accountdaystogive").html("库存天数 "+data.daystogive);
@@ -1040,12 +1040,12 @@
 					<div style="padding-top:5px;width:100%;text-align:center;"><font id="accountname"></font><br><input id="logoutbtn" actionid="logout" action="click" type="button" value="退出登录"/></div>
 					<div style="padding-top:5px;width:100%;"><input id="changepass" style="margin-right:5px;" size="10" type="password" maxlength="20" placeholder="填写密码"/><input id="changerepass" style="margin-right:5px;" size="10" type="password" maxlength="20" placeholder="再次填写密码"/><input actionid="changepass" action="click" type="button" value="修改"/></div>
 					<div style="padding-top:5px;width:100%;"><input id="changemotto" style="margin-right:5px;" size="10" type="text" maxlength="100" placeholder="填写格言"/><input id="changeremotto" style="margin-right:5px;" size="10" type="text" maxlength="100" placeholder="再次填写格言"/><input actionid="changemotto" action="click" type="button" value="修改"/></div>
-					<div id="accountdaystogiveandextend" style="display:none;padding-top:5px;width:100%;"><font id="accountdaystogive"></font> <input id="extendself" style="margin-right:5px;" size="5" type="text" maxlength="5" placeholder="延长天数"/><input type="button" value="自延有效期"/></div>
+					<div id="accountdaystogiveandextend" style="display:none;padding-top:5px;width:100%;"><font id="accountdaystogive"></font> <input id="extendself" style="margin-right:5px;" size="5" type="text" maxlength="5" placeholder="延长天数"/><input type="button" value="自延"/></div>
 					<div id="accountdaystogiveandspend" style="display:none;padding:5px;margin:5px;text-align:left;border:1px #ccc solid;border-radius:4px;">
 						<input id="searchaccount" style="margin-right:5px;" size="10" type="password" maxlength="20" placeholder="查询其它账号"/><input type="button" value="查询"/><br>
-						<input id="extendother" style="margin-top:5px;margin-right:5px;" size="5" type="text" maxlength="5" placeholder="延长天数"/><input type="button" value="延长有效期"/><br>
+						<input id="extendother" style="margin-top:5px;margin-right:5px;" size="5" type="text" maxlength="5" placeholder="延长天数"/><input type="button" value="延长"/><br>
 						<div style="width:100%;text-align:left;">库存天数：10000 <input id="giveother" style="margin-top:5px;margin-right:5px;" size="5" type="text" maxlength="5" placeholder="给予天数"/><input type="button" value="给予"/></div>
-						<div style="width:100%;text-align:left;">到期时间：2019-10-10 10:10:10</div>
+						<div style="width:100%;text-align:left;">过期时间：2019-10-10 10:10:10</div>
 						<div style="width:100%;text-align:left;">回收时间：2019-10-10 10:10:10</div>
 					</div>
 					<div style="width:100%;text-align:left;margin-top:5px;"><font id="accountexpiretime"></font> <input onclick="post('freego','buyhint',{})" type="button" value="延长"/></div>
