@@ -97,9 +97,12 @@
 				word-wrap:break-word;
 				padding:20px;
 				width:80%;
+				max-height:70%;
+				overflow-x:hidden;
+				overflow-y:auto;
 				background-color:#e0bb95;
 				color:#000;
-				font-size:12px;
+				font-size:14px;
 				top:50%;
 				left:50%;
 				transform:translateX(-50%) translateY(-50%) scale(0);
@@ -965,9 +968,8 @@
 			$(".hidemsgpop").remove();
 			$("body").append("<div id='msgpopform' class='hidemsgpop' style='position:fixed;display:none;top:0px;left:0px;right:0px;bottom:42px;background-color:black;opacity:0.8'></div>");
 			$("#msgpopform").fadeIn(800);
-			$("body").append("<div class='msgpop hidemsgpop'>"+content+
-					"<input onclick=\"$('.hidemsgpop').remove();\" style='position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(-50%);' type='button' value='知道了'/>"+
-				"</div>");
+			$("body").append("<div class='msgpop hidemsgpop'>"+content+"</div>");
+			$("body").append("<input onclick=\"$('.hidemsgpop').remove();\" class='hidemsgpop' style='position:fixed;bottom:42px;left:50%;transform:translateX(-50%);' type='button' value='知道了'/>");
 		}
 		function footmsg(content){
 			$(".msgfoot").remove();
