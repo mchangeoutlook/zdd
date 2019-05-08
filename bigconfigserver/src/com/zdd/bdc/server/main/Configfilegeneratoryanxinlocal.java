@@ -76,11 +76,11 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("session.expire.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("wrongpass.wait.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("ipdeny.wait.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
-		Fileconfigutil.create("freeuse.days", "1", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("freeuse.days", "2", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("account.reuse.in.days", "1", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("first.login.in.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("everyday.everyip.newaccounts.max", "200", namespace, STATIC.REMOTE_CONFIG_CORE);
-		Fileconfigutil.create("extend.expire.in.days", "2", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("extend.expire.in.days", "1", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("extend.expire.days.max", "2", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("days.togive.max", "100", namespace, STATIC.REMOTE_CONFIG_CORE);
 

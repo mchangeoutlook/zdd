@@ -87,8 +87,7 @@ public class Login extends HttpServlet {
 				yxaccount.setYxloginkey(yxlogin.getKey());
 				yxaccount.modify(yxaccount.getKey());
 				
-				yxaccount = new Yxaccount();
-				yxaccount.readunique(name);
+				yxaccount.readunique(yxaccount.getUniquename());
 				
 				Map<String, Object> ret = new Hashtable<String, Object>();
 				ret.put("loginkey", yxaccount.getYxloginkey());
@@ -97,7 +96,10 @@ public class Login extends HttpServlet {
 				} else {
 					ret.put("isexpired", "f");
 				}
-
+				boolean canextend = new Date().after(new Date(yxaccount.getTimeexpire().getTime()-Reuse.getlongvalueconfig("extend.expire.in.days")*24*60*60*1000));
+				if (canextend) {
+					ret.put("expiretime", Reuse.yyyyMMddHHmmss(yxaccount.getTimeexpire()));
+				}
 				ret.put("name", yxaccount.getName());
 				Reuse.respond(response, ret, null);
 			} else {

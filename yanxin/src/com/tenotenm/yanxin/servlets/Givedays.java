@@ -2,6 +2,9 @@ package com.tenotenm.yanxin.servlets;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Hashtable;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,8 +24,10 @@ public class Givedays extends HttpServlet {
 		try {
 			
 			Yxaccount yxaccount = (Yxaccount)request.getAttribute(Yxaccount.class.getSimpleName());
+			Yxaccount target = new Yxaccount();
+			target.setName(request.getParameter("targetname"));
 			
-			if (yxaccount.getKey().equals(request.getParameter("targetkey"))) {
+			if (yxaccount.getUniquename().equals(target.getUniquename())) {
 				throw new Exception("不能给自己增加天数");
 			}
 			
@@ -36,11 +41,10 @@ public class Givedays extends HttpServlet {
 				throw new Exception("增加天数必须在1到"+Reuse.getlongvalueconfig("days.togive.max")+"之间");
 			}
 			if (yxaccount.getDaystogive()<toincrease) {
-				throw new Exception("你的库存天数不足以给予别人");
+				throw new Exception("你的库存天数不足");
 			}
-			Yxaccount target = new Yxaccount();
 			try {
-				target.read(request.getParameter("targetkey"));
+				target.readunique(target.getUniquename());
 			}catch(Exception e) {
 				throw new Exception("目标账号无效");
 			}
@@ -55,7 +59,7 @@ public class Givedays extends HttpServlet {
 			if (yxaccount.getDaystogive()<0) {
 				yxaccount.setDaystogive4increment(toincrease);
 				yxaccount.increment(null);
-				throw new Exception("你的库存天数不够给予别人");
+				throw new Exception("你的库存天数不够");
 			}
 			
 			target.setDaystogive4increment(toincrease);
@@ -66,8 +70,10 @@ public class Givedays extends HttpServlet {
 			
 			yxaccount.setTimeupdate(new Date());
 			yxaccount.modify(null);
-			
-			Reuse.respond(response, null, null);
+			Map<String, String> ret = new Hashtable<String, String>();
+			ret.put("otherdaystogive", String.valueOf(target.getDaystogive()));
+			ret.put("daystogive", String.valueOf(yxaccount.getDaystogive()));
+			Reuse.respond(response, ret, null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);
 		}

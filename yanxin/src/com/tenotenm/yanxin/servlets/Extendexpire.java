@@ -2,6 +2,9 @@ package com.tenotenm.yanxin.servlets;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Hashtable;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -33,8 +36,9 @@ public class Extendexpire extends HttpServlet {
 				throw new Exception("你的库存天数不足");
 			}
 			Yxaccount target = new Yxaccount();
+			target.setName(request.getParameter("targetname"));
 			try {
-				target.read(request.getParameter("targetkey"));
+				target.readunique(target.getUniquename());
 			}catch(Exception e) {
 				throw new Exception("无效目标账号");
 			}
@@ -61,11 +65,17 @@ public class Extendexpire extends HttpServlet {
 			}
 			target.setTimeupdate(new Date());
 			target.modify(null);
+			Map<String, String> ret = new Hashtable<String, String>();
 			if (!target.getKey().equals(yxaccount.getKey())) {
+				ret.put("selforother", "other");
 				yxaccount.setTimeupdate(new Date());
 				yxaccount.modify(null);
+			} else {
+				ret.put("selforother", "self");
 			}
-			Reuse.respond(response, null, null);
+			ret.put("timeexpire", Reuse.yyyyMMddHHmmss(target.getTimeexpire()));
+			ret.put("daystogive", String.valueOf(yxaccount.getDaystogive()));
+			Reuse.respond(response, ret, null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);
 		}
