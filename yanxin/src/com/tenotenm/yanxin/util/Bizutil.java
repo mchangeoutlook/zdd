@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Hashtable;
@@ -16,6 +17,8 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.tenotenm.yanxin.entities.Ipdeny;
 import com.tenotenm.yanxin.entities.Iplimit;
@@ -111,9 +114,9 @@ public class Bizutil {
 		return yxyanxin;
 	}
 
-	public static Map<String, String> convert(Yanxin yanxin){
+	public static Map<String, String> convert(Yanxin yanxin) {
 		Map<String, String> ret = new Hashtable<String, String>();
-		if (yanxin==null) {
+		if (yanxin == null) {
 			return ret;
 		}
 		ret.put("content", yanxin.getContent());
@@ -124,11 +127,11 @@ public class Bizutil {
 		ret.put("timecreate", Reuse.yyyyMMdd(yanxin.getTimecreate()));
 		return ret;
 	}
-	
+
 	public static String yanxinkey(Yxaccount yxaccount, Date day) {
 		return yxaccount.getYxyanxinuniquekeyprefix() + "-" + Reuse.yyyyMMdd(day);
 	}
-	
+
 	public static Yanxin readyanxin(Yxaccount yxaccount, Date day) throws Exception {
 		Yanxin yxyanxin = new Yanxin();
 		try {
@@ -163,17 +166,18 @@ public class Bizutil {
 
 	public static void checkaccountreused(Yxaccount yxaccount) throws Exception {
 		if (isfirstlogindenied(yxaccount)) {
-			throw new Exception("账号 "+yxaccount.getName()+" 未及时完成首次登录，已被回收");
+			throw new Exception("账号 " + yxaccount.getName() + " 未及时完成首次登录，已被回收");
 		}
 		if (isreusing(yxaccount)) {
-			throw new Exception("账号 "+yxaccount.getName()+" 未及时延长过期时间，已被回收");
+			throw new Exception("账号 " + yxaccount.getName() + " 未及时延长过期时间，已被回收");
 		}
 	}
 
 	public static void checkaccountavailability(Yxaccount yxaccount) throws Exception {
 		if (!isadmin(yxaccount) && isaccountexpired(yxaccount)) {
-			throw new Exception("账号 "+yxaccount.getName()+" 已过期，请在" + Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))
-					+ "之前延长过期时间，否则该账号将被回收，回收后该账号的所有日记和资源都将无法找回");
+			throw new Exception(
+					"账号 " + yxaccount.getName() + " 已过期，请在" + Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))
+							+ "之前延长过期时间，否则该账号将被回收，回收后该账号的所有日记和资源都将无法找回");
 		}
 	}
 
@@ -262,5 +266,57 @@ public class Bizutil {
 
 		}
 	}
-			
+
+	public static void commoncheck(HttpServletRequest req) throws Exception {
+		String ip = Reuse.getremoteip(req);
+		Bizutil.ipdeny(ip, false);
+		Yxlogin yxlogin = new Yxlogin();
+		yxlogin.read(req.getParameter("loginkey"));
+
+		if (!ip.equals(yxlogin.getIp()) || !Reuse.getuseragent(req).equals(yxlogin.getUa())) {
+			throw new Exception("已启动IP保护，请重新登录");
+		}
+
+		if (yxlogin.getIslogout()) {
+			throw new Exception("已退出，请重新登录");
+		}
+		if (System.currentTimeMillis() - yxlogin.getTimeupdate().getTime() > Reuse
+				.getsecondsmillisconfig("session.expire.seconds")) {
+			throw new Exception("已过期，请重新登录");
+		}
+
+		Yxaccount yxaccount = new Yxaccount();
+		yxaccount.read(yxlogin.getYxaccountkey());
+
+		if (!yxaccount.getYxloginkey().equals(yxlogin.getKey())) {
+			throw new Exception("非法访问，请重新登录");
+		}
+
+		if (Reuse.yyyyMMdd(new Date()).equals(Reuse.yyyyMMdd(yxlogin.getTimeupdate()))) {
+			yxlogin.setTimeupdate(new Date());
+			yxlogin.modify(yxlogin.getKey());
+		} else {
+			throw new Exception("迎接新的一天，请重新登录");
+		}
+
+		Bizutil.refreshadminaccount(yxaccount);
+
+		Bizutil.checkaccountreused(yxaccount);
+
+		req.setAttribute(Yxaccount.class.getSimpleName(), yxaccount);
+		req.setAttribute(Yxlogin.class.getSimpleName(), yxlogin);
+	}
+
+	public static void commoncheckexception(HttpServletRequest req, HttpServletResponse res, Exception e) throws IOException {
+		if (e.getMessage() != null && (e.getMessage().contains(STATIC.INVALIDKEY)||e.getMessage().contains(Reuse.NOTFOUND))) {
+			try {
+				Bizutil.ipdeny(Reuse.getremoteip(req), true);
+				throw new Exception("无效访问，请重新登录");
+			} catch (Exception e1) {
+				Reuse.respond(res, null, e1);
+			}
+		} else {
+			Reuse.respond(res, null, e);
+		}
+	}
 }
