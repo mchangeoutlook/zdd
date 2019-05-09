@@ -27,7 +27,7 @@ import com.zdd.bdc.client.biz.Fileclient;
 import com.zdd.bdc.client.util.STATIC;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/upload")
+@WebServlet("/cexpired/upload")
 @MultipartConfig(maxFileSize = 1024 * 4000, // 4 MB
 		maxRequestSize = 1024 * 4010) // 4 MB + 10k
 public class Upload extends HttpServlet {

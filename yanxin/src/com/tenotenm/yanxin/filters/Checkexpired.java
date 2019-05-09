@@ -17,8 +17,8 @@ import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 import com.zdd.bdc.client.util.STATIC;
 
-@WebFilter("/check/*")
-public class Check implements Filter {
+@WebFilter("/cexpired/*")
+public class Checkexpired implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain arg2)
@@ -62,6 +62,7 @@ public class Check implements Filter {
 			Bizutil.refreshadminaccount(yxaccount);
 			
 			Bizutil.checkaccountreused(yxaccount);
+			Bizutil.checkaccountavailability(yxaccount);
 						
 			req.setAttribute(Yxaccount.class.getSimpleName(), yxaccount);
 			req.setAttribute(Yxlogin.class.getSimpleName(), yxlogin);

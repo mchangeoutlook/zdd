@@ -12,7 +12,7 @@ import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/readyanxin")
+@WebServlet("/cexpired/readyanxin")
 public class Readyanxin extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

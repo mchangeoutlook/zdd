@@ -13,7 +13,7 @@ import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/logout")
+@WebServlet("/creused/logout")
 public class Logout extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

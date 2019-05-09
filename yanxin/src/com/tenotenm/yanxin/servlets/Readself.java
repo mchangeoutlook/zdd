@@ -16,7 +16,7 @@ import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/readself")
+@WebServlet("/creused/readself")
 public class Readself extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

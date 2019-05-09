@@ -13,7 +13,7 @@ import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.util.Reuse;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/changepass")
+@WebServlet("/creused/changepass")
 public class Changepass extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

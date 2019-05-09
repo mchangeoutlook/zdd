@@ -19,15 +19,13 @@ import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/calendar")
+@WebServlet("/cexpired/calendar")
 public class Readcalendar extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
 			Yxaccount yxaccount = (Yxaccount)request.getAttribute(Yxaccount.class.getSimpleName());
-			
-			Bizutil.checkaccountavailability(yxaccount);
 			
 			String year = null;
 			int yearint = 0;

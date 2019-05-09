@@ -12,7 +12,7 @@ import com.tenotenm.yanxin.util.Downloading;
 import com.zdd.bdc.client.biz.Fileclient;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/download")
+@WebServlet("/cexpired/download")
 public class Download extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {

@@ -13,7 +13,7 @@ import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.util.Reuse;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/changemotto")
+@WebServlet("/creused/changemotto")
 public class Changemotto extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

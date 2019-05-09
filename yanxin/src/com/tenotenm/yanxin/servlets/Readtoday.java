@@ -15,7 +15,7 @@ import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/readtoday")
+@WebServlet("/cexpired/readtoday")
 public class Readtoday extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

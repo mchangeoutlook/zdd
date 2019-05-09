@@ -16,7 +16,7 @@ import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/extend")
+@WebServlet("/creused/extend")
 public class Extendexpire extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

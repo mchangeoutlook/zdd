@@ -19,7 +19,7 @@ import com.zdd.bdc.client.biz.Bigclient;
 import com.zdd.bdc.client.util.STATIC;
 
 @SuppressWarnings("serial")
-@WebServlet("/check/write")
+@WebServlet("/cexpired/write")
 public class Write extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
