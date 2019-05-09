@@ -101,6 +101,7 @@ public class Login extends HttpServlet {
 					ret.put("expiretime", Reuse.yyyyMMddHHmmss(yxaccount.getTimeexpire()));
 				}
 				ret.put("name", yxaccount.getName());
+				ret.put("today", Reuse.yyyyMMdd(new Date()));
 				Reuse.respond(response, ret, null);
 			} else {
 				if (!isipuasame) {

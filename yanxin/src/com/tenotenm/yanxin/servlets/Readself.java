@@ -37,7 +37,7 @@ public class Readself extends HttpServlet {
 			if (yxaccount.getDaystogive()>0&&canextend) {
 				ret.put("accountkey", yxaccount.getKey());
 			}
-			
+			ret.put("today", Reuse.yyyyMMdd(new Date()));
 			Reuse.respond(response, ret, null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);
