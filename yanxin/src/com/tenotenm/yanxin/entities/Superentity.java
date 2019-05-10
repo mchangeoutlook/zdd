@@ -116,7 +116,7 @@ public abstract class Superentity {
 			if (read_4increments.contains(m.getName())) {
 				if (m.getName().startsWith("read_")) {
 					if (data.get(m.getName().substring(5))!=null) {
-						m.invoke(this, data.get(m.getName().substring(5)));
+						m.invoke(this, String.valueOf(data.get(m.getName().substring(5))));
 					}
 				}
 				if (m.getName().startsWith("readtoday_")) {

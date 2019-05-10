@@ -9,16 +9,16 @@
   		<meta name="Keywords" content="言心 你的心灵日记 陪伴有故事的你" />
   		<style type="text/css">
   			input[type="button"]{
-  				background:#008B8B;border: none;color:#ccc;border-radius:4px 4px;font-size:14px;line-height:20px;
+  				background:#008B8B;border: none;color:#ccc;border-radius:4px 4px;font-size:14px;line-height:25px;height:25px;
   			}
   			input[type="text"]{
-  				background:#eee;border: none;padding:4px;border-radius:4px 4px;font-size:14px;
+  				background:#eee;border: none;padding:4px;border-radius:4px 4px;font-size:14px;line-height:25px;height:25px;
   			}
   			textarea{
-  				background:#eee;border: none;padding:4px;border-radius:4px 4px;font-size:14px;
+  				background:#eee;border: none;padding:4px;border-radius:4px 4px;font-size:14px;line-height:25px;
   			}
   			input[type="password"]{
-  				background:#eee;border: none;padding:4px;border-radius:4px 4px;font-size:14px;
+  				background:#eee;border: none;padding:4px;border-radius:4px 4px;font-size:14px;line-height:25px;height:25px;
   			}
   			body{
   				position:fixed;
@@ -42,7 +42,7 @@
   				top:0px;
   				left:0px;
   				right:0px;
-  				bottom:75px;
+  				bottom:80px;
   				border:0px;
   			}
   			
@@ -50,33 +50,34 @@
   				position:fixed;
   				display:block;
   				text-align:center;
-  				bottom:45px;
+  				bottom:52px;
   				height:25px;
+  				line-height:25px;
   				width:100%;
 				border:0px;
   			}
 
 			.load{
-				animation: loading 0.5s ease 0s alternate infinite;
+				animation: loading 0.4s ease 0s alternate infinite;
 			}  			
 			@keyframes loading
 			{
 				0%{opacity:1;}
 				20%{opacity:1;}
-				100%{opacity:0.4;}
+				100%{opacity:0.2;}
 			}
   			
   			.msgfoot{
   				position:fixed;
   				text-align:center;
   				word-wrap:break-word;
-  				bottom:-45px;
-				width:90%;
+  				bottom:-48px;
+				width:80%;
 				padding-left:5%;
 				padding-right:5%;
-				height:45px;
+				height:48px;
 				font-size:14px;
-				line-height:14px;
+				line-height:16px;
   				border:0px;
   				overflow-x:hidden;
   				overflow-y:auto;
@@ -167,7 +168,7 @@
 	  				overflow:hidden;
 	  				top:0px;
 	  				width:300px;
-	  				bottom:75px;
+	  				bottom:80px;
 	  				left:50%;
 	  				transform:translateX(-50%);
 	  				border:0px;
@@ -252,6 +253,8 @@
 			
   			.opening{
   				position:absolute;
+  				z-index:20000;
+  				background:black;
   				border:0px;
   				width:300px;
   				height:300px;
@@ -847,7 +850,7 @@
 			} else {
 				$("#todaybtn").click();
 				if (data.expiretime!=undefined){
-					footmsg(data.name+" 欢迎回来 你的账号即将在"+data.expiretime+"后过期，请点击账号及时延长过期时间");
+					footmsg(data.name+" 欢迎回来 你的账号即将在 "+data.expiretime+" 后过期，请点击账号及时延长过期时间");
 				} else {
 					footmsg(data.name+" 欢迎回来");
 				}
@@ -897,6 +900,10 @@
 		
 		function doreadself(){
 			loading(true);
+			$("#changepass").val("");
+			$("#changerepass").val("");
+			$("#changemotto").val("");
+			$("#changeremotto").val("");
 			$(".hideallaccountform").hide();
 			$(".hideallotheraccountform").hide();
 			post("creused","readself",{});
@@ -916,7 +923,7 @@
 			}
 			
 			if (data.extendselfaftertime!=undefined){
-				$("#selfextendhint").html("在"+data.extendselfaftertime+"后可延长自己的过期时间");
+				$("#selfextendhint").html("在 "+data.extendselfaftertime+" 后可延长自己的过期时间");
 				$("#selfextendhint").show();
 			} else {
 				if (parseInt(data.daystogive)>0){
@@ -954,7 +961,7 @@
 			$("#othergivebtn").show();
 			$("#otherextendform").show();
 			if (data.extendotheraftertime!=undefined){
-				$("#otherextendhint").html("在"+data.extendotheraftertime+"后可延长过期时间");
+				$("#otherextendhint").html("在 "+data.extendotheraftertime+" 后可延长过期时间");
 				$("#otherextendhint").show();
 			} else {
 				$("#otherextend").show();
@@ -977,15 +984,32 @@
 			post("creused","extend",{"incre":$("#"+$(this).attr("selforother")+"extend").val(),"targetname":$(this).attr("extendname")})
 		}
 		function afterextend(data){
-			
+			$("#"+data.selforother+"extend").val("");
+			$("#selfdaystogivenew").html("库存天数剩余 "+data.daystogive);
+			$("#selfdaystogivenew").show();
+			$("#"+data.selforother+"expiretimenew").html("过期时间延长为 "+data.timeexpire);
+			$("#"+data.selforother+"expiretimenew").show();
+			$("#"+data.selforother+"reusetime").html("回收时间 "+data.timereuse);
+			if (parseInt(data.daystogive)<=0){
+				$("#daystogivespendform").hide();
+				$("#selfextendform").hide();
+			}
 		}
 
 		function dogive(){
 			loading(true);
-			post("cexpired","changepass",{"pass":$("#changepass").val(),"repass":$("#changerepass").val()})
+			post("cexpired","give",{"incre":$("#othergive").val(),"targetname":$(this).attr("givename")})
 		}
 		function aftergive(data){
-			
+			$("#othergive").val("");
+			$("#otherdaystogivenew").html("库存天数增加为 "+data.otherdaystogive);
+			$("#otherdaystogivenew").show();
+			$("#selfdaystogivenew").html("库存天数剩余 "+data.daystogive);
+			$("#selfdaystogivenew").show();
+			if (parseInt(data.daystogive)<=0){
+				$("#daystogivespendform").hide();
+				$("#selfextendform").hide();
+			}
 		}
 
 		function dochangemotto(){
@@ -1009,18 +1033,18 @@
 		function loading(show){
 			$(".hideloading").remove();
 			if (show){
-				$("body").append("<div id='loadingform' class='hideloading' style='position:fixed;display:none;top:0px;left:0px;right:0px;bottom:45px;background-color:black;opacity:0.8;'>"+
-				"<div class='load' style='position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-100%);'>请稍后......</div>"+
+				$("body").append("<div id='loadingform' class='hideloading' style='position:fixed;display:none;top:0px;left:0px;right:0px;bottom:45px;background-color:black;opacity:0.8;z-index:10000;'>"+
+				"<div class='load' style='position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-100%);z-index:10000;'>请稍后......</div>"+
 				"</div>");
 				$("#loadingform").fadeIn(800);
 			}
 		}
 		function popmsg(content){
 			$(".hidemsgpop").remove();
-			$("body").append("<div id='msgpopform' class='hidemsgpop' style='position:fixed;display:none;top:0px;left:0px;right:0px;bottom:45px;background-color:black;opacity:0.8'></div>");
+			$("body").append("<div id='msgpopform' class='hidemsgpop' style='position:fixed;display:none;top:0px;left:0px;right:0px;bottom:48px;background-color:black;opacity:0.8'></div>");
 			$("#msgpopform").fadeIn(800);
 			$("body").append("<div class='msgpop hidemsgpop'>"+content+"</div>");
-			$("body").append("<input id='msgpopbtn' onclick=\"$('.hidemsgpop').remove();\" class='hidemsgpop' style='display:none;position:fixed;bottom:50px;left:50%;transform:translateX(-50%);' type='button' value='知道了'/>");
+			$("body").append("<input id='msgpopbtn' onclick=\"$('.hidemsgpop').remove();\" class='hidemsgpop' style='display:none;position:fixed;bottom:52px;left:50%;transform:translateX(-50%);' type='button' value='知道了'/>");
 			$("#msgpopbtn").fadeIn(800);
 		}
 		function footmsg(content){
@@ -1090,37 +1114,37 @@
 			</div>
 			<div id="accountform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
 				<div style="position:absolute;max-height:100%;top:50%;left:5px;right:5px;transform:translateY(-50%);overflow-x:hidden;overflow-y:auto;">
-					<div id="selfname" style="padding-top:5px;width:100%;text-align:center;"></div>
-					<div style="padding-top:5px;width:100%;text-align:center;"><input id="logoutbtn" actionid="logout" action="click" type="button" value="退出登录"/></div>
+					<div id="selfname" style="margin:2px;width:100%;text-align:center;"></div>
+					<div style="margin:2px;width:100%;text-align:center;"><input id="logoutbtn" actionid="logout" action="click" type="button" value="退出登录"/></div>
 
-					<div style="width:100%;text-align:left;margin-top:5px;"><font id="selfreusetime"></font> <input onclick="post('freego','agreement',{})" type="button" value="用户协议"/></div>
-					<div style="width:100%;text-align:left;margin-top:5px;"><font id="selfexpiretime"></font> <br> <input id="extendbtn" onclick="post('freego','buyhint',{})" type="button" class="hideallaccountform" style="display:none;" value="延长"/></div>
+					<div style="width:100%;text-align:left;margin:2px;"><font id="selfreusetime"></font> <input onclick="post('freego','agreement',{})" style="margin:2px;" type="button" value="用户协议"/></div>
+					<div style="width:100%;text-align:left;margin:2px;"><font id="selfexpiretime"></font> <br> <input id="extendbtn" onclick="post('freego','buyhint',{})" type="button" class="hideallaccountform" style="display:none;margin:2px;" value="延长"/></div>
 					
-					<div id="selfexpiretimenew" class="hideallaccountform" style="width:100%;text-align:left;margin-top:5px;display:none;color:#f4a57e;"></div>
+					<div id="selfexpiretimenew" class="hideallaccountform" style="width:100%;text-align:left;margin:2px;display:none;color:#f4a57e;"></div>
 
-					<div id="selfextendhint" class="hideallaccountform" style="width:100%;text-align:left;margin-top:5px;display:none;color:#f4a57e;"></div>
+					<div id="selfextendhint" class="hideallaccountform" style="width:100%;text-align:left;margin:2px;display:none;color:#f4a57e;"></div>
 
-					<div id="selfdaystogive" class="hideallaccountform" style="display:none;padding-top:5px;width:100%;"></div>
-					<div id="selfdaystogivenew" class="hideallaccountform" style="display:none;padding-top:5px;width:100%;color:#f4a57e;"></div>
+					<div id="selfdaystogive" class="hideallaccountform" style="display:none;margin:2px;width:100%;"></div>
+					<div id="selfdaystogivenew" class="hideallaccountform" style="display:none;margin:2px;width:100%;color:#f4a57e;"></div>
 					
-					<div id="selfextendform" class="hideallaccountform" style="display:none;padding-top:5px;width:100%;"><input id="selfextend" style="margin-right:5px;" size="5" type="text" maxlength="5" placeholder="延长天数"/><input id="selfextendbtn" actionid="extend" action="click" type="button" value="延长自己的过期时间"/></div>
+					<div id="selfextendform" class="hideallaccountform" style="display:none;margin:2px;width:100%;"><input id="selfextend" style="margin:2px;" size="5" type="text" maxlength="5" placeholder="延长天数"/><input id="selfextendbtn" actionid="extend" action="click" type="button" style="margin:2px;" selforother="self" value="延长自己的过期时间"/></div>
 
 					<div id="daystogivespendform" class="hideallaccountform" style="display:none;padding:5px;margin:5px;text-align:left;border:1px #ccc solid;border-radius:4px;">
-						<input id="findother" style="margin-right:5px;" size="10" type="text" maxlength="20" placeholder="查询其它账号"/><input id="findotherbtn" actionid="readother" action="click" type="button" value="查询"/><br>
+						<div style="width:100%;text-align:left;"><input id="findother" style="margin:2px;" size="10" type="text" maxlength="20" placeholder="查询其它账号"/><input id="findotherbtn" actionid="readother" action="click" style="margin:2px;" type="button" value="查询"/></div>
 						<div id="otherextendform" class="hideallotheraccountform" style="display:none;width:100%;">
-							<div id="otherreusetime" style="margin-top:5px;width:100%;text-align:left;"></div>
-							<div id="otherexpiretime" style="margin-top:5px;width:100%;text-align:left;"></div>
-							<div id="otherexpiretimenew" class="hideallotheraccountform" style="margin-top:5px;width:100%;text-align:left;display:none;color:#f4a57e;"></div>
-							<div id="otherextendhint" class="hideallotheraccountform" style="width:100%;text-align:left;margin-top:5px;display:none;color:#f4a57e;"></div>
-							<input id="otherextend" class="hideallotheraccountform" style="margin-top:5px;margin-right:5px;display:none;" size="5" type="text" maxlength="5" placeholder="延长天数"/><input actionid="extend" action="click" id="otherextendbtn" class="hideallotheraccountform" style="display:none;" type="button" value="延长过期时间"/><br>
-							<div id="otherdaystogive" style="margin-top:5px;width:100%;text-align:left;"></div>
-							<div id="otherdaystogivenew" class="hideallotheraccountform" style="margin-top:5px;width:100%;text-align:left;display:none;color:#f4a57e;"></div>
-							<input id="othergive" class="hideallotheraccountform" style="margin-top:5px;margin-right:5px;" size="5" type="text" maxlength="5" placeholder="增加天数"/><input id="othergivebtn" class="hideallotheraccountform" actionid="give" action="click" type="button" value="增加库存天数"/>
+							<div id="otherreusetime" style="margin:2px;width:100%;text-align:left;"></div>
+							<div id="otherexpiretime" style="margin:2px;width:100%;text-align:left;"></div>
+							<div id="otherexpiretimenew" class="hideallotheraccountform" style="margin:2px;width:100%;text-align:left;display:none;color:#f4a57e;"></div>
+							<div id="otherextendhint" class="hideallotheraccountform" style="width:100%;text-align:left;margin:2px;display:none;color:#f4a57e;"></div>
+							<div style="width:100%;text-align:left;"><input id="otherextend" class="hideallotheraccountform" style="margin:2px;display:none;" size="5" type="text" maxlength="5" placeholder="延长天数"/><input actionid="extend" action="click" id="otherextendbtn" class="hideallotheraccountform" style="display:none;margin:2px;" selforother="other" type="button" value="延长过期时间"/></div>
+							<div id="otherdaystogive" style="margin:2px;width:100%;text-align:left;"></div>
+							<div id="otherdaystogivenew" class="hideallotheraccountform" style="margin:2px;width:100%;text-align:left;display:none;color:#f4a57e;"></div>
+							<div style="width:100%;text-align:left;"><input id="othergive" class="hideallotheraccountform" style="margin:2px;" size="5" type="text" maxlength="5" placeholder="增加天数"/><input id="othergivebtn" class="hideallotheraccountform" actionid="give" action="click" type="button" style="margin:2px;" value="增加库存天数"/></div>
 						</div>
 					</div>
 					
-					<div style="width:100%;"><input id="changepass" style="margin-right:5px;" size="10" type="password" maxlength="20" placeholder="填写新密码"/><input id="changerepass" style="margin-right:5px;" size="10" type="password" maxlength="20" placeholder="再次填写新密码"/><input actionid="changepass" action="click" type="button" value="修改"/></div>
-					<div style="padding-top:5px;width:100%;"><input id="changemotto" style="margin-right:5px;" size="10" type="text" maxlength="100" placeholder="填写新格言"/><input id="changeremotto" style="margin-right:5px;" size="10" type="text" maxlength="100" placeholder="再次填写新格言"/><input actionid="changemotto" action="click" type="button" value="修改"/></div>
+					<div style="width:100%;"><input id="changepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="填写新密码"/><input id="changerepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="再次填写新密码"/><input actionid="changepass" action="click" type="button" style="margin:2px;" value="修改"/></div>
+					<div style="width:100%;"><input id="changemotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="填写新格言"/><input id="changeremotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="再次填写新格言"/><input actionid="changemotto" action="click" type="button" style="margin:2px;" value="修改"/></div>
 				</div>
 			</div>
 			<div id="calendarform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">

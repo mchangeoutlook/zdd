@@ -74,6 +74,7 @@ public class Extendexpire extends HttpServlet {
 				ret.put("selforother", "self");
 			}
 			ret.put("timeexpire", Reuse.yyyyMMddHHmmss(target.getTimeexpire()));
+			ret.put("timereuse", Reuse.yyyyMMddHHmmss(Bizutil.datedenyreuseaccount(target)));
 			ret.put("daystogive", String.valueOf(yxaccount.getDaystogive()));
 			Reuse.respond(response, ret, null);
 		} catch (Exception e) {
