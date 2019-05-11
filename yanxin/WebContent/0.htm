@@ -9,7 +9,7 @@
   		<meta name="Keywords" content="言心 你的心灵日记 陪伴有故事的你" />
   		<style type="text/css">
   			input[type="button"]{
-  				background:#008B8B;border: none;color:#ccc;border-radius:4px 4px;font-size:14px;line-height:25px;height:25px;
+  				background:#008B8B;border: none;color:#ccc;border-radius:4px 4px;font-size:14px;height:25px;
   			}
   			input[type="text"]{
   				background:#eee;border: none;padding:4px;border-radius:4px 4px;font-size:14px;line-height:25px;height:25px;
@@ -72,9 +72,8 @@
   				text-align:center;
   				word-wrap:break-word;
   				bottom:-48px;
-				width:80%;
-				padding-left:5%;
-				padding-right:5%;
+				left:20px;
+				right:20px;
 				height:48px;
 				font-size:14px;
 				line-height:16px;
@@ -226,7 +225,7 @@
 					left:0px;
 					right:0px;
 					bottom:0px;
-					opacity:0.8;
+					opacity:0.9;
 					background-color:black;
 				}
 				.yxinputsreadbg{
@@ -710,8 +709,8 @@
 		</style>
 		<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
 		<script type="text/javascript">
-		//var datainterface = "/";
 		var datainterface = "http://localhost:8080/yanxin/";
+		var photointerface = "http://localhost:8080/yanxin/";
 
 		function post(context, actionid, paramjson, confirmtext){
 			if (confirmtext!=null){
@@ -720,8 +719,8 @@
 					return;
 				}
 			}
-			if (localStorage.getItem("yanxinloginkey")!=null){
-				paramjson.loginkey = localStorage.getItem("yanxinloginkey");
+			if (getcache("yanxinloginkey")!=null){
+				paramjson.loginkey =getcache("yanxinloginkey");
 			}
 			
 			var ajaxpost = $.ajax({
@@ -736,7 +735,7 @@
 					} else {
 						footmsg(result.error);
 						if (result.error.indexOf("重新登录")!=-1){
-							localStorage.removeItem("yanxinloginkey");
+							setcache("yanxinloginkey", null);
 							dologout();
 						}
 					}
@@ -753,16 +752,17 @@
 		}
 		
 		function load(photo){
+			$("#imghint").hide();
 			var folderkey = photo.split("/");
-			return "/cexpired/download?folder="+folderkey[0]+"&filekey="+folderkey[1]+"&loginkey="+localStorage.getItem("yanxinloginkey");
+			return photointerface+"cexpired/download?folder="+folderkey[0]+"&filekey="+folderkey[1]+"&loginkey="+getcache("yanxinloginkey");
 		}
 		
 		function upload(){
 			
 			var paramdata = new FormData($("#dayimgwriteform")[0]);
-			
+			footmsg("正在保存图片，保存成功之前请不要离开此页面");
 			var ajaxpost = $.ajax({
-				url: datainterface+"cexpired/upload?loginkey="+localStorage.getItem("yanxinloginkey"),  
+				url: datainterface+"cexpired/upload?loginkey="+getcache("yanxinloginkey"),  
 			　　	timeout : 40000, 
 			　　	type : 'post',  
 			　　	data :paramdata, 
@@ -775,7 +775,7 @@
 					} else {
 						footmsg(result.error);
 						if (result.error.indexOf("重新登录")!=-1){
-							localStorage.removeItem("yanxinloginkey");
+							setcache("yanxinloginkey", null);
 							dologout();
 						}
 					}
@@ -785,12 +785,46 @@
 			　　		loading(false);
 					if (status!="success"){
 			　　			ajaxpost.abort();
-				　　		footmsg("网络异常 ["+status+"] 或上传图片过大，请浏览本地小于4M的图片(正方形图片将获得最佳显示效果),大于100K的图片将会被压缩存储，压缩后图片质量有所损失");
+				　　		footmsg("网络异常 ["+status+"] 或上传图片过大，"+$("#imghint").html());
 			　　		}
 			　　	}
 			});
 		}
+		
+		function afterupload(data){
+			var hint = "";
+			if (data.newdaycomingminutes!=undefined){
+				hint = "，"+data.newdaycomingminutes;
+			}
+			if (data.compressedsize==0){
+				footmsg("图片保存成功"+hint);
+			} else {
+				footmsg("图片已压缩保存"+hint);
+			}
+			$("#dayimgwrite").attr("src",load(data.photo));
+		}
 
+		function getcache(key){
+			try{
+				return localStorage.getItem(key);
+			}catch(e){
+				return sessionStorage.getItem(key);
+			}
+		}
+		function setcache(key,value){
+			try{
+				if (value==undefined||value==null){
+					sessionStorage.removeItem(key);
+					localStorage.removeItem(key);
+				} else {
+					sessionStorage.setItem(key, value);
+					localStorage.setItem(key, value);
+				}
+			}catch(e){
+				//do nothing
+			}
+		}
+		
 		$(document).ready(function(){
 			init();
 			setTimeout(function(){
@@ -800,7 +834,7 @@
 		
 		function init(){
 			initactions();
-			if (localStorage.getItem("yanxinloginkey")==null){
+			if (getcache("yanxinloginkey")==null){
 				$("#logoutbtn").click();
 			} else {
 				$("#todaybtn").click();
@@ -808,13 +842,13 @@
 		}
 		
 		function dologout(){
-			if (localStorage.getItem("yanxinloginkey")!=null){
+			if (getcache("yanxinloginkey")!=null){
 				loading(true);
 				post("creused","logout",{});
 			}
-			localStorage.removeItem("yanxinloginkey");
-			if (localStorage.getItem("yanxinname")!=null){
-				$("#loginuser").val(localStorage.getItem("yanxinname"));
+			setcache("yanxinloginkey", null);
+			if (getcache("yanxinname")!=null){
+				$("#loginuser").val(getcache("yanxinname"));
 			} else {
 				$("#loginuser").val("");
 			}
@@ -835,9 +869,9 @@
 			post("freego","login",{"name":$("#loginuser").val(),"pass":$("#loginpass").val(),"motto":$("#loginmotto").val()})
 		}
 		function afterlogin(data){
-			localStorage.setItem("yanxinloginkey",data.loginkey);
+			setcache("yanxinloginkey",data.loginkey);
 			$("#extendselfbtn").attr("targetname",data.name);
-			localStorage.setItem("yanxinname",data.name);
+			setcache("yanxinname",data.name);
 			$(".hideallforms").hide();
 			$(".hideallbtns").hide();
 			$("#todaybtn").val(data.today);
@@ -848,11 +882,12 @@
 				$("#accountbtn").click();
 				footmsg(data.name+" 欢迎回来 你的账号已经过期，请及时延长过期时间，否则账号将被回收");
 			} else {
-				$("#todaybtn").click();
 				if (data.expiretime!=undefined){
-					footmsg(data.name+" 欢迎回来 你的账号即将在 "+data.expiretime+" 后过期，请点击账号并及时延长过期时间");
+					footmsg(data.name+" 欢迎回来 你的账号即将在 "+data.expiretime+" 后过期，请及时延长过期时间，否则账号将被回收");
+					$("#accountbtn").click();
 				} else {
 					footmsg(data.name+" 欢迎回来");
+					$("#todaybtn").click();
 				}
 			}
 		}
@@ -869,7 +904,7 @@
 			post("freego","register",{"name":$("#registeruser").val(),"pass":$("#registerpass").val(),"repass":$("#registerrepass").val(),"motto":$("#registermotto").val(),"remotto":$("#registerremotto").val()});
 		}
 		function afterregister(data){
-			localStorage.setItem("yanxinname",$("#registeruser").val());
+			setcache("yanxinname",$("#registeruser").val());
 			$("#registeruser").val("");
 			$("#registerpass").val("");
 			$("#registerrepass").val("");
@@ -900,16 +935,23 @@
 		
 		function doreadself(){
 			loading(true);
+			$(".hideallforms").hide();
 			$("#changepass").val("");
 			$("#changerepass").val("");
 			$("#changemotto").val("");
 			$("#changeremotto").val("");
+			$("#selfname").html("");
+			$("#todaybtn").val("");
+			$("#selfextendbtn").attr("extendname", "");
+			$("#selfexpiretime").html("");
+			$("#selfreusetime").html("");
+			$("#selfdaystogive").html("");
+			$("#selfextendhint").html("");
 			$(".hideallaccountform").hide();
 			$(".hideallotheraccountform").hide();
 			post("creused","readself",{});
 		}
 		function afterreadself(data){
-			$(".hideallforms").hide();
 			$("#accountform").fadeIn(500);
 			$("#selfname").html(data.name);
 			$("#todaybtn").val(data.today);
@@ -936,18 +978,40 @@
 		
 		function doreadtoday(){
 			loading(true);
+			$(".hideallforms").hide();
+			$("#dayimgwrite").attr("src","");
+			$("#contentwrite").val("");
+			$("#locationwrite").val("");
+			$("#weatherwrite").val("");
 			post("cexpired","readtoday",{})
 		}
 		function afterreadtoday(data){
-			$("#todaybtn").val(data.today);
 			$("#todaybtn").show();
 			$("#accountbtn").show();
 			$("#calendarbtn").show();
+			$("#todaybtn").val(data.today);
+			$("#yanxinwriteform").fadeIn(500);
+			$("#daywrite").html(data.today);
+			if (data.key==undefined){
+				$("#imghint").show();
+				footmsg("你今天还没写日记，开始写吧，每天可以保存一张图片，你所填写的内容会自动保存");
+			} else {
+				$("#dayimgwrite").attr("src",load(data.photo));
+				$("#contentwrite").val(data.content);
+				$("#locationwrite").val(data.location);
+				$("#weatherwrite").val(data.weather);
+			}
 		}
-
+		
 		function doreadother(){
 			loading(true);
 			$(".hideallotheraccountform").hide();
+			$("#otherreusetime").html("");
+			$("#otherexpiretime").html("");
+			$("#otherdaystogive").html("");
+			$("#othergivebtn").attr("givename","");
+			$("#otherextendbtn").attr("extendname","");
+			$("#otherextendhint").html("");
 			post("cexpired","readother",{"targetname":$("#findother").val()})
 		}
 		
@@ -1059,16 +1123,17 @@
 		<div class="content">
 			<div id="yanxinwriteform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;">
 				<div class="yximgwrite">
-					<img id="dayimgwrite" src="logo.png" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
+					<div id="imghint" style="position:absolute;top:40%;left:5px;right:5px;text-align:center;">请浏览本地小于5M的图片（正方形图片将获得最佳显示效果），大于100K的图片将会被压缩存储，压缩后图片质量有所损失</div>
+					<img id="dayimgwrite" src="" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
 					<form method="POST" enctype="multipart/form-data" id="dayimgwriteform">
-						<input id="filebtn" name="photo" accept="/image/*" style="position:absolute;top:100%;left:0px;" type="file"/>
+						<input id="filebtn" name="photo" accept="/image/*" onchange="upload();" style="position:absolute;top:100%;left:5px;" type="file"/>
 					</form>
 				</div>
 				<div class="yxinputswrite">
 					<div id="daywrite" style="position:absolute;line-height:30px;height:30px;width:80px;top:0px;left:0px;overflow:hidden;"></div>
 					<div style="position:absolute;line-height:30px;height:30px;width:calc(100% - 80px);top:0px;left:80px;">
-						<input id="weatherwrite" style="width:calc(30% - 8px);" type="text" maxlength="10" placeholder="填写天气"/>
-						<input id="locationwrite" style="width:calc(70% - 8px);" type="text" maxlength="20" placeholder="填写地点"/>
+						<input id="weatherwrite" style="width:calc(40% - 8px);" type="text" maxlength="10" placeholder="填写天气"/>
+						<input id="locationwrite" style="width:calc(60% - 8px);" type="text" maxlength="20" placeholder="填写地点"/>
 					</div>
 					<textarea id="contentwrite" style="position:absolute;top:30px;left:0px;height:calc(100% - 31px);width:100%;resize:none;" maxlength="1000" placeholder="填写日记，限1000字"></textarea>
 				</div>
@@ -1078,7 +1143,7 @@
 					<div id="dayread" style="position:absolute;top:-55px;left:5px;height:15px;line-height:15px;"></div>
 					<div id="weatherread" style="position:absolute;top:-40px;left:5px;height:20px;line-height:20px;"></div>
 					<div id="locationread"style="position:absolute;top:-20px;left:5px;height:20px;line-height:20px;overflow:hidden;"></div>
-					<img id="dayimgread" src="1_2.jpg" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
+					<img id="dayimgread" src="" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
 				</div>
 				<div class="yxinputsreadbg"></div>
 				<div class="yxinputsread">
@@ -1156,10 +1221,7 @@
 			<input id="calendarbtn" class="hideallbtns" type="button" style="display:none;" value="日历"/>
 			<input id="todaybtn" actionid="readtoday" action="click" class="hideallbtns" type="button" style="display:none;" value="今天"/>
 			<input id="newuserbtn" onclick="showregisterform()" class="hideallbtns" type="button" style="display:none;" value="注册新账号"/>
-			<input id="existuserbtn" onclick="dologout()" class="hideallbtns" type="button" style="display:none;background-image: url('logo.png');
-    background-repeat: no-repeat;
-    background-position: center; background-attachment: fixed;
-    " value="已有账号"/>
+			<input id="existuserbtn" onclick="dologout()" class="hideallbtns" type="button" style="display:none;" value="已有账号"/>
 		</div>
 	
 		<div class="openingclose" style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;background-color:black;"></div>
@@ -1216,7 +1278,7 @@
 				陪伴有故事的你<br>
 				<br>
 				<br>
-				© 10o10m科技<br>
+				© 10o10m<br>
 				出品
 			</div>
 			<div class="footer">

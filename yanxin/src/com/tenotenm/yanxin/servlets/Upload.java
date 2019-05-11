@@ -28,8 +28,8 @@ import com.zdd.bdc.client.util.STATIC;
 
 @SuppressWarnings("serial")
 @WebServlet("/cexpired/upload")
-@MultipartConfig(maxFileSize = 1024 * 4000, // 4 MB
-		maxRequestSize = 1024 * 4010) // 4 MB + 10k
+@MultipartConfig(maxFileSize = 1024 * 5000, // 5 MB
+		maxRequestSize = 1024 * 5010) // 5 MB + 10k
 public class Upload extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -80,7 +80,7 @@ public class Upload extends HttpServlet {
 				}
 			}
 			if (filekey==null) {
-				throw new Exception("请浏览本地小于4M的图片(正方形图片将获得最佳显示效果),大于100K的图片将会被压缩存储，压缩后图片质量有所损失");
+				throw new Exception("请浏览本地小于5M的图片(正方形图片将获得最佳显示效果),大于100K的图片将会被压缩存储，压缩后图片质量有所损失");
 			}
 			Yanxin yx = Bizutil.readyanxin(yxaccount, today);
 			if (yx==null) {
@@ -92,6 +92,7 @@ public class Upload extends HttpServlet {
 				yx.setWeather("");
 				yx.setUniquekeyprefix(yxaccount.getYxyanxinuniquekeyprefix());
 				yx.setYxloginkey(yxlogin.getKey());
+				yx.setTimecreate(new Date());
 				try {
 					yx.createunique(null, Bizutil.yanxinkey(yxaccount, today));
 				}catch(Exception e) {
@@ -110,6 +111,16 @@ public class Upload extends HttpServlet {
 						throw e;
 					}
 				}
+			} else {
+				if (yx.getPhoto()!=null&&!yx.getPhoto().isEmpty()) {
+					String[] folderkey=yx.getPhoto().split("/");
+					if (folderkey.length==2) {
+						Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_bigfileto, folderkey[1]);
+					}
+				}
+				yx.setPhoto(filefolder+"/"+filekey);
+				yx.setYxloginkey(yxlogin.getKey());
+				yx.modify(null);
 			}
 
 			Map<String, Object> ret = new Hashtable<String, Object>();

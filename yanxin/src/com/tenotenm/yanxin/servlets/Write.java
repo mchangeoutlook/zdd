@@ -64,6 +64,7 @@ public class Write extends HttpServlet {
 				yx.setWeather(weather);
 				yx.setUniquekeyprefix(yxaccount.getYxyanxinuniquekeyprefix());
 				yx.setYxloginkey(yxlogin.getKey());
+				yx.setTimecreate(new Date());
 				try {
 					yx.createunique(null, Bizutil.yanxinkey(yxaccount, today));
 				}catch(Exception e) {

@@ -120,11 +120,10 @@ public class Bizutil {
 			return ret;
 		}
 		ret.put("content", yanxin.getContent());
-		ret.put("key", yanxin.getKey());
+		ret.put("key", "secret");
 		ret.put("location", yanxin.getLocation());
 		ret.put("photo", yanxin.getPhoto());
 		ret.put("weather", yanxin.getWeather());
-		ret.put("timecreate", Reuse.yyyyMMdd(yanxin.getTimecreate()));
 		return ret;
 	}
 

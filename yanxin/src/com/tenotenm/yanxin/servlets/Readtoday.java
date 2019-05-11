@@ -22,7 +22,6 @@ public class Readtoday extends HttpServlet {
 			throws ServletException, IOException {
 		try {
 			Yxaccount yxaccount = (Yxaccount)request.getAttribute(Yxaccount.class.getSimpleName());
-			Bizutil.checkaccountavailability(yxaccount);
 			Date today = new Date();
 			Map<String, String> ret = Bizutil.convert(Bizutil.readyanxin(yxaccount, today));
 			ret.put("today", Reuse.yyyyMMdd(today));
