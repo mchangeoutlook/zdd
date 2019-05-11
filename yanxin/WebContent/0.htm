@@ -746,7 +746,7 @@
 			　　		loading(false);
 					if (status!="success"){
 			　　			ajaxpost.abort();
-				　　		footmsg("网络异常["+status+"],请检查网络连接后刷新页面！");
+				　　		footmsg("网络异常 ["+status+"],请检查网络连接后刷新页面！");
 			　　		}
 			　　	}
 			});
@@ -785,7 +785,7 @@
 			　　		loading(false);
 					if (status!="success"){
 			　　			ajaxpost.abort();
-				　　		footmsg("网络异常或上传图片过大，请浏览本地小于4M的图片(正方形图片将获得最佳显示效果),大于100K的图片将会被压缩存储，压缩后图片质量有所损失");
+				　　		footmsg("网络异常 ["+status+"] 或上传图片过大，请浏览本地小于4M的图片(正方形图片将获得最佳显示效果),大于100K的图片将会被压缩存储，压缩后图片质量有所损失");
 			　　		}
 			　　	}
 			});
@@ -850,7 +850,7 @@
 			} else {
 				$("#todaybtn").click();
 				if (data.expiretime!=undefined){
-					footmsg(data.name+" 欢迎回来 你的账号即将在 "+data.expiretime+" 后过期，请点击账号及时延长过期时间");
+					footmsg(data.name+" 欢迎回来 你的账号即将在 "+data.expiretime+" 后过期，请点击账号并及时延长过期时间");
 				} else {
 					footmsg(data.name+" 欢迎回来");
 				}
@@ -1090,7 +1090,7 @@
 				<div style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);width:300px;text-align:center;">
 					<div style="width:50px;margin:auto;text-align:right;font-size:12px;">®️</div>
 					<img src="logo.png" style="width:40px;height:40px;"><br>
-					<div style="padding:5px;">言心 你的心灵日记</div>
+					<div style="padding:5px;">登录你的言心日记</div>
 					<input id="loginuser" style="margin-top:5px;" size="24" type="text" maxlength="20" placeholder="填写账号"/><br>
 					<input id="loginpass" style="margin-top:5px;" size="24" type="password" maxlength="20" placeholder="只填写密码即可登录"/><br>
 					<input id="loginmotto" style="margin-top:5px;" size="24" type="text" maxlength="100" placeholder="或只填写格言也可登录"/><br>
@@ -1103,12 +1103,11 @@
 				<div style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);width:300px;text-align:center;">
 					<div style="width:50px;margin:auto;text-align:right;font-size:12px;">®️</div>
 					<img src="logo.png" style="width:40px;height:40px;"><br>
-					<div style="padding:5px;">言心 你的心灵日记</div>
+					<div style="padding:5px;">注册你的言心日记</div>
 					<input id="registeruser" style="margin-top:5px;" size="24" type="text" maxlength="20" placeholder="填写账号"/><br>
-					<input id="registerpass" style="margin-top:5px;margin-right:10px;" size="10" type="password" maxlength="20" placeholder="填写密码"/><input id="registerrepass" style="margin-top:5px;" size="10" type="password" maxlength="20" placeholder="再次填写密码"/><br>
-					<input id="registermotto" style="margin-top:5px;margin-right:10px;" size="10" type="text" maxlength="100" placeholder="填写格言"/><input id="registerremotto" style="margin-top:5px;" size="10" type="text" maxlength="100" placeholder="再次填写格言"/><br>
-					<div style="position:absolute;top:100%;font-size:12px;left:25%;transform:translateX(-50%) translateY(50%);" 
-					onclick="post('freego','agreement',{})">用户协议</div>
+					<input id="registerpass" style="margin-top:5px;margin-right:10px;" size="10" type="password" maxlength="20" placeholder="填写密码"/><input id="registerrepass" style="margin-top:5px;" size="10" type="password" maxlength="20" placeholder="再填一次密码"/><br>
+					<input id="registermotto" style="margin-top:5px;margin-right:10px;" size="10" type="text" maxlength="100" placeholder="填写格言"/><input id="registerremotto" style="margin-top:5px;" size="10" type="text" maxlength="100" placeholder="再填一次格言"/><br>
+					<div style="position:absolute;top:100%;font-size:12px;left:25%;transform:translateX(-50%) translateY(50%);" onclick="post('freego','agreement',{})">你的言心协议</div>
 					<input actionid="register" action="click" type="button" style="position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(50%);" value="注册"/>
 				</div>
 			</div>
@@ -1117,7 +1116,7 @@
 					<div id="selfname" style="margin:2px;width:100%;text-align:center;"></div>
 					<div style="margin:2px;width:100%;text-align:center;"><input id="logoutbtn" actionid="logout" action="click" type="button" value="退出登录"/></div>
 
-					<div style="width:100%;text-align:left;margin:2px;"><font id="selfreusetime"></font> <input onclick="post('freego','agreement',{})" style="margin:2px;" type="button" value="用户协议"/></div>
+					<div style="width:100%;text-align:left;margin:2px;"><font id="selfreusetime"></font> <div onclick="post('freego','agreement',{})" style="margin:2px;float:right;">你的言心协议</div></div>
 					<div style="width:100%;text-align:left;margin:2px;"><font id="selfexpiretime"></font> <br> <input id="extendbtn" onclick="post('freego','buyhint',{})" type="button" class="hideallaccountform" style="display:none;margin:2px;" value="延长"/></div>
 					
 					<div id="selfexpiretimenew" class="hideallaccountform" style="width:100%;text-align:left;margin:2px;display:none;color:#f4a57e;"></div>
@@ -1127,24 +1126,24 @@
 					<div id="selfdaystogive" class="hideallaccountform" style="display:none;margin:2px;width:100%;"></div>
 					<div id="selfdaystogivenew" class="hideallaccountform" style="display:none;margin:2px;width:100%;color:#f4a57e;"></div>
 					
-					<div id="selfextendform" class="hideallaccountform" style="display:none;margin:2px;width:100%;"><input id="selfextend" style="margin:2px;" size="5" type="text" maxlength="5" placeholder="延长天数"/><input id="selfextendbtn" actionid="extend" action="click" type="button" style="margin:2px;" selforother="self" value="延长自己的过期时间"/></div>
+					<div id="selfextendform" class="hideallaccountform" style="display:none;margin:2px;width:100%;"><input id="selfextend" style="margin:2px;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="selfextendbtn" actionid="extend" action="click" type="button" style="margin:2px;" selforother="self" value="延长自己的过期时间"/></div>
 
 					<div id="daystogivespendform" class="hideallaccountform" style="display:none;padding:5px;margin:5px;text-align:left;border:1px #ccc solid;border-radius:4px;">
-						<div style="width:100%;text-align:left;"><input id="findother" style="margin:2px;" size="10" type="text" maxlength="20" placeholder="查询其它账号"/><input id="findotherbtn" actionid="readother" action="click" style="margin:2px;" type="button" value="查询"/></div>
+						<div style="width:100%;text-align:left;"><input id="findother" style="margin:2px;" size="10" type="text" maxlength="20" placeholder="填写其它账号"/><input id="findotherbtn" actionid="readother" action="click" style="margin:2px;" type="button" value="查询"/></div>
 						<div id="otherextendform" class="hideallotheraccountform" style="display:none;width:100%;">
 							<div id="otherreusetime" style="margin:2px;width:100%;text-align:left;"></div>
 							<div id="otherexpiretime" style="margin:2px;width:100%;text-align:left;"></div>
 							<div id="otherexpiretimenew" class="hideallotheraccountform" style="margin:2px;width:100%;text-align:left;display:none;color:#f4a57e;"></div>
 							<div id="otherextendhint" class="hideallotheraccountform" style="width:100%;text-align:left;margin:2px;display:none;color:#f4a57e;"></div>
-							<div style="width:100%;text-align:left;"><input id="otherextend" class="hideallotheraccountform" style="margin:2px;display:none;" size="5" type="text" maxlength="5" placeholder="延长天数"/><input actionid="extend" action="click" id="otherextendbtn" class="hideallotheraccountform" style="display:none;margin:2px;" selforother="other" type="button" value="延长过期时间"/></div>
+							<div style="width:100%;text-align:left;"><input id="otherextend" class="hideallotheraccountform" style="margin:2px;display:none;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input actionid="extend" action="click" id="otherextendbtn" class="hideallotheraccountform" style="display:none;margin:2px;" selforother="other" type="button" value="延长过期时间"/></div>
 							<div id="otherdaystogive" style="margin:2px;width:100%;text-align:left;"></div>
 							<div id="otherdaystogivenew" class="hideallotheraccountform" style="margin:2px;width:100%;text-align:left;display:none;color:#f4a57e;"></div>
-							<div style="width:100%;text-align:left;"><input id="othergive" class="hideallotheraccountform" style="margin:2px;" size="5" type="text" maxlength="5" placeholder="增加天数"/><input id="othergivebtn" class="hideallotheraccountform" actionid="give" action="click" type="button" style="margin:2px;" value="增加库存天数"/></div>
+							<div style="width:100%;text-align:left;"><input id="othergive" class="hideallotheraccountform" style="margin:2px;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="othergivebtn" class="hideallotheraccountform" actionid="give" action="click" type="button" style="margin:2px;" value="增加库存天数"/></div>
 						</div>
 					</div>
 					
-					<div style="width:100%;"><input id="changepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="填写新密码"/><input id="changerepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="再次填写新密码"/><input actionid="changepass" action="click" type="button" style="margin:2px;" value="修改"/></div>
-					<div style="width:100%;"><input id="changemotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="填写新格言"/><input id="changeremotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="再次填写新格言"/><input actionid="changemotto" action="click" type="button" style="margin:2px;" value="修改"/></div>
+					<div style="width:100%;"><input id="changepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="填写新密码"/><input id="changerepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="再填一次新密码"/><input actionid="changepass" action="click" type="button" style="margin:2px;" value="修改"/></div>
+					<div style="width:100%;"><input id="changemotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="填写新格言"/><input id="changeremotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="再填一次新格言"/><input actionid="changemotto" action="click" type="button" style="margin:2px;" value="修改"/></div>
 				</div>
 			</div>
 			<div id="calendarform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
@@ -1153,11 +1152,14 @@
 		</div>
 		
 		<div class="footbtns">
-			<input id="accountbtn" actionid="readself" action="click" class="hideallbtns" type="button" style="display:none;" value="账号"/>
+			<input id="accountbtn" actionid="readself" action="click" class="hideallbtns" type="button" style="display:none;background-image: url(logo.png);background-size:contain;background-repeat:no-repeat;padding-left:27px;background-color:black;border-radius:unset;" value="账号"/>
 			<input id="calendarbtn" class="hideallbtns" type="button" style="display:none;" value="日历"/>
 			<input id="todaybtn" actionid="readtoday" action="click" class="hideallbtns" type="button" style="display:none;" value="今天"/>
 			<input id="newuserbtn" onclick="showregisterform()" class="hideallbtns" type="button" style="display:none;" value="注册新账号"/>
-			<input id="existuserbtn" onclick="dologout()" class="hideallbtns" type="button" style="display:none;" value="已有账号"/>
+			<input id="existuserbtn" onclick="dologout()" class="hideallbtns" type="button" style="display:none;background-image: url('logo.png');
+    background-repeat: no-repeat;
+    background-position: center; background-attachment: fixed;
+    " value="已有账号"/>
 		</div>
 	
 		<div class="openingclose" style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;background-color:black;"></div>
