@@ -1,22 +1,11 @@
 package com.tenotenm.yanxin.util;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,10 +14,56 @@ import com.tenotenm.yanxin.entities.Iplimit;
 import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.entities.Yxlogin;
 import com.tenotenm.yanxin.entities.Yanxin;
+import com.zdd.bdc.client.biz.Bigclient;
 import com.zdd.bdc.client.biz.Configclient;
+import com.zdd.bdc.client.biz.Fileclient;
 import com.zdd.bdc.client.util.STATIC;
 
 public class Bizutil {
+	
+	public static void createyanxin(Yxaccount yxaccount, Yxlogin yxlogin, String filefolder, String filekey, Date today) throws Exception {
+		Yanxin yx = Bizutil.readyanxin(yxaccount, today);
+		if (yx==null) {
+			yx = new Yanxin();
+			yx.setKey(Bigclient.newbigdatakey());
+			yx.setPhoto(filefolder+"/"+filekey);
+			yx.setContent("");
+			yx.setLocation("");
+			yx.setWeather("");
+			yx.setUniquekeyprefix(yxaccount.getYxyanxinuniquekeyprefix());
+			yx.setYxloginkey(yxlogin.getKey());
+			yx.setTimecreate(new Date());
+			try {
+				yx.createunique(null, Bizutil.yanxinkey(yxaccount, today));
+			}catch(Exception e) {
+				if (e.getMessage()!=null&&e.getMessage().contains(STATIC.DUPLICATE)) {
+					yx.readunique(Bizutil.yanxinkey(yxaccount, today));
+					if (yx.getPhoto()!=null&&!yx.getPhoto().isEmpty()) {
+						String[] folderkey=yx.getPhoto().split("/");
+						if (folderkey.length==2) {
+							Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_bigfileto, folderkey[1]);
+						}
+					}
+					yx.setPhoto(filefolder+"/"+filekey);
+					yx.setYxloginkey(yxlogin.getKey());
+					yx.modify(null);
+				} else {
+					throw e;
+				}
+			}
+		} else {
+			if (yx.getPhoto()!=null&&!yx.getPhoto().isEmpty()) {
+				String[] folderkey=yx.getPhoto().split("/");
+				if (folderkey.length==2) {
+					Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_bigfileto, folderkey[1]);
+				}
+			}
+			yx.setPhoto(filefolder+"/"+filekey);
+			yx.setYxloginkey(yxlogin.getKey());
+			yx.modify(null);
+		}
+	}
+	
 	public static Integer newdaycomingminutes(Yxlogin yxlogin) throws Exception {
 		long millistotomorrow = 24 * 60 * 60 * 1000 - (yxlogin.getTimeupdate().getTime()
 				- Reuse.yyyyMMdd(Reuse.yyyyMMdd(yxlogin.getTimeupdate())).getTime());
@@ -215,55 +250,6 @@ public class Bizutil {
 
 	private static Date dateallowreuseaccount(Yxaccount yxaccount) {
 		return new Date(yxaccount.getTimeexpire().getTime() + Reuse.getdaysmillisconfig("account.reuse.in.days"));
-	}
-
-	public static byte[] compress(InputStream is, float compressrate) throws Exception {
-		ByteArrayOutputStream convertedos = null;
-		ByteArrayOutputStream compressedos = null;
-		ImageWriter compressedwriter = null;
-		try {
-			BufferedImage toconvertimage = ImageIO.read(is);
-			convertedos = new ByteArrayOutputStream();
-
-			BufferedImage converted = new BufferedImage(toconvertimage.getWidth(), toconvertimage.getHeight(),
-					BufferedImage.TYPE_INT_RGB);
-			converted.createGraphics().drawImage(toconvertimage, 0, 0, Color.BLACK, null);
-			ImageIO.write(converted, "jpg", convertedos);
-
-			BufferedImage image = ImageIO.read(new ByteArrayInputStream(convertedos.toByteArray()));
-
-			compressedos = new ByteArrayOutputStream();
-
-			Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
-			compressedwriter = (ImageWriter) writers.next();
-
-			ImageOutputStream ios = ImageIO.createImageOutputStream(compressedos);
-			compressedwriter.setOutput(ios);
-
-			ImageWriteParam param = compressedwriter.getDefaultWriteParam();
-			param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-			param.setCompressionQuality(compressrate);// 0.2f
-			compressedwriter.write(null, new IIOImage(image, null, null), param);
-			return compressedos.toByteArray();
-		} finally {
-			try {
-				is.close();
-			} catch (Exception e) {
-			}
-			try {
-				convertedos.close();
-			} catch (Exception e) {
-			}
-			try {
-				compressedos.close();
-			} catch (Exception e) {
-			}
-			try {
-				compressedwriter.dispose();
-			} catch (Exception e) {
-			}
-
-		}
 	}
 
 	public static void commoncheck(HttpServletRequest req) throws Exception {

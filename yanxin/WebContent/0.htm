@@ -82,7 +82,7 @@
   				overflow-y:auto;
   				color:#f4a57e;
   				text-align:left;
-  				animation: msgfooting 0.8s ease 0s forwards;
+  				animation: msgfooting 0.5s ease 0s forwards;
   			}  			
 			@keyframes msgfooting
 			{
@@ -707,7 +707,7 @@
 				100%   {transform-origin:4px 4px;transform: rotate(-90deg);}
 			}  		
 		</style>
-		<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+		<script src="jquery-3.3.1.min.js" ></script> 
 		<script type="text/javascript">
 		var datainterface = "http://localhost:8080/yanxin/";
 		var photointerface = "http://localhost:8080/yanxin/";
@@ -745,7 +745,7 @@
 			　　		loading(false);
 					if (status!="success"){
 			　　			ajaxpost.abort();
-				　　		footmsg("网络异常 ["+status+"],请检查网络连接后刷新页面！");
+				　　		footmsg("网络异常，请检查网络连接后刷新页面！");
 			　　		}
 			　　	}
 			});
@@ -756,9 +756,36 @@
 			var folderkey = photo.split("/");
 			return photointerface+"cexpired/download?folder="+folderkey[0]+"&filekey="+folderkey[1]+"&loginkey="+getcache("yanxinloginkey");
 		}
-		
+		function prepareupload(){
+			$("#filebtn").hide();
+			try{
+				var reader  = new FileReader();
+				reader.readAsDataURL($("#filebtn").prop("files")[0]);
+				reader.onload = function () {
+					try{
+						var result = reader.result;
+						if (result.length <= 204800) {
+					    		upload();
+					    } else {
+					    		var img = new Image();
+					    		img.src = result;
+					    		img.onload = function(){
+								try{
+									post("cexpired","uploadcanvas",{"canvasdataurl":compress(img)});
+								}catch(e){
+									upload();
+								}
+							};
+					    }
+					}catch(e){
+						upload();
+					}
+				  };
+			}catch(e){
+				upload();
+			}
+		}
 		function upload(){
-			
 			var paramdata = new FormData($("#dayimgwriteform")[0]);
 			footmsg("正在保存图片，保存成功之前请不要离开此页面");
 			var ajaxpost = $.ajax({
@@ -785,7 +812,7 @@
 			　　		loading(false);
 					if (status!="success"){
 			　　			ajaxpost.abort();
-				　　		footmsg("网络异常 ["+status+"] 或上传图片过大，"+$("#imghint").html());
+				　　		footmsg("网络异常或上传图片过大，"+$("#imghint").html());
 			　　		}
 			　　	}
 			});
@@ -796,7 +823,7 @@
 			if (data.newdaycomingminutes!=undefined){
 				hint = "，"+data.newdaycomingminutes;
 			}
-			if (data.compressedsize==0){
+			if (data.compressed=="false"){
 				footmsg("图片保存成功"+hint);
 			} else {
 				footmsg("图片已压缩保存"+hint);
@@ -825,14 +852,33 @@
 			}
 		}
 		
+		var canvas = document.createElement("canvas");
+		var ctx = canvas.getContext('2d');
+		var tCanvas = document.createElement("canvas");
+		var tctx = tCanvas.getContext("2d");
+		var maxsize = 100 * 1024;
+		
 		$(document).ready(function(){
 			init();
 			setTimeout(function(){
 				$("#openingclosebtn").click();
 			},5000);
 		});
+		function afteruploadcanvas(data){
+			var hint = "";
+			if (data.newdaycomingminutes!=undefined){
+				hint = "，"+data.newdaycomingminutes;
+			}
+			if (data.compressed=="true"){
+				footmsg("图片已压缩保存"+hint);
+				$("#dayimgwrite").attr("src",load(data.photo));
+			} else {
+				footmsg("图片压缩失败，"+$("#imghint").html());
+			}
+		}
 		
 		function init(){
+			startfootmsg();
 			initactions();
 			if (getcache("yanxinloginkey")==null){
 				$("#logoutbtn").click();
@@ -840,6 +886,52 @@
 				$("#todaybtn").click();
 			}
 		}
+		
+		function compress(img) {
+	        var width = img.width;
+	        var height = img.height;
+
+	        var ratio;
+	        if ((ratio = width * height / 4000000)>1) {
+	            ratio = Math.sqrt(ratio);
+	            width /= ratio;
+	            height /= ratio;
+	        }else {
+	            ratio = 1;
+	        }
+
+	        canvas.width = width;
+	        canvas.height = height;
+
+	        ctx.fillStyle = "#000";
+	        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	        var count;
+	        if ((count = width * height / 1000000) > 1) {
+	            count = ~~(Math.sqrt(count)+1);
+
+	            var nw = ~~(width / count);
+	            var nh = ~~(height / count);
+
+	            tCanvas.width = nw;
+	            tCanvas.height = nh;
+
+	            for (var i = 0; i < count; i++) {
+	                for (var j = 0; j < count; j++) {
+	                    tctx.drawImage(img, i * nw * ratio, j * nh * ratio, nw * ratio, nh * ratio, 0, 0, nw, nh);
+
+	                    ctx.drawImage(tCanvas, i * nw, j * nh, nw, nh);
+	                }
+	            }
+	        } else {
+	            ctx.drawImage(img, 0, 0, width, height);
+	        }
+
+	        var ndata = canvas.toDataURL('image/jpeg', 0.2);
+
+	        tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
+			return ndata;
+	    }
 		
 		function dologout(){
 			if (getcache("yanxinloginkey")!=null){
@@ -1093,6 +1185,7 @@
 					$(this).one($(this).attr("action"),eval("do"+$(this).attr("actionid")));
 				}
 			});
+			$("#filebtn").show();
 		}
 		function loading(show){
 			$(".hideloading").remove();
@@ -1111,22 +1204,29 @@
 			$("body").append("<input id='msgpopbtn' onclick=\"$('.hidemsgpop').remove();\" class='hidemsgpop' style='display:none;position:fixed;bottom:52px;left:50%;transform:translateX(-50%);' type='button' value='知道了'/>");
 			$("#msgpopbtn").fadeIn(800);
 		}
+		var footmsgs = new Array();
+		function startfootmsg(){
+			if (footmsgs.length>0){
+				$(".msgfoot").remove();
+				$("body").append("<div class='msgfoot'>"+footmsgs[0]+
+					"</div>");
+				footmsgs.splice(0, 1);
+			}
+			setTimeout(startfootmsg, 1500);
+		}
 		function footmsg(content){
-			$(".msgfoot").remove();
-			$("body").append("<div class='msgfoot'>"+content+
-				"</div>");
+			footmsgs.push( content );
 		}
 		</script>
 	</head>
 	<body>
-	
 		<div class="content">
 			<div id="yanxinwriteform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;">
 				<div class="yximgwrite">
-					<div id="imghint" style="position:absolute;top:40%;left:5px;right:5px;text-align:center;">请浏览本地小于5M的图片（正方形图片将获得最佳显示效果），大于100K的图片将会被压缩存储，压缩后图片质量有所损失</div>
+					<div id="imghint" style="position:absolute;top:40%;left:5px;right:5px;text-align:center;">请浏览本地图片（正方形图片将获得最佳显示效果），大于200K的图片将自动压缩存储，压缩后图片质量有所损失，如果自动压缩失败，请重新上传小于200K的图片</div>
 					<img id="dayimgwrite" src="" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
 					<form method="POST" enctype="multipart/form-data" id="dayimgwriteform">
-						<input id="filebtn" name="photo" accept="/image/*" onchange="upload();" style="position:absolute;top:100%;left:5px;" type="file"/>
+						<input id="filebtn" name="photo" accept="image/*" onchange="prepareupload();" style="position:absolute;top:100%;left:5px;" type="file"/>
 					</form>
 				</div>
 				<div class="yxinputswrite">
