@@ -23,6 +23,8 @@ public class Login extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			String ip = Reuse.getremoteip(request);
+			Bizutil.ipdeny(ip, false);
 			String name = request.getParameter("name");
 			if (name == null || name.trim().isEmpty()) {
 				throw new Exception("请填写账号");
@@ -32,7 +34,9 @@ public class Login extends HttpServlet {
 			try {
 				yxaccount.readunique(yxaccount.getUniquename());
 			} catch (Exception e) {
-				Bizutil.ipdeny(Reuse.getremoteip(request), true);
+				if (e.getMessage() != null && e.getMessage().contains(Reuse.NOTFOUND)) {
+					Bizutil.ipdeny(Reuse.getremoteip(request), true);
+				}
 				throw new Exception("账号或密码或格言不正确，请重新登录");
 			}
 			
@@ -44,7 +48,6 @@ public class Login extends HttpServlet {
 			if (yxaccount.getYxloginkey().isEmpty()) {// first time login
 				if (!yxaccount.getIp().equals(Reuse.getremoteip(request))
 						|| !yxaccount.getUa().equals(Reuse.getuseragent(request))) {
-					Bizutil.ipdeny(Reuse.getremoteip(request), true);
 					throw new Exception("请使用注册时的IP和浏览器完成首次登录");
 				}
 			} else {

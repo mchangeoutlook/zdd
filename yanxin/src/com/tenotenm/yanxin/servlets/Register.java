@@ -23,7 +23,9 @@ public class Register extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			Bizutil.iplimit(Reuse.getremoteip(request), false);
+			String ip = Reuse.getremoteip(request);
+			Bizutil.ipdeny(ip, false);
+			Bizutil.iplimit(ip, false);
 
 			String name = request.getParameter("name");
 			if (name == null || name.trim().isEmpty()) {
@@ -88,7 +90,7 @@ public class Register extends HttpServlet {
 			Bizutil.iplimit(Reuse.getremoteip(request), true);
 			Reuse.respond(response,
 					"注册成功！请在" + Reuse.yyyyMMddHHmmss(Bizutil.dateallowfirstlogin(yxaccount))
-							+ "前完成首次登录，否则该账号将被回收",
+							+ "前完成首次登录，否则该账号将被回收，回收后该账号的所有日记和相关数据都将无法找回",
 					null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);

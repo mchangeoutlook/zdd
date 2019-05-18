@@ -76,6 +76,12 @@ public class Yxaccount extends Superentity{
 		}
 		return new Object[] {name, 0};
 	}
+	protected String add4modify_name() {
+		if (name==null) {
+			return null;
+		}
+		return name;
+	}
 	
 	protected void read_pass(String pass) {
 		this.pass=pass;
