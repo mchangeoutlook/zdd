@@ -54,7 +54,7 @@ public abstract class Superentity {
 		create(key);
 	}
 
-	public void createpaged(String key, String pagedindex) throws Exception {
+	public void createpaged(String key, String pagedindex, boolean createdata) throws Exception {
 		if (key==null) {
 			if (getKey()==null) {
 				key = Bigclient.newbigdatakey();
@@ -65,7 +65,9 @@ public abstract class Superentity {
 		}
 		String tablename =  this.getClass().getSimpleName();
 		Pagedindexclient.getinstance(Reuse.namespace_yanxin, pagedindex).addfilter(tablename+"-pkey").create(key, 0);
-		create(key);
+		if (createdata) {
+			create(key);
+		}
 	}
 
 	public void modify(String key) throws Exception {

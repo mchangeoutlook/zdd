@@ -58,10 +58,10 @@ public class Uploadcanvasdataurl extends HttpServlet {
 					Files.write(Paths.get(filekey), decodedData, StandardOpenOption.CREATE, StandardOpenOption.SYNC);
 					Fileclient.getinstance(filefolder).write(Reuse.namespace_bigfileto, filekey,
 							Files.newInputStream(Paths.get(filekey)));
-					Bizutil.createyanxin(yxaccount, yxlogin, filefolder, filekey, today);
+					String yanxinkey = Bizutil.createyanxin(yxaccount, yxlogin, filefolder, filekey, today);
 
 					Map<String, Object> ret = new Hashtable<String, Object>();
-					ret.put("photo", filefolder + "/" + filekey);
+					ret.put("onetimekeyphoto", Bizutil.onetimekey(null, yanxinkey));
 					ret.put("compressed", "true");
 					Integer m = Bizutil.newdaycomingminutes(yxlogin);
 					if (m != null) {

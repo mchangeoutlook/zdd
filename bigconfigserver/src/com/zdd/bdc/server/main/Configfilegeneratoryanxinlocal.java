@@ -88,8 +88,8 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("agreement.items", "5", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("agreement.title", "你的言心协议", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("agreement.item.0", "1. 在你的账号过期时间之前，你可登录该账号并查看该账号的所有日记和编辑当天的日记，也可根据系统提示延长过期时间，过期后并且在该账号被回收之前，你可登录该账号并根据系统提示延长过期时间，但不可查看和编辑该账号的任何日记", namespace, STATIC.REMOTE_CONFIG_CORE);
-		Fileconfigutil.create("agreement.item.1", "2. 在你的账号回收时间之前，你可登录该账号并延长过期时间，如果因为没有及时延长该账号的过期时间导致该账号被回收，回收后视为你主动放弃该账号，你将无法登录该账号，也无法再延长过期时间，该账号的所有日记和资料也将无法找回", namespace, STATIC.REMOTE_CONFIG_CORE);
-		Fileconfigutil.create("agreement.item.2", "3. 在你的账号回收时间之前，我们时刻努力确保该账号的日记和资料安全，但如果由于外界不可抗力因素导致该账号的日记和资料损失，我们深感抱歉，并且我们会根据具体原因和损失情况竭尽全力进行挽救，在无法完成100%挽救的情况下，我们会坦诚的把原因和结果告知你，但我们不承担任何赔偿责任，感谢你的理解和支持", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("agreement.item.1", "2. 在你的账号回收时间之前，你可登录该账号并延长过期时间，如果因为没有及时延长该账号的过期时间导致该账号被回收，回收后视为你主动放弃该账号，你将无法登录该账号，也无法再延长过期时间，该账号的所有日记和相关数据也将无法找回", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("agreement.item.2", "3. 在你的账号回收时间之前，我们时刻努力确保该账号的日记和相关数据安全，但如果由于外界不可抗力因素导致该账号的日记和相关数据损失，我们深感抱歉，并且我们会根据具体原因和损失情况竭尽全力进行挽救，在无法完成100%挽救的情况下，我们会坦诚的把原因和结果告知你，但我们不承担任何赔偿责任，感谢你的理解和支持", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("agreement.item.3", "4. {0}"
 				, namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("agreement.item.4", "5. 账号一旦注册成功，视为你已经同意以上所有条款", namespace, STATIC.REMOTE_CONFIG_CORE);

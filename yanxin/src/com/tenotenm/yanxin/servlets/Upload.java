@@ -69,10 +69,10 @@ public class Upload extends HttpServlet {
 			if (filekey == null) {
 				throw new Exception("请上传图片");
 			}
-			Bizutil.createyanxin(yxaccount, yxlogin, filefolder, filekey, today);
+			String yanxinkey = Bizutil.createyanxin(yxaccount, yxlogin, filefolder, filekey, today);
 
 			Map<String, Object> ret = new Hashtable<String, Object>();
-			ret.put("photo", filefolder + "/" + filekey);
+			ret.put("onetimekeyphoto", Bizutil.onetimekey(null, yanxinkey));
 			ret.put("compressed", "false");
 			Integer m = Bizutil.newdaycomingminutes(yxlogin);
 			if (m != null) {

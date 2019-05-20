@@ -35,6 +35,8 @@ public class Readother extends HttpServlet {
 				}catch(Exception e) {
 					throw new Exception("该账号不存在");
 				}
+				Bizutil.checkaccountreused(target);
+				
 			} else {
 				throw new Exception("你的账号信息已显示，无需再查询");
 			}

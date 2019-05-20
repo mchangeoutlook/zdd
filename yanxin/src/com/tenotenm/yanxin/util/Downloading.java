@@ -16,7 +16,6 @@ public class Downloading implements Theclientprocess {
 	@Override
 	public void responses(byte[] arg0) throws Exception {
 		if (os==null) {
-			res.setContentType("image/*");
 			os = res.getOutputStream();
 		}
 		os.write(arg0);

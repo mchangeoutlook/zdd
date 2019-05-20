@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.tenotenm.yanxin.entities.Ipdeny;
 import com.tenotenm.yanxin.entities.Iplimit;
+import com.tenotenm.yanxin.entities.Onetimekey;
 import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.entities.Yxlogin;
 import com.tenotenm.yanxin.entities.Yanxin;
@@ -21,7 +22,7 @@ import com.zdd.bdc.client.util.STATIC;
 
 public class Bizutil {
 	
-	public static void createyanxin(Yxaccount yxaccount, Yxlogin yxlogin, String filefolder, String filekey, Date today) throws Exception {
+	public static String createyanxin(Yxaccount yxaccount, Yxlogin yxlogin, String filefolder, String filekey, Date today) throws Exception {
 		Yanxin yx = Bizutil.readyanxin(yxaccount, today);
 		if (yx==null) {
 			yx = new Yanxin();
@@ -62,6 +63,7 @@ public class Bizutil {
 			yx.setYxloginkey(yxlogin.getKey());
 			yx.modify(null);
 		}
+		return yx.getKey();
 	}
 	
 	public static Integer newdaycomingminutes(Yxlogin yxlogin) throws Exception {
@@ -89,7 +91,7 @@ public class Bizutil {
 		if (ipdkeys.isEmpty()) {
 			if (todeny) {
 				ipd.setIp(ip);
-				ipd.createpaged(null, ip);
+				ipd.createpaged(null, ip, true);
 			}
 		} else {
 			ipd.read(ipdkeys.get(0));
@@ -108,7 +110,7 @@ public class Bizutil {
 			throw new Exception("已启动IP保护，请"
 					+ Reuse.yyyyMMddHHmmss(
 							new Date(timeback.getTime() + Reuse.getsecondsmillisconfig("ipdeny.wait.seconds")))
-					+ "后再来");
+					+ "后重新登录");
 		}
 	}
 
@@ -119,7 +121,7 @@ public class Bizutil {
 		if (ipdkeys.isEmpty()) {
 			if (toincrementnewaccountstoday) {
 				ipd.setIp(ip);
-				ipd.createpaged(null, ip);
+				ipd.createpaged(null, ip, true);
 				ipd.setNewaccounts4increment(1l);
 				ipd.increment(ipd.getKey());
 			}
@@ -155,7 +157,7 @@ public class Bizutil {
 			return ret;
 		}
 		ret.put("content", yanxin.getContent());
-		ret.put("key", "secret");
+		ret.put("key", yanxin.getKey());
 		ret.put("location", yanxin.getLocation());
 		ret.put("photo", yanxin.getPhoto());
 		ret.put("weather", yanxin.getWeather());
@@ -166,6 +168,24 @@ public class Bizutil {
 		return yxaccount.getYxyanxinuniquekeyprefix() + "-" + Reuse.yyyyMMdd(day);
 	}
 
+	public static String onetimekey(String onetimekey, String yanxinkey) throws Exception {
+		if (onetimekey==null) {
+			onetimekey = Bigclient.newbigdatakey();
+			Onetimekey ok = new Onetimekey();
+			ok.createpaged(yanxinkey, onetimekey, false);
+			return onetimekey;
+		} else {
+			Onetimekey ok = new Onetimekey();
+			Vector<String> yanxinkeys = ok.readpaged(onetimekey);
+			if (yanxinkeys!=null&&yanxinkeys.size()==1) {
+				ok.createpaged(onetimekey, onetimekey, false);
+				return yanxinkeys.get(0);
+			} else {
+				return null;
+			}
+		}
+	}
+	
 	public static Yanxin readyanxin(Yxaccount yxaccount, Date day) throws Exception {
 		Yanxin yxyanxin = new Yanxin();
 		try {
@@ -211,7 +231,7 @@ public class Bizutil {
 		if (!isadmin(yxaccount) && isaccountexpired(yxaccount)) {
 			throw new Exception(
 					"账号 " + yxaccount.getName() + " 已过期，请在" + Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))
-							+ "之前延长过期时间，否则该账号将被回收，回收后该账号的所有日记和资源都将无法找回");
+							+ "之前延长过期时间，否则该账号将被回收，回收后该账号的所有日记和相关数据都将无法找回");
 		}
 	}
 
@@ -267,7 +287,7 @@ public class Bizutil {
 		}
 		if (System.currentTimeMillis() - yxlogin.getTimeupdate().getTime() > Reuse
 				.getsecondsmillisconfig("session.expire.seconds")) {
-			throw new Exception("已过期，请重新登录");
+			throw new Exception("你离开太久了，为了你的账号安全，请重新登录");
 		}
 
 		Yxaccount yxaccount = new Yxaccount();
@@ -293,7 +313,7 @@ public class Bizutil {
 	}
 
 	public static void commoncheckexception(HttpServletRequest req, HttpServletResponse res, Exception e) throws IOException {
-		if (e.getMessage() != null && (e.getMessage().contains(STATIC.INVALIDKEY)||e.getMessage().contains(Reuse.NOTFOUND))) {
+		if (e.getMessage() != null && e.getMessage().contains(Reuse.NOTFOUND)) {
 			try {
 				Bizutil.ipdeny(Reuse.getremoteip(req), true);
 				throw new Exception("无效访问，请重新登录");

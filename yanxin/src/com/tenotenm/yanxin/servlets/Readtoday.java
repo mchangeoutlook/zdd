@@ -24,6 +24,9 @@ public class Readtoday extends HttpServlet {
 			Yxaccount yxaccount = (Yxaccount)request.getAttribute(Yxaccount.class.getSimpleName());
 			Date today = new Date();
 			Map<String, String> ret = Bizutil.convert(Bizutil.readyanxin(yxaccount, today));
+			if (ret.get("photo")!=null&&!ret.get("photo").trim().isEmpty()) {
+				ret.put("onetimekeyphoto", Bizutil.onetimekey(null, ret.get("key")));
+			}
 			ret.put("today", Reuse.yyyyMMdd(today));
 			Reuse.respond(response, ret, null);
 

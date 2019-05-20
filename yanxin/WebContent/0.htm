@@ -728,7 +728,6 @@
 			　　	timeout : 10000, 
 			　　	type : 'post',  
 			　　	data :paramjson, 
-			　　	dataType:'json',
 			　　	success:function(result){
 			　　		if (result.state=="success"){
 						eval("after"+actionid+"(result.data)");
@@ -741,21 +740,18 @@
 					}
 			　　	},
 			　　	complete : function(XMLHttpRequest,status){
+			　　		if (this.url.indexOf("cexpired/write")!=-1){
+			　　			setTimeout(autosavingtimer, 10000);
+			　　		}
 			　　		initactions();
-			　　		loading(false);
-					if (status!="success"){
+			　　		if (status!="success"){
 			　　			ajaxpost.abort();
-				　　		footmsg("网络异常，请检查网络连接后刷新页面！");
+				　　		footmsg("网络异常，请检查网络连接");
 			　　		}
 			　　	}
 			});
 		}
 		
-		function load(photo){
-			$("#imghint").hide();
-			var folderkey = photo.split("/");
-			return photointerface+"cexpired/download?folder="+folderkey[0]+"&filekey="+folderkey[1]+"&loginkey="+getcache("yanxinloginkey");
-		}
 		function prepareupload(){
 			$("#filebtn").hide();
 			try{
@@ -793,7 +789,6 @@
 			　　	timeout : 40000, 
 			　　	type : 'post',  
 			　　	data :paramdata, 
-			　　	dataType:'json',
 			　　	processData: false,
 				contentType: false,
 			　　	success:function(result){
@@ -809,8 +804,7 @@
 				},
 			　　	complete : function(XMLHttpRequest,status){
 			　　		initactions();
-			　　		loading(false);
-					if (status!="success"){
+			　　		if (status!="success"){
 			　　			ajaxpost.abort();
 				　　		footmsg("网络异常或上传图片过大，"+$("#imghint").html());
 			　　		}
@@ -828,7 +822,8 @@
 			} else {
 				footmsg("图片已压缩保存"+hint);
 			}
-			$("#dayimgwrite").attr("src",load(data.photo));
+			$("#dayimgwrite").attr("src", photointerface+"freego/download?onetimekey="+data.onetimekeyphoto);
+			$("#imghint").hide();
 		}
 
 		function getcache(key){
@@ -871,20 +866,25 @@
 			}
 			if (data.compressed=="true"){
 				footmsg("图片已压缩保存"+hint);
-				$("#dayimgwrite").attr("src",load(data.photo));
+				$("#dayimgwrite").attr("src", photointerface+"freego/download?onetimekey="+data.onetimekeyphoto);
+				$("#imghint").hide();
 			} else {
 				footmsg("图片压缩失败，"+$("#imghint").html());
+				$("#imghint").show();
 			}
 		}
 		
 		function init(){
-			startfootmsg();
 			initactions();
 			if (getcache("yanxinloginkey")==null){
 				$("#logoutbtn").click();
 			} else {
 				$("#todaybtn").click();
 			}
+			sessionStorage.setItem("isfootmsgtimerstarted","false");
+			sessionStorage.setItem("isautosavingtimerstarted","false");
+			startfootmsg();
+			startautosaving();
 		}
 		
 		function compress(img) {
@@ -944,6 +944,13 @@
 			} else {
 				$("#loginuser").val("");
 			}
+			$("#dayimgwrite").attr("src","");
+			$("#contentwrite").val("");
+			$("#contentwrite").attr("old","");
+			$("#locationwrite").val("");
+			$("#locationwrite").attr("old","");
+			$("#weatherwrite").val("");
+			$("#weatherwrite").attr("old","");
 			$("#loginpass").val("");
 			$("#loginmotto").val("");
 			$(".hideallforms").hide();
@@ -954,6 +961,7 @@
 		
 		function afterlogout(data){
 			footmsg("");
+			sessionStorage.removeItem("iswriting");
 		}
 		
 		function dologin(){
@@ -961,6 +969,7 @@
 			post("freego","login",{"name":$("#loginuser").val(),"pass":$("#loginpass").val(),"motto":$("#loginmotto").val()})
 		}
 		function afterlogin(data){
+			$("#filebtn").val("");
 			setcache("yanxinloginkey",data.loginkey);
 			$("#extendselfbtn").attr("targetname",data.name);
 			setcache("yanxinname",data.name);
@@ -972,10 +981,10 @@
 			$("#calendarbtn").show();
 			if (data.isexpired=="t"){
 				$("#accountbtn").click();
-				footmsg(data.name+" 欢迎回来 你的账号已经过期，请及时延长过期时间，否则账号将被回收");
+				footmsg(data.name+" 欢迎回来 你的账号已经过期，请及时延长过期时间，否则账号将被回收，回收后该账号的所有日记和相关数据都将无法找回");
 			} else {
 				if (data.expiretime!=undefined){
-					footmsg(data.name+" 欢迎回来 你的账号即将在 "+data.expiretime+" 后过期，请及时延长过期时间，否则账号将被回收");
+					footmsg(data.name+" 欢迎回来 你的账号即将在 "+data.expiretime+" 后过期，请及时延长过期时间，否则账号将被回收，回收后该账号的所有日记和相关数据都将无法找回");
 					$("#accountbtn").click();
 				} else {
 					footmsg(data.name+" 欢迎回来");
@@ -1073,11 +1082,15 @@
 			$(".hideallforms").hide();
 			$("#dayimgwrite").attr("src","");
 			$("#contentwrite").val("");
+			$("#contentwrite").attr("old","");
 			$("#locationwrite").val("");
+			$("#locationwrite").attr("old","");
 			$("#weatherwrite").val("");
+			$("#weatherwrite").attr("old","");
 			post("cexpired","readtoday",{})
 		}
 		function afterreadtoday(data){
+			sessionStorage.setItem("iswriting", "true");
 			$("#todaybtn").show();
 			$("#accountbtn").show();
 			$("#calendarbtn").show();
@@ -1088,10 +1101,20 @@
 				$("#imghint").show();
 				footmsg("你今天还没写日记，开始写吧，每天可以保存一张图片，你所填写的内容会自动保存");
 			} else {
-				$("#dayimgwrite").attr("src",load(data.photo));
+				if (data.onetimekeyphoto!=undefined){
+					$("#dayimgwrite").attr("src",photointerface+"freego/download?onetimekey="+data.onetimekeyphoto);
+					$("#imghint").hide();
+				} else {
+					$("#imghint").show();
+				}
 				$("#contentwrite").val(data.content);
+				$("#contentwrite").attr("old",data.content);
+				
 				$("#locationwrite").val(data.location);
+				$("#locationwrite").attr("old",data.location);
+
 				$("#weatherwrite").val(data.weather);
+				$("#weatherwrite").attr("old",data.weather);
 			}
 		}
 		
@@ -1186,6 +1209,7 @@
 				}
 			});
 			$("#filebtn").show();
+			loading(false);
 		}
 		function loading(show){
 			$(".hideloading").remove();
@@ -1204,18 +1228,67 @@
 			$("body").append("<input id='msgpopbtn' onclick=\"$('.hidemsgpop').remove();\" class='hidemsgpop' style='display:none;position:fixed;bottom:52px;left:50%;transform:translateX(-50%);' type='button' value='知道了'/>");
 			$("#msgpopbtn").fadeIn(800);
 		}
+		
+		function startautosaving(){
+			if (sessionStorage.getItem("isautosavingtimerstarted")=="true"){
+				return;
+			}
+			sessionStorage.setItem("isautosavingtimerstarted","true");
+			setTimeout(autosavingtimer, 10000);
+		}
+		
+		function autosavingtimer(){
+			if ($("#contentwrite").val()!=$("#contentwrite").attr("old")||
+					$("#locationwrite").val()!=$("#locationwrite").attr("old")||
+					$("#weatherwrite").val()!=$("#weatherwrite").attr("old")){
+				footmsg("正在保存日记，保存成功之前请不要离开此页面");
+				post("cexpired","write",{"weather":$("#weatherwrite").val(),"location":$("#locationwrite").val(),"content":$("#contentwrite").val()});
+			} else {
+				setTimeout(autosavingtimer, 10000);
+			}
+		}
+		
+		function afterwrite(data){
+			var hint = "";
+			if (data.newdaycomingminutes!=undefined){
+				hint = "，"+data.newdaycomingminutes;
+			}
+			$("#contentwrite").attr("old",data.content);
+			$("#locationwrite").attr("old",data.location);
+			$("#weatherwrite").attr("old",data.weather);
+			footmsg("日记保存成功"+hint);
+		}
+		
 		var footmsgs = new Array();
 		function startfootmsg(){
+			if (sessionStorage.getItem("isfootmsgtimerstarted")=="true"){
+				return;
+			}
+			sessionStorage.setItem("isfootmsgtimerstarted","true");
+			setTimeout(footmsgtimer, 1500);
+		}
+		function footmsgtimer(){
 			if (footmsgs.length>0){
 				$(".msgfoot").remove();
 				$("body").append("<div class='msgfoot'>"+footmsgs[0]+
 					"</div>");
 				footmsgs.splice(0, 1);
 			}
-			setTimeout(startfootmsg, 1500);
+			
+			setTimeout(footmsgtimer, 1500);
 		}
 		function footmsg(content){
-			footmsgs.push( content );
+			if ($(".msgfoot").html()!=content){
+				var lastindex = footmsgs.lastIndexOf(content);
+				if (lastindex==-1||lastindex!=footmsgs.length-1){
+					footmsgs.push( content );
+				}
+			}
+		}
+		function checkinput(id){
+			if ($("#"+id).attr("old")!=$("#"+id).val()){
+				footmsg("即将自动保存");
+			}
 		}
 		</script>
 	</head>
@@ -1232,10 +1305,10 @@
 				<div class="yxinputswrite">
 					<div id="daywrite" style="position:absolute;line-height:30px;height:30px;width:80px;top:0px;left:0px;overflow:hidden;"></div>
 					<div style="position:absolute;line-height:30px;height:30px;width:calc(100% - 80px);top:0px;left:80px;">
-						<input id="weatherwrite" style="width:calc(40% - 8px);" type="text" maxlength="10" placeholder="填写天气"/>
-						<input id="locationwrite" style="width:calc(60% - 8px);" type="text" maxlength="20" placeholder="填写地点"/>
+						<input id="weatherwrite" old="" oninput="checkinput('weatherwrite')" style="width:calc(40% - 8px);" type="text" maxlength="10" placeholder="填写天气"/>
+						<input id="locationwrite" old="" oninput="checkinput('locationwrite')" style="width:calc(60% - 8px);" type="text" maxlength="20" placeholder="填写地点"/>
 					</div>
-					<textarea id="contentwrite" style="position:absolute;top:30px;left:0px;height:calc(100% - 31px);width:100%;resize:none;" maxlength="1000" placeholder="填写日记，限1000字"></textarea>
+					<textarea id="contentwrite" old="" oninput="checkinput('contentwrite')" style="position:absolute;top:30px;left:0px;height:calc(100% - 31px);width:100%;resize:none;" maxlength="1000" placeholder="填写日记，限1000字"></textarea>
 				</div>
 			</div>
 			<div id="yanxinreadform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
@@ -1259,7 +1332,7 @@
 					<input id="loginuser" style="margin-top:5px;" size="24" type="text" maxlength="20" placeholder="填写账号"/><br>
 					<input id="loginpass" style="margin-top:5px;" size="24" type="password" maxlength="20" placeholder="只填写密码即可登录"/><br>
 					<input id="loginmotto" style="margin-top:5px;" size="24" type="text" maxlength="100" placeholder="或只填写格言也可登录"/><br>
-					<div style="position:absolute;top:100%;font-size:12px;left:25%;transform:translateX(-50%) translateY(50%);" 
+					<div style="position:absolute;top:100%;font-size:12px;color:#f4a57e;left:25%;transform:translateX(-50%) translateY(50%);" 
 					onclick="post('freego','forgetpass',{})">忘记密码?</div>
 					<input actionid="login" action="click" type="button" style="position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(50%);" value="登录"/>
 				</div>
@@ -1269,10 +1342,10 @@
 					<div style="width:50px;margin:auto;text-align:right;font-size:12px;">®️</div>
 					<img src="logo.png" style="width:40px;height:40px;"><br>
 					<div style="padding:5px;">注册你的言心日记</div>
-					<input id="registeruser" style="margin-top:5px;" size="24" type="text" maxlength="20" placeholder="填写账号"/><br>
-					<input id="registerpass" style="margin-top:5px;margin-right:10px;" size="10" type="password" maxlength="20" placeholder="填写密码"/><input id="registerrepass" style="margin-top:5px;" size="10" type="password" maxlength="20" placeholder="再填一次密码"/><br>
-					<input id="registermotto" style="margin-top:5px;margin-right:10px;" size="10" type="text" maxlength="100" placeholder="填写格言"/><input id="registerremotto" style="margin-top:5px;" size="10" type="text" maxlength="100" placeholder="再填一次格言"/><br>
-					<div style="position:absolute;top:100%;font-size:12px;left:25%;transform:translateX(-50%) translateY(50%);" onclick="post('freego','agreement',{})">你的言心协议</div>
+					<input id="registeruser" style="margin-top:5px;" size="24" type="text" maxlength="20" placeholder="填写账号，账号密码格言都可写中文"/><br>
+					<input id="registerpass" style="margin-top:5px;margin-right:10px;" size="10" type="password" maxlength="20" placeholder="填写密码"/><input id="registerrepass" style="margin-top:5px;" size="10" type="password" maxlength="20" placeholder="重复一次密码"/><br>
+					<input id="registermotto" style="margin-top:5px;margin-right:10px;" size="10" type="text" maxlength="100" placeholder="填写格言"/><input id="registerremotto" style="margin-top:5px;" size="10" type="text" maxlength="100" placeholder="重复一次格言"/><br>
+					<div style="position:absolute;top:100%;font-size:12px;color:#f4a57e;left:25%;transform:translateX(-50%) translateY(50%);" onclick="post('freego','agreement',{})">你的言心协议</div>
 					<input actionid="register" action="click" type="button" style="position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(50%);" value="注册"/>
 				</div>
 			</div>
@@ -1281,7 +1354,7 @@
 					<div id="selfname" style="margin:2px;width:100%;text-align:center;"></div>
 					<div style="margin:2px;width:100%;text-align:center;"><input id="logoutbtn" actionid="logout" action="click" type="button" value="退出登录"/></div>
 
-					<div style="width:100%;text-align:left;margin:2px;"><font id="selfreusetime"></font> <div onclick="post('freego','agreement',{})" style="margin:2px;float:right;">你的言心协议</div></div>
+					<div style="width:100%;text-align:left;margin:2px;"><font id="selfreusetime"></font> <div onclick="post('freego','agreement',{})" style="margin:2px;float:right;color:#f4a57e;">你的言心协议</div></div>
 					<div style="width:100%;text-align:left;margin:2px;"><font id="selfexpiretime"></font> <br> <input id="extendbtn" onclick="post('freego','buyhint',{})" type="button" class="hideallaccountform" style="display:none;margin:2px;" value="延长"/></div>
 					
 					<div id="selfexpiretimenew" class="hideallaccountform" style="width:100%;text-align:left;margin:2px;display:none;color:#f4a57e;"></div>
@@ -1307,8 +1380,8 @@
 						</div>
 					</div>
 					
-					<div style="width:100%;"><input id="changepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="填写新密码"/><input id="changerepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="再填一次新密码"/><input actionid="changepass" action="click" type="button" style="margin:2px;" value="修改"/></div>
-					<div style="width:100%;"><input id="changemotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="填写新格言"/><input id="changeremotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="再填一次新格言"/><input actionid="changemotto" action="click" type="button" style="margin:2px;" value="修改"/></div>
+					<div style="width:100%;"><input id="changepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="填写新密码"/><input id="changerepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="重复一次新密码"/><input actionid="changepass" action="click" type="button" style="margin:2px;" value="修改"/></div>
+					<div style="width:100%;"><input id="changemotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="填写新格言"/><input id="changeremotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="重复一次新格言"/><input actionid="changemotto" action="click" type="button" style="margin:2px;" value="修改"/></div>
 				</div>
 			</div>
 			<div id="calendarform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
