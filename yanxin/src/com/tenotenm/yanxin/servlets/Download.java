@@ -40,6 +40,8 @@ public class Download extends HttpServlet {
 					String filekey = photofolderkey[1];
 					Fileclient.getinstance(thefolderonserver).read("bigfilefrom", filekey, new Downloading(res));
 				}
+			} else {
+				res.sendRedirect("/protectphoto.htm");
 			}
 		} catch (Exception e) {
 			if (e.getMessage()==null||e.getMessage()!=null&&!e.getMessage().contains(STATIC.INVALIDKEY)&&!e.getMessage().contains("NoSuchFileException")) {
