@@ -123,6 +123,11 @@
 				height:100vw;
 			}
 			
+			.datecell{
+				width:14vw;
+				height:14vw;
+			}
+			
 			.yxinputswrite{
 				position:absolute;
 				top:calc(100vw + 30px);
@@ -180,6 +185,10 @@
 					height:300px;
 				}
 				
+				.datecell{
+					width:42px;
+					height:42px;
+				}
 				.yxinputswrite{
 					position:absolute;
 					top:330px;
@@ -1077,6 +1086,67 @@
 			}
 		}
 		
+		function docalendar(){
+			loading(true);
+			$(".hideallforms").hide();
+			$("#calendarform").children().remove();
+			post("cexpired","calendar",{})
+		}
+		function aftercalendar(data){
+			$("#calendarform").fadeIn(500);
+			$("#calendarform").append("<div id='calendarcontent' style='position:absolute;max-height:100%;overflow-y:auto;left:0px;right:0px;bottom:0px;'></div>");
+			$("#calendarcontent").append("<div id='calendaryear' style='width:100%;float:left;margin-bottom:5px;'></div>");
+			if (data.leftyear!=undefined){
+				$("#calendaryear").append("<div style='float:left;width:33%;text-align:center;'><input type='button' value='"+data.leftyear+"年'/></div>");
+			} else {
+				$("#calendaryear").append("<div style='float:left;width:33%;'>&nbsp;</div>");
+			}
+			$("#calendaryear").append("<div style='float:left;width:33%;text-align:center;'>"+data.middleyear+"年</div>");
+			if (data.rightyear!=undefined){
+				$("#calendaryear").append("<div style='float:left;width:33%;text-align:center;'><input type='button' value='"+data.rightyear+"年'/></div>");
+			} else {
+				$("#calendaryear").append("<div style='float:left;width:33%;'>&nbsp;</div>");
+			}
+			
+			$("#calendarcontent").append("<div style='width:100%;float:left;'><div style='width:14%;float:left;text-align:center;'>周一</div>"+
+					"<div style='width:14%;float:left;text-align:center;'>周二</div>"+
+					"<div style='width:14%;float:left;text-align:center;'>周三</div>"+
+					"<div style='width:14%;float:left;text-align:center;'>周四</div>"+
+					"<div style='width:14%;float:left;text-align:center;'>周五</div>"+
+					"<div style='width:14%;float:left;text-align:center;'>周六</div>"+
+					"<div style='width:14%;float:left;text-align:center;'>周日</div>"+
+					"</div>");
+			for (var i=0;i<data.onemonth.length;i++){
+				$("#calendarcontent").append("<div id='calendarweek"+i+"' style='width:100%;float:left;'></div>");
+				for (var j=0;j<data.onemonth[i].length;j++){
+					if (data.onemonth[i][j].monthday!=undefined){
+						if (data.onemonth[i][j].onetimekeyphoto!=undefined){
+							$("#calendarweek"+i).append("<div style='background-image: url("+photointerface+"freego/download?onetimekey="+data.onemonth[i][j].onetimekeyphoto+");background-size:contain;background-repeat:no-repeat;float:left;text-align:center;' class='datecell'><div style='background-color:black;float:right;border-radius:50%;opacity:0.8;padding-top:2px;padding-left:1px;padding-right:1px;'>"+data.onemonth[i][j].monthday+"</div></div>");
+						} else {
+							$("#calendarweek"+i).append("<div style='float:left;text-align:center;' class='datecell'>"+data.onemonth[i][j].monthday+"</div>");
+						}
+					} else {
+						$("#calendarweek"+i).append("<div style='float:left;' class='datecell'>&nbsp;</div>");
+					}
+				}
+			}
+			
+			$("#calendarcontent").append("<div id='calendarmonth' style='width:100%;float:left;margin-top:5px;margin-bottom:5px;'></div>");
+			if (data.leftmonth!=undefined){
+				$("#calendarmonth").append("<div style='float:left;width:33%;text-align:center;'><input type='button' value='"+data.leftmonth+"月'/></div>");
+			} else {
+				$("#calendarmonth").append("<div style='float:left;width:33%;'>&nbsp;</div>");
+			}
+			$("#calendarmonth").append("<div style='float:left;width:33%;text-align:center;'>"+data.middlemonth+"月</div>");
+			if (data.rightmonth!=undefined){
+				$("#calendarmonth").append("<div style='float:left;width:33%;text-align:center;'><input type='button' value='"+data.rightmonth+"月'/></div>");
+			} else {
+				$("#calendarmonth").append("<div style='float:left;width:33%;'>&nbsp;</div>");
+			}
+			
+			initactions();
+		}
+		
 		function doreadtoday(){
 			loading(true);
 			$(".hideallforms").hide();
@@ -1202,11 +1272,9 @@
 		}
 
 		function initactions(){
-			$("input:button").each(function(){
-				if ($(this).attr("action")!=undefined){
-					$(this).unbind($(this).attr("action"));
-					$(this).one($(this).attr("action"),eval("do"+$(this).attr("actionid")));
-				}
+			$(".click").each(function(){
+				$(this).unbind("click");
+				$(this).one("click",eval("do"+$(this).attr("actionid")));
 			});
 			$("#filebtn").show();
 			loading(false);
@@ -1214,7 +1282,7 @@
 		function loading(show){
 			$(".hideloading").remove();
 			if (show){
-				$("body").append("<div id='loadingform' class='hideloading' style='position:fixed;display:none;top:0px;left:0px;right:0px;bottom:45px;background-color:black;opacity:0.8;z-index:10000;'>"+
+				$("body").append("<div id='loadingform' class='hideloading' style='position:fixed;display:none;top:0px;left:0px;right:0px;bottom:48px;background-color:black;opacity:0.8;z-index:10000;'>"+
 				"<div class='load' style='position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-100%);z-index:10000;'>请稍后......</div>"+
 				"</div>");
 				$("#loadingform").fadeIn(800);
@@ -1326,7 +1394,7 @@
 			</div>
 			<div id="loginform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
 				<div style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);width:300px;text-align:center;">
-					<div style="width:50px;margin:auto;text-align:right;font-size:12px;">®️</div>
+					<div style="width:50px;margin:auto;text-align:right;font-size:12px;">™️️</div>
 					<img src="logo.png" style="width:40px;height:40px;"><br>
 					<div style="padding:5px;">登录你的言心日记</div>
 					<input id="loginuser" style="margin-top:5px;" size="24" type="text" maxlength="20" placeholder="填写账号"/><br>
@@ -1334,25 +1402,25 @@
 					<input id="loginmotto" style="margin-top:5px;" size="24" type="text" maxlength="100" placeholder="或只填写格言也可登录"/><br>
 					<div style="position:absolute;top:100%;font-size:12px;color:#f4a57e;left:25%;transform:translateX(-50%) translateY(50%);" 
 					onclick="post('freego','forgetpass',{})">忘记密码?</div>
-					<input actionid="login" action="click" type="button" style="position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(50%);" value="登录"/>
+					<input actionid="login" class="click" type="button" style="position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(50%);" value="登录"/>
 				</div>
 			</div>
 			<div id="registerform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
 				<div style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);width:300px;text-align:center;">
-					<div style="width:50px;margin:auto;text-align:right;font-size:12px;">®️</div>
+					<div style="width:50px;margin:auto;text-align:right;font-size:12px;">™️</div>
 					<img src="logo.png" style="width:40px;height:40px;"><br>
 					<div style="padding:5px;">注册你的言心日记</div>
 					<input id="registeruser" style="margin-top:5px;" size="24" type="text" maxlength="20" placeholder="填写账号，账号密码格言都可写中文"/><br>
 					<input id="registerpass" style="margin-top:5px;margin-right:10px;" size="10" type="password" maxlength="20" placeholder="填写密码"/><input id="registerrepass" style="margin-top:5px;" size="10" type="password" maxlength="20" placeholder="重复一次密码"/><br>
 					<input id="registermotto" style="margin-top:5px;margin-right:10px;" size="10" type="text" maxlength="100" placeholder="填写格言"/><input id="registerremotto" style="margin-top:5px;" size="10" type="text" maxlength="100" placeholder="重复一次格言"/><br>
 					<div style="position:absolute;top:100%;font-size:12px;color:#f4a57e;left:25%;transform:translateX(-50%) translateY(50%);" onclick="post('freego','agreement',{})">你的言心协议</div>
-					<input actionid="register" action="click" type="button" style="position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(50%);" value="注册"/>
+					<input actionid="register" class="click" type="button" style="position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(50%);" value="注册"/>
 				</div>
 			</div>
 			<div id="accountform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
 				<div style="position:absolute;max-height:100%;top:50%;left:5px;right:5px;transform:translateY(-50%);overflow-x:hidden;overflow-y:auto;">
 					<div id="selfname" style="margin:2px;width:100%;text-align:center;"></div>
-					<div style="margin:2px;width:100%;text-align:center;"><input id="logoutbtn" actionid="logout" action="click" type="button" value="退出登录"/></div>
+					<div style="margin:2px;width:100%;text-align:center;"><input id="logoutbtn" actionid="logout" class="click" type="button" value="退出登录"/></div>
 
 					<div style="width:100%;text-align:left;margin:2px;"><font id="selfreusetime"></font> <div onclick="post('freego','agreement',{})" style="margin:2px;float:right;color:#f4a57e;">你的言心协议</div></div>
 					<div style="width:100%;text-align:left;margin:2px;"><font id="selfexpiretime"></font> <br> <input id="extendbtn" onclick="post('freego','buyhint',{})" type="button" class="hideallaccountform" style="display:none;margin:2px;" value="延长"/></div>
@@ -1364,24 +1432,24 @@
 					<div id="selfdaystogive" class="hideallaccountform" style="display:none;margin:2px;width:100%;"></div>
 					<div id="selfdaystogivenew" class="hideallaccountform" style="display:none;margin:2px;width:100%;color:#f4a57e;"></div>
 					
-					<div id="selfextendform" class="hideallaccountform" style="display:none;margin:2px;width:100%;"><input id="selfextend" style="margin:2px;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="selfextendbtn" actionid="extend" action="click" type="button" style="margin:2px;" selforother="self" value="延长自己的过期时间"/></div>
+					<div id="selfextendform" class="hideallaccountform" style="display:none;margin:2px;width:100%;"><input id="selfextend" style="margin:2px;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="selfextendbtn" actionid="extend" class="click" type="button" style="margin:2px;" selforother="self" value="延长自己的过期时间"/></div>
 
 					<div id="daystogivespendform" class="hideallaccountform" style="display:none;padding:5px;margin:5px;text-align:left;border:1px #ccc solid;border-radius:4px;">
-						<div style="width:100%;text-align:left;"><input id="findother" style="margin:2px;" size="10" type="text" maxlength="20" placeholder="填写其它账号"/><input id="findotherbtn" actionid="readother" action="click" style="margin:2px;" type="button" value="查询"/></div>
+						<div style="width:100%;text-align:left;"><input id="findother" style="margin:2px;" size="10" type="text" maxlength="20" placeholder="填写其它账号"/><input id="findotherbtn" actionid="readother" class="click" style="margin:2px;" type="button" value="查询"/></div>
 						<div id="otherextendform" class="hideallotheraccountform" style="display:none;width:100%;">
 							<div id="otherreusetime" style="margin:2px;width:100%;text-align:left;"></div>
 							<div id="otherexpiretime" style="margin:2px;width:100%;text-align:left;"></div>
 							<div id="otherexpiretimenew" class="hideallotheraccountform" style="margin:2px;width:100%;text-align:left;display:none;color:#f4a57e;"></div>
 							<div id="otherextendhint" class="hideallotheraccountform" style="width:100%;text-align:left;margin:2px;display:none;color:#f4a57e;"></div>
-							<div style="width:100%;text-align:left;"><input id="otherextend" class="hideallotheraccountform" style="margin:2px;display:none;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input actionid="extend" action="click" id="otherextendbtn" class="hideallotheraccountform" style="display:none;margin:2px;" selforother="other" type="button" value="延长过期时间"/></div>
+							<div style="width:100%;text-align:left;"><input id="otherextend" class="hideallotheraccountform" style="margin:2px;display:none;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input actionid="extend" class="click" id="otherextendbtn" class="hideallotheraccountform" style="display:none;margin:2px;" selforother="other" type="button" value="延长过期时间"/></div>
 							<div id="otherdaystogive" style="margin:2px;width:100%;text-align:left;"></div>
 							<div id="otherdaystogivenew" class="hideallotheraccountform" style="margin:2px;width:100%;text-align:left;display:none;color:#f4a57e;"></div>
-							<div style="width:100%;text-align:left;"><input id="othergive" class="hideallotheraccountform" style="margin:2px;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="othergivebtn" class="hideallotheraccountform" actionid="give" action="click" type="button" style="margin:2px;" value="增加库存天数"/></div>
+							<div style="width:100%;text-align:left;"><input id="othergive" class="hideallotheraccountform" style="margin:2px;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="othergivebtn" class="hideallotheraccountform click" actionid="give" type="button" style="margin:2px;" value="增加库存天数"/></div>
 						</div>
 					</div>
 					
-					<div style="width:100%;"><input id="changepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="填写新密码"/><input id="changerepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="重复一次新密码"/><input actionid="changepass" action="click" type="button" style="margin:2px;" value="修改"/></div>
-					<div style="width:100%;"><input id="changemotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="填写新格言"/><input id="changeremotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="重复一次新格言"/><input actionid="changemotto" action="click" type="button" style="margin:2px;" value="修改"/></div>
+					<div style="width:100%;"><input id="changepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="填写新密码"/><input id="changerepass" style="margin:2px;" size="10" type="password" maxlength="20" placeholder="重复一次新密码"/><input actionid="changepass" class="click" type="button" style="margin:2px;" value="修改"/></div>
+					<div style="width:100%;"><input id="changemotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="填写新格言"/><input id="changeremotto" style="margin:2px;" size="10" type="text" maxlength="100" placeholder="重复一次新格言"/><input actionid="changemotto" class="click" type="button" style="margin:2px;" value="修改"/></div>
 				</div>
 			</div>
 			<div id="calendarform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
@@ -1390,9 +1458,9 @@
 		</div>
 		
 		<div class="footbtns">
-			<input id="accountbtn" actionid="readself" action="click" class="hideallbtns" type="button" style="display:none;background-image: url(logo.png);background-size:contain;background-repeat:no-repeat;padding-left:27px;background-color:black;border-radius:unset;" value="账号"/>
-			<input id="calendarbtn" class="hideallbtns" type="button" style="display:none;" value="日历"/>
-			<input id="todaybtn" actionid="readtoday" action="click" class="hideallbtns" type="button" style="display:none;" value="今天"/>
+			<input id="accountbtn" actionid="readself" class="hideallbtns click" type="button" style="display:none;background-image: url(logo.png);background-size:contain;background-repeat:no-repeat;padding-left:27px;background-color:black;border-radius:unset;" value="账号"/>
+			<input id="calendarbtn" actionid="calendar" class="hideallbtns click" type="button" style="display:none;" value="日历"/>
+			<input id="todaybtn" actionid="readtoday" class="hideallbtns click" type="button" style="display:none;" value="今天"/>
 			<input id="newuserbtn" onclick="showregisterform()" class="hideallbtns" type="button" style="display:none;" value="注册新账号"/>
 			<input id="existuserbtn" onclick="dologout()" class="hideallbtns" type="button" style="display:none;" value="已有账号"/>
 		</div>
@@ -1444,7 +1512,7 @@
 			</div>
 			
 			<div class="text">
-				<div style="margin:auto;width:50px;text-align:right;font-size:12px;">®️️</div>
+				<div style="margin:auto;width:50px;text-align:right;font-size:12px;">™️️</div>
 				<img src="logo.png" style="width:40px;height:40px;"><br>
 				言心<br>
 				你的心灵日记<br>

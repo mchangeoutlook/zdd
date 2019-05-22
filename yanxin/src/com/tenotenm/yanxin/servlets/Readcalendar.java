@@ -80,7 +80,9 @@ public class Readcalendar extends HttpServlet {
 						Map<String, String> yanxin = Bizutil.convert(Bizutil.readyanxin(yxaccount, theday));
 						theweek.get(weekday-1).put("day", Reuse.yyyyMMdd(theday));
 						if (yanxin.get("key")!=null) {
-							theweek.get(weekday-1).put("photo", yanxin.get("photo"));
+							if (yanxin.get("photo")!=null&&!yanxin.get("photo").trim().isEmpty()) {
+								theweek.get(weekday-1).put("onetimekeyphoto", Bizutil.onetimekey(null, yanxin.get("key")));
+							}
 							theweek.get(weekday-1).put("key", yanxin.get("key"));
 						}
 					}
