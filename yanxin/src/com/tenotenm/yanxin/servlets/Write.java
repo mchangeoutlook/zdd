@@ -31,26 +31,14 @@ public class Write extends HttpServlet {
 			String content = request.getParameter("content");
 			if (content==null) {
 				content = "";
-			} else {
-				if (content.getBytes("UTF-8").length>3000) {
-					throw new Exception("内容字数过多");
-				}
 			}
 			String location = request.getParameter("location");
 			if (location==null) {
 				location = "";
-			} else {
-				if (location.getBytes("UTF-8").length>300) {
-					throw new Exception("地址字数过多");
-				}
 			}
 			String weather = request.getParameter("weather");
 			if (weather==null) {
 				weather = "";
-			} else {
-				if (weather.getBytes("UTF-8").length>30) {
-					throw new Exception("天气字数过多");
-				}
 			}
 			Date today = new Date();
 			
@@ -59,6 +47,7 @@ public class Write extends HttpServlet {
 				yx = new Yanxin();
 				yx.setKey(Bigclient.newbigdatakey());
 				yx.setPhoto("");
+				yx.setPhotosmall("");
 				yx.setContent(content);
 				yx.setLocation(location);
 				yx.setWeather(weather);
@@ -93,9 +82,9 @@ public class Write extends HttpServlet {
 			ret.put("location", yx.getLocation());
 			ret.put("weather", yx.getWeather());
 			
-			Integer m = Bizutil.newdaycomingminutes(yxlogin);
-			if (m!=null) {
-				ret.put("newdaycomingminutes", "健康的身体需要充足的睡眠，请尽快结束今天的日记，"+m+"分钟后你将不能继续修改今天的日记，零点后你需要重新登录并开启新一天的日记");
+			String hint = Bizutil.newdaycominghint(yxlogin);
+			if (hint!=null) {
+				ret.put("newdaycomingminutes", hint);
 			}
 			Reuse.respond(response, ret, null);
 		} catch (Exception e) {

@@ -299,7 +299,7 @@
 				position:absolute;
 				text-align:center;
 				font-size:14px;
-				width:150px;
+				width:170px;
 				color:#ccc;
 				top:50%;
 				left:100%;
@@ -313,18 +313,18 @@
 			.footer{
 				position:absolute;
 				text-align:center;
-				width:150px;
+				width:170px;
 				font-size:12px;
 				color:#ccc;
 				top:100%;
 				right:0px;
-				animation: footering 0.8s linear 4.2s forwards;
+				animation: footering 0.5s linear 4s forwards;
   			}
   			@keyframes footering
 			{
-				0%{transform:translateY(0%) scale(0.5);}
-				50%{transform:translateY(-100%) scale(0.5);}
-				100%{transform:translateY(-100%) scale(0.5);}
+				0%{transform:translateY(0%) scale(0.8);}
+				50%{transform:translateY(-100%) scale(0.8);}
+				100%{transform:translateY(-100%) scale(0.8);}
 			}
   			.yan{
   				position:absolute;
@@ -769,19 +769,19 @@
 				reader.onload = function () {
 					try{
 						var result = reader.result;
-						if (result.length <= 204800) {
-					    		upload();
-					    } else {
+						//if (result.length <= 204800) {
+					    	//	upload();
+					    //} else {
 					    		var img = new Image();
 					    		img.src = result;
 					    		img.onload = function(){
 								try{
-									post("cexpired","uploadcanvas",{"canvasdataurl":compress(img)});
+									post("cexpired","uploadcanvas",{"canvasdataurl":imgcompress(img)});
 								}catch(e){
 									upload();
 								}
 							};
-					    }
+					    //}
 					}catch(e){
 						upload();
 					}
@@ -867,8 +867,31 @@
 			setTimeout(function(){
 				$("#openingclosebtn").click();
 			},5000);
+			var video = document.getElementById('video');
+/*
+			// Get access to the camera!
+			if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+			    // Not adding `{ audio: true }` since we only want video now
+			    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+			        //video.src = window.URL.createObjectURL(stream);
+			        video.srcObject = stream;
+			        video.play();
+			    });
+			}*/
+			$("#snap").one("click", function() {
+				canvas.width = 352;
+		        canvas.height = 240;
+
+		        ctx.fillStyle = "#000";
+		        ctx.fillRect(0, 0, canvas.width, canvas.height);
+		        var video = document.getElementById('video');
+				ctx.drawImage(video, 0, 0, 352, 240);
+				post("cexpired","uploadcanvas",{"canvasdataurl":canvas.toDataURL('image/jpeg', 1)});
+			});
+			
 		});
 		function afteruploadcanvas(data){
+			$("#video").hide();
 			var hint = "";
 			if (data.newdaycomingminutes!=undefined){
 				hint = "，"+data.newdaycomingminutes;
@@ -896,20 +919,43 @@
 			startautosaving();
 		}
 		
-		function compress(img) {
+		function imgresize(img) {
 	        var width = img.width;
 	        var height = img.height;
+	        var ratio = 1;
+	        if (width>42||height>42){
+	        		if (width>42){
+	        			ratio = width/42;
+	        		} else {
+	        			ratio = height/42;
+		        	}
+	        }
+	        canvas.width = width/ratio;
+	        canvas.height = height/ratio;
 
+	        ctx.fillStyle = "#000";
+	        ctx.fillRect(0, 0, canvas.width, canvas.height);
+	        ctx.drawImage(img, 0, 0, width/ratio, height/ratio);
+	        
+	        var ndata = canvas.toDataURL('image/jpeg', 1);
+
+	        tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
+			return ndata;
+	    }
+		
+		function imgcompress(img) {
+	        var width = img.width;
+	        var height = img.height;
+			//alert(img.width+"="+img.height);
 	        var ratio;
 	        if ((ratio = width * height / 4000000)>1) {
 	            ratio = Math.sqrt(ratio);
-	            width /= ratio;
-	            height /= ratio;
+	           // width /= ratio;
+	           // height /= ratio;
 	        }else {
 	            ratio = 1;
 	        }
-
-	        canvas.width = width;
+			canvas.width = width;
 	        canvas.height = height;
 
 	        ctx.fillStyle = "#000";
@@ -924,19 +970,18 @@
 
 	            tCanvas.width = nw;
 	            tCanvas.height = nh;
-
 	            for (var i = 0; i < count; i++) {
-	                for (var j = 0; j < count; j++) {
-	                    tctx.drawImage(img, i * nw * ratio, j * nh * ratio, nw * ratio, nh * ratio, 0, 0, nw, nh);
-
-	                    ctx.drawImage(tCanvas, i * nw, j * nh, nw, nh);
+	            	    for (var j = 0; j < count; j++) {
+	                   // tctx.drawImage(img, i * nw * ratio, (count-j-1) * nh * ratio, nw * ratio, nh * ratio, 0, 0, nw, nh);
+	                   // ctx.drawImage(tCanvas, i * nw, (count-j-1) * nh, nw, nh);
 	                }
 	            }
 	        } else {
-	            ctx.drawImage(img, 0, 0, width, height);
+	           // ctx.drawImage(img, 0, 0, width, height);
 	        }
-
-	        var ndata = canvas.toDataURL('image/jpeg', 0.2);
+	        ctx.drawImage(img, 0, 0, width, height);
+	        
+	        var ndata = canvas.toDataURL('image/jpeg', 0.1);
 
 	        tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
 			return ndata;
@@ -1365,9 +1410,11 @@
 			<div id="yanxinwriteform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;">
 				<div class="yximgwrite">
 					<div id="imghint" style="position:absolute;top:40%;left:5px;right:5px;text-align:center;">请浏览本地图片（正方形图片将获得最佳显示效果），大于200K的图片将自动压缩存储，压缩后图片质量有所损失，如果自动压缩失败，请重新上传小于200K的图片</div>
+					<video id="video" style="width:100%;height:100%;" autoplay></video>
 					<img id="dayimgwrite" src="" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
 					<form method="POST" enctype="multipart/form-data" id="dayimgwriteform">
-						<input id="filebtn" name="photo" accept="image/*" onchange="prepareupload();" style="position:absolute;top:100%;left:5px;" type="file"/>
+					<input type="button" id="snap" style="position:absolute;top:100%;left:5px;" value="Snap Photo"/>
+						<input id="filebtn" name="photo" accept="image/*" onchange="prepareupload();" style="position:absolute;top:100%;left:35px;" type="file"/>
 					</form>
 				</div>
 				<div class="yxinputswrite">
@@ -1519,10 +1566,13 @@
 				陪伴有故事的你<br>
 				<br>
 				<br>
-				© 10o10m<br>
-				出品
+				<div style="font-size:12px;transform:scale(0.9);width:100%;">© 心之言（上海）科技有限公司</div>
+				<div style="font-size:12px;transform:scale(0.9);width:100%;">出品</div>
+				<div style="font-size:12px;transform:scale(0.9);width:100%;">yanxin.10o10m.com</div>
+				<div style="font-size:12px;transform:scale(0.9);width:100%;">域名速记：10个圈10个美</div>
 			</div>
 			<div class="footer">
+				公安部备<br>
 				沪ICP备123412341234
 			</div>
 		</div>

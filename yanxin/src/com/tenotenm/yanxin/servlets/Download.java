@@ -1,6 +1,9 @@
 package com.tenotenm.yanxin.servlets;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.tenotenm.yanxin.entities.Yanxin;
 import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Downloading;
+import com.tenotenm.yanxin.util.Secret;
 import com.zdd.bdc.client.biz.Fileclient;
 import com.zdd.bdc.client.util.STATIC;
 
@@ -30,15 +34,33 @@ public class Download extends HttpServlet {
 
 		try {
 			String onetimekey=req.getParameter("onetimekey");
+			String which=req.getParameter("which");
 			String yanxinkey  =Bizutil.onetimekey(onetimekey, null);
 			if (yanxinkey!=null) {
 				Yanxin yxyanxin = new Yanxin();
 				yxyanxin.read(yanxinkey);
 				String[] photofolderkey = yxyanxin.getPhoto().split("/");
+				if ("small".equals(which)) {
+					photofolderkey = yxyanxin.getPhotosmall().split("/");
+				}
 				if (photofolderkey.length==2) {
 					String thefolderonserver=photofolderkey[0];
 					String filekey = photofolderkey[1];
-					Fileclient.getinstance(thefolderonserver).read("bigfilefrom", filekey, new Downloading(res));
+					Downloading d = new Downloading();
+					byte[] enc = null;
+					try {
+						Fileclient.getinstance(thefolderonserver).read("bigfilefrom", filekey, d);
+						enc = Files.readAllBytes(Paths.get(d.localtempfile));
+					}finally {
+						if (Files.exists(Paths.get(d.localtempfile))) {
+							Paths.get(d.localtempfile).toFile().delete();
+						}
+					}
+					if (enc!=null) {
+						OutputStream os = res.getOutputStream();
+						os.write(Secret.dec(enc));
+						os.flush();
+					}
 				}
 			} else {
 				res.sendRedirect("/protectphoto.htm");

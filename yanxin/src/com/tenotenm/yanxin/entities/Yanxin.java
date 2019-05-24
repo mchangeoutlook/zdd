@@ -17,6 +17,7 @@ public class Yanxin extends Superentity{
 	private String weather=null;
 	private String location=null;
 	private String photo=null;
+	private String photosmall=null;
 	private String content=null;
 	
 	protected void read_yxloginkey(String yxloginkey) {
@@ -56,7 +57,7 @@ public class Yanxin extends Superentity{
 		if (weather==null) {
 			return null;
 		}
-		return new Object[] {weather, calcextravaluecapcity(weather, 30)};
+		return new Object[] {weather, calcextravaluecapcity(weather, 100)};
 	}
 	protected String add4modify_weather() {
 		if (weather==null) {
@@ -72,7 +73,7 @@ public class Yanxin extends Superentity{
 		if (location==null) {
 			return null;
 		}
-		return new Object[] {location, calcextravaluecapcity(location, 60)};
+		return new Object[] {location, calcextravaluecapcity(location, 200)};
 	}
 	protected String add4modify_location() {
 		if (location==null) {
@@ -96,7 +97,23 @@ public class Yanxin extends Superentity{
 		}
 		return photo;
 	}
-	
+
+	protected void read_photosmall(String photosmall) {
+		this.photosmall=photosmall;
+	}
+	protected Object[] add4create_photosmall() {
+		if (photosmall==null) {
+			return null;
+		}
+		return new Object[] {photosmall, calcextravaluecapcity(photosmall, 51)};
+	}
+	protected String add4modify_photosmall() {
+		if (photosmall==null) {
+			return null;
+		}
+		return photosmall;
+	}
+
 	protected void read_content(String content) {
 		this.content=content;
 	}
@@ -132,32 +149,49 @@ public class Yanxin extends Superentity{
 		this.timecreate = timecreate;
 	}
 	public String getWeather() {
-		return weather;
+		return Secret.dec(weather);
 	}
 	public void setWeather(String weather) throws Exception {
 		if (weather.length()>10) {
 			throw new Exception("天气未保存，天气限10字");
 		}
-		this.weather = weather;
+		this.weather = Secret.enc(weather);
+		if (this.weather.length()>100) {
+			throw new Exception("天气未保存，天气字数过多");
+		}
 	}
 	public String getLocation() {
-		return location;
+		return Secret.dec(location);
 	}
 	public void setLocation(String location) throws Exception {
 		if (location.length()>20) {
 			throw new Exception("地点未保存，地点限20字");
 		}
-		this.location = location;
+		this.location = Secret.enc(location);
+		if (this.location.length()>200) {
+			throw new Exception("地点未保存，地点字数过多");
+		}
 	}
 	public String getPhoto() {
 		return photo;
 	}
 	public void setPhoto(String photo) throws Exception {
 		if (photo.length()>51) {
-			throw new Exception("图片未保存，图片路径限51字");
+			throw new Exception("大图未保存，图片路径限51字");
 		}
 		this.photo = photo;
 	}
+
+	public String getPhotosmall() {
+		return photosmall;
+	}
+	public void setPhotosmall(String photosmall) throws Exception {
+		if (photosmall.length()>51) {
+			throw new Exception("小图未保存，图片路径限51字");
+		}
+		this.photosmall = photosmall;
+	}
+
 	public String getContent() {
 		return Secret.dec(content);
 	}
@@ -177,6 +211,5 @@ public class Yanxin extends Superentity{
 	public void setKey(String key) {
 		this.key = key;
 	}
-	
 	
 }

@@ -22,12 +22,13 @@ import com.zdd.bdc.client.util.STATIC;
 
 public class Bizutil {
 	
-	public static String createyanxin(Yxaccount yxaccount, Yxlogin yxlogin, String filefolder, String filekey, Date today) throws Exception {
+	public static String createyanxin(Yxaccount yxaccount, Yxlogin yxlogin, String photofolder, String photokey, String photosmallkey, Date today) throws Exception {
 		Yanxin yx = Bizutil.readyanxin(yxaccount, today);
 		if (yx==null) {
 			yx = new Yanxin();
 			yx.setKey(Bigclient.newbigdatakey());
-			yx.setPhoto(filefolder+"/"+filekey);
+			yx.setPhoto(photofolder+"/"+photokey);
+			yx.setPhotosmall(photofolder+"/"+photosmallkey);
 			yx.setContent("");
 			yx.setLocation("");
 			yx.setWeather("");
@@ -45,7 +46,14 @@ public class Bizutil {
 							Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_bigfileto, folderkey[1]);
 						}
 					}
-					yx.setPhoto(filefolder+"/"+filekey);
+					if (yx.getPhotosmall()!=null&&!yx.getPhotosmall().isEmpty()&&!yx.getPhotosmall().equals(yx.getPhoto())) {
+						String[] folderkey=yx.getPhotosmall().split("/");
+						if (folderkey.length==2) {
+							Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_bigfileto, folderkey[1]);
+						}
+					}
+					yx.setPhoto(photofolder+"/"+photokey);
+					yx.setPhotosmall(photofolder+"/"+photosmallkey);
 					yx.setYxloginkey(yxlogin.getKey());
 					yx.modify(null);
 				} else {
@@ -59,18 +67,19 @@ public class Bizutil {
 					Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_bigfileto, folderkey[1]);
 				}
 			}
-			yx.setPhoto(filefolder+"/"+filekey);
+			yx.setPhoto(photofolder+"/"+photokey);
+			yx.setPhotosmall(photofolder+"/"+photosmallkey);
 			yx.setYxloginkey(yxlogin.getKey());
 			yx.modify(null);
 		}
 		return yx.getKey();
 	}
 	
-	public static Integer newdaycomingminutes(Yxlogin yxlogin) throws Exception {
+	public static String newdaycominghint(Yxlogin yxlogin) throws Exception {
 		long millistotomorrow = 24 * 60 * 60 * 1000 - (yxlogin.getTimeupdate().getTime()
 				- Reuse.yyyyMMdd(Reuse.yyyyMMdd(yxlogin.getTimeupdate())).getTime());
 		if (millistotomorrow < 60 * 60000) {
-			return (int) (millistotomorrow / 60000);
+			return "健康的身体需要充足的睡眠，请尽快结束今天的日记，" + (int) (millistotomorrow / 60000) + "分钟后你将不能继续修改今天的日记，零点后你需要重新登录并开启第二天的日记";
 		} else {
 			return null;
 		}
