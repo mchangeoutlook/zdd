@@ -27,7 +27,7 @@ public class Login extends HttpServlet {
 			Bizutil.ipdeny(ip, false);
 			String name = request.getParameter("name");
 			if (name == null || name.trim().isEmpty()) {
-				throw new Exception("请填写账号");
+				throw new Exception("提示: 请填写账号");
 			}
 			Yxaccount yxaccount = new Yxaccount();
 			yxaccount.setName(name);
@@ -37,7 +37,7 @@ public class Login extends HttpServlet {
 				if (e.getMessage() != null && e.getMessage().contains(Reuse.NOTFOUND)) {
 					Bizutil.ipdeny(Reuse.getremoteip(request), true);
 				}
-				throw new Exception("账号或密码或格言不正确，请重新登录");
+				throw new Exception("提示: 账号或密码或格言不正确，请重新登录");
 			}
 			
 			Bizutil.refreshadminaccount(yxaccount);
@@ -48,7 +48,7 @@ public class Login extends HttpServlet {
 			if (yxaccount.getYxloginkey().isEmpty()) {// first time login
 				if (!yxaccount.getIp().equals(Reuse.getremoteip(request))
 						|| !yxaccount.getUa().equals(Reuse.getuseragent(request))) {
-					throw new Exception("请使用注册时的IP和浏览器完成首次登录");
+					throw new Exception("提示: 请使用注册时的IP和浏览器完成首次登录");
 				}
 			} else {
 				Yxlogin yxlogin = new Yxlogin();
@@ -57,19 +57,19 @@ public class Login extends HttpServlet {
 						|| !yxlogin.getUa().equals(Reuse.getuseragent(request))) {
 					isipuasame = false;
 					if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() < Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")) {
-						throw new Exception("已启动账号保护，请" + Reuse.yyyyMMddHHmmss(new Date(yxaccount.getTimewrongpass().getTime()
+						throw new Exception("提示: 已启动账号保护，请" + Reuse.yyyyMMddHHmmss(new Date(yxaccount.getTimewrongpass().getTime()
 								+ Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")))
 								+ "后再来");
 					}
 					boolean isexpire = System.currentTimeMillis() - yxlogin.getTimeupdate().getTime() > Reuse.getsecondsmillisconfig("session.expire.seconds");
 					if (!yxlogin.getIslogout() && !isexpire) {
-						throw new Exception("已在其它地方登录，请退出其它地方的登录或"
+						throw new Exception("提示: 已在其它地方登录，请退出其它地方的登录或"
 								+ Reuse.yyyyMMddHHmmss(new Date(yxlogin.getTimeupdate().getTime() + Reuse.getsecondsmillisconfig("session.expire.seconds")))
 								+ "后再来");
 					}
 				} else {
 					if (System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime() < 60000) {
-						throw new Exception("已启动账号保护，请在" + (60-(System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime())/1000)
+						throw new Exception("提示: 已启动账号保护，请在" + (60-(System.currentTimeMillis() - yxaccount.getTimewrongpass().getTime())/1000)
 								+ "秒后再来");
 					}
 				}
@@ -78,7 +78,7 @@ public class Login extends HttpServlet {
 			String pass = request.getParameter("pass");
 			String motto = request.getParameter("motto");
 			if ((pass==null||pass.trim().isEmpty())&&(motto==null||motto.trim().isEmpty())) {
-				throw new Exception("请填写密码或格言之一");
+				throw new Exception("提示: 请填写密码或格言之一");
 			}
 			if (pass != null && !pass.trim().isEmpty() && yxaccount.getPass().equals(Reuse.sign(pass)) || motto != null
 					&& !motto.trim().isEmpty() && yxaccount.getMotto().equals(Reuse.sign(motto.toLowerCase().trim()))) {
@@ -118,7 +118,7 @@ public class Login extends HttpServlet {
 						yxaccount.modify(yxaccount.getKey());
 					}
 				}
-				throw new Exception("密码或格言或账号不正确，请重新登录");
+				throw new Exception("提示: 密码或格言或账号不正确，请重新登录");
 			}
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);

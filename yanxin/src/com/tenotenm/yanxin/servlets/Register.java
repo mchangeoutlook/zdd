@@ -29,27 +29,27 @@ public class Register extends HttpServlet {
 
 			String name = request.getParameter("name");
 			if (name == null || name.trim().isEmpty()) {
-				throw new Exception("请填写账号");
+				throw new Exception("提示: 请填写账号");
 			}
 			
 			String pass = request.getParameter("pass");
 			String repass = request.getParameter("repass");
 			if (pass == null || pass.trim().isEmpty()||repass==null||repass.trim().isEmpty()) {
-				throw new Exception("请填写密码");
+				throw new Exception("提示: 请填写密码");
 			}
 			
 			if (!pass.equals(repass)) {
-				throw new Exception("两次填写的密码不一致");
+				throw new Exception("提示: 两次填写的密码不一致");
 			}
 			
 			String motto = request.getParameter("motto");
 			String remotto = request.getParameter("remotto");
 			if (motto == null || motto.trim().isEmpty()||motto==null||remotto.trim().isEmpty()) {
-				throw new Exception("请填写格言");
+				throw new Exception("提示: 请填写格言");
 			}
 			
 			if (!motto.toLowerCase().trim().equals(remotto.toLowerCase().trim())) {
-				throw new Exception("两次填写的格言不一致");
+				throw new Exception("提示: 两次填写的格言不一致");
 			}
 			
 			Yxaccount yxaccount = new Yxaccount();
@@ -67,7 +67,7 @@ public class Register extends HttpServlet {
 				if (e.getMessage() != null && e.getMessage().contains(STATIC.DUPLICATE)) {
 					yxaccount.readunique(yxaccount.getUniquename());
 					if (Bizutil.iswaitingfirstlogin(yxaccount)||Bizutil.isbeforereusedate(yxaccount)) {
-						throw new Exception("账号被占用，请换一个名称");
+						throw new Exception("提示: 账号被占用，请换一个名称");
 					}
 					if (!yxaccount.getYxloginkey().isEmpty()) {
 						Yxlogin yxlogin = new Yxlogin();
@@ -89,7 +89,7 @@ public class Register extends HttpServlet {
 			}
 			Bizutil.iplimit(Reuse.getremoteip(request), true);
 			Reuse.respond(response,
-					"注册成功！请在" + Reuse.yyyyMMddHHmmss(Bizutil.dateallowfirstlogin(yxaccount))
+					"提示: 注册成功！请在" + Reuse.yyyyMMddHHmmss(Bizutil.dateallowfirstlogin(yxaccount))
 							+ "前完成首次登录，否则该账号将被回收，回收后该账号的所有日记和相关数据都将无法找回",
 					null);
 		} catch (Exception e) {

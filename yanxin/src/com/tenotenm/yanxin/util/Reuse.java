@@ -72,10 +72,10 @@ public class Reuse {
 				ret.put("state", "fail");
 				StringWriter errors = new StringWriter();
 				t.printStackTrace(new PrintWriter(errors));
-				if (t.getMessage() != null) {
+				if (t.getMessage()!=null&&t.getMessage().startsWith("提示: ")) {
 					ret.put("error", t.getMessage());
 				} else {
-					ret.put("error", "NullPointerException");
+					ret.put("error", "系统繁忙，请稍后再来");
 				}
 				ret.put("detail", errors.toString());
 			}

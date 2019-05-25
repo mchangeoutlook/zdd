@@ -67,6 +67,12 @@ public class Bizutil {
 					Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_bigfileto, folderkey[1]);
 				}
 			}
+			if (yx.getPhotosmall()!=null&&!yx.getPhotosmall().isEmpty()&&!yx.getPhotosmall().equals(yx.getPhoto())) {
+				String[] folderkey=yx.getPhotosmall().split("/");
+				if (folderkey.length==2) {
+					Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_bigfileto, folderkey[1]);
+				}
+			}
 			yx.setPhoto(photofolder+"/"+photokey);
 			yx.setPhotosmall(photofolder+"/"+photosmallkey);
 			yx.setYxloginkey(yxlogin.getKey());
@@ -116,7 +122,7 @@ public class Bizutil {
 
 		}
 		if (timeback != null) {
-			throw new Exception("已启动IP保护，请"
+			throw new Exception("提示: 已启动IP保护，请"
 					+ Reuse.yyyyMMddHHmmss(
 							new Date(timeback.getTime() + Reuse.getsecondsmillisconfig("ipdeny.wait.seconds")))
 					+ "后重新登录");
@@ -147,7 +153,7 @@ public class Bizutil {
 		}
 
 		if (islimited) {
-			throw new Exception("已启动账号保护，请明天再来");
+			throw new Exception("提示: 已启动账号保护，请明天再来");
 		}
 	}
 
@@ -155,7 +161,7 @@ public class Bizutil {
 		Yanxin yxyanxin = new Yanxin();
 		yxyanxin.read(key);
 		if (!yxyanxin.getUniquekeyprefix().equals(yxaccount.getYxyanxinuniquekeyprefix())) {
-			throw new Exception("无权查看别人的日记");
+			throw new Exception("提示: 无权查看别人的日记");
 		}
 		return yxyanxin;
 	}
@@ -165,11 +171,27 @@ public class Bizutil {
 		if (yanxin == null) {
 			return ret;
 		}
-		ret.put("content", yanxin.getContent());
+		if (yanxin.getContent()!=null) {
+			ret.put("content", yanxin.getContent());
+		} else {
+			ret.put("content", "");
+		}
 		ret.put("key", yanxin.getKey());
-		ret.put("location", yanxin.getLocation());
-		ret.put("photo", yanxin.getPhoto());
-		ret.put("weather", yanxin.getWeather());
+		if (yanxin.getLocation()!=null) {
+			ret.put("location", yanxin.getLocation());
+		} else {
+			ret.put("location", "");
+		}
+		if (yanxin.getPhoto()!=null) {
+			ret.put("photo", yanxin.getPhoto());
+		} else {
+			ret.put("photo", "");
+		}
+		if (yanxin.getWeather()!=null) {
+			ret.put("weather", yanxin.getWeather());
+		} else {
+			ret.put("weather", "");
+		}
 		return ret;
 	}
 
@@ -229,17 +251,17 @@ public class Bizutil {
 
 	public static void checkaccountreused(Yxaccount yxaccount) throws Exception {
 		if (isfirstlogindenied(yxaccount)) {
-			throw new Exception("账号 " + yxaccount.getName() + " 未及时完成首次登录，已被回收");
+			throw new Exception("提示: 账号 " + yxaccount.getName() + " 未及时完成首次登录，已被回收");
 		}
 		if (isreusing(yxaccount)) {
-			throw new Exception("账号 " + yxaccount.getName() + " 未及时延长过期时间，已被回收");
+			throw new Exception("提示: 账号 " + yxaccount.getName() + " 未及时延长过期时间，已被回收");
 		}
 	}
 
 	public static void checkaccountavailability(Yxaccount yxaccount) throws Exception {
 		if (!isadmin(yxaccount) && isaccountexpired(yxaccount)) {
 			throw new Exception(
-					"账号 " + yxaccount.getName() + " 已过期，请在" + Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))
+					"提示: 账号 " + yxaccount.getName() + " 已过期，请在" + Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))
 							+ "之前延长过期时间，否则该账号将被回收，回收后该账号的所有日记和相关数据都将无法找回");
 		}
 	}
@@ -288,29 +310,29 @@ public class Bizutil {
 		yxlogin.read(req.getParameter("loginkey"));
 
 		if (!ip.equals(yxlogin.getIp()) || !Reuse.getuseragent(req).equals(yxlogin.getUa())) {
-			throw new Exception("已启动IP保护，请重新登录");
+			throw new Exception("提示: 已启动IP保护，请重新登录");
 		}
 
 		if (yxlogin.getIslogout()) {
-			throw new Exception("已退出，请重新登录");
+			throw new Exception("提示: 已退出，请重新登录");
 		}
 		if (System.currentTimeMillis() - yxlogin.getTimeupdate().getTime() > Reuse
 				.getsecondsmillisconfig("session.expire.seconds")) {
-			throw new Exception("你离开太久了，为了你的账号安全，请重新登录");
+			throw new Exception("提示: 你离开太久了，为了你的账号安全，请重新登录");
 		}
 
 		Yxaccount yxaccount = new Yxaccount();
 		yxaccount.read(yxlogin.getYxaccountkey());
 
 		if (!yxaccount.getYxloginkey().equals(yxlogin.getKey())) {
-			throw new Exception("非法访问，请重新登录");
+			throw new Exception("提示: 非法访问，请重新登录");
 		}
 
 		if (Reuse.yyyyMMdd(new Date()).equals(Reuse.yyyyMMdd(yxlogin.getTimeupdate()))) {
 			yxlogin.setTimeupdate(new Date());
 			yxlogin.modify(yxlogin.getKey());
 		} else {
-			throw new Exception("迎接新的一天，请重新登录");
+			throw new Exception("提示: 迎接新的一天，请重新登录");
 		}
 
 		Bizutil.refreshadminaccount(yxaccount);
@@ -325,7 +347,7 @@ public class Bizutil {
 		if (e.getMessage() != null && e.getMessage().contains(Reuse.NOTFOUND)) {
 			try {
 				Bizutil.ipdeny(Reuse.getremoteip(req), true);
-				throw new Exception("无效访问，请重新登录");
+				throw new Exception("提示: 无效访问，请重新登录");
 			} catch (Exception e1) {
 				Reuse.respond(res, null, e1);
 			}

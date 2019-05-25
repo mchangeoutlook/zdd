@@ -23,10 +23,10 @@ public class Changemotto extends HttpServlet {
 			String motto = request.getParameter("motto");
 			String remotto = request.getParameter("remotto");
 			if (motto == null) {
-				throw new Exception("缺少格言");
+				throw new Exception("提示: 缺少格言");
 			}
 			if (!motto.toLowerCase().trim().equals(remotto.toLowerCase().trim())) {
-				throw new Exception("两次输入的格言不一致");
+				throw new Exception("提示: 两次填写的格言不一致");
 			}
 			yxaccount.setMotto(motto);
 			yxaccount.setTimeupdate(new Date());

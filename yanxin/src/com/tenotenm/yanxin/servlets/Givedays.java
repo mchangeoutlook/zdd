@@ -28,7 +28,7 @@ public class Givedays extends HttpServlet {
 			target.setName(request.getParameter("targetname"));
 			
 			if (yxaccount.getUniquename().equals(target.getUniquename())) {
-				throw new Exception("不能给自己增加天数");
+				throw new Exception("提示: 不能给自己增加天数");
 			}
 			
 			long toincrease = 0;
@@ -38,15 +38,15 @@ public class Givedays extends HttpServlet {
 				//do nothing
 			}
 			if (toincrease<=0||toincrease>Reuse.getlongvalueconfig("days.togive.max")) {
-				throw new Exception("增加天数必须在1到"+Reuse.getlongvalueconfig("days.togive.max")+"之间");
+				throw new Exception("提示: 增加天数必须在1到"+Reuse.getlongvalueconfig("days.togive.max")+"之间");
 			}
 			if (yxaccount.getDaystogive()<toincrease) {
-				throw new Exception("你的库存天数不足");
+				throw new Exception("提示: 你的库存天数不足");
 			}
 			try {
 				target.readunique(target.getUniquename());
 			}catch(Exception e) {
-				throw new Exception("目标账号无效");
+				throw new Exception("提示: 目标账号无效");
 			}
 			
 			Bizutil.checkaccountreused(target);
@@ -59,7 +59,7 @@ public class Givedays extends HttpServlet {
 			if (yxaccount.getDaystogive()<0) {
 				yxaccount.setDaystogive4increment(toincrease);
 				yxaccount.increment(null);
-				throw new Exception("你的库存天数不够");
+				throw new Exception("提示: 你的库存天数不够");
 			}
 			
 			target.setDaystogive4increment(toincrease);

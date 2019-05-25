@@ -38,29 +38,29 @@ public class Uploadcanvasdataurl extends HttpServlet {
 			String photocanvasdataurl = request.getParameter("photocanvasdataurl");
 			String photosmallcanvasdataurl = request.getParameter("photosmallcanvasdataurl");
 			if (photocanvasdataurl == null) {
-				throw new Exception("缺少photocanvasdataurl");
+				throw new Exception("提示: 缺少photocanvasdataurl");
 			} else {
 				boolean vailddataurl=photocanvasdataurl.startsWith("data:image/")&&photocanvasdataurl.contains(";base64,");
 				if (!vailddataurl) {
-					throw new Exception("无效photocanvasdataurl");
+					throw new Exception("提示: 无效photocanvasdataurl");
 				}
 			}
 			if (photosmallcanvasdataurl == null) {
-				throw new Exception("缺少photosmallcanvasdataurl");
+				throw new Exception("提示: 缺少photosmallcanvasdataurl");
 			} else {
 				boolean vailddataurl=photosmallcanvasdataurl.startsWith("data:image/")&&photosmallcanvasdataurl.contains(";base64,");
 				if (!vailddataurl) {
-					throw new Exception("无效photosmallcanvasdataurl");
+					throw new Exception("提示: 无效photosmallcanvasdataurl");
 				}
 			}
-			String photokey = storephoto(photocanvasdataurl, photofolder, 102400);
+			String photokey = storephoto(photocanvasdataurl, photofolder, 150000);
 			if (photokey==null) {
 				Map<String, Object> ret = new Hashtable<String, Object>();
 				ret.put("compressed", "fail");
-				ret.put("reason", "图片超过102400");
+				ret.put("reason", "图片超过100k");
 				Reuse.respond(response, ret, null);
 			} else {
-				String photosmallkey = storephoto(photocanvasdataurl, photofolder, 51200);
+				String photosmallkey = storephoto(photosmallcanvasdataurl, photofolder, 50000);
 				if (photosmallkey==null) {
 					Map<String, Object> ret = new Hashtable<String, Object>();
 					ret.put("compressed", "fail");

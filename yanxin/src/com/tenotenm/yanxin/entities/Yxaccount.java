@@ -249,7 +249,7 @@ public class Yxaccount extends Superentity{
 	public void setName(String name) throws Exception {
 		name = name.trim();
 		if (name.length()<4||name.length()>20) {
-			throw new Exception("账号长度需在4到20之间");
+			throw new Exception("提示: 账号长度需在4到20之间");
 		}
 		this.name = name;
 	}
@@ -260,7 +260,7 @@ public class Yxaccount extends Superentity{
 
 	public void setPass(String pass) throws Exception {
 		if (pass.length()<4||pass.length()>20) {
-			throw new Exception("密码长度需在4到20之间");
+			throw new Exception("提示: 密码长度需在4到20之间");
 		}
 		boolean isallsamechar = true;
 		for (int i=0;i<pass.length();i++) {
@@ -270,7 +270,7 @@ public class Yxaccount extends Superentity{
 			}
 		}
 		if (isallsamechar) {
-			throw new Exception("密码太简单了，请重新填写密码，密码也可以是中文");
+			throw new Exception("提示: 密码太简单了，请重新填写密码，密码也可以是中文");
 		}
 		this.pass = Reuse.sign(pass);
 	}
@@ -289,7 +289,7 @@ public class Yxaccount extends Superentity{
 	public void setMotto(String motto) throws Exception {
 		motto = motto.toLowerCase().trim();
 		if (motto.length()<4||motto.length()>100) {
-			throw new Exception("格言长度需在4到100之间");
+			throw new Exception("提示: 格言长度需在4到100之间");
 		}
 		this.motto = Reuse.sign(motto);
 	}

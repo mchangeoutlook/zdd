@@ -130,7 +130,7 @@
 			
 			.yxinputswrite{
 				position:absolute;
-				top:calc(100vw + 30px);
+				top:calc(100vw + 60px);
 				left:0px;
 				right:0px;
 				bottom:0px;
@@ -191,7 +191,7 @@
 				}
 				.yxinputswrite{
 					position:absolute;
-					top:330px;
+					top:360px;
 					left:0px;
 					right:0px;
 					bottom:0px;
@@ -227,7 +227,7 @@
 				}
 			}
 			
-			@media (max-height: 500px){
+			@media (max-height: 530px){
 				.yxinputswrite{
 					position:absolute;
 					top:0px;
@@ -721,6 +721,36 @@
 		var datainterface = "http://localhost:8080/yanxin/";
 		var photointerface = "http://localhost:8080/yanxin/";
 
+		var msg_welcomlogin=" 欢迎回来";
+		var msg_loginandexpired=" 你的账号已经过期，请及时延长过期时间，否则账号将被回收，回收后该账号的所有日记和相关数据都将无法找回";
+		var msg_loginandexpiringstart=" 你的账号即将在 ";
+		var msg_loginandexpiringend=" 后过期，请及时延长过期时间，否则账号将被回收，回收后该账号的所有日记和相关数据都将无法找回";
+		
+		var msg_passmodifysuccess="密码修改成功";
+		var msg_cameranotsupport="你的浏览器不支持调取摄像头，请退出登录，然后用其它浏览器重新登录再试";
+		var msg_camerareject="你已拒绝浏览器调取摄像头，如需拍照，请刷新页面再试";
+		var msg_startingautosaving="即将自动保存";
+		var msg_journalsavesuccess="日记保存成功";
+		var msg_journalsaving = "正在保存日记，保存成功之前请不要离开此页面";
+		var msg_photosaving = "正在保存图片，保存成功之前请不要离开此页面";
+		var msg_mottosavesuccess="格言修改成功";
+		var msg_daystogiveadded="库存天数增加为 ";
+		var msg_daystogiveremain="库存天数剩余 ";
+		var msg_newexpire="过期时间延长为 ";
+		var msg_timereused="回收时间 ";
+		var msg_timeexpire="过期时间 ";
+		var msg_daystogive="库存天数 ";
+		var msg_extendhintstart="在 ";
+		var msg_extendhintend=" 后可延长过期时间";
+		var msg_newjournalhint="你今天还没写日记，开始写吧，每天可以保存一张图片，你所填写的内容会自动保存";
+		var msg_photosavesuccess="图片保存成功";
+		var msg_photosavefail="图片保存失败，";
+		var msg_relogin="重新登录";
+		var msg_uploadfail="网络异常或上传图片过大";
+		var msg_networkfail="网络异常，请检查网络连接";
+		var msg_uploadlimit="请选择小于100k的图片";
+		var msg_snapuploadfail="拍照上传失败，请重新拍照或选择小于100k的图片上传";
+		
 		function post(context, actionid, paramjson, confirmtext){
 			if (confirmtext!=null){
 				if (!confirm(confirmtext)){
@@ -742,7 +772,7 @@
 						eval("after"+actionid+"(result.data)");
 					} else {
 						footmsg(result.error);
-						if (result.error.indexOf("重新登录")!=-1){
+						if (result.error.indexOf(msg_relogin)!=-1){
 							setcache("yanxinloginkey", null);
 							dologout();
 						}
@@ -755,12 +785,12 @@
 			　　		initactions();
 			　　		if (status!="success"){
 			　　			ajaxpost.abort();
-				　　		footmsg("网络异常，请检查网络连接");
+				　　		footmsg(msg_networkfail);
 			　　		}
 			　　	}
 			});
 		}
-		
+
 		function prepareupload(){
 			$("#filebtn").hide();
 			try{
@@ -769,30 +799,36 @@
 				reader.onload = function () {
 					try{
 						var result = reader.result;
-						//if (result.length <= 204800) {
-					    	//	upload();
-					    //} else {
+						if (result.length > 150000) {
+					    		footmsg(msg_uploadlimit);
+					    		$("#filebtn").fadeIn(500);
+					    } else {
 					    		var img = new Image();
 					    		img.src = result;
 					    		img.onload = function(){
 								try{
-									post("cexpired","uploadcanvas",{"canvasdataurl":imgcompress(img)});
-								}catch(e){
+									if (drawphotosmall(img, false)&&drawphoto(img, false)){
+										uploadcanvas();
+									} else {
+										upload();
+									}
+								}catch(err){
 									upload();
 								}
 							};
-					    //}
-					}catch(e){
+					    }
+					}catch(err){
 						upload();
 					}
-				  };
-			}catch(e){
+			  	};
+			}catch(err){
 				upload();
 			}
 		}
+		
 		function upload(){
 			var paramdata = new FormData($("#dayimgwriteform")[0]);
-			footmsg("正在保存图片，保存成功之前请不要离开此页面");
+			footmsg(msg_photosaving);
 			var ajaxpost = $.ajax({
 				url: datainterface+"cexpired/upload?loginkey="+getcache("yanxinloginkey"),  
 			　　	timeout : 40000, 
@@ -805,7 +841,7 @@
 						eval("afterupload(result.data)");
 					} else {
 						footmsg(result.error);
-						if (result.error.indexOf("重新登录")!=-1){
+						if (result.error.indexOf(msg_relogin)!=-1){
 							setcache("yanxinloginkey", null);
 							dologout();
 						}
@@ -815,23 +851,21 @@
 			　　		initactions();
 			　　		if (status!="success"){
 			　　			ajaxpost.abort();
-				　　		footmsg("网络异常或上传图片过大，"+$("#imghint").html());
+				　　		footmsg(msg_uploadfail);
 			　　		}
 			　　	}
 			});
 		}
-		
+
 		function afterupload(data){
 			var hint = "";
 			if (data.newdaycomingminutes!=undefined){
 				hint = "，"+data.newdaycomingminutes;
 			}
-			if (data.compressed=="false"){
-				footmsg("图片保存成功"+hint);
-			} else {
-				footmsg("图片已压缩保存"+hint);
-			}
+			footmsg(msg_photosavesuccess+hint);
+			$("#dayimgwrite").attr("src", "");
 			$("#dayimgwrite").attr("src", photointerface+"freego/download?onetimekey="+data.onetimekeyphoto);
+			$("#dayimgwrite").fadeIn(500);
 			$("#imghint").hide();
 		}
 
@@ -856,52 +890,60 @@
 			}
 		}
 		
-		var canvas = document.createElement("canvas");
-		var ctx = canvas.getContext('2d');
-		var tCanvas = document.createElement("canvas");
-		var tctx = tCanvas.getContext("2d");
-		var maxsize = 100 * 1024;
-		
 		$(document).ready(function(){
 			init();
 			setTimeout(function(){
 				$("#openingclosebtn").click();
 			},5000);
-			var video = document.getElementById('video');
-/*
-			// Get access to the camera!
-			if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-			    // Not adding `{ audio: true }` since we only want video now
-			    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-			        //video.src = window.URL.createObjectURL(stream);
-			        video.srcObject = stream;
-			        video.play();
-			    });
-			}*/
-			$("#snap").one("click", function() {
-				canvas.width = 352;
-		        canvas.height = 240;
-
-		        ctx.fillStyle = "#000";
-		        ctx.fillRect(0, 0, canvas.width, canvas.height);
-		        var video = document.getElementById('video');
-				ctx.drawImage(video, 0, 0, 352, 240);
-				post("cexpired","uploadcanvas",{"canvasdataurl":canvas.toDataURL('image/jpeg', 1)});
-			});
-			
 		});
+		
+		function uploadcanvas(){
+			footmsg(msg_photosaving);
+			var canvasphoto = document.getElementById("photo");
+			var canvasphotosmall = document.getElementById("photosmall");
+			try{
+				post("cexpired","uploadcanvas",{"photocanvasdataurl":canvasphoto.toDataURL("image/jpeg",0.6),
+												"photosmallcanvasdataurl":canvasphotosmall.toDataURL("image/jpeg",1)});
+			}catch(err){
+				upload();
+			}
+		}
+		function douploadcanvas(){
+			footmsg(msg_photosaving);
+			var video = document.getElementById('video');
+			video.pause();
+			if (drawphotosmall(video, true)&&drawphoto(video, true)){
+				var canvasphoto = document.getElementById("photo");
+				var canvasphotosmall = document.getElementById("photosmall");
+				try{
+					post("cexpired","uploadcanvas",{"photocanvasdataurl":canvasphoto.toDataURL("image/jpeg",0.6),
+													"photosmallcanvasdataurl":canvasphotosmall.toDataURL("image/jpeg",1)});
+				}catch(err){
+					stopcam();
+					$("#imghint").html(msg_snapuploadfail);
+					$("#imghint").fadeIn(500);
+				}
+			} else {
+				stopcam();
+				$("#imghint").html(msg_snapuploadfail);
+				$("#imghint").fadeIn(500);
+			}
+			
+		}
 		function afteruploadcanvas(data){
-			$("#video").hide();
+			stopcam();
 			var hint = "";
 			if (data.newdaycomingminutes!=undefined){
 				hint = "，"+data.newdaycomingminutes;
 			}
 			if (data.compressed=="true"){
-				footmsg("图片已压缩保存"+hint);
+				footmsg(msg_photosavesuccess+hint);
+				$("#dayimgwrite").attr("src","");
 				$("#dayimgwrite").attr("src", photointerface+"freego/download?onetimekey="+data.onetimekeyphoto);
+				$("#dayimgwrite").fadeIn(500);
 				$("#imghint").hide();
 			} else {
-				footmsg("图片压缩失败，"+$("#imghint").html());
+				footmsg(msg_photosavefail+data.reason);
 				$("#imghint").show();
 			}
 		}
@@ -919,9 +961,13 @@
 			startautosaving();
 		}
 		
-		function imgresize(img) {
-	        var width = img.width;
-	        var height = img.height;
+		function drawphotosmall(obj, isvideo) {
+	        var width = obj.width;
+	        var height = obj.height;
+	        if (isvideo){
+	        		width=obj.videoWidth;
+	        		height=obj.videoHeight;
+	        } 
 	        var ratio = 1;
 	        if (width>42||height>42){
 	        		if (width>42){
@@ -930,61 +976,42 @@
 	        			ratio = height/42;
 		        	}
 	        }
-	        canvas.width = width/ratio;
-	        canvas.height = height/ratio;
-
-	        ctx.fillStyle = "#000";
-	        ctx.fillRect(0, 0, canvas.width, canvas.height);
-	        ctx.drawImage(img, 0, 0, width/ratio, height/ratio);
-	        
-	        var ndata = canvas.toDataURL('image/jpeg', 1);
-
-	        tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
-			return ndata;
+	        try{
+		        var canvas = document.getElementById("photosmall");
+		        canvas.width = width/ratio;
+		        canvas.height = height/ratio;
+		       	var ctx = canvas.getContext('2d');
+		        ctx.fillStyle = "#000";
+		        ctx.fillRect(0, 0, canvas.width, canvas.height);
+		        ctx.drawImage(obj, 0, 0, width/ratio, height/ratio);
+		        return true;
+			}catch(err){
+				return false;
+			}
 	    }
-		
-		function imgcompress(img) {
-	        var width = img.width;
-	        var height = img.height;
-			//alert(img.width+"="+img.height);
-	        var ratio;
-	        if ((ratio = width * height / 4000000)>1) {
-	            ratio = Math.sqrt(ratio);
-	           // width /= ratio;
-	           // height /= ratio;
-	        }else {
-	            ratio = 1;
-	        }
-			canvas.width = width;
-	        canvas.height = height;
-
-	        ctx.fillStyle = "#000";
-	        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-	        var count;
-	        if ((count = width * height / 1000000) > 1) {
-	            count = ~~(Math.sqrt(count)+1);
-
-	            var nw = ~~(width / count);
-	            var nh = ~~(height / count);
-
-	            tCanvas.width = nw;
-	            tCanvas.height = nh;
-	            for (var i = 0; i < count; i++) {
-	            	    for (var j = 0; j < count; j++) {
-	                   // tctx.drawImage(img, i * nw * ratio, (count-j-1) * nh * ratio, nw * ratio, nh * ratio, 0, 0, nw, nh);
-	                   // ctx.drawImage(tCanvas, i * nw, (count-j-1) * nh, nw, nh);
-	                }
-	            }
-	        } else {
-	           // ctx.drawImage(img, 0, 0, width, height);
-	        }
-	        ctx.drawImage(img, 0, 0, width, height);
-	        
-	        var ndata = canvas.toDataURL('image/jpeg', 0.1);
-
-	        tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
-			return ndata;
+		function drawphoto(obj, isvideo) {
+	        var width = obj.width;
+	        var height = obj.height;
+	        if (isvideo){
+	        		width=obj.videoWidth;
+	        		height=obj.videoHeight;
+	        	} 
+	        if (width * height > 3000000){
+	       		return false;
+	       	} else {
+	       		try{
+			        var canvas = document.getElementById("photo");
+			        canvas.width = width;
+			        canvas.height = height;
+			        var ctx = canvas.getContext('2d');
+			        ctx.fillStyle = "#000";
+			        ctx.fillRect(0, 0, canvas.width, canvas.height);
+			        ctx.drawImage(obj, 0, 0, width, height);
+			        return true;
+				}catch(err){
+					return false;
+				}
+	       	}
 	    }
 		
 		function dologout(){
@@ -1035,13 +1062,13 @@
 			$("#calendarbtn").show();
 			if (data.isexpired=="t"){
 				$("#accountbtn").click();
-				footmsg(data.name+" 欢迎回来 你的账号已经过期，请及时延长过期时间，否则账号将被回收，回收后该账号的所有日记和相关数据都将无法找回");
+				footmsg(data.name+msg_welcomlogin+msg_loginandexpired);
 			} else {
 				if (data.expiretime!=undefined){
-					footmsg(data.name+" 欢迎回来 你的账号即将在 "+data.expiretime+" 后过期，请及时延长过期时间，否则账号将被回收，回收后该账号的所有日记和相关数据都将无法找回");
+					footmsg(data.name+msg_welcomlogin+msg_loginandexpiringstart+data.expiretime+msg_loginandexpiringend);
 					$("#accountbtn").click();
 				} else {
-					footmsg(data.name+" 欢迎回来");
+					footmsg(data.name+msg_welcomlogin);
 					$("#todaybtn").click();
 				}
 			}
@@ -1079,6 +1106,7 @@
 					content+=data.items[i]+"<br>";
 				}
 			}
+			content+="<br>&nbsp;";
 			popmsg(content);
 		}
 		function afterforgetpass(data){
@@ -1096,7 +1124,6 @@
 			$("#changemotto").val("");
 			$("#changeremotto").val("");
 			$("#selfname").html("");
-			$("#todaybtn").val("");
 			$("#selfextendbtn").attr("extendname", "");
 			$("#selfexpiretime").html("");
 			$("#selfreusetime").html("");
@@ -1111,16 +1138,16 @@
 			$("#selfname").html(data.name);
 			$("#todaybtn").val(data.today);
 			$("#selfextendbtn").attr("extendname", data.name);
-			$("#selfexpiretime").html("过期时间 "+data.timeexpire);
-			$("#selfreusetime").html("回收时间 "+data.timereuse);
+			$("#selfexpiretime").html(msg_timeexpire+data.timeexpire);
+			$("#selfreusetime").html(msg_timereused+data.timereuse);
 			if (parseInt(data.daystogive)>0){
-				$("#selfdaystogive").html("库存天数 "+data.daystogive);
+				$("#selfdaystogive").html(msg_daystogive+data.daystogive);
 				$("#daystogivespendform").show();
 				$("#selfdaystogive").show();
 			}
 			
 			if (data.extendselfaftertime!=undefined){
-				$("#selfextendhint").html("在 "+data.extendselfaftertime+" 后可延长自己的过期时间");
+				$("#selfextendhint").html(msg_extendhintstart+data.extendselfaftertime+msg_extendhintend);
 				$("#selfextendhint").show();
 			} else {
 				if (parseInt(data.daystogive)>0){
@@ -1153,20 +1180,21 @@
 				$("#calendaryear").append("<div style='float:left;width:33%;'>&nbsp;</div>");
 			}
 			
-			$("#calendarcontent").append("<div style='width:100%;float:left;'><div style='width:14%;float:left;text-align:center;'>周一</div>"+
+			$("#calendarcontent").append("<div style='width:100%;float:left;'>"+
+					"<div style='width:14%;float:left;text-align:center;'>周日</div>"+
+					"<div style='width:14%;float:left;text-align:center;'>周一</div>"+
 					"<div style='width:14%;float:left;text-align:center;'>周二</div>"+
 					"<div style='width:14%;float:left;text-align:center;'>周三</div>"+
 					"<div style='width:14%;float:left;text-align:center;'>周四</div>"+
 					"<div style='width:14%;float:left;text-align:center;'>周五</div>"+
 					"<div style='width:14%;float:left;text-align:center;'>周六</div>"+
-					"<div style='width:14%;float:left;text-align:center;'>周日</div>"+
 					"</div>");
 			for (var i=0;i<data.onemonth.length;i++){
 				$("#calendarcontent").append("<div id='calendarweek"+i+"' style='width:100%;float:left;'></div>");
 				for (var j=0;j<data.onemonth[i].length;j++){
 					if (data.onemonth[i][j].monthday!=undefined){
 						if (data.onemonth[i][j].onetimekeyphoto!=undefined){
-							$("#calendarweek"+i).append("<div style='background-image: url("+photointerface+"freego/download?onetimekey="+data.onemonth[i][j].onetimekeyphoto+");background-size:contain;background-repeat:no-repeat;float:left;text-align:center;' class='datecell'><div style='background-color:black;float:right;border-radius:50%;opacity:0.8;padding-top:2px;padding-left:1px;padding-right:1px;'>"+data.onemonth[i][j].monthday+"</div></div>");
+							$("#calendarweek"+i).append("<div style='background-image: url("+photointerface+"freego/download?which=small&onetimekey="+data.onemonth[i][j].onetimekeyphoto+");background-size:contain;background-repeat:no-repeat;float:left;text-align:center;' class='datecell'><div style='background-color:black;float:right;border-radius:50%;opacity:0.6;padding-top:2px;padding-left:1px;padding-right:1px;'>"+data.onemonth[i][j].monthday+"</div></div>");
 						} else {
 							$("#calendarweek"+i).append("<div style='float:left;text-align:center;' class='datecell'>"+data.onemonth[i][j].monthday+"</div>");
 						}
@@ -1204,6 +1232,7 @@
 			$("#weatherwrite").attr("old","");
 			post("cexpired","readtoday",{})
 		}
+		
 		function afterreadtoday(data){
 			sessionStorage.setItem("iswriting", "true");
 			$("#todaybtn").show();
@@ -1214,9 +1243,10 @@
 			$("#daywrite").html(data.today);
 			if (data.key==undefined){
 				$("#imghint").show();
-				footmsg("你今天还没写日记，开始写吧，每天可以保存一张图片，你所填写的内容会自动保存");
+				footmsg(msg_newjournalhint);
 			} else {
 				if (data.onetimekeyphoto!=undefined){
+					$("#dayimgwrite").attr("src","");
 					$("#dayimgwrite").attr("src",photointerface+"freego/download?onetimekey="+data.onetimekeyphoto);
 					$("#imghint").hide();
 				} else {
@@ -1246,16 +1276,16 @@
 		}
 		
 		function afterreadother(data){
-			$("#otherreusetime").html("回收时间 "+data.timereuse);
-			$("#otherexpiretime").html("过期时间 "+data.timeexpire);
-			$("#otherdaystogive").html("库存天数 "+data.daystogive);
+			$("#otherreusetime").html(msg_timereused+data.timereuse);
+			$("#otherexpiretime").html(msg_timeexpire+data.timeexpire);
+			$("#otherdaystogive").html(msg_daystogive+data.daystogive);
 			$("#othergivebtn").attr("givename",data.name);
 			$("#otherextendbtn").attr("extendname",data.name);
 			$("#othergive").show();
 			$("#othergivebtn").show();
 			$("#otherextendform").show();
 			if (data.extendotheraftertime!=undefined){
-				$("#otherextendhint").html("在 "+data.extendotheraftertime+" 后可延长过期时间");
+				$("#otherextendhint").html(msg_extendhintstart+data.extendotheraftertime+msg_extendhintend);
 				$("#otherextendhint").show();
 			} else {
 				$("#otherextend").show();
@@ -1270,7 +1300,7 @@
 		function afterchangepass(data){
 			$("#changepass").val("");
 			$("#changerepass").val("");
-			footmsg("密码修改成功");
+			footmsg(msg_passmodifysuccess);
 		}
 
 		function doextend(){
@@ -1279,26 +1309,26 @@
 		}
 		function afterextend(data){
 			$("#"+data.selforother+"extend").val("");
-			$("#selfdaystogivenew").html("库存天数剩余 "+data.daystogive);
+			$("#selfdaystogivenew").html(msg_daystogiveremain+data.daystogive);
 			$("#selfdaystogivenew").show();
-			$("#"+data.selforother+"expiretimenew").html("过期时间延长为 "+data.timeexpire);
+			$("#"+data.selforother+"expiretimenew").html(msg_newexpire+data.timeexpire);
 			$("#"+data.selforother+"expiretimenew").show();
-			$("#"+data.selforother+"reusetime").html("回收时间 "+data.timereuse);
+			$("#"+data.selforother+"reusetime").html(msg_timereused+data.timereuse);
 			if (parseInt(data.daystogive)<=0){
 				$("#daystogivespendform").hide();
 				$("#selfextendform").hide();
 			}
 		}
-
+		
 		function dogive(){
 			loading(true);
 			post("cexpired","give",{"incre":$("#othergive").val(),"targetname":$(this).attr("givename")})
 		}
 		function aftergive(data){
 			$("#othergive").val("");
-			$("#otherdaystogivenew").html("库存天数增加为 "+data.otherdaystogive);
+			$("#otherdaystogivenew").html(msg_daystogiveadded+data.otherdaystogive);
 			$("#otherdaystogivenew").show();
-			$("#selfdaystogivenew").html("库存天数剩余 "+data.daystogive);
+			$("#selfdaystogivenew").html(msg_daystogiveremain+data.daystogive);
 			$("#selfdaystogivenew").show();
 			if (parseInt(data.daystogive)<=0){
 				$("#daystogivespendform").hide();
@@ -1313,7 +1343,7 @@
 		function afterchangemotto(data){
 			$("#changemotto").val("");
 			$("#changeremotto").val("");
-			footmsg("格言修改成功");
+			footmsg(msg_mottosavesuccess);
 		}
 
 		function initactions(){
@@ -1323,6 +1353,7 @@
 			});
 			$("#filebtn").show();
 			loading(false);
+			stopcam();
 		}
 		function loading(show){
 			$(".hideloading").remove();
@@ -1354,7 +1385,7 @@
 			if ($("#contentwrite").val()!=$("#contentwrite").attr("old")||
 					$("#locationwrite").val()!=$("#locationwrite").attr("old")||
 					$("#weatherwrite").val()!=$("#weatherwrite").attr("old")){
-				footmsg("正在保存日记，保存成功之前请不要离开此页面");
+				footmsg(msg_journalsaving);
 				post("cexpired","write",{"weather":$("#weatherwrite").val(),"location":$("#locationwrite").val(),"content":$("#contentwrite").val()});
 			} else {
 				setTimeout(autosavingtimer, 10000);
@@ -1369,7 +1400,7 @@
 			$("#contentwrite").attr("old",data.content);
 			$("#locationwrite").attr("old",data.location);
 			$("#weatherwrite").attr("old",data.weather);
-			footmsg("日记保存成功"+hint);
+			footmsg(msg_journalsavesuccess+hint);
 		}
 		
 		var footmsgs = new Array();
@@ -1382,25 +1413,118 @@
 		}
 		function footmsgtimer(){
 			if (footmsgs.length>0){
-				$(".msgfoot").remove();
-				$("body").append("<div class='msgfoot'>"+footmsgs[0]+
-					"</div>");
-				footmsgs.splice(0, 1);
+				if ($(".msgfoot").is(":visible")&&footmsgs[0]==$(".msgfoot").html()){
+					footmsgs.splice(0, 1);
+				} else {
+					$(".msgfoot").remove();
+					$("body").append("<div class='msgfoot'>"+footmsgs[0]+
+						"</div>");
+					footmsgs.splice(0, 1);
+				}
 			}
-			
 			setTimeout(footmsgtimer, 1500);
 		}
 		function footmsg(content){
-			if ($(".msgfoot").html()!=content){
-				var lastindex = footmsgs.lastIndexOf(content);
-				if (lastindex==-1||lastindex!=footmsgs.length-1){
+			try{
+				if (footmsgs[footmsgs.length-1]!=content){
 					footmsgs.push( content );
 				}
+			}catch(err){
+				footmsgs.push( content );
 			}
 		}
+
 		function checkinput(id){
 			if ($("#"+id).attr("old")!=$("#"+id).val()){
-				footmsg("即将自动保存");
+				footmsg(msg_startingautosaving);
+			}
+		}
+		function showupload(){
+			$("#filebtn").show();
+			$("#dayimgwrite").show();
+			stopcam();
+		}
+		function showfrontcam(){
+			showcam(false);
+			$("#dayimgwrite").hide();
+			$("#filebtn").hide();
+		}
+		function showbackcam(){
+			showcam(true);
+			$("#dayimgwrite").hide();
+			$("#filebtn").hide();
+		}
+
+		function stopcam(){
+			$("#video").hide();
+			$("#snap").hide();
+			$("#imghint").html("");
+			$("#imghint").hide();
+			var video = document.getElementById('video');
+			try{
+				stream = video.srcObject;
+				tracks = stream.getTracks();
+				tracks.forEach(function(track) {
+				   track.stop();
+				});
+			}catch(err){
+			 	//do nothing
+			}
+			try{
+				video.srcObject=null;
+			}catch(err){
+				//do nothing
+			}
+		}
+		function showcam(isrear){
+			try{
+				stopcam();
+				if (navigator.mediaDevices === undefined) {
+					navigator.mediaDevices = {};
+				}
+				if (navigator.mediaDevices.getUserMedia === undefined) {
+					navigator.mediaDevices.getUserMedia = function(constr) {
+					   	var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+					    if (!getUserMedia) {
+					    		return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+					    }
+					    return new Promise(function(resolve, reject) {
+					      	getUserMedia.call(navigator, constr, resolve, reject);
+					    });
+				  	}
+				}
+				var facingmode = "user";
+				if (isrear){
+					facingmode = "environment";
+				}
+				var constraints = { audio: false, video: { facingMode: facingmode, width: 480, height: 360 } };
+				navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+					var video = document.querySelector('video');
+					if ("srcObject" in video) {
+					 	video.srcObject = stream;
+					} else {
+					    video.src = window.URL.createObjectURL(stream);
+					}
+					video.onloadedmetadata = function(e) {
+					 	video.play();
+					 	$("#dayimgwrite").hide();
+					 	$("#video").fadeIn(500);
+					 	$("#snap").fadeIn(500);
+					};
+				}).catch(function(err) {
+					stopcam();
+					if ((err+"").indexOf("NotAllowedError")!=-1){
+						$("#imghint").html(msg_camerareject);
+						$("#imghint").fadeIn(500);
+					} else {
+						$("#imghint").html(msg_cameranotsupport);
+						$("#imghint").fadeIn(500);
+					}
+				});
+			}catch(err){
+				stopcam();
+				$("#imghint").html(msg_cameranotsupport);
+				$("#imghint").fadeIn(500);
 			}
 		}
 		</script>
@@ -1409,13 +1533,23 @@
 		<div class="content">
 			<div id="yanxinwriteform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;">
 				<div class="yximgwrite">
-					<div id="imghint" style="position:absolute;top:40%;left:5px;right:5px;text-align:center;">请浏览本地图片（正方形图片将获得最佳显示效果），大于200K的图片将自动压缩存储，压缩后图片质量有所损失，如果自动压缩失败，请重新上传小于200K的图片</div>
-					<video id="video" style="width:100%;height:100%;" autoplay></video>
+					<div id="imghint" style="position:absolute;top:40%;left:5px;right:5px;text-align:center;"></div>
+					<video id="video" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);display:none;" autoplay></video>
+					<canvas id="photo" style="position:absolute;display:none;"></canvas>
+					<canvas id="photosmall" style="position:absolute;display:none;"></canvas>
 					<img id="dayimgwrite" src="" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
+					
 					<form method="POST" enctype="multipart/form-data" id="dayimgwriteform">
-					<input type="button" id="snap" style="position:absolute;top:100%;left:5px;" value="Snap Photo"/>
-						<input id="filebtn" name="photo" accept="image/*" onchange="prepareupload();" style="position:absolute;top:100%;left:35px;" type="file"/>
+						<input id="filebtn" name="photo" accept="image/*" onchange="prepareupload();" style="position:absolute;top:100%;left:5px;" type="file"/>
 					</form>
+					<input type="button" id="snap" actionid="uploadcanvas" class="click" style="position:absolute;top:100%;left:50%;transform:translateX(-50%);display:none;" value="拍照"/>
+					
+					<div style="position:absolute;top:calc(100% + 30px);width:100%;text-align:center;">
+						<input type="button" onclick="showupload()" value="上传小于100k的图片"/>
+						<input type="button" onclick="showfrontcam()" value="前摄"/>
+						<input type="button" onclick="showbackcam()"value="后摄"/>
+					</div>
+					
 				</div>
 				<div class="yxinputswrite">
 					<div id="daywrite" style="position:absolute;line-height:30px;height:30px;width:80px;top:0px;left:0px;overflow:hidden;"></div>
@@ -1500,7 +1634,6 @@
 				</div>
 			</div>
 			<div id="calendarform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
-
 			</div>
 		</div>
 		
@@ -1566,8 +1699,9 @@
 				陪伴有故事的你<br>
 				<br>
 				<br>
-				<div style="font-size:12px;transform:scale(0.9);width:100%;">© 心之言（上海）科技有限公司</div>
+				<div style="font-size:12px;transform:scale(0.9);width:100%;">心之言（上海）科技有限公司</div>
 				<div style="font-size:12px;transform:scale(0.9);width:100%;">出品</div>
+				<div style="font-size:12px;transform:scale(0.9);width:100%;">©️ 从 2019年 到 所有账号被回收</div>
 				<div style="font-size:12px;transform:scale(0.9);width:100%;">yanxin.10o10m.com</div>
 				<div style="font-size:12px;transform:scale(0.9);width:100%;">域名速记：10个圈10个美</div>
 			</div>

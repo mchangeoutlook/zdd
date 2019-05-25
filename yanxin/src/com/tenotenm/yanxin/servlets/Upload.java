@@ -52,7 +52,7 @@ public class Upload extends HttpServlet {
 								imageis = part.getInputStream();
 								BufferedImage bi = ImageIO.read(imageis);
 								if (bi == null) {
-									throw new Exception("不能上传图片以外的其它文件");
+									throw new Exception("提示: 不能上传图片以外的其它文件");
 								} else {
 									bi = null;
 								}
@@ -89,13 +89,12 @@ public class Upload extends HttpServlet {
 				}
 			}
 			if (photokey == null) {
-				throw new Exception("请上传图片");
+				throw new Exception("提示: 请上传图片");
 			}
 			String yanxinkey = Bizutil.createyanxin(yxaccount, yxlogin, photofolder, photokey, photokey, today);
 
 			Map<String, Object> ret = new Hashtable<String, Object>();
 			ret.put("onetimekeyphoto", Bizutil.onetimekey(null, yanxinkey));
-			ret.put("compressed", "false");
 			String hint = Bizutil.newdaycominghint(yxlogin);
 			if (hint!=null) {
 				ret.put("newdaycomingminutes", hint);
