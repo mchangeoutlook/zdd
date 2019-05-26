@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.tenotenm.yanxin.entities.Accountipdeny;
 import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.entities.Yxlogin;
 import com.tenotenm.yanxin.util.Bizutil;
@@ -66,7 +67,7 @@ public class Register extends HttpServlet {
 			} catch (Exception e) {
 				if (e.getMessage() != null && e.getMessage().contains(STATIC.DUPLICATE)) {
 					yxaccount.readunique(yxaccount.getUniquename());
-					if (Bizutil.iswaitingfirstlogin(yxaccount)||Bizutil.isbeforereusedate(yxaccount)) {
+					if (Bizutil.isbeforereusedate(yxaccount)) {
 						throw new Exception("提示: 账号被占用，请换一个名称");
 					}
 					if (!yxaccount.getYxloginkey().isEmpty()) {
@@ -83,14 +84,27 @@ public class Register extends HttpServlet {
 					yxaccount.setYxloginkey("");
 					yxaccount.setYxyanxinuniquekeyprefix(Bigclient.newbigdatakey());
 					yxaccount.modify(yxaccount.getKey());
+					try {
+						Accountipdeny aipdeny = new Accountipdeny();
+						String aipdenykey = aipdeny.readpaged(yxaccount.getUniquename()+"-"+ip).get(0);
+						aipdeny.read(aipdenykey);
+						aipdeny.setWrongpasstimes4increment(-1*aipdeny.getWrongpasstimes());
+						aipdeny.increment(null);
+						aipdeny.setWrongpasstime(new Date(yxaccount.getTimecreate().getTime() - Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")));
+						aipdeny.setWrongpassip(ip);
+						aipdeny.modify(null);
+					}catch(Exception ex) {
+						//do nothing
+					}
+					
 				} else {
 					throw e;
 				}
 			}
 			Bizutil.iplimit(Reuse.getremoteip(request), true);
 			Reuse.respond(response,
-					"提示: 注册成功！请在" + Reuse.yyyyMMddHHmmss(Bizutil.dateallowfirstlogin(yxaccount))
-							+ "前完成首次登录，否则该账号将被回收，回收后该账号的所有日记和相关数据都将无法找回",
+					"提示: 注册成功！你的账号过期时间为："+Reuse.yyyyMMddHHmmss(yxaccount.getTimeexpire()) + "，回收时间为："+Reuse.yyyyMMddHHmmss(Bizutil.datedenyreuseaccount(yxaccount))
+							+ "，请在回收时间之前登录并延长过期时间，否则该账号将被回收，回收后该账号的所有日记和相关数据都将无法找回",
 					null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);

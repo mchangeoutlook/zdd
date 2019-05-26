@@ -25,9 +25,7 @@ public class Yxaccount extends Superentity{
 	private Date timecreate=new Date();
 	
 	private Date timeupdate=timecreate;
-	
-	private Date timewrongpass=null;
-	
+
 	private Date timeexpire=null;
 	
 	private Long daystogive=0l;
@@ -195,22 +193,6 @@ public class Yxaccount extends Superentity{
 		return Reuse.yyyyMMddHHmmss(timeexpire);
 	}
 	
-	protected void read_timewrongpass(String timewrongpass) {
-		this.timewrongpass=Reuse.yyyyMMddHHmmss(timewrongpass);
-	}
-	protected Object[] add4create_timewrongpass() {
-		if (timewrongpass==null) {
-			return null;
-		}
-		return new Object[] {Reuse.yyyyMMddHHmmss(timewrongpass), 0};
-	}
-	protected String add4modify_timewrongpass() {
-		if (timewrongpass==null) {
-			return null;
-		}
-		return Reuse.yyyyMMddHHmmss(timewrongpass);
-	}
-
 	protected void read_daystogive(String daystogive) {
 		this.daystogive=Long.parseLong(daystogive);
 	}
@@ -220,7 +202,6 @@ public class Yxaccount extends Superentity{
 		}
 		return daystogive4increment;
 	}
-
 	
 	public String getKey() {
 		return key;
@@ -330,7 +311,6 @@ public class Yxaccount extends Superentity{
 		this.timecreate = timecreate;
 		this.timeupdate = timecreate;
 		this.timeexpire = new Date(timecreate.getTime() + Reuse.getdaysmillisconfig("freeuse.days"));
-		this.timewrongpass = new Date(timecreate.getTime() - Reuse.getsecondsmillisconfig("wrongpass.wait.seconds"));
 	}
 
 	public Date getTimeupdate() {
@@ -339,14 +319,6 @@ public class Yxaccount extends Superentity{
 
 	public void setTimeupdate(Date timeupdate) {
 		this.timeupdate = timeupdate;
-	}
-
-	public Date getTimewrongpass() {
-		return timewrongpass;
-	}
-
-	public void setTimewrongpass(Date timewrongpass) {
-		this.timewrongpass = timewrongpass;
 	}
 
 	public Date getTimeexpire() {
@@ -371,6 +343,7 @@ public class Yxaccount extends Superentity{
 	public void setDaystogive4increment(Long daystogive4increment) {
 		this.daystogive4increment = daystogive4increment;
 	}
+	
 	public String getYxyanxinuniquekeyprefix() {
 		return yxyanxinuniquekeyprefix;
 	}

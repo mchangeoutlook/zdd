@@ -255,9 +255,6 @@ public class Bizutil {
 	}
 
 	public static void checkaccountreused(Yxaccount yxaccount) throws Exception {
-		if (isfirstlogindenied(yxaccount)) {
-			throw new Exception("提示: 账号 " + yxaccount.getName() + " 未及时完成首次登录，已被回收");
-		}
 		if (isreusing(yxaccount)) {
 			throw new Exception("提示: 账号 " + yxaccount.getName() + " 未及时延长过期时间，已被回收");
 		}
@@ -276,28 +273,12 @@ public class Bizutil {
 		return yxaccount.getTimeexpire().before(now) && now.before(datedenyreuseaccount(yxaccount));
 	}
 
-	private static boolean isfirstlogindenied(Yxaccount yxaccount) {
-		return yxaccount.getYxloginkey().isEmpty() & dateallowfirstlogin(yxaccount).before(new Date());
-	}
-
-	public static boolean iswaitingfirstlogin(Yxaccount yxaccount) {
-		return yxaccount.getYxloginkey().isEmpty() & datedenyfirstlogin(yxaccount).after(new Date());
-	}
-
 	private static boolean isreusing(Yxaccount yxaccount) {
-		return !yxaccount.getYxloginkey().isEmpty() & datedenyreuseaccount(yxaccount).before(new Date());
+		return datedenyreuseaccount(yxaccount).before(new Date());
 	}
 
 	public static boolean isbeforereusedate(Yxaccount yxaccount) {
-		return !yxaccount.getYxloginkey().isEmpty() & dateallowreuseaccount(yxaccount).after(new Date());
-	}
-
-	public static Date dateallowfirstlogin(Yxaccount yxaccount) {
-		return new Date(datedenyfirstlogin(yxaccount).getTime() - 60000);
-	}
-
-	private static Date datedenyfirstlogin(Yxaccount yxaccount) {
-		return new Date(yxaccount.getTimecreate().getTime() + Reuse.getsecondsmillisconfig("first.login.in.seconds"));
+		return dateallowreuseaccount(yxaccount).after(new Date());
 	}
 
 	public static Date datedenyreuseaccount(Yxaccount yxaccount) {
