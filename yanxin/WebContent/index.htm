@@ -776,6 +776,9 @@
 							setcache("yanxinloginkey", null);
 							dologout();
 						}
+						if (result.error.indexOf("已过期")!=-1){
+							doreadself();
+						}
 					}
 			　　	},
 			　　	complete : function(XMLHttpRequest,status){
@@ -844,6 +847,9 @@
 						if (result.error.indexOf(msg_relogin)!=-1){
 							setcache("yanxinloginkey", null);
 							dologout();
+						}
+						if (result.error.indexOf("已过期")!=-1){
+							doreadself();
 						}
 					}
 				},
@@ -1047,7 +1053,7 @@
 		
 		function dologin(){
 			loading(true);
-			post("freego","login",{"name":$("#loginuser").val(),"pass":$("#loginpass").val(),"motto":$("#loginmotto").val()})
+			post("freego","login",{"name":$("#loginuser").val(),"pass":$("#loginpass").val(),"motto":$("#loginmotto").val()});
 		}
 		function afterlogin(data){
 			$("#filebtn").val("");
@@ -1162,20 +1168,20 @@
 			loading(true);
 			$(".hideallforms").hide();
 			$("#calendarform").children().remove();
-			post("cexpired","calendar",{})
+			post("cexpired","calendar",{"year":$(this).attr("year"),"month":$(this).attr("month")});
 		}
 		function aftercalendar(data){
 			$("#calendarform").fadeIn(500);
 			$("#calendarform").append("<div id='calendarcontent' style='position:absolute;max-height:100%;overflow-y:auto;left:0px;right:0px;bottom:0px;'></div>");
 			$("#calendarcontent").append("<div id='calendaryear' style='width:100%;float:left;margin-bottom:5px;'></div>");
 			if (data.leftyear!=undefined){
-				$("#calendaryear").append("<div style='float:left;width:33%;text-align:center;'><input type='button' value='"+data.leftyear+"年'/></div>");
+				$("#calendaryear").append("<div style='float:left;width:33%;text-align:center;'><input onclick='navigateyearmonth(\"year\", \""+data.leftyear+"\")' type='button' value='"+data.leftyear+"年'/></div>");
 			} else {
 				$("#calendaryear").append("<div style='float:left;width:33%;'>&nbsp;</div>");
 			}
 			$("#calendaryear").append("<div style='float:left;width:33%;text-align:center;'>"+data.middleyear+"年</div>");
 			if (data.rightyear!=undefined){
-				$("#calendaryear").append("<div style='float:left;width:33%;text-align:center;'><input type='button' value='"+data.rightyear+"年'/></div>");
+				$("#calendaryear").append("<div style='float:left;width:33%;text-align:center;'><input onclick='navigateyearmonth(\"year\", \""+data.rightyear+"\")' type='button' value='"+data.rightyear+"年'/></div>");
 			} else {
 				$("#calendaryear").append("<div style='float:left;width:33%;'>&nbsp;</div>");
 			}
@@ -1193,8 +1199,16 @@
 				$("#calendarcontent").append("<div id='calendarweek"+i+"' style='width:100%;float:left;'></div>");
 				for (var j=0;j<data.onemonth[i].length;j++){
 					if (data.onemonth[i][j].monthday!=undefined){
-						if (data.onemonth[i][j].onetimekeyphoto!=undefined){
-							$("#calendarweek"+i).append("<div style='background-image: url("+photointerface+"freego/download?which=small&onetimekey="+data.onemonth[i][j].onetimekeyphoto+");background-size:contain;background-repeat:no-repeat;float:left;text-align:center;' class='datecell'><div style='background-color:black;float:right;border-radius:50%;opacity:0.6;padding-top:2px;padding-left:1px;padding-right:1px;'>"+data.onemonth[i][j].monthday+"</div></div>");
+						if (data.onemonth[i][j].key!=undefined){
+							var bg = "";
+							if (data.onemonth[i][j].onetimekeyphoto!=undefined){
+								bg="background-image: url("+photointerface+"freego/download?which=small&onetimekey="+data.onemonth[i][j].onetimekeyphoto+");background-size:contain;background-repeat:no-repeat;";
+							}
+							var actionid="actionid='readyanxin'";
+							if (data.onemonth[i][j].istoday=="true"){
+								actionid="onclick=\"$('#todaybtn').click()\"";
+							}
+							$("#calendarweek"+i).append("<div "+actionid+" yanxinkey='"+data.onemonth[i][j].key+"' style='"+bg+"float:left;text-align:center;' class='datecell click'><div style='background-color:black;float:right;border-radius:50%;opacity:0.6;padding-top:2px;padding-left:1px;padding-right:1px;'>"+data.onemonth[i][j].monthday+"</div></div>");
 						} else {
 							$("#calendarweek"+i).append("<div style='float:left;text-align:center;' class='datecell'>"+data.onemonth[i][j].monthday+"</div>");
 						}
@@ -1206,18 +1220,42 @@
 			
 			$("#calendarcontent").append("<div id='calendarmonth' style='width:100%;float:left;margin-top:5px;margin-bottom:5px;'></div>");
 			if (data.leftmonth!=undefined){
-				$("#calendarmonth").append("<div style='float:left;width:33%;text-align:center;'><input type='button' value='"+data.leftmonth+"月'/></div>");
+				$("#calendarmonth").append("<div style='float:left;width:33%;text-align:center;'><input onclick='navigateyearmonth(\"month\", \""+data.leftmonth+"\")' type='button' value='"+data.leftmonth+"月'/></div>");
 			} else {
 				$("#calendarmonth").append("<div style='float:left;width:33%;'>&nbsp;</div>");
 			}
 			$("#calendarmonth").append("<div style='float:left;width:33%;text-align:center;'>"+data.middlemonth+"月</div>");
 			if (data.rightmonth!=undefined){
-				$("#calendarmonth").append("<div style='float:left;width:33%;text-align:center;'><input type='button' value='"+data.rightmonth+"月'/></div>");
+				$("#calendarmonth").append("<div style='float:left;width:33%;text-align:center;'><input onclick='navigateyearmonth(\"month\", \""+data.rightmonth+"\")' type='button' value='"+data.rightmonth+"月'/></div>");
 			} else {
 				$("#calendarmonth").append("<div style='float:left;width:33%;'>&nbsp;</div>");
 			}
 			
 			initactions();
+		}
+		
+		function navigateyearmonth(yearormonth, value){
+			$("#calendarbtn").attr(yearormonth, value);
+			$("#calendarbtn").click();
+		}
+		
+		function doreadyanxin(){
+			loading(true);
+			$(".hideallforms").hide();
+			post("cexpired","readyanxin",{"yanxinkey":$(this).attr("yanxinkey")});
+		}
+		function afterreadyanxin(data){
+			$("#dayread").html(data.day);
+			$("#calendarbtn").attr("year",data.day.split("-")[0]);
+			$("#calendarbtn").attr("month",data.day.split("-")[1]);
+			$("#weatherread").html(data.weather);
+			$("#locationread").html(data.location);
+			$("#contentread").val(data.content);
+			$("#dayimgread").attr("src","");
+			if (data.onetimekeyphoto!=undefined){
+				$("#dayimgread").attr("src",photointerface+"freego/download?onetimekey="+data.onetimekeyphoto);
+			}
+			$("#yanxinreadform").fadeIn(500);
 		}
 		
 		function doreadtoday(){
@@ -1230,7 +1268,7 @@
 			$("#locationwrite").attr("old","");
 			$("#weatherwrite").val("");
 			$("#weatherwrite").attr("old","");
-			post("cexpired","readtoday",{})
+			post("cexpired","readtoday",{});
 		}
 		
 		function afterreadtoday(data){
@@ -1238,6 +1276,8 @@
 			$("#todaybtn").show();
 			$("#accountbtn").show();
 			$("#calendarbtn").show();
+			$("#calendarbtn").attr("year",data.today.split("-")[0]);
+			$("#calendarbtn").attr("month",data.today.split("-")[1]);
 			$("#todaybtn").val(data.today);
 			$("#yanxinwriteform").fadeIn(500);
 			$("#daywrite").html(data.today);
@@ -1272,7 +1312,7 @@
 			$("#othergivebtn").attr("givename","");
 			$("#otherextendbtn").attr("extendname","");
 			$("#otherextendhint").html("");
-			post("cexpired","readother",{"targetname":$("#findother").val()})
+			post("cexpired","readother",{"targetname":$("#findother").val()});
 		}
 		
 		function afterreadother(data){
@@ -1295,7 +1335,7 @@
 
 		function dochangepass(){
 			loading(true);
-			post("creused","changepass",{"pass":$("#changepass").val(),"repass":$("#changerepass").val()})
+			post("creused","changepass",{"pass":$("#changepass").val(),"repass":$("#changerepass").val()});
 		}
 		function afterchangepass(data){
 			$("#changepass").val("");
@@ -1305,7 +1345,8 @@
 
 		function doextend(){
 			loading(true);
-			post("creused","extend",{"incre":$("#"+$(this).attr("selforother")+"extend").val(),"targetname":$(this).attr("extendname")})
+			post("creused","extend",{"incre":$("#"+$(this).attr("selforother")+"extend").val(),"targetname":$(this).attr("extendname")},
+					"确定将过期时间延长"+$("#"+$(this).attr("selforother")+"extend").val()+"天吗？延长后不可撤销");
 		}
 		function afterextend(data){
 			$("#"+data.selforother+"extend").val("");
@@ -1322,7 +1363,8 @@
 		
 		function dogive(){
 			loading(true);
-			post("cexpired","give",{"incre":$("#othergive").val(),"targetname":$(this).attr("givename")})
+			post("cexpired","give",{"incre":$("#othergive").val(),"targetname":$(this).attr("givename")},
+					"确定将库存天数增加"+$("#othergive").val()+"天吗？增加后不可撤销");
 		}
 		function aftergive(data){
 			$("#othergive").val("");
@@ -1338,7 +1380,7 @@
 
 		function dochangemotto(){
 			loading(true);
-			post("creused","changemotto",{"motto":$("#changemotto").val(),"remotto":$("#changeremotto").val()})
+			post("creused","changemotto",{"motto":$("#changemotto").val(),"remotto":$("#changeremotto").val()});
 		}
 		function afterchangemotto(data){
 			$("#changemotto").val("");
@@ -1348,8 +1390,10 @@
 
 		function initactions(){
 			$(".click").each(function(){
-				$(this).unbind("click");
-				$(this).one("click",eval("do"+$(this).attr("actionid")));
+				if ($(this).attr("actionid")!=undefined){
+					$(this).unbind("click");
+					$(this).one("click",eval("do"+$(this).attr("actionid")));
+				}
 			});
 			$("#filebtn").show();
 			loading(false);
@@ -1542,7 +1586,7 @@
 					<form method="POST" enctype="multipart/form-data" id="dayimgwriteform">
 						<input id="filebtn" name="photo" accept="image/*" onchange="prepareupload();" style="position:absolute;top:100%;left:5px;" type="file"/>
 					</form>
-					<input type="button" id="snap" actionid="uploadcanvas" class="click" style="position:absolute;top:100%;left:50%;transform:translateX(-50%);display:none;" value="拍照"/>
+					<input type="button" id="snap" actionid="uploadcanvas" class="click" style="position:absolute;top:100%;left:50%;transform:translateX(-50%);display:none;" value="拍照上传"/>
 					
 					<div style="position:absolute;top:calc(100% + 30px);width:100%;text-align:center;">
 						<input type="button" onclick="showupload()" value="上传小于100k的图片"/>
@@ -1569,8 +1613,8 @@
 				</div>
 				<div class="yxinputsreadbg"></div>
 				<div class="yxinputsread">
-					<div id="contentread" style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;padding-left:5px;padding-right:5px;">
-					</div>
+					<textarea id="contentread" disabled style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;height:100%;width:100%;resize:none;opacity:0.7">
+					</textarea>
 				</div>
 			</div>
 			<div id="loginform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">

@@ -1,6 +1,8 @@
 package com.tenotenm.yanxin.servlets;
 
 import java.io.IOException;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,8 +20,13 @@ public class Readyanxin extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			Yxaccount yxaccount = (Yxaccount)request.getAttribute(Yxaccount.class.getSimpleName());
-			Reuse.respond(response, Bizutil.convert(Bizutil.readyanxin(yxaccount, request.getParameter("yanxinkey"))), null);
+			Yxaccount yxaccount = (Yxaccount) request.getAttribute(Yxaccount.class.getSimpleName());
+			Map<String, String> ret = Bizutil.convert(Bizutil.readyanxin(yxaccount, request.getParameter("yanxinkey")));
+			if (ret.get("photo") != null && !ret.get("photo").trim().isEmpty()) {
+				ret.put("onetimekeyphoto", Bizutil.onetimekey(null, ret.get("key")));
+				ret.remove("photo");
+			}
+			Reuse.respond(response, ret, null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);
 		}

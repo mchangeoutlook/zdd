@@ -192,6 +192,11 @@ public class Bizutil {
 		} else {
 			ret.put("weather", "");
 		}
+		if (yanxin.getTimecreate()!=null) {
+			ret.put("day", Reuse.yyyyMMdd(yanxin.getTimecreate()));
+		} else {
+			ret.put("day", "");
+		}
 		return ret;
 	}
 
