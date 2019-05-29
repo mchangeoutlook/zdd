@@ -1230,6 +1230,7 @@
 				$("#weatherwrite").val(data.weather);
 				$("#weatherwrite").attr("old",data.weather);
 			}
+			showupload();
 		}
 		
 		function doreadother(){
@@ -1602,8 +1603,9 @@
 			<div id="accountform" class="hideallforms" style="position:absolute;display:none;max-height:100%;left:0px;right:0px;bottom:0px;overflow-x:hidden;overflow-y:auto;text-align:center;">
 					<div id="selfname" style="margin:2px;width:100%;text-align:center;"></div>
 					<div style="margin:2px;width:100%;text-align:center;"><font onclick="post('freego','agreement',{})" style="margin:2px;color:#f4a57e;">你的言心协议</font><input id="logoutbtn" actionid="logout" class="click" type="button" value="退出登录"/></div>
-					<div style="width:100%;margin:2px;"><font id="selfreusetime"></font></div>
-					<div style="width:100%;margin:2px;"><font id="selfexpiretime"></font> <br> <input id="extendbtn" onclick="post('freego','buyhint',{})" type="button" class="hideallaccountform" style="display:none;margin:2px;" value="延长过期时间"/></div>
+					<div id="selfreusetime" style="width:100%;margin:2px;"></div>
+					<div id="selfexpiretime" style="width:100%;margin:2px;"></div>
+					<div style="width:100%;margin:2px;"><input id="extendbtn" onclick="post('freego','buyhint',{})" type="button" class="hideallaccountform" style="display:none;margin:2px;" value="延长过期时间"/></div>
 					<div id="selfexpiretimenew" class="hideallaccountform" style="width:100%;margin:2px;display:none;color:#f4a57e;"></div>
 					<div id="selfextendhint" class="hideallaccountform" style="width:100%;margin:2px;display:none;color:#f4a57e;"></div>
 					<div id="selfdaystogive" class="hideallaccountform" style="display:none;margin:2px;width:100%;"></div>
