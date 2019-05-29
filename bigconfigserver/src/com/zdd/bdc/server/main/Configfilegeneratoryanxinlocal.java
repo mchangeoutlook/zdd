@@ -72,6 +72,8 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("extend.expire.days.max", "180", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("days.togive.max", "10000", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("wrongpass.times.max", "5", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("photo.datavanvasurl.max", "150000", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("photosmall.datavanvasurl.max", "50000", namespace, STATIC.REMOTE_CONFIG_CORE);
 */
 		Fileconfigutil.create("session.expire.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("wrongpass.wait.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
@@ -83,6 +85,8 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("extend.expire.days.max", "2", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("days.togive.max", "100", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("wrongpass.times.max", "3", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("photo.datavanvasurl.max", "150000", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("photosmall.datavanvasurl.max", "50000", namespace, STATIC.REMOTE_CONFIG_CORE);
 
 		Fileconfigutil.create("forgetpass", "我们不提供任何方式帮你找回密码，因为任何找回密码的方式都有可能泄露你的隐私，不过我们允许你使用密码或者格言之一登录，所以除了密码要牢记且保密外，也要牢记你的格言且不要随便向别人透露你的格言", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("agreement.items", "6", namespace, STATIC.REMOTE_CONFIG_CORE);
@@ -100,12 +104,12 @@ public class Configfilegeneratoryanxinlocal {
 
 	}
 	
-	nohup /root/jdk9/bin/java -cp ../../serverlibs/bigconfigserver.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startconfigserver > log.runbigconfigserver &
-	nohup /root/jdk9/bin/java -cp ../../serverlibs/bigdataserver.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startdataserver yanxin > log.runbigdataserver &
-	nohup /root/jdk9/bin/java -cp ../../serverlibs/bigfilefromserver.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigconfigclient.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startfilefromserver bigfilefrom > log.runbigfilefromserver &
-	nohup /root/jdk9/bin/java -cp ../../serverlibs/bigfiletoserver.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigconfigclient.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startfiletoserver bigfileto > log.runbigfiletoserver &
-	nohup /root/jdk9/bin/java -cp ../../serverlibs/biguniqueindexserver.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar com.zdd.bdc.server.main.Startuniqueindexserver yanxin servergroups0 > log.runbiguniqueindexserver &
-	nohup /root/jdk9/bin/java -cp ../../serverlibs/bigpagedindexserver.jar:../../commonclientlibs/bigpagedindexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startpagedindexserver yanxin > log.runbigpagedindexserver &
+	//nohup /root/jdk9/bin/java -cp ../../serverlibs/bigconfigserver.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startconfigserver > log.runbigconfigserver &
+	//nohup /root/jdk9/bin/java -cp ../../serverlibs/bigdataserver.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startdataserver yanxin > log.runbigdataserver &
+	//nohup /root/jdk9/bin/java -cp ../../serverlibs/bigfilefromserver.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigconfigclient.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startfilefromserver bigfilefrom > log.runbigfilefromserver &
+	//nohup /root/jdk9/bin/java -cp ../../serverlibs/bigfiletoserver.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigconfigclient.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startfiletoserver bigfileto > log.runbigfiletoserver &
+	//nohup /root/jdk9/bin/java -cp ../../serverlibs/biguniqueindexserver.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar com.zdd.bdc.server.main.Startuniqueindexserver yanxin servergroups0 > log.runbiguniqueindexserver &
+	//nohup /root/jdk9/bin/java -cp ../../serverlibs/bigpagedindexserver.jar:../../commonclientlibs/bigpagedindexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startpagedindexserver yanxin > log.runbigpagedindexserver &
 	
 	private static void genbiguniqueindex() throws Exception {
 		String namespace = "yanxin";

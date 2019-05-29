@@ -53,14 +53,14 @@ public class Uploadcanvasdataurl extends HttpServlet {
 					throw new Exception("提示: 无效photosmallcanvasdataurl");
 				}
 			}
-			String photokey = storephoto(photocanvasdataurl, photofolder, 150000);
+			String photokey = storephoto(photocanvasdataurl, photofolder, Reuse.getlongvalueconfig("photo.datavanvasurl.max"));
 			if (photokey==null) {
 				Map<String, Object> ret = new Hashtable<String, Object>();
 				ret.put("compressed", "fail");
-				ret.put("reason", "图片超过100k");
+				ret.put("reason", "图片大小超过限制");
 				Reuse.respond(response, ret, null);
 			} else {
-				String photosmallkey = storephoto(photosmallcanvasdataurl, photofolder, 50000);
+				String photosmallkey = storephoto(photosmallcanvasdataurl, photofolder, Reuse.getlongvalueconfig("photosmall.datavanvasurl.max"));
 				if (photosmallkey==null) {
 					Map<String, Object> ret = new Hashtable<String, Object>();
 					ret.put("compressed", "fail");
