@@ -7,7 +7,7 @@ import java.nio.file.StandardOpenOption;
 import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.util.Fileconfigutil;
 
-public class Configfilegeneratoryanxinlocal {
+public class Configfilegeneratoryanxintestserver {
 	private static void gencore() throws Exception {
 		Path configfile = Fileconfigutil.file(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE, true);
 		if (Files.exists(configfile)) {
@@ -15,7 +15,7 @@ public class Configfilegeneratoryanxinlocal {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		Fileconfigutil.create("configserverip", "127.0.0.1", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("configserverip", "172.17.0.2", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("updateconfigcache.intervalseconds", "30", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("configserverport", "9999", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE);
 	}
@@ -30,9 +30,9 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("active", STATIC.splitenc("20190118",""), "bigfilefrom",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		
-		Fileconfigutil.create("20190118", STATIC.splitenc("bigfile1", "0", "127.0.0.1", "9998"), "bigfilefrom",
+		Fileconfigutil.create("20190118", STATIC.splitenc("bigfile1", "0", "172.17.0.2", "9998"), "bigfilefrom",
 				STATIC.REMOTE_CONFIG_BIGDATA);
-		Fileconfigutil.create("20190118", STATIC.splitenc("bigfile2", "0", "127.0.0.1", "9997"), "bigfilefrom",
+		Fileconfigutil.create("20190118", STATIC.splitenc("bigfile2", "0", "172.17.0.2", "9997"), "bigfilefrom",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		//add more
 	}
@@ -47,9 +47,9 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("active", STATIC.splitenc("20190118",""), "bigfileto",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		
-		Fileconfigutil.create("20190118", STATIC.splitenc("bigfile1", "0", "127.0.0.1", "9996"), "bigfileto",
+		Fileconfigutil.create("20190118", STATIC.splitenc("bigfile1", "0", "172.17.0.2", "9996"), "bigfileto",
 				STATIC.REMOTE_CONFIG_BIGDATA);
-		Fileconfigutil.create("20190118", STATIC.splitenc("bigfile2", "0", "127.0.0.1", "9995"), "bigfileto",
+		Fileconfigutil.create("20190118", STATIC.splitenc("bigfile2", "0", "172.17.0.2", "9995"), "bigfileto",
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		//add more
 	}
@@ -100,13 +100,6 @@ public class Configfilegeneratoryanxinlocal {
 
 	}
 	
-	nohup /root/jdk9/bin/java -cp ../../serverlibs/bigconfigserver.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startconfigserver > log.runbigconfigserver &
-	nohup /root/jdk9/bin/java -cp ../../serverlibs/bigdataserver.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startdataserver yanxin > log.runbigdataserver &
-	nohup /root/jdk9/bin/java -cp ../../serverlibs/bigfilefromserver.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigconfigclient.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startfilefromserver bigfilefrom > log.runbigfilefromserver &
-	nohup /root/jdk9/bin/java -cp ../../serverlibs/bigfiletoserver.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigconfigclient.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startfiletoserver bigfileto > log.runbigfiletoserver &
-	nohup /root/jdk9/bin/java -cp ../../serverlibs/biguniqueindexserver.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar com.zdd.bdc.server.main.Startuniqueindexserver yanxin servergroups0 > log.runbiguniqueindexserver &
-	nohup /root/jdk9/bin/java -cp ../../serverlibs/bigpagedindexserver.jar:../../commonclientlibs/bigpagedindexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startpagedindexserver yanxin > log.runbigpagedindexserver &
-	
 	private static void genbiguniqueindex() throws Exception {
 		String namespace = "yanxin";
 		Path configfile = Fileconfigutil.file(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX, true);
@@ -125,9 +118,9 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("servergroups0"+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX, "40", namespace,
 				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
 		
-		Fileconfigutil.create("servergroups00", STATIC.splitenc("biguniqueindex1","127.0.0.1", "9994"), namespace,
+		Fileconfigutil.create("servergroups00", STATIC.splitenc("biguniqueindex1","172.17.0.2", "9994"), namespace,
 				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
-		Fileconfigutil.create("servergroups01", STATIC.splitenc("biguniqueindex2","127.0.0.1", "9993"), namespace,
+		Fileconfigutil.create("servergroups01", STATIC.splitenc("biguniqueindex2","172.17.0.2", "9993"), namespace,
 				STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX);
 
 		Fileconfigutil.create("Yxaccount-ukey", "servergroups0", namespace,
@@ -155,9 +148,9 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("active", STATIC.splitenc("20190118",""), namespace,
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		
-		Fileconfigutil.create("20190118", STATIC.splitenc("bigdata1", "5000", "127.0.0.1", "9992"), namespace,
+		Fileconfigutil.create("20190118", STATIC.splitenc("bigdata1", "5000", "172.17.0.2", "9992"), namespace,
 				STATIC.REMOTE_CONFIG_BIGDATA);
-		Fileconfigutil.create("20190118", STATIC.splitenc("bigdata2", "5000", "127.0.0.1", "9991"), namespace,
+		Fileconfigutil.create("20190118", STATIC.splitenc("bigdata2", "5000", "172.17.0.2", "9991"), namespace,
 				STATIC.REMOTE_CONFIG_BIGDATA);
 		//add more
 	}
@@ -172,15 +165,15 @@ public class Configfilegeneratoryanxinlocal {
 		
 		Fileconfigutil.create("active", STATIC.splitenc(STATIC.splitfromto("0","2499"),STATIC.splitfromto("2500","4999")), namespace,
 				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
-		Fileconfigutil.create(STATIC.splitfromto("0","2499"), STATIC.splitenc("bigpagedindex1", "100", "127.0.0.1", "9990"), namespace,
+		Fileconfigutil.create(STATIC.splitfromto("0","2499"), STATIC.splitenc("bigpagedindex1", "100", "172.17.0.2", "9990"), namespace,
 				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
-		Fileconfigutil.create(STATIC.splitfromto("2500","4999"), STATIC.splitenc("bigpagedindex2", "100", "127.0.0.1", "9989"), namespace,
+		Fileconfigutil.create(STATIC.splitfromto("2500","4999"), STATIC.splitenc("bigpagedindex2", "100", "172.17.0.2", "9989"), namespace,
 				STATIC.REMOTE_CONFIG_BIGPAGEDINDEX);
 		
 	}
 
 	private static void genpending() throws Exception {
-	Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9992"), "pending", STATIC.NAMESPACE_CORE,
+	Fileconfigutil.create(STATIC.splitiport("172.17.0.2","9992"), "pending", STATIC.NAMESPACE_CORE,
 			 STATIC.REMOTE_CONFIG_PENDING);
 	}
 
