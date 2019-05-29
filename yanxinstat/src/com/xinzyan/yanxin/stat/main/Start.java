@@ -10,11 +10,11 @@ import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.biz.Pagedindexclient;
 
 /**
- * @author mido how to run: nohup java -cp ../../commonclientlibs/yanxinstat.jar:../../commonclientlibs/yanxin.jar:../../commonclientlibs/biguniqueindexclient.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar com.xinzyan.yanxin.stat.main.Start > log.runyanxinstat &
+ * @author mido how to run: nohup /root/jdk9/bin/java -cp ../commonclientlibs/yanxinstat.jar:../commonclientlibs/yanxin.jar:../commonclientlibs/biguniqueindexclient.jar:../commonclientlibs/bigexclient.jar:../commonclientlibs/bigconfigclient.jar:../commonclientlibs/bigcomclientutil.jar:../commonclientlibs/bigpagedindexclient.jar com.xinzyan.yanxin.stat.main.Start > log.runyanxinstat &
  */
 public class Start {
 
-	public static void main1(String[] s) {
+	public static void main(String[] s) {
 		new Thread(new Runnable() {
 
 			@Override
