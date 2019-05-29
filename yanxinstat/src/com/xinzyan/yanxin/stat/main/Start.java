@@ -26,9 +26,11 @@ public class Start {
 						String yesterday = Reuse.yyyyMMdd(new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000));
 						Vector<String> statkeys = Pagedindexclient
 								.getinstance(Reuse.namespace_yanxin, "stat-" + yesterday).addfilter("stat").read(0);
+						String statkey = null;
 						boolean needgothrough = false;
 						if (statkeys != null && !statkeys.isEmpty()) {
-							Map<String, String> s = Dataclient.getinstance(Reuse.namespace_yanxin, "stat").key(statkeys.get(0)).add("total").read();
+							statkey = statkeys.get(0);
+							Map<String, String> s = Dataclient.getinstance(Reuse.namespace_yanxin, "stat").key(statkey).add("total").read();
 							if (s==null||s.isEmpty()||s.get("total")==null||s.get("total").equals("0")) {
 								needgothrough = true;
 							}
@@ -36,9 +38,11 @@ public class Start {
 							needgothrough = true;
 						}
 						if (needgothrough) {
-							String statkey = Bigclient.newbigdatakey();
+							if (statkey==null) {
+								statkey = Bigclient.newbigdatakey();
 								Pagedindexclient.getinstance(Reuse.namespace_yanxin, "stat-" + yesterday)
-										.addfilter("stat").create(statkey, 0);
+								.addfilter("stat").create(statkey, 0);
+							}	
 							Stat.gothrough(yesterday, statkey);
 						}
 						try {

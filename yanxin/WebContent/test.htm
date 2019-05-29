@@ -662,7 +662,6 @@
 		function post(context, actionid, paramjson, confirmtext){
 			if (confirmtext!=null){
 				if (!confirm(confirmtext)){
-					loading(false);
 					initactions();
 					return;
 				}
@@ -681,7 +680,6 @@
 						eval("after"+actionid+"(result.data)");
 					} else {
 						footmsg(result.error);
-						loading(false);
 						if (result.error.indexOf(msg_relogin)!=-1){
 							setcache("yanxinloginkey", null);
 							dologout();
@@ -697,8 +695,7 @@
 			　　		}
 			　　		initactions();
 			　　		if (status!="success"){
-			　　			loading(false);
-						ajaxpost.abort();
+			　　			ajaxpost.abort();
 				　　		footmsg(msg_networkfail);
 			　　		}
 			　　	}
@@ -964,14 +961,13 @@
 			$("#loginmotto").val("");
 			$(".hideallforms").hide();
 			$(".hideallbtns").hide();
-			$("#loginform").fadeIn(500);
+			$("#loginform").show();
 			$("#newuserbtn").show();
 		}
 		
 		function afterlogout(data){
 			footmsg("");
 			sessionStorage.removeItem("iswriting");
-			loading(false);
 		}
 		
 		function dologin(){
@@ -1043,7 +1039,6 @@
 			}
 			content+="<br>&nbsp;";
 			popmsg(content);
-			loading(false);
 		}
 		function afterforgetpass(data){
 			popmsg(data);
@@ -1070,7 +1065,7 @@
 			post("creused","readself",{});
 		}
 		function afterreadself(data){
-			$("#accountform").fadeIn(500, function(){loading(false);});
+			$("#accountform").show();
 			$("#selfname").html(data.name);
 			$("#todaybtn").val(data.today);
 			$("#selfextendbtn").attr("extendname", data.name);
@@ -1095,7 +1090,7 @@
 			$("#daystat").remove();
 			if (data.daystat!=undefined){
 				$("#accountform").append("<table style='text-align:center;width:100%;color:#ddd;' id='daystat'><tr><td>日期</td><td>总数</td><td>拉新</td><td>日活</td></tr></table>");
-				for (var i=0;i<data.daystat;i++){
+				for (var i=0;i<data.daystat.length;i++){
 					$("#daystat").append("<tr><td>"+data.daystat[i].day+"</td><td>"+data.daystat[i].total+"</td><td>"+data.daystat[i].newcom+"</td><td>"+data.daystat[i].write+"</td></tr>");
 				}
 			}
@@ -1109,7 +1104,7 @@
 			post("cexpired","calendar",{"year":$(this).attr("year"),"month":$(this).attr("month")});
 		}
 		function aftercalendar(data){
-			$("#calendarform").fadeIn(500, function(){loading(false);});
+			$("#calendarform").show();
 			$("#calendarform").append("<div id='calendaryear' style='width:100%;float:left;margin-bottom:5px;'></div>");
 			if (data.leftyear!=undefined){
 				$("#calendaryear").append("<div style='float:left;width:33%;text-align:center;'><input onclick='navigateyearmonth(\"year\", \""+data.leftyear+"\")' type='button' value='"+data.leftyear+"年'/></div>");
@@ -1192,7 +1187,7 @@
 			if (data.onetimekeyphoto!=undefined){
 				$("#dayimgread").attr("src",photointerface+"freego/download?onetimekey="+data.onetimekeyphoto);
 			}
-			$("#yanxinreadform").fadeIn(500, function(){loading(false);});
+			$("#yanxinreadform").show();
 		}
 		
 		function doreadtoday(){
@@ -1216,7 +1211,7 @@
 			$("#calendarbtn").attr("year",data.today.split("-")[0]);
 			$("#calendarbtn").attr("month",data.today.split("-")[1]);
 			$("#todaybtn").val(data.today);
-			$("#yanxinwriteform").fadeIn(500, function(){loading(false);});
+			$("#yanxinwriteform").show();
 			$("#daywrite").html(data.today);
 			if (data.key==undefined){
 				$("#imghint").show();
@@ -1256,7 +1251,6 @@
 		}
 		
 		function afterreadother(data){
-			loading(false);
 			$("#otherreusetime").html(msg_timereused+data.timereuse);
 			$("#otherexpiretime").html(msg_timeexpire+data.timeexpire);
 			$("#otherdaystogive").html(msg_daystogive+data.daystogive);
@@ -1284,7 +1278,6 @@
 			$("#changepass").val("");
 			$("#changerepass").val("");
 			footmsg(msg_passmodifysuccess);
-			loading(false);
 		}
 
 		function doextend(){
@@ -1302,7 +1295,6 @@
 			}
 		}
 		function afterextend(data){
-			loading(false);
 			$("#"+data.selforother+"extend").val("");
 			$("#selfdaystogivenew").html(msg_daystogiveremain+data.daystogive);
 			$("#selfdaystogivenew").show();
@@ -1330,7 +1322,6 @@
 			}
 		}
 		function aftergive(data){
-			loading(false);
 			$("#othergive").val("");
 			$("#otherdaystogivenew").html(msg_daystogiveadded+data.otherdaystogive);
 			$("#otherdaystogivenew").show();
@@ -1350,7 +1341,6 @@
 			$("#changemotto").val("");
 			$("#changeremotto").val("");
 			footmsg(msg_mottosavesuccess);
-			loading(false);
 		}
 
 		function initactions(){
@@ -1361,14 +1351,17 @@
 				}
 			});
 			$("#newfilebtn").show();
+			loading(false);
 			stopcam();
 		}
 		function loading(show){
-			$(".hideloading").remove();
 			if (show){
-				$(".divroot").append("<div id='loadingform' class='hideloading' style='position:absolute;top:0px;left:0px;right:0px;bottom:54px;background-color:black;opacity:0.7;z-index:10000;'>"+
-				"<div class='load' style='position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);'>请稍后......</div>"+
-				"</div>");
+				$(".divroot").append("<div id='loadingform' class='hideloading' style='position:absolute;top:0px;left:0px;right:0px;bottom:54px;background-color:black;opacity:0.8;z-index:10000;'></div>");
+				$(".divroot").append("<div class='load hideloading' style='position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);'>请稍后......</div>");
+			} else {
+				$(".hideloading").fadeOut(500,function(){
+					$(this).remove();
+				});
 			}
 		}
 		function popmsg(content){
@@ -1655,7 +1648,7 @@
 		</div>
 		<div class="openingclose" style="position:absolute;top:0px;left:0px;right:0px;bottom:54px;background-color:black;"></div>
 		<div class="opening openingclose">
-			<input id="openingclosebtn" style="position:absolute;left:25%;bottom:0px;transform:translateX(-50%)" type="button" value="跳过" onclick="$('.openingclose').fadeOut(1000);"/>
+			<input id="openingclosebtn" style="position:absolute;left:25%;bottom:0px;transform:translateX(-50%)" type="button" value="跳过" onclick="$('.openingclose').fadeOut(500);"/>
 			<div style="position:absolute;top:178px;left:87px;">
 				<div style="position:absolute;border:0px;border-radius:4px 4px;background-color:#ddd;width:20px;height:4px;"></div>
 				<div style="position:absolute;border:0px;background-color:#ddd;width:4px;height:23px;left:2px;top:4px;"></div>
