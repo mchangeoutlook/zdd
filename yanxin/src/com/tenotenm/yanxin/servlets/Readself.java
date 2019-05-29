@@ -48,7 +48,7 @@ public class Readself extends HttpServlet {
 				long statdays = Reuse.getlongvalueconfig("read.stat.days");
 				Vector<Map<String, String>> daystat = new Vector<Map<String, String>>();
 				for (int i=0;i<statdays;i++) {
-					c.add(Calendar.DATE, -1*(i+1));
+					c.add(Calendar.DATE, -1);
 					Vector<String> statkeys = Pagedindexclient.getinstance(Reuse.namespace_yanxin, "stat-" + Reuse.yyyyMMdd(c.getTime()))
 					.addfilter("stat").read(0);
 					if (statkeys!=null&&!statkeys.isEmpty()) {
