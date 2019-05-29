@@ -1092,6 +1092,16 @@
 					$("#extendbtn").show();
 				}
 			}
+			
+			if (data.daystat!=undefined){
+				$("#accountform").append("<table style='text-align:center;width:100%;color:#ddd;' id='daystat'><tr><td>日期</td><td>总数</td><td>拉新</td><td>日活</td></tr></table>");
+				for (var i=0;i<data.daystat;i++){
+					$("#daystat").append("<tr><td>"+data.daystat[i].day+"</td><td>"+data.daystat[i].total+"</td><td>"+data.daystat[i].newcom+"</td><td>"+data.daystat[i].write+"</td></tr>");
+				}
+			} else {
+				$("#daystat").remove();
+			}
+			
 		}
 		
 		function docalendar(){

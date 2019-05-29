@@ -74,6 +74,7 @@ public class Configfilegeneratoryanxintestserver {
 		Fileconfigutil.create("wrongpass.times.max", "5", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("photo.datavanvasurl.max", "150000", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("photosmall.datavanvasurl.max", "50000", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("read.stat.days", "7", namespace, STATIC.REMOTE_CONFIG_CORE);
 */
 		Fileconfigutil.create("session.expire.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("wrongpass.wait.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
@@ -87,6 +88,7 @@ public class Configfilegeneratoryanxintestserver {
 		Fileconfigutil.create("wrongpass.times.max", "3", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("photo.datavanvasurl.max", "150000", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("photosmall.datavanvasurl.max", "50000", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("read.stat.days", "7", namespace, STATIC.REMOTE_CONFIG_CORE);
 
 		Fileconfigutil.create("forgetpass", "我们不提供任何方式帮你找回密码，因为任何找回密码的方式都有可能泄露你的隐私，不过我们允许你使用密码或者格言之一登录，所以除了密码要牢记且保密外，也要牢记你的格言且不要随便向别人透露你的格言", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("agreement.items", "6", namespace, STATIC.REMOTE_CONFIG_CORE);
