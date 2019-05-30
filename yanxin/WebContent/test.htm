@@ -9,21 +9,21 @@
   		<meta name="Keywords" content="言心 你的心灵日记 陪伴有故事的你" />
   		<style type="text/css">
   			input[type="button"]{
-  				background-color:#444;border:none;color:#ddd;border-radius:4px;line-height:30px;height:30px;font-size:20px;margin:4px;
+  				background-color:#444;border:none;color:#ccc;border-radius:4px;line-height:30px;height:30px;font-size:20px;margin:4px;
   			}
   			input[type="text"]{
-  				background-color:#ddd;border:none;padding-left:4px;padding-right:4px;height:30px;border-radius:4px;font-size:20px;margin:4px;
+  				background-color:#aaa;border:none;padding-left:4px;padding-right:4px;height:30px;border-radius:4px;font-size:20px;margin:4px;
   			}
   			textarea{
-  				background-color:#ddd;border:none;padding:4px;border-radius:4px;font-size:20px;margin:4px;
+  				background-color:#aaa;border:none;padding:4px;border-radius:4px;font-size:20px;margin:4px;
   			}
   			input[type="password"]{
-  				background-color:#ddd;border:none;padding-left:4px;padding-right:4px;height:30px;border-radius:4px;font-size:20px;margin:4px;
+  				background-color:#aaa;border:none;padding-left:4px;padding-right:4px;height:30px;border-radius:4px;font-size:20px;margin:4px;
   			}
   			body{
   				position:fixed;
   				background-color:#444;
-  				color:#ddd;
+  				color:#ccc;
   				top:0px;
   				left:0px;
   				right:0px;
@@ -32,7 +32,6 @@
   			}
   			.centerhorizontallabel{
   				width:calc(100% - 8px);
-  				color: #ddd;
   				margin:4px;
   				text-align:center;
   				line-height:30px;
@@ -42,6 +41,7 @@
   				margin:4px;
   			}
   			.centerhorizontal{
+  				position:relative;
   				width:100%;
   				text-align:center;
   			}
@@ -70,7 +70,6 @@
   				right:4px;
   				top:4px;
   				bottom:4px;
-  				color:#ddd;
   				background-color:#444;
   				font-size:20px;
   				overflow:hidden;
@@ -267,8 +266,8 @@
   			}
   			.thick{
   				position:absolute;
-  				border:0px;
-  				background-color:#ddd;
+  				background-color:black;
+  				border:1px white solid;
   				width:25px;
   				height:2px;
   				left:0px;
@@ -277,16 +276,15 @@
   			}
   			@keyframes thicking
 			{
-				0%{background-color:#ddd;}
-				99%{background-color:#ddd;}
-				100%{background-color:#ddd;}
+				0%{background-color:black;}
+				99%{background-color:black;}
+				100%{background-color:black;}
 			}
 			.text{
 				position:absolute;
 				text-align:center;
 				font-size:16px;
 				width:170px;
-				color:#ddd;
 				top:50%;
 				left:100%;
 				animation: texting 3s ease 0s forwards;
@@ -304,7 +302,7 @@
   				left:5px;
   				top:75%;
   				transform-origin:center center;
-  				transform:rotate(-90deg) scale(0.8) translateX(60%);
+  				transform:rotate(-90deg) scale(0.8) translateX(90%);
   			}
   			.xin{
   				position:absolute;
@@ -314,12 +312,12 @@
   				left:5px;
   				top:25%;
   				transform-origin:center center;
-  				transform:rotate(-90deg) scale(0.8) translateX(60%);
+  				transform:rotate(-90deg) scale(0.8) translateX(80%);
   			}
   			.cover{
   				position:absolute;
-  				border:0px;
-  				background-color:#ddd;
+  				background-color:black;
+  				border:1px white solid;
   				width:25px;
   				height:20px;
   				bottom:2px;
@@ -339,9 +337,9 @@
 			
 			.pen{
   				position:absolute;
-  				border:0px;
+  				border:1px white solid;
   				border-radius:2px 2px;
-  				background-color:#ddd;
+  				background-color:black;
   				width:15px;
   				height:2px;
   				top:155px;
@@ -356,13 +354,16 @@
 			}
   			
   		 	.humancolor{
-  		 		background-color:#ddd;
+  		 		background-color:black;
+  		 		border:1px white solid;
   		 	}
   		 	.tshirtcolor{
-  		 		background-color:#aaa;
+  		 		background-color:black;
+  		 		border:1px white solid;
   		 	}
   		 	.pantscolor{
-  		 		background-color:#666;
+  		 		background-color:black;
+  		 		border:1px white solid;
   		 	}
   			.human{
   				position:absolute;
@@ -405,7 +406,6 @@
 		  	.head{
   				position:absolute;
   				border-radius:12px 12px;
-  				border:0px;
   				width:12px;
   				height:12px;
   				left:0px;
@@ -424,7 +424,6 @@
 		  	.body{
   				position:absolute;
   				border-radius:8px 8px;
-  				border:0px;
   				width:8px;
   				height:41px;
   				left:2px;
@@ -464,7 +463,6 @@
 		  	.armleftupper{
   				position:absolute;
   				border-radius:8px 8px;
-  				border:0px;
   				width:8px;
   				height:23px;
   				top:0px;
@@ -481,7 +479,6 @@
 			.armleftlower{
   				position:absolute;
   				border-radius:8px 8px;
-  				border:0px;
   				width:8px;
   				height:26px;
   				top:16px;
@@ -524,7 +521,6 @@
 		  	.armrightupper{
   				position:absolute;
   				border-radius:8px 8px;
-  				border:0px;
   				width:8px;
   				height:23px;
   				top:0px;
@@ -541,7 +537,6 @@
 			.armrightlower{
   				position:absolute;
   				border-radius:8px 8px;
-  				border:0px;
   				width:8px;
   				height:26px;
   				top:16px;
@@ -583,7 +578,6 @@
 			.legleftupper{
   				position:absolute;
   				border-radius:8px 8px;
-  				border:0px;
   				width:8px;
   				height:30px;
   				top:0px;
@@ -601,7 +595,6 @@
 			.legleftlower{
   				position:absolute;
   				border-radius:8px 8px;
-  				border:0px;
   				width:8px;
   				height:35px;
   				top:23px;
@@ -647,7 +640,6 @@
 			.legrightupper{
   				position:absolute;
   				border-radius:8px 8px;
-  				border:0px;
   				width:8px;
   				height:30px;
   				top:0px;
@@ -665,7 +657,6 @@
 			.legrightlower{
   				position:absolute;
   				border-radius:8px 8px;
-  				border:0px;
   				width:8px;
   				height:35px;
   				top:23px;
@@ -701,7 +692,7 @@
 		var msg_passmodifysuccess="密码修改成功";
 		var msg_cameranotsupport="你的浏览器不支持调取摄像头，请退出登录，然后用其它浏览器重新登录再试";
 		var msg_camerareject="你已拒绝浏览器调取摄像头，如需拍照，请先清除浏览器缓存，然后刷新页面再试";
-		var msg_startingautosaving="即将自动保存";
+		var msg_startingautosaving="即将自动保存，保存成功之前请不要离开此页面";
 		var msg_journalsavesuccess="日记保存成功";
 		var msg_journalsaving = "正在保存日记，保存成功之前请不要离开此页面";
 		var msg_photosaving = "正在保存图片，保存成功之前请不要离开此页面";
@@ -1156,7 +1147,7 @@
 			}
 			$("#daystat").remove();
 			if (data.daystat!=undefined){
-				$("#accountform").append("<table style='text-align:center;width:100%;color:#ddd;' id='daystat'><tr><td>日期</td><td>总数</td><td>拉新</td><td>日活</td></tr></table>");
+				$("#accountform").append("<table style='text-align:center;width:100%;' id='daystat'><tr><td>日期</td><td>总数</td><td>拉新</td><td>日活</td></tr></table>");
 				for (var i=0;i<data.daystat.length;i++){
 					$("#daystat").append("<tr><td>"+data.daystat[i].day+"</td><td>"+data.daystat[i].total+"</td><td>"+data.daystat[i].newcom+"</td><td>"+data.daystat[i].write+"</td></tr>");
 				}
@@ -1647,35 +1638,42 @@
 					<div class="centerhorizontallabel" id="dayread"></div>
 					<div class="centerhorizontallabel" id="weatherread"></div>
 					<div class="centerhorizontallabel" id="locationread"></div>
-					<textarea id="contentread" disabled style="position:absolute;background-color:#000;color:#ddd;top:102px;left:0px;right:0px;bottom:0px;height:calc(100% - 110px);width:calc(100% - 8px);resize:none;">
+					<textarea id="contentread" disabled style="position:absolute;background-color:#000;color:#ccc;top:102px;left:0px;right:0px;bottom:0px;height:calc(100% - 110px);width:calc(100% - 8px);resize:none;">
 					</textarea>
 				</div>
 			</div>
 			<div id="loginform" class="bottomscrollable hideallforms" style="display:none;">
-				<div style="position:absolute;font-size:12px;bottom: 100%;left: 50%;transform: translateX(4vh);">™️️</div>
-				<div  class="centerhorizontal"><img src="logo.png" style="width:8vh;height:8vh;"></div>
+				<div  class="centerhorizontal">
+					<img src="logo.png" style="width:8vh;height:8vh;">
+					<div style="position:absolute;font-size:12px;top:0px;left: 50%;transform: translateX(4vh);">™️️</div>
+				</div>
 				<div class="centerhorizontallabel">登录你的言心日记</div>
 				<div  class="centerhorizontal"><input id="loginuser" size="20" type="text" maxlength="20" placeholder="填写账号"/></div>
 				<div  class="centerhorizontal"><input id="loginpass" size="20" type="password" maxlength="20" placeholder="只填写密码即可登录"/></div>
 				<div  class="centerhorizontal"><input id="loginmotto" size="20" type="text" maxlength="100" placeholder="或只填写格言也可登录"/></div>
-				<div  class="centerhorizontal"><input actionid="login" class="click" type="button" value="登录"/></div>
-				<div class="centerhorizontallabel">&nbsp;</div>
-				<div class="labelhighlight" style="position:absolute;bottom:0px;font-size:16px;right:50%;transform:translateX(-40px)" 
-				onclick="post('freego','forgetpass',{})">忘记密码?</div>
+				<div  class="centerhorizontal">
+					<input actionid="login" class="click" type="button" value="登录"/>
+					<div class="labelhighlight" style="position:absolute;top:0px;font-size:16px;right:50%;transform:translateX(-30px);" 
+					onclick="post('freego','forgetpass',{})">忘记密码?</div>
+				</div>
+				
 			</div>
 			<div id="registerform" class="bottomscrollable hideallforms" style="display:none;">
-				<div style="position:absolute;font-size:12px;bottom: 100%;left: 50%;transform: translateX(4vh);">™️</div>
-				<div  class="centerhorizontal"><img src="logo.png" style="width:8vh;height:8vh;"></div>
+				<div  class="centerhorizontal">
+					<img src="logo.png" style="width:8vh;height:8vh;">
+					<div style="position:absolute;font-size:12px;top:0px;left: 50%;transform: translateX(4vh);">™️️</div>
+				</div>
 				<div class="centerhorizontallabel">注册你的言心账号</div>
 				<div  class="centerhorizontal"><input id="registeruser" size="20" type="text" maxlength="20" placeholder="填写账号，可写中文"/></div>
 				<div  class="centerhorizontal"><input id="registerpass" size="20" type="password" maxlength="20" placeholder="填写密码，可写中文"/></div>
 				<div  class="centerhorizontal"><input id="registerrepass" size="20" type="password" maxlength="20" placeholder="重复一次密码"/></div>
 				<div  class="centerhorizontal"><input id="registermotto" size="20" type="text" maxlength="100" placeholder="填写格言，可写中文"/></div>
 				<div  class="centerhorizontal"><input id="registerremotto" size="20" type="text" maxlength="100" placeholder="重复一次格言"/></div>
-				<div  class="centerhorizontal"><input actionid="register" class="click" type="button" value="注册"/></div>
-				<div class="centerhorizontallabel">&nbsp;</div>
-				<div class="labelhighlight" style="position:absolute;bottom:0px;font-size:16px;right:50%;transform:translateX(-40px)" 
-				onclick="post('freego','agreement',{})">你的言心协议</div>
+				<div  class="centerhorizontal">
+					<input actionid="register" class="click" type="button" value="注册"/>
+					<div class="labelhighlight" style="position:absolute;top:0px;font-size:16px;right:50%;transform:translateX(-30px);" 
+						onclick="post('freego','agreement',{})">你的言心协议</div>
+				</div>
 				
 			</div>
 			<div id="accountform" class="bottomscrollable hideallforms" style="display:none;">
@@ -1691,7 +1689,7 @@
 					<div id="selfdaystogivenew" class="centerhorizontallabel labelhighlight hideallaccountform" style="display:none;"></div>
 					<div id="selfextendform" class="centerhorizontal hideallaccountform" style="display:none;"><input id="selfextend" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="selfextendbtn" actionid="extend" class="click" type="button" selforother="self" value="延长自己的过期时间"/></div>
 
-					<div id="daystogivespendform" class="hideallaccountform" style="display:none;padding:4px;margin:4px;border:1px #ddd solid;border-radius:4px;">
+					<div id="daystogivespendform" class="hideallaccountform" style="display:none;padding:4px;margin:4px;border:1px #ccc solid;border-radius:4px;">
 						<div class="centerhorizontal"><input id="findother" size="10" type="text" maxlength="20" placeholder="填写其它账号"/><input id="findotherbtn" actionid="readother" class="click" type="button" value="查询"/></div>
 						<div id="otherextendform" class="centerhorizontal hideallotheraccountform" style="display:none;">
 							<div id="otherreusetime" class="centerhorizontallabel labelhighlight"></div>
@@ -1730,9 +1728,9 @@
 		<div class="opening openingclose">
 			<input id="openingclosebtn" style="position:absolute;left:25%;bottom:0px;transform:translateX(-50%)" type="button" value="跳过" onclick="$('.openingclose').fadeOut(500);"/>
 			<div style="position:absolute;top:178px;left:87px;">
-				<div style="position:absolute;border:0px;border-radius:4px 4px;background-color:#ddd;width:20px;height:4px;"></div>
-				<div style="position:absolute;border:0px;background-color:#ddd;width:4px;height:23px;left:2px;top:4px;"></div>
-				<div style="position:absolute;border:0px;background-color:#ddd;width:4px;height:23px;left:14px;top:4px;"></div>
+				<div style="position:absolute;border:1px white solid;border-radius:4px 4px;background-color:black;width:20px;height:4px;"></div>
+				<div style="position:absolute;border:1px white solid;background-color:black;width:4px;height:23px;left:2px;top:5px;"></div>
+				<div style="position:absolute;border:1px white solid;background-color:black;width:4px;height:23px;left:14px;top:5px;"></div>
 			</div>
 
 			<div class="human">
@@ -1758,10 +1756,10 @@
 
 			<div class="pen"></div>
 
-			<div style="position:absolute;top:156px;left:42px;">
-				<div style="position:absolute;border:0px;border-radius:4px 4px;background-color:#ddd;width:40px;height:4px;"></div>
-				<div style="position:absolute;border:0px;background-color:#ddd;width:4px;height:45px;left:5px;top:4px;"></div>
-				<div style="position:absolute;border:0px;background-color:#ddd;width:4px;height:45px;left:31px;top:4px;"></div>
+			<div style="position:absolute;top:157px;left:42px;">
+				<div style="position:absolute;border:1px white solid;background-color:black;border-radius:4px 4px;width:40px;height:4px;"></div>
+				<div style="position:absolute;border:1px white solid;background-color:black;width:4px;height:45px;left:5px;top:5px;"></div>
+				<div style="position:absolute;border:1px white solid;background-color:black;width:4px;height:45px;left:31px;top:5px;"></div>
 			</div>
 			
 			<div class="book">
@@ -1773,18 +1771,19 @@
 			</div>
 			
 			<div class="text">
-				<div style="margin:auto;width:50px;text-align:right;font-size:12px;">™️️</div>
-				<img src="logo.png" style="width:40px;height:40px;"><br>
-				言心<br>
-				你的心灵日记<br>
-				陪伴有故事的你<br>
-				<br>
-				<br>
-				<div style="font-size:12px;transform:scale(0.9);width:100%;">心之言（上海）科技有限公司</div>
-				<div style="font-size:12px;transform:scale(0.9);width:100%;">出品</div>
-				<div style="font-size:12px;transform:scale(0.9);width:100%;">©️ 从 2019年 到 所有账号被回收</div>
-				<div style="font-size:12px;transform:scale(0.9);width:100%;">yanxin.10o10m.com</div>
-				<div style="font-size:12px;transform:scale(0.9);width:100%;">域名速记：10个圈10个美</div>
+				<div class="centerhorizontal">
+					<img src="logo.png" style="width:8vh;height:8vh;">
+					<div style="position:absolute;font-size:12px;top:0px;left: 50%;transform: translateX(4vh);">™️️</div>
+				</div>
+				<div class="centerhorizontal">言心</div>
+				<div class="centerhorizontal">你的心灵日记</div>
+				<div class="centerhorizontal">陪伴有故事的你</div>
+				
+				<div class="centerhorizontal" style="font-size:12px;">心之言（上海）科技有限公司</div>
+				<div class="centerhorizontal" style="font-size:12px;">出品</div>
+				<div class="centerhorizontal" style="font-size:12px;">©️ 自 2019年 至 所有账号被回收</div>
+				<div class="centerhorizontal" style="font-size:12px;">yanxin.10o10m.com</div>
+				<div class="centerhorizontal" style="font-size:12px;">域名速记：10个圈10个美</div>
 			</div>
 		</div>
 	<div style="position:absolute;bottom:0px;left:0;right:0px;text-align:center;color:red;font-size:14px;">这是测试版，请勿使用，正式版，即将到来，敬请期待</div>
