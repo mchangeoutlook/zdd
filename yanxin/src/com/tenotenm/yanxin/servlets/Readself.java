@@ -31,6 +31,7 @@ public class Readself extends HttpServlet {
 			Map<String, Object> ret = new Hashtable<String, Object>();
 			
 			ret.put("daystogive", String.valueOf(yxaccount.getDaystogive()));
+			ret.put("timecreate", Reuse.yyyyMMddHHmmss(yxaccount.getTimecreate()));
 			ret.put("timeexpire", Reuse.yyyyMMddHHmmss(yxaccount.getTimeexpire()));
 			ret.put("timereuse", Reuse.yyyyMMddHHmmss(Bizutil.datedenyreuseaccount(yxaccount)));
 			ret.put("name", yxaccount.getName());

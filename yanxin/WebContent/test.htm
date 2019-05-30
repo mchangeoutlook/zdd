@@ -9,30 +9,72 @@
   		<meta name="Keywords" content="言心 你的心灵日记 陪伴有故事的你" />
   		<style type="text/css">
   			input[type="button"]{
-  				background:#008B8B;border:none;color:#eee;border-radius:4px;line-height:30px;height:30px;font-size:20px;
+  				background-color:#444;border:none;color:#ddd;border-radius:4px;line-height:30px;height:30px;font-size:20px;margin:4px;
   			}
   			input[type="text"]{
-  				background:#ddd;border:none;padding-left:4px;padding-right:4px;height:30px;border-radius:4px;font-size:20px;
+  				background-color:#ddd;border:none;padding-left:4px;padding-right:4px;height:30px;border-radius:4px;font-size:20px;margin:4px;
   			}
   			textarea{
-  				background:#ddd;border:none;padding:4px;border-radius:4px;font-size:20px;
+  				background-color:#ddd;border:none;padding:4px;border-radius:4px;font-size:20px;margin:4px;
   			}
   			input[type="password"]{
-  				background:#ddd;border:none;padding-left:4px;padding-right:4px;height:30px;border-radius:4px;font-size:20px;
+  				background-color:#ddd;border:none;padding-left:4px;padding-right:4px;height:30px;border-radius:4px;font-size:20px;margin:4px;
   			}
   			body{
-  				background:#000;
+  				position:fixed;
+  				background-color:#444;
+  				color:#ddd;
+  				top:0px;
+  				left:0px;
+  				right:0px;
+  				bottom:0px;
+  				margin:0px;
+  			}
+  			.centerhorizontallabel{
+  				width:calc(100% - 8px);
+  				color: #ddd;
+  				margin:4px;
+  				text-align:center;
+  				line-height:30px;
+  			}
+  			.labelhighlight{
+  				color: #f4a57e;
+  				margin:4px;
+  			}
+  			.centerhorizontal{
+  				width:100%;
+  				text-align:center;
+  			}
+  			.centerhorizontaltranslate{
+  				position:absolute;
+  				width:500px;
+  				text-align:center;
+  				left:50%;
+  				transform:translateX(-50%);
+  			}
+  			.bottomscrollable{
+  				position:absolute;
+  				max-height:calc(100% - 8px);
+  				left:0px;
+  				right:0px;
+  				bottom:0px;
+  				padding:4px;
+  				margin:4px;
+  				overflow-x:hidden;
+  				overflow-y:auto;
+  				text-align:center;
   			}
   			.divroot{
   				position:fixed;
-  				left:1vw;
-  				right:1vw;
-  				top:1vw;
-  				bottom:1vw;
+  				left:4px;
+  				right:4px;
+  				top:4px;
+  				bottom:4px;
   				color:#ddd;
-  				background:#000;
+  				background-color:#444;
   				font-size:20px;
   				overflow:hidden;
+  				border-radius:4px;
   			}
   			.divsecondtop{
   				position:absolute;
@@ -40,16 +82,24 @@
   				top:0px;
   				left:0px;
   				right:0px;
-  				bottom:92px;
+  				bottom:114px;
+  				background-color:#000;
+  				padding:4px;
+  				margin:4px;
+  				border-radius:4px;
   			}
   			
   			.divsecondbottom{
   				position:absolute;
   				overflow:hidden;
-  				height:92px;
+  				height:98px;
   				left:0px;
   				right:0px;
   				bottom:0px;
+  				background-color:#000;
+  				padding:4px;
+  				margin:4px;
+  				border-radius:4px;
   			}
 
 			.load{
@@ -64,19 +114,18 @@
   			
   			.msgfoot{
   				position:absolute;
-  				text-align:center;
+  				text-align:left;
   				word-wrap:break-word;
-  				bottom:-54px;
-				left:0px;
-				right:0px;
-				height:54px;
+  				top:100%;
+				left:4px;
+				right:4px;
 				font-size:16px;
-				line-height:18px;
+				line-height:20px;
+				height:60px;
   				border:0px;
   				overflow-x:hidden;
   				overflow-y:auto;
   				color:#f4a57e;
-  				text-align:left;
   				animation: msgfooting 0.5s ease 0s forwards;
   			}  			
 			@keyframes msgfooting
@@ -87,15 +136,14 @@
 
 			.msgpop{
 				position:absolute;
-				text-align:center;
 				border-radius:4px;
 				word-wrap:break-word;
 				padding:20px;
 				font-size:16px;
-				top:10px;
-				left:10px;
-				right:10px;
-				bottom:92px;
+				top:4px;
+				left:4px;
+				right:4px;
+				bottom:110px;
 				overflow-x:hidden;
 				overflow-y:auto;
 				background-color:#e0bb95;
@@ -114,34 +162,42 @@
 				top:0px;
 				left:0px;
 				right:0px;
-				bottom:50%;
+				border-radius:4px;
+				bottom:calc(50% + 4px);
 				overflow:hidden;
+				background-color:#000;
 			}
 			
 			.yxinputswrite{
 				position:absolute;
-				top:50%;
+				top:calc(50% + 4px);
 				left:0px;
 				right:0px;
 				bottom:0px;
+				border-radius:4px;
 				overflow:hidden;
+				background-color:#000;
 			}
 			.yximgread{
 				position:absolute;
 				top:0px;
 				left:0px;
 				right:0px;
-				bottom:50%;
+				border-radius:4px;
+				bottom:calc(50% + 4px);
 				overflow:hidden;
+				background-color:#000;
 			}
 			
 			.yxinputsread{
 				position:absolute;
-				top:50%;
+				top:calc(50% + 4px);
 				left:0px;
 				right:0px;
 				bottom:0px;
+				border-radius:4px;
 				overflow:hidden;
+				background-color:#000;
 			}
 			
 			@media (min-aspect-ratio: 1/1){
@@ -149,47 +205,55 @@
 					position:absolute;
 					top:0px;
 					left:0px;
-					right:50%;
+					right:calc(50% + 4px);
 					bottom:0px;
+					border-radius:4px;
 					overflow:hidden;
+					background-color:#000;
 				}
 				
 				.yxinputswrite{
 					position:absolute;
 					top:0px;
-					left:50%;
+					left:calc(50% + 4px);
 					right:0px;
 					bottom:0px;
+					border-radius:4px;
 					overflow:hidden;
+					background-color:#000;
 				}
 				.yximgread{
 					position:absolute;
 					top:0px;
 					left:0px;
-					right:50%;
+					right:calc(50% + 4px);
 					bottom:0px;
+					border-radius:4px;
 					overflow:hidden;
+					background-color:#000;
 				}
 				
 				.yxinputsread{
 					position:absolute;
 					top:0px;
-					left:50%;
+					left:calc(50% + 4px);
 					right:0px;
 					bottom:0px;
+					border-radius:4px;
 					overflow:hidden;
+					background-color:#000;
 				}
 			}
 			
   			.opening{
   				position:absolute;
   				z-index:20000;
-  				background:black;
   				border:0px;
   				width:300px;
   				height:300px;
   				left:50%;
   				top:50%;
+  				border-radius:4px;
   				overflow:hidden;
   				transform:translateX(-50%) translateY(-50%);
   			}
@@ -204,7 +268,7 @@
   			.thick{
   				position:absolute;
   				border:0px;
-  				background-color:#96b6b5;
+  				background-color:#ddd;
   				width:25px;
   				height:2px;
   				left:0px;
@@ -213,9 +277,9 @@
   			}
   			@keyframes thicking
 			{
-				0%{background-color:#96b6b5;}
-				99%{background-color:#96b6b5;}
-				100%{background-color:white;}
+				0%{background-color:#ddd;}
+				99%{background-color:#ddd;}
+				100%{background-color:#ddd;}
 			}
 			.text{
 				position:absolute;
@@ -255,7 +319,7 @@
   			.cover{
   				position:absolute;
   				border:0px;
-  				background-color:#96b6b5;
+  				background-color:#ddd;
   				width:25px;
   				height:20px;
   				bottom:2px;
@@ -277,7 +341,7 @@
   				position:absolute;
   				border:0px;
   				border-radius:2px 2px;
-  				background-color:#aaa;
+  				background-color:#ddd;
   				width:15px;
   				height:2px;
   				top:155px;
@@ -292,13 +356,13 @@
 			}
   			
   		 	.humancolor{
-  		 		background-color:#e0bb95;
+  		 		background-color:#ddd;
   		 	}
   		 	.tshirtcolor{
-  		 		background-color:#f4a57e;
+  		 		background-color:#aaa;
   		 	}
   		 	.pantscolor{
-  		 		background-color:#2891d3;
+  		 		background-color:#666;
   		 	}
   			.human{
   				position:absolute;
@@ -636,7 +700,7 @@
 		
 		var msg_passmodifysuccess="密码修改成功";
 		var msg_cameranotsupport="你的浏览器不支持调取摄像头，请退出登录，然后用其它浏览器重新登录再试";
-		var msg_camerareject="你已拒绝浏览器调取摄像头，如需拍照，请清除浏览器缓存然后刷新页面再试";
+		var msg_camerareject="你已拒绝浏览器调取摄像头，如需拍照，请先清除浏览器缓存，然后刷新页面再试";
 		var msg_startingautosaving="即将自动保存";
 		var msg_journalsavesuccess="日记保存成功";
 		var msg_journalsaving = "正在保存日记，保存成功之前请不要离开此页面";
@@ -646,6 +710,7 @@
 		var msg_daystogiveremain="库存天数剩余 ";
 		var msg_newexpire="过期时间延长为 ";
 		var msg_timereused="回收时间 ";
+		var msg_timecreate="注册时间 ";
 		var msg_timeexpire="过期时间 ";
 		var msg_daystogive="库存天数 ";
 		var msg_extendhintstart="在 ";
@@ -1058,6 +1123,7 @@
 			$("#selfextendbtn").attr("extendname", "");
 			$("#selfexpiretime").html("");
 			$("#selfreusetime").html("");
+			$("#selfcreatetime").html("");
 			$("#selfdaystogive").html("");
 			$("#selfextendhint").html("");
 			$(".hideallaccountform").hide();
@@ -1071,6 +1137,7 @@
 			$("#selfextendbtn").attr("extendname", data.name);
 			$("#selfexpiretime").html(msg_timeexpire+data.timeexpire);
 			$("#selfreusetime").html(msg_timereused+data.timereuse);
+			$("#selfcreatetime").html(msg_timecreate+data.timecreate);
 			if (parseInt(data.daystogive)>0){
 				$("#selfdaystogive").html(msg_daystogive+data.daystogive);
 				$("#daystogivespendform").show();
@@ -1117,18 +1184,18 @@
 			} else {
 				$("#calendaryear").append("<div style='float:left;width:33%;'>&nbsp;</div>");
 			}
-			
-			$("#calendarform").append("<div style='width:98vw;float:left;'>"+
-					"<div style='width:14vw;float:left;text-align:center;'>周日</div>"+
-					"<div style='width:14vw;float:left;text-align:center;'>周一</div>"+
-					"<div style='width:14vw;float:left;text-align:center;'>周二</div>"+
-					"<div style='width:14vw;float:left;text-align:center;'>周三</div>"+
-					"<div style='width:14vw;float:left;text-align:center;'>周四</div>"+
-					"<div style='width:14vw;float:left;text-align:center;'>周五</div>"+
-					"<div style='width:14vw;float:left;text-align:center;'>周六</div>"+
+			var datecellwidth = Math.floor(parseInt($("#calendarform").css("width"))/7);
+			$("#calendarform").append("<div style='width:100%;float:left;'>"+
+					"<div style='width:"+datecellwidth+"px;float:left;text-align:center;'>周日</div>"+
+					"<div style='width:"+datecellwidth+"px;float:left;text-align:center;'>周一</div>"+
+					"<div style='width:"+datecellwidth+"px;float:left;text-align:center;'>周二</div>"+
+					"<div style='width:"+datecellwidth+"px;float:left;text-align:center;'>周三</div>"+
+					"<div style='width:"+datecellwidth+"px;float:left;text-align:center;'>周四</div>"+
+					"<div style='width:"+datecellwidth+"px;float:left;text-align:center;'>周五</div>"+
+					"<div style='width:"+datecellwidth+"px;float:left;text-align:center;'>周六</div>"+
 					"</div>");
 			for (var i=0;i<data.onemonth.length;i++){
-				$("#calendarform").append("<div id='calendarweek"+i+"' style='width:98vw;float:left;'></div>");
+				$("#calendarform").append("<div id='calendarweek"+i+"' style='width:100%;float:left;'></div>");
 				for (var j=0;j<data.onemonth[i].length;j++){
 					if (data.onemonth[i][j].monthday!=undefined){
 						if (data.onemonth[i][j].key!=undefined){
@@ -1140,17 +1207,17 @@
 							if (data.onemonth[i][j].istoday=="true"){
 								actionid="onclick=\"$('#todaybtn').click()\"";
 							}
-							$("#calendarweek"+i).append("<div "+actionid+" yanxinkey='"+data.onemonth[i][j].key+"' style='"+bg+"float:left;text-align:center;width:14vw;height:14vw;' class='click'><div style='background-color:black;float:right;border-radius:50%;opacity:0.6;padding-top:2px;padding-left:1px;padding-right:1px;'>"+data.onemonth[i][j].monthday+"</div></div>");
+							$("#calendarweek"+i).append("<div "+actionid+" yanxinkey='"+data.onemonth[i][j].key+"' style='"+bg+"float:left;text-align:center;width:"+datecellwidth+"px;height:"+datecellwidth+"px;' class='click'><div style='background-color:black;float:right;border-radius:50%;opacity:0.6;padding-top:2px;padding-left:1px;padding-right:1px;'>"+data.onemonth[i][j].monthday+"</div></div>");
 						} else {
-							$("#calendarweek"+i).append("<div style='float:left;text-align:center;width:14vw;height:14vw;' >"+data.onemonth[i][j].monthday+"</div>");
+							$("#calendarweek"+i).append("<div style='float:left;text-align:center;width:"+datecellwidth+"px;height:"+datecellwidth+"px;' >"+data.onemonth[i][j].monthday+"</div>");
 						}
 					} else {
-						$("#calendarweek"+i).append("<div style='float:left;width:14vw;height:14vw;'>&nbsp;</div>");
+						$("#calendarweek"+i).append("<div style='float:left;width:"+datecellwidth+"px;height:"+datecellwidth+"px;'>&nbsp;</div>");
 					}
 				}
 			}
 			
-			$("#calendarform").append("<div id='calendarmonth' style='width:100%;float:left;margin-top:5px;margin-bottom:5px;'></div>");
+			$("#calendarform").append("<div id='calendarmonth' style='width:100%;float:left;'></div>");
 			if (data.leftmonth!=undefined){
 				$("#calendarmonth").append("<div style='float:left;width:33%;text-align:center;'><input onclick='navigateyearmonth(\"month\", \""+data.leftmonth+"\")' type='button' value='"+data.leftmonth+"月'/></div>");
 			} else {
@@ -1240,6 +1307,7 @@
 			loading(true);
 			$(".hideallotheraccountform").hide();
 			$("#otherreusetime").html("");
+			$("#othercreatetime").html("");
 			$("#otherexpiretime").html("");
 			$("#otherdaystogive").html("");
 			$("#othergivebtn").attr("givename","");
@@ -1252,6 +1320,7 @@
 		
 		function afterreadother(data){
 			$("#otherreusetime").html(msg_timereused+data.timereuse);
+			$("#othercreatetime").html(msg_timecreate+data.timecreate);
 			$("#otherexpiretime").html(msg_timeexpire+data.timeexpire);
 			$("#otherdaystogive").html(msg_daystogive+data.daystogive);
 			$("#othergivebtn").attr("givename",data.name);
@@ -1356,8 +1425,8 @@
 		}
 		function loading(show){
 			if (show){
-				$(".divroot").append("<div id='loadingform' class='hideloading' style='position:absolute;top:0px;left:0px;right:0px;bottom:54px;background-color:black;opacity:0.8;z-index:10000;'></div>");
-				$(".divroot").append("<div class='load hideloading' style='position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);'>请稍后......</div>");
+				$(".divroot").append("<div id='loadingform' class='hideloading' style='position:absolute;top:4px;left:4px;right:4px;bottom:68px;border-radius:4px;background-color:black;opacity:0.8;z-index:10000;'></div>");
+				$(".divroot").append("<div class='load hideloading' style='position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);z-index:10001;'>请稍后......</div>");
 			} else {
 				$(".hideloading").fadeOut(500,function(){
 					$(this).remove();
@@ -1366,10 +1435,10 @@
 		}
 		function popmsg(content){
 			$(".hidemsgpop").remove();
-			$(".divroot").append("<div id='msgpopform' class='hidemsgpop' style='position:absolute;display:none;top:0px;left:0px;right:0px;bottom:54px;background-color:black;opacity:0.8'></div>");
+			$(".divroot").append("<div id='msgpopform' class='hidemsgpop' style='position:absolute;display:none;border-radius:4px;top:4px;left:4px;right:4px;bottom:68px;background-color:black;opacity:0.8'></div>");
 			$("#msgpopform").fadeIn(500);
 			$(".divroot").append("<div class='msgpop hidemsgpop'>"+content+"</div>");
-			$(".divroot").append("<div id='msgpopbtn' class='hidemsgpop' style='display:none;position:absolute;bottom:58px;right:0px;left:0px;height:30px;text-align:center;'><input onclick=\"$('.hidemsgpop').remove();\" type='button' value='知道了'/></div>");
+			$(".divroot").append("<div id='msgpopbtn' class='hidemsgpop' style='display:none;position:absolute;bottom:68px;right:0px;left:0px;text-align:center;'><input onclick=\"$('.hidemsgpop').remove();\" type='button' value='知道了'/></div>");
 			$("#msgpopbtn").fadeIn(500);
 		}
 		
@@ -1443,7 +1512,7 @@
 			$("#newfilebtn").show();
 			$("#dayimgwrite").show();
 			stopcam();
-			$("#toggle").animate({"left":"0%"},500);
+			$("#toggle").animate({"left":"1%"},500);
 		}
 		function showfrontcam(){
 			showcam(false);
@@ -1535,7 +1604,7 @@
 	<body>
 	<div class="divroot">
 		<div class="divsecondtop">
-			<div id="yanxinwriteform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;">
+			<div id="yanxinwriteform" class="hideallforms" style="position:absolute;background-color:#444;display:none;top:0px;left:0px;right:0px;bottom:0px;">
 				<div class="yximgwrite">
 					<div id="imghint" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);width:80%;text-align:left;"></div>
 					<video id="video" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);display:none;" autoplay></video>
@@ -1550,103 +1619,114 @@
 					<input type="button" id="newfilebtn" onclick="$('#filebtn').click()" style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:none;" value="选择小于100K的图片上传"/>
 					
 					<div style="position:absolute;right:0px;left:0px;height:40px;bottom:0px;background-color:#000;opacity:0.6;"></div>
-					<div id="toggle" style="position:absolute;width:calc(33% - 2px);height:30px;left:0%;border-radius:4px;bottom:3px;border:1px #eee solid;">&nbsp;</div>
 					<div onclick="showupload()" style="position:absolute;width:33%;left:0%;height:30px;bottom:4px;text-align:center;">图片</div>
 					<div onclick="showfrontcam()" style="position:absolute;width:33%;left:33%;height:30px;bottom:4px;text-align:center;">前摄</div>
 					<div onclick="showbackcam()" style="position:absolute;width:33%;left:66%;height:30px;bottom:4px;text-align:center;">后摄</div>
+					<div id="toggle" style="position:absolute;width:33%;height:30px;left:1%;opacity:0.9;background-color:#444;border-radius:4px;bottom:4px;">&nbsp;</div>
 					
 				</div>
 				<div class="yxinputswrite">
-					<div id="daywrite" style="position:absolute;line-height:30px;height:30px;width:110px;top:4px;left:0px;overflow:hidden;"></div>
-					<div style="position:absolute;line-height:30px;height:30px;width:calc(100% - 110px);top:4px;left:110px;">
-						<input id="weatherwrite" old="" oninput="checkinput('weatherwrite')" style="width:calc(40% - 4px);" type="text" maxlength="10" placeholder="填写天气"/>
-						<input id="locationwrite" old="" oninput="checkinput('locationwrite')" style="width:calc(60% - 2px);" type="text" maxlength="20" placeholder="填写地点"/>
+					<div style="position:absolute;width:35%;left:0%;text-align:center;">
+						<div class="centerhorizontallabel" id="daywrite"></div>
 					</div>
-					<textarea id="contentwrite" old="" oninput="checkinput('contentwrite')" style="position:absolute;top:38px;left:0px;height:calc(100% - 38px);width:100%;resize:none;" maxlength="1000" placeholder="填写日记，限1000字"></textarea>
+					<div style="position:absolute;width:30%;left:35%;text-align:center;">
+						<input id="weatherwrite" old="" oninput="checkinput('weatherwrite')" style="width:calc(100% - 8px);" type="text" maxlength="10" placeholder="填写天气"/>
+					</div>
+					<div style="position:absolute;width:35%;left:65%;text-align:center;">
+						<input id="locationwrite" old="" oninput="checkinput('locationwrite')" style="width:calc(100% - 8px);" type="text" maxlength="20" placeholder="填写地点"/>
+					</div>
+					
+					<textarea id="contentwrite" old="" oninput="checkinput('contentwrite')" style="position:absolute;top:34px;left:0px;height:calc(100% - 42px);width:calc(100% - 8px);resize:none;" maxlength="1000" placeholder="填写日记，限1000字"></textarea>
 				</div>
 			</div>
-			<div id="yanxinreadform" class="hideallforms" style="position:absolute;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
+			<div id="yanxinreadform" class="hideallforms" style="position:absolute;background-color:#444;display:none;top:0px;left:0px;right:0px;bottom:0px;overflow:hidden;text-align:left;">
 				<div class="yximgread">
 					<img id="dayimgread" src="" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
 				</div>
 				<div class="yxinputsread">
-					<div id="dayread" style="position:absolute;top:0px;left:4px;height:30px;line-height:30px;right:120px;"></div>
-					<div id="weatherread" style="position:absolute;top:0px;left:124px;height:30px;line-height:30px;right:0px;"></div>
-					<div id="locationread"style="position:absolute;top:30px;left:4px;height:30px;line-height:30px;right:0px;"></div>
-					<textarea id="contentread" disabled style="position:absolute;background-color:#000;color:#ddd;top:60px;left:0px;right:0px;bottom:0px;height:calc(100% - 60px);width:100%;resize:none;">
+					<div class="centerhorizontallabel" id="dayread"></div>
+					<div class="centerhorizontallabel" id="weatherread"></div>
+					<div class="centerhorizontallabel" id="locationread"></div>
+					<textarea id="contentread" disabled style="position:absolute;background-color:#000;color:#ddd;top:102px;left:0px;right:0px;bottom:0px;height:calc(100% - 110px);width:calc(100% - 8px);resize:none;">
 					</textarea>
 				</div>
 			</div>
-			<div id="loginform" class="hideallforms" style="position:absolute;display:none;top:50%;transform:translateY(-50%);left:0px;right:0px;text-align:center;">
+			<div id="loginform" class="bottomscrollable hideallforms" style="display:none;">
 				<div style="position:absolute;font-size:12px;bottom: 100%;left: 50%;transform: translateX(4vh);">™️️</div>
-				<img src="logo.png" style="width:8vh;height:8vh;">
-				<div style="margin:2px;">登录你的言心日记</div>
-				<input id="loginuser" style="margin:2px;" size="20" type="text" maxlength="20" placeholder="填写账号"/><br>
-				<input id="loginpass" style="margin:2px;" size="20" type="password" maxlength="20" placeholder="只填写密码即可登录"/><br>
-				<input id="loginmotto" style="margin:2px;" size="20" type="text" maxlength="100" placeholder="或只填写格言也可登录"/><br>
-				<div style="position:absolute;top:100%;font-size:16px;color:#f4a57e;right:50%;transform:translateX(-40px)" 
+				<div  class="centerhorizontal"><img src="logo.png" style="width:8vh;height:8vh;"></div>
+				<div class="centerhorizontallabel">登录你的言心日记</div>
+				<div  class="centerhorizontal"><input id="loginuser" size="20" type="text" maxlength="20" placeholder="填写账号"/></div>
+				<div  class="centerhorizontal"><input id="loginpass" size="20" type="password" maxlength="20" placeholder="只填写密码即可登录"/></div>
+				<div  class="centerhorizontal"><input id="loginmotto" size="20" type="text" maxlength="100" placeholder="或只填写格言也可登录"/></div>
+				<div  class="centerhorizontal"><input actionid="login" class="click" type="button" value="登录"/></div>
+				<div class="centerhorizontallabel">&nbsp;</div>
+				<div class="labelhighlight" style="position:absolute;bottom:0px;font-size:16px;right:50%;transform:translateX(-40px)" 
 				onclick="post('freego','forgetpass',{})">忘记密码?</div>
-				<input actionid="login" class="click" type="button" style="margin:2px;" value="登录"/>
 			</div>
-			<div id="registerform" class="hideallforms" style="position:absolute;display:none;top:50%;transform:translateY(-50%);left:0px;right:0px;text-align:center;">
+			<div id="registerform" class="bottomscrollable hideallforms" style="display:none;">
 				<div style="position:absolute;font-size:12px;bottom: 100%;left: 50%;transform: translateX(4vh);">™️</div>
-				<img src="logo.png" style="width:8vh;height:8vh;">
-				<div style="margin:2px;">注册你的言心账号</div>
-				<input id="registeruser" style="margin:2px;" size="20" type="text" maxlength="20" placeholder="填写账号，可写中文"/><br>
-				<input id="registerpass" style="margin:2px;" size="20" type="password" maxlength="20" placeholder="填写密码，可写中文"/><br>
-				<input id="registerrepass" style="margin:2px;" size="20" type="password" maxlength="20" placeholder="重复一次密码"/><br>
-				<input id="registermotto" style="margin:2px;" size="20" type="text" maxlength="100" placeholder="填写格言，可写中文"/><br>
-				<input id="registerremotto" style="margin:2px;" size="20" type="text" maxlength="100" placeholder="重复一次格言"/><br>
-				<div style="position:absolute;top:100%;font-size:16px;color:#f4a57e;right:50%;transform:translateX(-40px)" 
+				<div  class="centerhorizontal"><img src="logo.png" style="width:8vh;height:8vh;"></div>
+				<div class="centerhorizontallabel">注册你的言心账号</div>
+				<div  class="centerhorizontal"><input id="registeruser" size="20" type="text" maxlength="20" placeholder="填写账号，可写中文"/></div>
+				<div  class="centerhorizontal"><input id="registerpass" size="20" type="password" maxlength="20" placeholder="填写密码，可写中文"/></div>
+				<div  class="centerhorizontal"><input id="registerrepass" size="20" type="password" maxlength="20" placeholder="重复一次密码"/></div>
+				<div  class="centerhorizontal"><input id="registermotto" size="20" type="text" maxlength="100" placeholder="填写格言，可写中文"/></div>
+				<div  class="centerhorizontal"><input id="registerremotto" size="20" type="text" maxlength="100" placeholder="重复一次格言"/></div>
+				<div  class="centerhorizontal"><input actionid="register" class="click" type="button" value="注册"/></div>
+				<div class="centerhorizontallabel">&nbsp;</div>
+				<div class="labelhighlight" style="position:absolute;bottom:0px;font-size:16px;right:50%;transform:translateX(-40px)" 
 				onclick="post('freego','agreement',{})">你的言心协议</div>
-				<input actionid="register" class="click" type="button" style="margin:2px;" value="注册"/>
+				
 			</div>
-			<div id="accountform" class="hideallforms" style="position:absolute;display:none;max-height:100%;left:0px;right:0px;bottom:0px;overflow-x:hidden;overflow-y:auto;text-align:center;">
-					<div id="selfname" style="margin:2px;width:100%;text-align:center;"></div>
-					<div style="margin:2px;width:100%;text-align:center;"><font onclick="post('freego','agreement',{})" style="margin:2px;color:#f4a57e;">你的言心协议</font><input id="logoutbtn" actionid="logout" class="click" type="button" value="退出登录"/></div>
-					<div id="selfreusetime" style="width:100%;margin:2px;"></div>
-					<div id="selfexpiretime" style="width:100%;margin:2px;"></div>
-					<div style="width:100%;margin:2px;"><input id="extendbtn" onclick="post('freego','buyhint',{})" type="button" class="hideallaccountform" style="display:none;margin:2px;" value="延长过期时间"/></div>
-					<div id="selfexpiretimenew" class="hideallaccountform" style="width:100%;margin:2px;display:none;color:#f4a57e;"></div>
-					<div id="selfextendhint" class="hideallaccountform" style="width:100%;margin:2px;display:none;color:#f4a57e;"></div>
-					<div id="selfdaystogive" class="hideallaccountform" style="display:none;margin:2px;width:100%;"></div>
-					<div id="selfdaystogivenew" class="hideallaccountform" style="display:none;margin:2px;width:100%;color:#f4a57e;"></div>
-					<div id="selfextendform" class="hideallaccountform" style="display:none;margin:2px;width:100%;"><input id="selfextend" style="margin:2px;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="selfextendbtn" actionid="extend" class="click" type="button" style="margin:2px;" selforother="self" value="延长自己的过期时间"/></div>
+			<div id="accountform" class="bottomscrollable hideallforms" style="display:none;">
+					<div id="selfname" class="centerhorizontallabel"></div>
+					<div class="centerhorizontal"><font class="labelhighlight" style="font-size:16px;" onclick="post('freego','agreement',{})" >你的言心协议</font><input id="logoutbtn" actionid="logout" class="click" type="button" value="退出登录"/></div>
+					<div id="selfreusetime" class="centerhorizontallabel labelhighlight"></div>
+					<div id="selfexpiretime" class="centerhorizontallabel"></div>
+					<div id="selfcreatetime" class="centerhorizontallabel"></div>
+					<div class="centerhorizontal"><input id="extendbtn" onclick="post('freego','buyhint',{})" type="button" class="hideallaccountform" style="display:none;" value="延长过期时间"/></div>
+					<div id="selfexpiretimenew" class="centerhorizontallabel labelhighlight hideallaccountform" style="display:none;"></div>
+					<div id="selfextendhint" class="centerhorizontallabel labelhighlight hideallaccountform" style="display:none;"></div>
+					<div id="selfdaystogive" class="centerhorizontallabel hideallaccountform" style="display:none;"></div>
+					<div id="selfdaystogivenew" class="centerhorizontallabel labelhighlight hideallaccountform" style="display:none;"></div>
+					<div id="selfextendform" class="centerhorizontal hideallaccountform" style="display:none;"><input id="selfextend" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="selfextendbtn" actionid="extend" class="click" type="button" selforother="self" value="延长自己的过期时间"/></div>
 
-					<div id="daystogivespendform" class="hideallaccountform" style="display:none;padding:5px;margin:5px;text-align:center;border:1px #eee solid;border-radius:4px;">
-						<div style="width:100%;"><input id="findother" style="margin:2px;" size="10" type="text" maxlength="20" placeholder="填写其它账号"/><input id="findotherbtn" actionid="readother" class="click" style="margin:2px;" type="button" value="查询"/></div>
-						<div id="otherextendform" class="hideallotheraccountform" style="display:none;width:100%;">
-							<div id="otherreusetime" style="margin:2px;width:100%;"></div>
-							<div id="otherexpiretime" style="margin:2px;width:100%;"></div>
-							<div id="otherexpiretimenew" class="hideallotheraccountform" style="margin:2px;width:100%;display:none;color:#f4a57e;"></div>
-							<div id="otherextendhint" class="hideallotheraccountform" style="width:100%;margin:2px;display:none;color:#f4a57e;"></div>
-							<div style="width:100%;"><input id="otherextend" class="hideallotheraccountform" style="margin:2px;display:none;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input actionid="extend" class="click" id="otherextendbtn" class="hideallotheraccountform" style="display:none;margin:2px;" selforother="other" type="button" value="延长过期时间"/></div>
-							<div id="otherdaystogive" style="margin:2px;width:100%;"></div>
-							<div id="otherdaystogivenew" class="hideallotheraccountform" style="margin:2px;width:100%;display:none;color:#f4a57e;"></div>
-							<div style="width:100%;"><input id="othergive" class="hideallotheraccountform" style="margin:2px;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="othergivebtn" class="hideallotheraccountform click" actionid="give" type="button" style="margin:2px;" value="增加库存天数"/></div>
+					<div id="daystogivespendform" class="hideallaccountform" style="display:none;padding:4px;margin:4px;border:1px #ddd solid;border-radius:4px;">
+						<div class="centerhorizontal"><input id="findother" size="10" type="text" maxlength="20" placeholder="填写其它账号"/><input id="findotherbtn" actionid="readother" class="click" type="button" value="查询"/></div>
+						<div id="otherextendform" class="centerhorizontal hideallotheraccountform" style="display:none;">
+							<div id="otherreusetime" class="centerhorizontallabel labelhighlight"></div>
+							<div id="otherexpiretime" class="centerhorizontallabel"></div>
+							<div id="othercreatetime" class="centerhorizontallabel"></div>
+							<div id="otherexpiretimenew" class="centerhorizontallabel labelhighlight hideallotheraccountform" style="display:none;"></div>
+							<div id="otherextendhint" class="centerhorizontallabel labelhighlight hideallotheraccountform" style="display:none;"></div>
+							<div class="centerhorizontal"><input id="otherextend" class="hideallotheraccountform" style="display:none;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input actionid="extend" class="click" id="otherextendbtn" class="hideallotheraccountform" style="display:none;" selforother="other" type="button" value="延长过期时间"/></div>
+							<div id="otherdaystogive" class="centerhorizontallabel"></div>
+							<div id="otherdaystogivenew" class="centerhorizontallabel labelhighlight hideallotheraccountform" style="display:none;"></div>
+							<div class="centerhorizontal"><input id="othergive" class="hideallotheraccountform" style="" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="othergivebtn" class="hideallotheraccountform click" actionid="give" type="button" value="增加库存天数"/></div>
 						</div>
 					</div>
 					
-					<div style="width:100%;"><input id="changepass" style="margin:2px;" size="20" type="password" maxlength="20" placeholder="填写新密码"/><br>
-					<input id="changerepass" style="margin:2px;" size="20" type="password" maxlength="20" placeholder="重复一次新密码"/><br>
-					<input actionid="changepass" class="click" type="button" style="margin:2px;" value="修改密码"/></div>
-					<div style="width:100%;"><input id="changemotto" style="margin:2px;" size="20" type="text" maxlength="100" placeholder="填写新格言"/><br>
-					<input id="changeremotto" style="margin:2px;" size="20" type="text" maxlength="100" placeholder="重复一次新格言"/><br>
-					<input actionid="changemotto" class="click" type="button" style="margin:2px;" value="修改格言"/></div>
+					<div class="centerhorizontal"><input id="changepass" size="20" type="password" maxlength="20" placeholder="填写新密码"/></div>
+					<div class="centerhorizontal"><input id="changerepass" size="20" type="password" maxlength="20" placeholder="重复一次新密码"/></div>
+					<div class="centerhorizontal"><input actionid="changepass" class="click" type="button" value="修改密码"/></div>
+					<div class="centerhorizontal"><input id="changemotto" size="20" type="text" maxlength="100" placeholder="填写新格言"/></div>
+					<div class="centerhorizontal"><input id="changeremotto" size="20" type="text" maxlength="100" placeholder="重复一次新格言"/></div>
+					<div class="centerhorizontal"><input actionid="changemotto" class="click" type="button"" value="修改格言"/></div>
 			</div>
-			<div id="calendarform" class="hideallforms" style="position:absolute;display:none;max-height:100%;left:0px;right:0px;bottom:0px;overflow-x:hidden;overflow-y:auto;">
+			<div id="calendarform" class="bottomscrollable hideallforms" style="display:none;">
 			</div>
 		</div>
 		<div class="divsecondbottom">
-			<div style="position:absolute;top:0px;left:50%;transform:translateX(-50%);width:400px;text-align:center;margin:4px;">
+			<div class="centerhorizontaltranslate">
 				<input id="accountbtn" actionid="readself" class="hideallbtns click" type="button" style="display:none;background-image: url(logo.png);background-size:contain;background-repeat:no-repeat;padding-left:34px;background-color:black;border-radius:unset;" value="账号"/>
 				<input id="calendarbtn" actionid="calendar" class="hideallbtns click" type="button" style="display:none;" value="日历"/>
 				<input id="todaybtn" actionid="readtoday" class="hideallbtns click" type="button" style="display:none;" value="今天"/>
 				<input id="newuserbtn" onclick="showregisterform()" class="hideallbtns" type="button" style="display:none;" value="注册新账号"/>
 				<input id="existuserbtn" onclick="showloginform()" class="hideallbtns" type="button" style="display:none;" value="已有账号"/>
 			</div>
+			<div style="position:absolute;bottom:0px;left:0;right:0px;color:#444;text-align:right;font-size:12px;">公安部备案中，沪ICP备案中</div>
 		</div>
-		<div class="openingclose" style="position:absolute;top:0px;left:0px;right:0px;bottom:54px;background-color:black;"></div>
+		<div class="openingclose" style="position:absolute;background-color:#000;opacity:0.9;top:0px;left:0px;right:0px;bottom:0px;"></div>
 		<div class="opening openingclose">
 			<input id="openingclosebtn" style="position:absolute;left:25%;bottom:0px;transform:translateX(-50%)" type="button" value="跳过" onclick="$('.openingclose').fadeOut(500);"/>
 			<div style="position:absolute;top:178px;left:87px;">
@@ -1708,7 +1788,6 @@
 			</div>
 		</div>
 	<div style="position:absolute;bottom:0px;left:0;right:0px;text-align:center;color:red;font-size:14px;">这是测试版，请勿使用，正式版，即将到来，敬请期待</div>
-	<div style="position:absolute;bottom:0px;left:0;right:0px;z-index:-1;color:#777;text-align:right;font-size:12px;">公安部备案中，沪ICP备案中</div>
 	</div>
 	</body>
 </html>	
