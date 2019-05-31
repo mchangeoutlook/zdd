@@ -1037,6 +1037,8 @@
 			$("#locationwrite").attr("old","");
 			$("#weatherwrite").val("");
 			$("#weatherwrite").attr("old","");
+			$("#emotionwrite").val("");
+			$("#emotionwrite").attr("old","");
 			$("#loginpass").val("");
 			$("#loginmotto").val("");
 			$(".hideallforms").hide();
@@ -1233,7 +1235,7 @@
 							}
 							var emotionline = "";
 							if (data.onemonth[i][j].emotion!=undefined){
-								emotionline = "<div style='font-size:12px;position: absolute;height:16px;bottom: 0px;text-align: center;overflow: hidden;width: 100%;background-color: #000;opacity: 0.8;'>"+data.onemonth[i][j].emotion+"</div>";
+								emotionline = "<div style='font-size:12px;position: absolute;line-height:16px;height:16px;bottom: 0px;text-align: center;overflow: hidden;width: 100%;background-color: #000;opacity: 0.8;'>"+data.onemonth[i][j].emotion+"</div>";
 							}
 							$("#calendarweek"+i).append("<div "+actionid+" yanxinkey='"+data.onemonth[i][j].key+"' style='position:relative;"+bg+"float:left;text-align:center;width:"+datecellwidth+";height:"+datecellwidth+";' class='click'>"+emotionline+"<div style='background-color:black;float:right;border-radius:50%;opacity:0.6;padding-top:2px;padding-left:1px;padding-right:1px;'>"+data.onemonth[i][j].monthday+"</div></div>");
 						} else {
@@ -1297,6 +1299,8 @@
 			$("#locationwrite").attr("old","");
 			$("#weatherwrite").val("");
 			$("#weatherwrite").attr("old","");
+			$("#emotionwrite").val("");
+			$("#emotionwrite").attr("old","");
 			post("cexpired","readtoday",{});
 		}
 		
@@ -1506,6 +1510,7 @@
 			$("#contentwrite").attr("old",data.content);
 			$("#locationwrite").attr("old",data.location);
 			$("#weatherwrite").attr("old",data.weather);
+			$("#emotionwrite").attr("old",data.emotion);
 			footmsg(msg_journalsavesuccess+hint);
 		}
 		

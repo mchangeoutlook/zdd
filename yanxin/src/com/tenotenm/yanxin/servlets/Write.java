@@ -2,7 +2,6 @@ package com.tenotenm.yanxin.servlets;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -10,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import com.tenotenm.yanxin.entities.Yanxin;
 import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.entities.Yxlogin;
@@ -83,12 +83,10 @@ public class Write extends HttpServlet {
 				yx.modify(null);
 			}
 
-			yx = Bizutil.readyanxin(yxaccount, today);
-			Map<String, Object> ret = new Hashtable<String, Object>();
-			ret.put("content", yx.getContent());
-			ret.put("location", yx.getLocation());
-			ret.put("weather", yx.getWeather());
-			ret.put("emotion", yx.getEmotion());
+			Map<String, String> ret = Bizutil.convert(Bizutil.readyanxin(yxaccount, today));
+			ret.remove("key");
+			ret.remove("photo");
+			ret.remove("day");
 			String hint = Bizutil.newdaycominghint(yxlogin);
 			if (hint!=null) {
 				ret.put("newdaycomingminutes", hint);
