@@ -51,7 +51,7 @@ public class Givedays extends HttpServlet {
 			
 			Bizutil.checkaccountreused(target);
 			
-			Bizutil.checkaccountavailability(target);
+			Bizutil.checkaccountexpired(target);
 			
 			yxaccount.setDaystogive4increment(-1*toincrease);
 			yxaccount.increment(null);

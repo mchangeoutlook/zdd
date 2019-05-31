@@ -26,7 +26,6 @@ public class Readother extends HttpServlet {
 			Yxaccount target = new Yxaccount();
 			target.setName(request.getParameter("targetname"));
 			if (!yxaccount.getUniquename().equals(target.getUniquename())) {
-				Bizutil.checkaccountavailability(yxaccount);
 				if (yxaccount.getDaystogive()<=0) {
 					throw new Exception("提示: 无权查询账号");
 				}

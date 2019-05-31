@@ -27,7 +27,7 @@ public class Checkexpired implements Filter {
 		try {
 			Bizutil.commoncheck(req);
 			
-			Bizutil.checkaccountavailability((Yxaccount)req.getAttribute(Yxaccount.class.getSimpleName()));
+			Bizutil.checkaccountexpired((Yxaccount)req.getAttribute(Yxaccount.class.getSimpleName()));
 			
 			arg2.doFilter(req, res);
 			

@@ -260,7 +260,7 @@ public class Bizutil {
 		}
 	}
 
-	public static void checkaccountavailability(Yxaccount yxaccount) throws Exception {
+	public static void checkaccountexpired(Yxaccount yxaccount) throws Exception {
 		if (!isadmin(yxaccount) && isaccountexpired(yxaccount)) {
 			throw new Exception(
 					"提示: 账号 " + yxaccount.getName() + " 已过期，请在" + Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))

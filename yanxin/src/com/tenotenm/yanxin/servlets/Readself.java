@@ -76,7 +76,11 @@ public class Readself extends HttpServlet {
 				}
 				ret.put("daystat", daystat);
 			}
-			
+			if (Bizutil.isaccountexpired(yxaccount)) {
+				ret.put("isexpired", "t");
+			} else {
+				ret.put("isexpired", "f");
+			}
 			ret.put("today", Reuse.yyyyMMdd(new Date()));
 			Reuse.respond(response, ret, null);
 		} catch (Exception e) {
