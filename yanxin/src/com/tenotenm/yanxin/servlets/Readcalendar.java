@@ -87,6 +87,10 @@ public class Readcalendar extends HttpServlet {
 							theweek.get(weekday - 1).put("onetimekeyphoto",
 									Bizutil.onetimekey(null, yanxin.get("key")));
 						}
+						if (yanxin.get("emotion") != null && !yanxin.get("emotion").trim().isEmpty()) {
+							theweek.get(weekday - 1).put("emotion",yanxin.get("emotion"));
+						}
+						
 						theweek.get(weekday - 1).put("key", yanxin.get("key"));
 					}
 				}

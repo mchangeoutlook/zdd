@@ -32,6 +32,7 @@ public class Bizutil {
 			yx.setContent("");
 			yx.setLocation("");
 			yx.setWeather("");
+			yx.setEmotion("");
 			yx.setUniquekeyprefix(yxaccount.getYxyanxinuniquekeyprefix());
 			yx.setYxloginkey(yxlogin.getKey());
 			yx.setTimecreate(new Date());
@@ -191,6 +192,11 @@ public class Bizutil {
 			ret.put("weather", yanxin.getWeather());
 		} else {
 			ret.put("weather", "");
+		}
+		if (yanxin.getEmotion()!=null) {
+			ret.put("emotion", yanxin.getEmotion());
+		} else {
+			ret.put("emotion", "");
 		}
 		if (yanxin.getTimecreate()!=null) {
 			ret.put("day", Reuse.yyyyMMdd(yanxin.getTimecreate()));

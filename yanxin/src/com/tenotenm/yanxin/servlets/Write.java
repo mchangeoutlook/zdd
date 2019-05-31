@@ -40,6 +40,10 @@ public class Write extends HttpServlet {
 			if (weather==null) {
 				weather = "";
 			}
+			String emotion = request.getParameter("emotion");
+			if (emotion==null) {
+				emotion = "";
+			}
 			Date today = new Date();
 			
 			Yanxin yx = Bizutil.readyanxin(yxaccount, today);
@@ -51,6 +55,7 @@ public class Write extends HttpServlet {
 				yx.setContent(content);
 				yx.setLocation(location);
 				yx.setWeather(weather);
+				yx.setEmotion(emotion);
 				yx.setUniquekeyprefix(yxaccount.getYxyanxinuniquekeyprefix());
 				yx.setYxloginkey(yxlogin.getKey());
 				yx.setTimecreate(new Date());
@@ -62,6 +67,7 @@ public class Write extends HttpServlet {
 						yx.setContent(content);
 						yx.setLocation(location);
 						yx.setWeather(weather);
+						yx.setEmotion(emotion);
 						yx.setYxloginkey(yxlogin.getKey());
 						yx.modify(null);
 					} else {
@@ -72,6 +78,7 @@ public class Write extends HttpServlet {
 				yx.setContent(content);
 				yx.setLocation(location);
 				yx.setWeather(weather);
+				yx.setEmotion(emotion);
 				yx.setYxloginkey(yxlogin.getKey());
 				yx.modify(null);
 			}
@@ -81,7 +88,7 @@ public class Write extends HttpServlet {
 			ret.put("content", yx.getContent());
 			ret.put("location", yx.getLocation());
 			ret.put("weather", yx.getWeather());
-			
+			ret.put("emotion", yx.getEmotion());
 			String hint = Bizutil.newdaycominghint(yxlogin);
 			if (hint!=null) {
 				ret.put("newdaycomingminutes", hint);
