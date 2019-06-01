@@ -229,8 +229,8 @@ public class Yxaccount extends Superentity{
 
 	public void setName(String name) throws Exception {
 		name = name.trim();
-		if (name.length()<4||name.length()>20) {
-			throw new Exception("提示: 账号长度需在4到20之间");
+		if (name.length()<2||name.length()>20) {
+			throw new Exception("提示: 账号长度需在2到20之间");
 		}
 		this.name = name;
 	}

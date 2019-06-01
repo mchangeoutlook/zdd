@@ -18,13 +18,13 @@
   				background-color:#444;border:none;color:#ccc;border-radius:8px;line-height:34px;height:34px;padding-left:8px;padding-right:8px;font-size:20px;margin:4px;
   			}
   			input[type="text"]{
-  				background-color:#aaa;border:none;padding-left:8px;padding-right:8px;height:34px;border-radius:8px;font-size:20px;margin:4px;
+  				background-color:#ddd;border:none;padding-left:8px;padding-right:8px;height:34px;border-radius:8px;font-size:20px;margin:4px;
   			}
   			textarea{
-  				background-color:#aaa;border:none;padding:8px;border-radius:8px;font-size:20px;margin:4px;
+  				background-color:#ddd;border:none;padding:8px;border-radius:8px;font-size:20px;margin:4px;
   			}
   			input[type="password"]{
-  				background-color:#aaa;border:none;padding-left:8px;padding-right:8px;height:34px;border-radius:8px;font-size:20px;margin:4px;
+  				background-color:#ddd;border:none;padding-left:8px;padding-right:8px;height:34px;border-radius:8px;font-size:20px;margin:4px;
   			}
   			body{
   				position:fixed;
@@ -179,7 +179,7 @@
 				top:0px;
 				font-size:16px;
 				right:50%;
-				transform:translateX(-50px);
+				transform:translateX(-60px);
 			}
 			.highlighthint{
 				color:#e0bb95;
@@ -1202,7 +1202,7 @@
 		function aftercalendar(data){
 			footmsg("");
 			$("#calendarform").show();
-			$("#calendarform").append("<div id='calendaryear' style='width:100%;float:left;margin-bottom:5px;'></div>");
+			$("#calendarform").append("<div id='calendaryear' style='width:100%;float:left;margin-bottom:4px;line-height:42px;'></div>");
 			if (data.leftyear!=undefined){
 				$("#calendaryear").append("<div style='float:left;width:33%;text-align:center;'><input onclick='navigateyearmonth(\"year\", \""+data.leftyear+"\")' type='button' value='"+data.leftyear+"年'/></div>");
 			} else {
@@ -1252,7 +1252,7 @@
 				}
 			}
 			
-			$("#calendarform").append("<div id='calendarmonth' style='width:100%;float:left;'></div>");
+			$("#calendarform").append("<div id='calendarmonth' style='width:100%;float:left;margin-top:4px;line-height:42px;'></div>");
 			if (data.leftmonth!=undefined){
 				$("#calendarmonth").append("<div style='float:left;width:33%;text-align:center;'><input onclick='navigateyearmonth(\"month\", \""+data.leftmonth+"\")' type='button' value='"+data.leftmonth+"月'/></div>");
 			} else {
@@ -1286,7 +1286,7 @@
 			$("#emotionread").html(data.emotion);
 			$("#weatherread").html(data.weather);
 			$("#locationread").html(data.location);
-			$("#contentread").val(data.content);
+			$("#contentread").html(data.content.replace(/\r?\n/g,"<br>"));
 			$("#dayimgread").attr("src","");
 			if (data.onetimekeyphoto!=undefined){
 				$("#dayimgread").attr("src",photointerface+"freego/download?onetimekey="+data.onetimekeyphoto);
@@ -1702,8 +1702,8 @@
 				<div class="yxinputsread">
 					<div class="labelyanxinread" style="top:8px;"><font id="dayread"></font>&nbsp;<font id="emotionread"></font>&nbsp;<font id="weatherread"></font></div>
 					<div class="labelyanxinread" style="top:36px;" id="locationread"></div>
-					<textarea id="contentread" disabled style="position:absolute;background-color:#000;color:#ccc;top:56px;left:0px;right:0px;bottom:0px;height:calc(100% - 64px);padding:4px;width:calc(100% - 8px);resize:none;">
-					</textarea>
+					<div id="contentread" style="position:absolute;background-color:#000;top:64px;left:8px;right:8px;bottom:8px;overflow-x:hidden;overflow-y:auto;">
+					</div>
 				</div>
 			</div>
 			<div id="loginform" class="centertranslateverticalscrollable hideallforms" style="display:none;">
