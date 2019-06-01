@@ -199,13 +199,17 @@
 				line-height:42px;
 			}
 			.labelyanxinread{
-				position:relative;
-				width:100%;
+				position:absolute;
+				left:8px;
+				right:8px;
+				height:20px;
+				overflow-x:auto;
+				overflow-y:hidden;
 				font-size:16px;
 				color:#e0bb95;
 				line-height:20px;
 				text-align:left;
-				margin:8px;
+				word-break:keep-all;
 			}
 			.centerhorizontal{
 				position:relative;
@@ -1233,11 +1237,12 @@
 							if (data.onemonth[i][j].istoday=="true"){
 								actionid="onclick=\"$('#todaybtn').click()\"";
 							}
-							var emotionline = "";
+							var emotion = "";
 							if (data.onemonth[i][j].emotion!=undefined){
-								emotionline = "<div style='font-size:12px;position: absolute;line-height:16px;height:16px;bottom: 0px;text-align: center;overflow: hidden;width: 100%;background-color: #000;opacity: 0.8;'>"+data.onemonth[i][j].emotion+"</div>";
+								emotion = "&nbsp;"+data.onemonth[i][j].emotion;
 							}
-							$("#calendarweek"+i).append("<div "+actionid+" yanxinkey='"+data.onemonth[i][j].key+"' style='position:relative;"+bg+"float:left;text-align:center;width:"+datecellwidth+";height:"+datecellwidth+";' class='click'>"+emotionline+"<div style='background-color:black;float:right;border-radius:50%;opacity:0.6;padding-top:2px;padding-left:1px;padding-right:1px;'>"+data.onemonth[i][j].monthday+"</div></div>");
+							var emotionline = "<div style='font-size:12px;position: absolute;line-height:16px;height:16px;bottom: 0px;text-align: center;overflow-y: hidden;overflow-x:auto;width: 100%;background-color: #000;opacity: 0.6;word-break:keep-all;'>"+data.onemonth[i][j].monthday+emotion+"</div>";
+							$("#calendarweek"+i).append("<div "+actionid+" yanxinkey='"+data.onemonth[i][j].key+"' style='position:relative;"+bg+"float:left;text-align:center;width:"+datecellwidth+";height:"+datecellwidth+";' class='click'>"+emotionline+"</div>");
 						} else {
 							$("#calendarweek"+i).append("<div style='float:left;text-align:center;width:"+datecellwidth+";height:"+datecellwidth+";' >"+data.onemonth[i][j].monthday+"</div>");
 						}
@@ -1695,8 +1700,8 @@
 					<img id="dayimgread" src="" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
 				</div>
 				<div class="yxinputsread">
-					<div class="labelyanxinread"><font id="dayread"></font>&nbsp;<font id="emotionread"></font>&nbsp;<font id="weatherread"></font></div>
-					<div class="labelyanxinread" id="locationread"></div>
+					<div class="labelyanxinread" style="top:8px;"><font id="dayread"></font>&nbsp;<font id="emotionread"></font>&nbsp;<font id="weatherread"></font></div>
+					<div class="labelyanxinread" style="top:36px;" id="locationread"></div>
 					<textarea id="contentread" disabled style="position:absolute;background-color:#000;color:#ccc;top:56px;left:0px;right:0px;bottom:0px;height:calc(100% - 64px);padding:4px;width:calc(100% - 8px);resize:none;">
 					</textarea>
 				</div>
