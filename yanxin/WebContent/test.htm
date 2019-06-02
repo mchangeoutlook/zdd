@@ -1482,9 +1482,9 @@
 			$(".hidemsgpop").remove();
 			$(".divroot").append("<div id='msgpopform' class='hidemsgpop' style='position:absolute;display:none;border-radius:8px;top:0px;left:0px;right:0px;bottom:68px;background-color:black;opacity:0.8'></div>");
 			$("#msgpopform").fadeIn(500);
-			$(".divroot").append("<div class='msgpop hidemsgpop'>"+content+"</div>");
-			$(".divroot").append("<div id='msgpopbtn' class='hidemsgpop' style='display:none;position:absolute;bottom:68px;right:0px;left:0px;text-align:center;'><input onclick=\"$('.hidemsgpop').remove();\" type='button' value='知道了'/></div>");
-			$("#msgpopbtn").fadeIn(500);
+			$(".divroot").append("<div class='msgpop hidemsgpop'>"+content+
+					"<div class='hidemsgpop' style='width:100%;text-align:center;'><input onclick=\"$('.hidemsgpop').remove();\" type='button' value='知道了'/></div>"+
+					"</div>");
 		}
 		
 		function startautosaving(){
