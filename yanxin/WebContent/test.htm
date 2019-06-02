@@ -1169,14 +1169,14 @@
 			if (data.isexpired=="t"){
 				footmsg("账号 " + data.name + " 已过期，请在" + data.timereuse
 						+ "之前延长过期时间，否则该账号将被回收，回收后该账号的所有日记和相关数据都将无法找回");
-			} else {
-				footmsg("");
 			}
 			if (data.extendselfaftertime!=undefined){
 				$("#selfextendhint").html(msg_extendhintstart+data.extendselfaftertime+msg_extendhintend);
 				$("#selfextendhint").show();
 			} else {
-				footmsg(msg_loginandexpiringstart+data.timeexpire+msg_loginandexpiringend);
+				if (data.isexpired=="f"){
+					footmsg(msg_loginandexpiringstart+data.timeexpire+msg_loginandexpiringend);
+				}
 				if (parseInt(data.daystogive)>0){
 					$("#selfextendform").show();
 				} else {
