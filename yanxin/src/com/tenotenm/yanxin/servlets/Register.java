@@ -83,7 +83,11 @@ public class Register extends HttpServlet {
 					yxaccount.setUa(Reuse.getuseragent(request));
 					yxaccount.setYxloginkey("");
 					yxaccount.setYxyanxinuniquekeyprefix(Bigclient.newbigdatakey());
-					yxaccount.modify(yxaccount.getKey());
+					yxaccount.modify(null);
+					if (yxaccount.getDaystogive()>0) {
+						yxaccount.setDaystogive4increment(-1*yxaccount.getDaystogive());
+						yxaccount.increment(null);
+					}
 					try {
 						Accountipdeny aipdeny = new Accountipdeny();
 						String aipdenykey = aipdeny.readpaged(yxaccount.getUniquename()+"-"+ip).get(0);
