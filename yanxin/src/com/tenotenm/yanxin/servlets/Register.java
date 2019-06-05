@@ -107,8 +107,8 @@ public class Register extends HttpServlet {
 			}
 			Bizutil.iplimit(Reuse.getremoteip(request), true);
 			Reuse.respond(response,
-					"提示: 注册成功！你的账号过期时间为："+Reuse.yyyyMMddHHmmss(yxaccount.getTimeexpire()) + "，回收时间为："+Reuse.yyyyMMddHHmmss(Bizutil.datedenyreuseaccount(yxaccount))
-							+ "，请在回收时间之前登录并延长过期时间，否则该账号将被回收，回收后该账号的所有日记和相关数据都将无法找回",
+					"注册成功！你的账号过期时间为："+Reuse.yyyyMMddHHmmss(yxaccount.getTimeexpire()) + "，回收时间为："+Reuse.yyyyMMddHHmmss(Bizutil.datedenyreuseaccount(yxaccount))
+							+ "，请仔细阅读你的言心协议",
 					null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);
