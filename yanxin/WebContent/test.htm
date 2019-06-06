@@ -1566,29 +1566,22 @@
 			}
 		}
 		function showupload(){
+			$(".hideallyximgwrites").hide();
 			$("#newfilebtn").show();
 			$("#dayimgwrite").show();
 			stopcam();
 			$("#toggle").animate({"left":"-1%"},500);
 		}
 		function showfrontcam(){
-			showcam(false);
-			$("#dayimgwrite").hide();
-			$("#newfilebtn").hide();
 			$("#toggle").animate({"left":"33%"},500);
+			showcam(false);
 		}
 		function showbackcam(){
-			showcam(true);
-			$("#dayimgwrite").hide();
-			$("#newfilebtn").hide();
 			$("#toggle").animate({"left":"67%"},500);
+			showcam(true);
 		}
 
 		function stopcam(){
-			$("#video").hide();
-			$("#snap").hide();
-			$("#imghint").html("");
-			$("#imghint").hide();
 			var video = document.getElementById('video');
 			try{
 				stream = video.srcObject;
@@ -1606,6 +1599,7 @@
 			}
 		}
 		function showcam(isrear){
+			$(".hideallyximgwrites").hide();
 			try{
 				stopcam();
 				if (navigator.mediaDevices === undefined) {
@@ -1636,7 +1630,6 @@
 					}
 					video.onloadedmetadata = function(e) {
 					 	video.play();
-					 	$("#dayimgwrite").hide();
 					 	$("#video").fadeIn(500);
 					 	$("#snap").fadeIn(500);
 					};
@@ -1644,16 +1637,16 @@
 					stopcam();
 					if ((err+"").indexOf("NotAllowedError")!=-1){
 						$("#imghint").html(msg_camerareject);
-						$("#imghint").fadeIn(500);
+						$("#imghint").show();
 					} else {
 						$("#imghint").html(msg_cameranotsupport);
-						$("#imghint").fadeIn(500);
+						$("#imghint").show();
 					}
 				});
 			}catch(err){
 				stopcam();
 				$("#imghint").html(msg_cameranotsupport);
-				$("#imghint").fadeIn(500);
+				$("#imghint").show();
 			}
 		}
 		</script>
@@ -1663,17 +1656,17 @@
 		<div class="divsecondtop">
 			<div id="yanxinwriteform" class="hideallforms" style="position:absolute;background-color:#444;display:none;top:0px;left:0px;right:0px;bottom:0px;">
 				<div class="yximgwrite">
-					<div id="imghint" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);width:80%;text-align:left;"></div>
-					<video id="video" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);display:none;" autoplay></video>
-					<canvas id="photo" style="position:absolute;display:none;"></canvas>
-					<canvas id="photosmall" style="position:absolute;display:none;"></canvas>
-					<img id="dayimgwrite" src="" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
+					<div id="imghint" class="hideallyximgwrites" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);width:80%;text-align:left;"></div>
+					<video id="video" class="hideallyximgwrites" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);display:none;" autoplay></video>
+					<canvas id="photo" class="hideallyximgwrites" style="position:absolute;display:none;"></canvas>
+					<canvas id="photosmall" class="hideallyximgwrites" style="position:absolute;display:none;"></canvas>
+					<img id="dayimgwrite" class="hideallyximgwrites" src="" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
 					
 					<form method="POST" enctype="multipart/form-data" id="dayimgwriteform">
 						<input id="filebtn" name="photo" accept="image/*" onchange="prepareupload();" style="display:none;" type="file"/>
 					</form>
-					<input type="button" id="snap" actionid="uploadcanvas" class="click" style="position:absolute;bottom:44px;left:50%;transform:translateX(-50%);display:none;" value="拍照上传"/>
-					<input type="button" id="newfilebtn" onclick="$('#filebtn').click()" style="position:absolute;bottom:44px;left:50%;transform:translateX(-50%);display:none;" value="选择小于100K的图片上传"/>
+					<input type="button" id="snap" actionid="uploadcanvas" class="hideallyximgwrites click" style="position:absolute;bottom:44px;left:50%;transform:translateX(-50%);display:none;" value="拍照上传"/>
+					<input type="button" id="newfilebtn" onclick="$('#filebtn').click()" class="hideallyximgwrites" style="position:absolute;bottom:44px;left:50%;transform:translateX(-50%);display:none;" value="选择小于100K的图片上传"/>
 					
 					<div style="position:absolute;right:0px;left:0px;height:40px;bottom:0px;background-color:#000;opacity:0.6;"></div>
 					<div onclick="showupload()" style="position:absolute;width:33%;left:0%;height:30px;bottom:4px;text-align:center;">图片</div>
