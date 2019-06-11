@@ -23,9 +23,6 @@
   			textarea{
   				background-color:#ddd;border:none;padding:8px;border-radius:8px;font-size:20px;margin:4px;
   			}
-  			input[type="password"]{
-  				background-color:#ddd;border:none;padding-left:8px;padding-right:8px;height:34px;border-radius:8px;font-size:20px;margin:4px;
-  			}
   			body{
   				position:fixed;
   				background-color:#444;
@@ -272,6 +269,16 @@
 				100%{transform:translateY(-50%) scale(1);}
 			}
 			
+			.passcells{
+  				transform-origin:bottom center;
+  				transform:rotateY(0deg);
+  				animation: passcellsing 0.5s linear 0s forwards;
+  			}
+  			@keyframes passcellsing
+			{
+				0%{transform-origin:bottom center;transform:rotateY(0deg);}
+				100%{transform-origin:bottom center;transform:rotateY(-90deg);}
+			}
 			
   			.opening{
   				position:absolute;
@@ -708,11 +715,14 @@
 		</style>
 		<script src="jquery-3.3.1.min.js" ></script> 
 		<script type="text/javascript">
-		//var datainterface = "http://localhost:8080/yanxin/";
-		//var photointerface = "http://localhost:8080/yanxin/";
-		var datainterface = "/";
-		var photointerface = "/";
+		var datainterface = "http://localhost:8080/yanxin/";
+		var photointerface = "http://localhost:8080/yanxin/";
+		//var datainterface = "/";
+		//var photointerface = "/";
 
+		var msg_passhint="点击格子的次数和顺序组合成密码";
+		var msg_repasshint="重复一次刚才的点击次数和顺序";
+		var msg_repasswrong="两次密码不一致，请重新设置密码";
 		var msg_welcomlogin=" 欢迎回来";
 		var msg_loginandexpired=" 你的账号已经过期，请及时延长过期时间，否则账号将被回收，回收后该账号的所有日记和相关数据都将无法找回";
 		var msg_loginandexpiringstart=" 你的账号即将在 ";
@@ -725,7 +735,6 @@
 		var msg_journalsavesuccess="日记保存成功";
 		var msg_journalsaving = "正在保存日记，保存成功之前请不要离开此页面";
 		var msg_photosaving = "正在保存图片，保存成功之前请不要离开此页面";
-		var msg_mottosavesuccess="格言修改成功";
 		var msg_daystogiveadded="库存天数增加为 ";
 		var msg_daystogiveremain="库存天数剩余 ";
 		var msg_newexpire="过期时间延长为 ";
@@ -890,7 +899,10 @@
 		}
 		
 		$(document).ready(function(){
-			init();
+			$("#openingclosebtn").one("click",function(){
+				$('.openingclose').fadeOut(500);
+				init();
+			});
 			setTimeout(function(){
 				$("#openingclosebtn").click();
 			},5000);
@@ -950,16 +962,6 @@
 		
 		function init(){
 			initactions();
-			$('#loginpass').bind('keyup', function(event) {
-		        if (event.keyCode == "13") {
-		            dologin();
-		        }
-		    });
-			$('#loginmotto').bind('keyup', function(event) {
-		        if (event.keyCode == "13") {
-		        	 	dologin();
-		        }
-		    });
 			if (getcache("yanxinloginkey")==null){
 				$("#logoutbtn").click();
 			} else {
@@ -1028,6 +1030,8 @@
 			if (getcache("yanxinloginkey")!=null){
 				loading(true);
 				post("creused","logout",{});
+			} else {
+				populatepasscells(msg_passhint,"loginpasscells","loginbtn");
 			}
 			setcache("yanxinloginkey", null);
 			if (getcache("yanxinname")!=null){
@@ -1044,8 +1048,6 @@
 			$("#weatherwrite").attr("old","");
 			$("#emotionwrite").val("");
 			$("#emotionwrite").attr("old","");
-			$("#loginpass").val("");
-			$("#loginmotto").val("");
 			$(".hideallforms").hide();
 			$(".hideallbtns").hide();
 			$("#loginform").show();
@@ -1054,12 +1056,18 @@
 		
 		function afterlogout(data){
 			footmsg("");
+			populatepasscells(msg_passhint,"loginpasscells","loginbtn");
 			sessionStorage.removeItem("iswriting");
 		}
 		
 		function dologin(){
-			loading(true);
-			post("freego","login",{"name":$("#loginuser").val(),"pass":$("#loginpass").val(),"motto":$("#loginmotto").val()});
+			if ($("#loginuser").val()==""||$(this).attr("passvalue")==undefined||$(this).attr("passvalue")==""){
+				initactions();
+				footmsg("请提供账号和密码");
+			} else {
+				loading(true);
+				post("freego","login",{"name":$("#loginuser").val(),"pass":$(this).attr("passvalue")});
+			}
 		}
 		function afterlogin(data){
 			$("#filebtn").val("");
@@ -1091,25 +1099,51 @@
 			$(".hideallbtns").hide();
 			$("#registerform").show();
 			$("#existuserbtn").show();
+			$("#registerbtn").attr("firstpass","");
+			populatepasscells(msg_passhint,"registerpasscells","registerbtn");
 		}
 		function showloginform(){
 			$(".hideallforms").hide();
 			$(".hideallbtns").hide();
 			$("#loginform").show();
 			$("#newuserbtn").show();
+			populatepasscells(msg_passhint,"loginpasscells","loginbtn");
 		}
 		
 		function doregister(){
-			loading(true);
-			post("freego","register",{"name":$("#registeruser").val(),"pass":$("#registerpass").val(),"repass":$("#registerrepass").val(),"motto":$("#registermotto").val(),"remotto":$("#registerremotto").val()});
+			if ($("#registeruser").val()==""){
+				footmsg("请填写账号");
+				initactions();
+			} else {
+				if($("#registerbtn").attr("passvalue")==undefined||$("#registerbtn").attr("passvalue")==""){
+					footmsg("请设置密码");
+					initactions();
+				} else {
+					if ($("#registerbtn").attr("firstpass")==""){
+						footmsg("");
+						$("#registerbtn").attr("firstpass",$("#registerbtn").attr("passvalue"));
+						populatepasscells(msg_repasshint,"registerpasscells","registerbtn");
+						initactions();
+					} else {
+						if ($("#registerbtn").attr("firstpass")!=$("#registerbtn").attr("passvalue")){
+							footmsg(msg_repasswrong);
+							$("#registerbtn").attr("firstpass","");
+							populatepasscells(msg_passhint,"registerpasscells","registerbtn");
+							initactions();
+						} else {
+							loading(true);
+							post("freego","register",{"name":$("#registeruser").val(),"pass":$(this).attr("passvalue")});
+							$("#registerbtn").attr("firstpass","");
+							populatepasscells(msg_passhint,"registerpasscells","registerbtn");
+						}
+					}
+				}
+			}
 		}
 		function afterregister(data){
 			setcache("yanxinname",$("#registeruser").val());
 			$("#registeruser").val("");
-			$("#registerpass").val("");
-			$("#registerrepass").val("");
-			$("#registermotto").val("");
-			$("#registerremotto").val("");
+			$("#registerbtn").attr("firstpass","");
 			footmsg(data);
 			post("freego","agreement",{});
 			dologout();
@@ -1136,10 +1170,6 @@
 		function doreadself(){
 			loading(true);
 			$(".hideallforms").hide();
-			$("#changepass").val("");
-			$("#changerepass").val("");
-			$("#changemotto").val("");
-			$("#changeremotto").val("");
 			$("#selfname").html("");
 			$("#selfextendbtn").attr("extendname", "");
 			$("#selfexpiretime").html("");
@@ -1184,6 +1214,7 @@
 					$("#extendbtn").show();
 				}
 			}
+			populatepasscells(msg_passhint,"changepasscells","changepassbtn");
 			$("#daystat").remove();
 			if (data.daystat!=undefined){
 				$("#accountform").append("<table style='text-align:center;width:100%;' id='daystat'><tr><td>日期</td><td>总数</td><td>拉新</td><td>日活</td></tr></table>");
@@ -1388,8 +1419,6 @@
 			post("creused","changepass",{"pass":$("#changepass").val(),"repass":$("#changerepass").val()});
 		}
 		function afterchangepass(data){
-			$("#changepass").val("");
-			$("#changerepass").val("");
 			footmsg(msg_passmodifysuccess);
 		}
 
@@ -1446,16 +1475,6 @@
 				$("#daystogivespendform").hide();
 				$("#selfextendform").hide();
 			}
-		}
-
-		function dochangemotto(){
-			loading(true);
-			post("creused","changemotto",{"motto":$("#changemotto").val(),"remotto":$("#changeremotto").val()});
-		}
-		function afterchangemotto(data){
-			$("#changemotto").val("");
-			$("#changeremotto").val("");
-			footmsg(msg_mottosavesuccess);
 		}
 
 		function initactions(){
@@ -1649,6 +1668,46 @@
 				$("#imghint").show();
 			}
 		}
+		var cellvaluematrix = [
+			["1","2","3","4","5","6","7","8","9","0"],
+			["q","w","e","r","t","y","u","i","o","p"],
+			["a","s","d","f","g","h","j","k","l","!"],
+			["z","x","c","v","b","n","m","#","$","%"]
+			];
+		function populatepasscells(hint, targetdivid,targetbtnid){
+			var horizontalcellnum=10;
+			var verticalcellnum=4;
+			var width=320;
+			var height=128;
+			var cellwidth = width/horizontalcellnum;
+			var cellheight = height/verticalcellnum;
+			$("#"+targetdivid).children().remove();
+			$("#"+targetbtnid).attr("first","");
+			$("#"+targetdivid).css("position","relative");
+			$("#"+targetdivid).css("width","100%");
+			$("#"+targetdivid).css("height",(height+20)+"px");
+			$("#"+targetdivid).css("text-align","align:center");
+			var container = $("<div style='position:absolute;top:20px;left:50%;overflow:hidden;transform:translateX(-50%);width:"+width+"px;height:"+height+"px;'></div>");
+			$("#"+targetdivid).append("<div style='position:relative;text-align:center;line-height:20px;font-size:16px;'>"+hint+"</div>");
+			$("#"+targetdivid).append(container);
+			for (var v=0;v<verticalcellnum;v++){
+				for (var h=0;h<horizontalcellnum;h++){
+					container.append("<div class='clickpasscell' cellvalue='"+cellvaluematrix[v][h]+"' style='position:relative;float:left;width:"+cellwidth+"px;height:"+cellheight+"px;overflow:hidden;'>"+
+					"<div style='position:absolute;background-color:#ccc;top:0px;left:0px;border-radius:8px;width:"+(cellwidth-2)+"px;height:"+(cellheight-2)+"px;margin:1px;'></div>"+
+					"</div>");
+				}
+			}
+			container.append("<div class='passcells' style='position:absolute;background-color:#000;top:0px;left:0px;width:"+width+"px;height:"+height+"px;'></div>");
+			$("#"+targetbtnid).attr("passvalue","");
+			$(".clickpasscell").click(function(){
+				if ($(this).children().is(":visible")){
+					$(this).children().fadeOut(500);
+					$("#"+targetbtnid).attr("passvalue",$("#"+targetbtnid).attr("passvalue")+$(this).attr("cellvalue"));
+				} else {
+					$("#"+targetbtnid).attr("passvalue",$("#"+targetbtnid).attr("passvalue")+$(this).attr("cellvalue").toUpperCase());
+				}
+			});
+		}
 		</script>
 	</head>
 	<body>
@@ -1707,10 +1766,9 @@
 				</div>
 				<div class="centerhorizontal label">登录你的言心日记</div>
 				<div  class="centerhorizontal"><input id="loginuser" size="20" type="text" maxlength="20" placeholder="填写账号"/></div>
-				<div  class="centerhorizontal"><input id="loginpass" size="20" type="password" maxlength="20" placeholder="只填写密码即可登录"/></div>
-				<div  class="centerhorizontal"><input id="loginmotto" size="20" type="text" maxlength="100" placeholder="或只填写格言也可登录"/></div>
+				<div id="loginpasscells"></div>
 				<div  class="centerhorizontal">
-					<input actionid="login" class="click" type="button" value="登录"/>
+					<input id="loginbtn" actionid="login" class="click" type="button" value="登录"/>
 					<div class="highlightclick" onclick="post('freego','forgetpass',{})">忘记密码?</div>
 				</div>
 				
@@ -1722,12 +1780,9 @@
 				</div>
 				<div class="centerhorizontallabel label">注册你的言心账号</div>
 				<div  class="centerhorizontal"><input id="registeruser" size="20" type="text" maxlength="20" placeholder="填写账号，可写中文"/></div>
-				<div  class="centerhorizontal"><input id="registerpass" size="20" type="password" maxlength="20" placeholder="填写密码，可写中文"/></div>
-				<div  class="centerhorizontal"><input id="registerrepass" size="20" type="password" maxlength="20" placeholder="重复一次密码"/></div>
-				<div  class="centerhorizontal"><input id="registermotto" size="20" type="text" maxlength="100" placeholder="填写格言，可写中文"/></div>
-				<div  class="centerhorizontal"><input id="registerremotto" size="20" type="text" maxlength="100" placeholder="重复一次格言"/></div>
+				<div id="registerpasscells"></div>
 				<div  class="centerhorizontal">
-					<input actionid="register" class="click" type="button" value="注册"/>
+					<input id="registerbtn" actionid="register" class="click" type="button" value="注册"/>
 					<div class="highlightclick" onclick="post('freego','agreement',{})">你的言心协议</div>
 				</div>
 				
@@ -1759,13 +1814,8 @@
 							<div class="centerhorizontal"><input id="othergive" class="hideallotheraccountform" style="" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="othergivebtn" class="hideallotheraccountform click" actionid="give" type="button" value="增加库存天数"/></div>
 						</div>
 					</div>
-					
-					<div class="centerhorizontal"><input id="changepass" size="20" type="password" maxlength="20" placeholder="填写新密码"/></div>
-					<div class="centerhorizontal"><input id="changerepass" size="20" type="password" maxlength="20" placeholder="重复一次新密码"/></div>
-					<div class="centerhorizontal"><input actionid="changepass" class="click" type="button" value="修改密码"/></div>
-					<div class="centerhorizontal"><input id="changemotto" size="20" type="text" maxlength="100" placeholder="填写新格言"/></div>
-					<div class="centerhorizontal"><input id="changeremotto" size="20" type="text" maxlength="100" placeholder="重复一次新格言"/></div>
-					<div class="centerhorizontal"><input actionid="changemotto" class="click" type="button"" value="修改格言"/></div>
+					<div id="changepasscells"></div>
+					<div class="centerhorizontal"><input id="changepassbtn" actionid="changepass" class="click" type="button" value="修改密码"/></div>
 			</div>
 			<div id="calendarform" class="centertranslateverticalscrollable hideallforms" style="display:none;">
 			</div>
@@ -1782,7 +1832,7 @@
 		</div>
 		<div class="openingclose" style="position:absolute;background-color:#000;border-radius:8px;opacity:0.8;top:0px;left:0px;right:0px;bottom:0px;"></div>
 		<div class="opening openingclose">
-			<input id="openingclosebtn" style="position:absolute;left:25%;bottom:0px;transform:translateX(-50%)" type="button" value="跳过" onclick="$('.openingclose').fadeOut(500);"/>
+			<input id="openingclosebtn" style="position:absolute;left:25%;bottom:0px;transform:translateX(-50%)" type="button" value="跳过"/>
 			<div style="position:absolute;top:178px;left:87px;">
 				<div style="position:absolute;border:1px white solid;border-radius:4px 4px;background-color:black;width:20px;height:4px;"></div>
 				<div style="position:absolute;border:1px white solid;background-color:black;width:4px;height:23px;left:2px;top:5px;"></div>

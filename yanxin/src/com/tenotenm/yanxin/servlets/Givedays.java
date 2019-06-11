@@ -62,11 +62,7 @@ public class Givedays extends HttpServlet {
 				throw new Exception("提示: 你的库存天数不够");
 			}
 			
-			target.setDaystogive4increment(toincrease);
-			target.increment(null);
-			
-			target.setTimeupdate(new Date());
-			target.modify(null);
+			Bizutil.giveorcleardaystogive(target, toincrease);
 			
 			yxaccount.setTimeupdate(new Date());
 			yxaccount.modify(null);

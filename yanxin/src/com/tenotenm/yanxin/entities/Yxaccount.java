@@ -16,8 +16,6 @@ public class Yxaccount extends Superentity{
 	
 	private String pass=null;
 	
-	private String motto=null;
-	
 	private String ip=null;
 	
 	private String ua=null;
@@ -27,6 +25,8 @@ public class Yxaccount extends Superentity{
 	private Date timeupdate=timecreate;
 
 	private Date timeexpire=null;
+	
+	private Date timeupdatedaystogive=null;
 	
 	private Long daystogive=0l;
 
@@ -95,22 +95,6 @@ public class Yxaccount extends Superentity{
 			return null;
 		}
 		return pass;
-	}
-	
-	protected void read_motto(String motto) {
-		this.motto=motto;
-	}
-	protected Object[] add4create_motto() {
-		if (motto==null) {
-			return null;
-		}
-		return new Object[] {motto, 0};
-	}
-	protected String add4modify_motto() {
-		if (motto==null) {
-			return null;
-		}
-		return motto;
 	}
 	
 	protected void read_ip(String ip) {
@@ -192,7 +176,23 @@ public class Yxaccount extends Superentity{
 		}
 		return Reuse.yyyyMMddHHmmss(timeexpire);
 	}
-	
+
+	protected void read_timeupdatedaystogive(String timeupdatedaystogive) {
+		this.timeupdatedaystogive=Reuse.yyyyMMddHHmmss(timeupdatedaystogive);
+	}
+	protected Object[] add4create_timeupdatedaystogive() {
+		if (timeupdatedaystogive==null) {
+			return null;
+		}
+		return new Object[] {Reuse.yyyyMMddHHmmss(timeupdatedaystogive), 0};
+	}
+	protected String add4modify_timeupdatedaystogive() {
+		if (timeupdatedaystogive==null) {
+			return null;
+		}
+		return Reuse.yyyyMMddHHmmss(timeupdatedaystogive);
+	}
+
 	protected void read_daystogive(String daystogive) {
 		this.daystogive=Long.parseLong(daystogive);
 	}
@@ -240,8 +240,8 @@ public class Yxaccount extends Superentity{
 	}
 
 	public void setPass(String pass) throws Exception {
-		if (pass.length()<4||pass.length()>20) {
-			throw new Exception("提示: 密码长度需在4到20之间");
+		if (pass.length()<4) {
+			throw new Exception("提示: 密码太简短了，请重新提供密码");
 		}
 		boolean isallsamechar = true;
 		for (int i=0;i<pass.length();i++) {
@@ -251,7 +251,7 @@ public class Yxaccount extends Superentity{
 			}
 		}
 		if (isallsamechar) {
-			throw new Exception("提示: 密码太简单了，请重新填写密码，密码也可以是中文");
+			throw new Exception("提示: 密码太简单了，请重新提供密码");
 		}
 		this.pass = Reuse.sign(pass);
 	}
@@ -263,26 +263,6 @@ public class Yxaccount extends Superentity{
 			return false;
 		}
 	}
-	public String getMotto() {
-		return motto;
-	}
-
-	public void setMotto(String motto) throws Exception {
-		motto = motto.toLowerCase().trim();
-		if (motto.length()<4||motto.length()>100) {
-			throw new Exception("提示: 格言长度需在4到100之间");
-		}
-		this.motto = Reuse.sign(motto);
-	}
-	
-	public boolean ismottosame(String motto) {
-		if (motto!=null&&Reuse.sign(motto.toLowerCase().trim()).equals(this.motto)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	public String getIp() {
 		return ip;
 	}
@@ -311,6 +291,7 @@ public class Yxaccount extends Superentity{
 		this.timecreate = timecreate;
 		this.timeupdate = timecreate;
 		this.timeexpire = new Date(timecreate.getTime() + Reuse.getdaysmillisconfig("freeuse.days"));
+		this.timeupdatedaystogive = timecreate;
 	}
 
 	public Date getTimeupdate() {
@@ -327,6 +308,14 @@ public class Yxaccount extends Superentity{
 
 	public void setTimeexpire(Date timeexpire) {
 		this.timeexpire = timeexpire;
+	}
+
+	public Date getTimeupdatedaystogive() {
+		return timeupdatedaystogive;
+	}
+
+	public void setTimeupdatedaystogive(Date timeupdatedaystogive) {
+		this.timeupdatedaystogive = timeupdatedaystogive;
 	}
 
 	public Long getDaystogive() {

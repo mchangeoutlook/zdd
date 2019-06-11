@@ -34,23 +34,8 @@ public class Register extends HttpServlet {
 			}
 			
 			String pass = request.getParameter("pass");
-			String repass = request.getParameter("repass");
-			if (pass == null || pass.trim().isEmpty()||repass==null||repass.trim().isEmpty()) {
-				throw new Exception("提示: 请填写密码");
-			}
-			
-			if (!pass.equals(repass)) {
-				throw new Exception("提示: 两次填写的密码不一致");
-			}
-			
-			String motto = request.getParameter("motto");
-			String remotto = request.getParameter("remotto");
-			if (motto == null || motto.trim().isEmpty()||motto==null||remotto.trim().isEmpty()) {
-				throw new Exception("提示: 请填写格言");
-			}
-			
-			if (!motto.toLowerCase().trim().equals(remotto.toLowerCase().trim())) {
-				throw new Exception("提示: 两次填写的格言不一致");
+			if (pass == null || pass.trim().isEmpty()) {
+				throw new Exception("提示: 请提供密码");
 			}
 			
 			Yxaccount yxaccount = new Yxaccount();
@@ -58,7 +43,6 @@ public class Register extends HttpServlet {
 				yxaccount.setIp(Reuse.getremoteip(request));
 				yxaccount.setName(name);
 				yxaccount.setPass(pass);
-				yxaccount.setMotto(motto);
 				yxaccount.setTimecreate(new Date());
 				yxaccount.setUa(Reuse.getuseragent(request));
 				yxaccount.setYxloginkey("");
@@ -78,7 +62,6 @@ public class Register extends HttpServlet {
 					yxaccount.setIp(Reuse.getremoteip(request));
 					yxaccount.setName(name);
 					yxaccount.setPass(pass);
-					yxaccount.setMotto(motto);
 					yxaccount.setTimecreate(new Date());
 					yxaccount.setUa(Reuse.getuseragent(request));
 					yxaccount.setYxloginkey("");

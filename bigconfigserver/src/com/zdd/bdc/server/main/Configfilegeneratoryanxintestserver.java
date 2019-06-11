@@ -70,6 +70,7 @@ public class Configfilegeneratoryanxintestserver {
 		Fileconfigutil.create("everyday.everyip.newaccounts.max", "200", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("extend.expire.in.days", "30", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("extend.expire.days.max", "180", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("days.togive.expire.in.days", "180", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("days.togive.max", "10000", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("wrongpass.times.max", "5", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("photo.datavanvasurl.max", "150000", namespace, STATIC.REMOTE_CONFIG_CORE);
@@ -84,13 +85,15 @@ public class Configfilegeneratoryanxintestserver {
 		Fileconfigutil.create("everyday.everyip.newaccounts.max", "200", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("extend.expire.in.days", "1", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("extend.expire.days.max", "2", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("days.togive.expire.in.days", "1", namespace, STATIC.REMOTE_CONFIG_CORE);
+		
 		Fileconfigutil.create("days.togive.max", "100", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("wrongpass.times.max", "3", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("photo.datavanvasurl.max", "150000", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("photosmall.datavanvasurl.max", "50000", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("read.stat.days", "7", namespace, STATIC.REMOTE_CONFIG_CORE);
 
-		Fileconfigutil.create("forgetpass", "我们不提供任何方式帮你找回密码，因为任何找回密码的方式都有可能泄露你的隐私，不过我们允许你使用密码或者格言之一登录，所以除了密码要牢记且保密外，也要牢记你的格言且不要随便向别人透露你的格言", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("forgetpass", "我们不提供任何方式帮你找回密码，因为任何找回密码的方式都有可能泄露你的隐私。由于人脑对图形的记忆比文字更深刻，所以我们使用点击格子的次数和顺序来代替传统文字密码，每个格子都可以重复点击，重复点击的次数和顺序也将计入你的密码", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("agreement.items", "6", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("agreement.title", "你的言心协议", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("agreement.item.0", "1. 为增强你的隐私安全，我们使用AES加密算法对你的日记内容和图片进行加密存储", namespace, STATIC.REMOTE_CONFIG_CORE);

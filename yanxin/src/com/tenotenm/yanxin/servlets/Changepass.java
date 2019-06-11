@@ -21,12 +21,8 @@ public class Changepass extends HttpServlet {
 		try {
 			Yxaccount yxaccount = (Yxaccount) request.getAttribute(Yxaccount.class.getSimpleName());
 			String pass = request.getParameter("pass");
-			String repass = request.getParameter("repass");
 			if (pass == null) {
-				throw new Exception("提示: 缺少密码");
-			}
-			if (!pass.equals(repass)) {
-				throw new Exception("提示: 两次填写的密码不一致");
+				throw new Exception("提示: 请提供密码");
 			}
 			yxaccount.setPass(pass);
 			yxaccount.setTimeupdate(new Date());

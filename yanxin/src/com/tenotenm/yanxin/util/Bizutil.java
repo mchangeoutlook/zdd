@@ -22,6 +22,32 @@ import com.zdd.bdc.client.util.STATIC;
 
 public class Bizutil {
 	
+	public static String giveorcleardaystogive(Yxaccount yxaccount, long toincrease) throws Exception {
+		synchronized (String.valueOf(Math.abs(yxaccount.getKey().hashCode() % 10000)).intern()) {
+			if (toincrease > 0) {
+				yxaccount.setDaystogive4increment(toincrease);
+				yxaccount.increment(null);
+				
+				yxaccount.setTimeupdate(new Date());
+				yxaccount.setTimeupdatedaystogive(new Date());
+				yxaccount.modify(null);
+				return null;
+			} else {
+				if (yxaccount.getDaystogive()>0&&yxaccount.getTimeupdatedaystogive()!=null&&System.currentTimeMillis()-yxaccount.getTimeupdatedaystogive().getTime()>Reuse.getdaysmillisconfig("days.togive.expire.in.days")) {
+					yxaccount.setDaystogive4increment(-1*yxaccount.getDaystogive());
+					yxaccount.increment(null);
+					long t = yxaccount.getTimeupdatedaystogive().getTime();
+					yxaccount.setTimeupdatedaystogive(new Date());
+					yxaccount.modify(null);
+					return Reuse.yyyyMMddHHmmss(new Date(t+Reuse.getdaysmillisconfig("days.togive.expire.in.days")));
+				} else {
+					return null;
+				}
+			}
+			
+		}
+	}
+	
 	public static String createyanxin(Yxaccount yxaccount, Yxlogin yxlogin, String photofolder, String photokey, String photosmallkey, Date today) throws Exception {
 		Yanxin yx = Bizutil.readyanxin(yxaccount, today);
 		if (yx==null) {
@@ -131,30 +157,36 @@ public class Bizutil {
 	}
 
 	public static void iplimit(String ip, boolean toincrementnewaccountstoday) throws Exception {
-		Iplimit ipd = new Iplimit();
-		Vector<String> ipdkeys = ipd.readpaged(ip);
-		boolean islimited = false;
-		if (ipdkeys.isEmpty()) {
-			if (toincrementnewaccountstoday) {
-				ipd.setIp(ip);
-				ipd.createpaged(null, ip, true);
-				ipd.setNewaccounts4increment(1l);
-				ipd.increment(ipd.getKey());
-			}
+		if (Reuse.getlongvalueconfig("everyday.everyip.newaccounts.max")<0) {
+			//no limit register on ip
+		} else if (Reuse.getlongvalueconfig("everyday.everyip.newaccounts.max")==0) {
+			throw new Exception("提示: 暂不开放注册");
 		} else {
-			ipd.read(ipdkeys.get(0));
-			if (ipd.getNewaccounts() != null
-					&& ipd.getNewaccounts() >= Reuse.getlongvalueconfig("everyday.everyip.newaccounts.max")) {
-				islimited = true;
+			Iplimit ipd = new Iplimit();
+			Vector<String> ipdkeys = ipd.readpaged(ip);
+			boolean islimited = false;
+			if (ipdkeys.isEmpty()) {
+				if (toincrementnewaccountstoday) {
+					ipd.setIp(ip);
+					ipd.createpaged(null, ip, true);
+					ipd.setNewaccounts4increment(1l);
+					ipd.increment(ipd.getKey());
+				}
+			} else {
+				ipd.read(ipdkeys.get(0));
+				if (ipd.getNewaccounts() != null
+						&& ipd.getNewaccounts() >= Reuse.getlongvalueconfig("everyday.everyip.newaccounts.max")) {
+					islimited = true;
+				}
+				if (!islimited && toincrementnewaccountstoday) {
+					ipd.setNewaccounts4increment(1l);
+					ipd.increment(ipd.getKey());
+				}
 			}
-			if (!islimited && toincrementnewaccountstoday) {
-				ipd.setNewaccounts4increment(1l);
-				ipd.increment(ipd.getKey());
+	
+			if (islimited) {
+				throw new Exception("提示: 已启动账号保护，请明天再来");
 			}
-		}
-
-		if (islimited) {
-			throw new Exception("提示: 已启动账号保护，请明天再来");
 		}
 	}
 

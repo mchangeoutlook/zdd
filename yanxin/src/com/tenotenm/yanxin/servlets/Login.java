@@ -58,12 +58,10 @@ public class Login extends HttpServlet {
 			}
 
 			String pass = request.getParameter("pass");
-			String motto = request.getParameter("motto");
-			if ((pass == null || pass.trim().isEmpty()) && (motto == null || motto.trim().isEmpty())) {
-				throw new Exception("提示: 请填写密码或格言之一");
+			if (pass == null || pass.trim().isEmpty()) {
+				throw new Exception("提示: 请提供密码");
 			}
-			if (pass != null && !pass.trim().isEmpty() && yxaccount.getPass().equals(Reuse.sign(pass)) || motto != null
-					&& !motto.trim().isEmpty() && yxaccount.getMotto().equals(Reuse.sign(motto.toLowerCase().trim()))) {
+			if (pass != null && !pass.trim().isEmpty() && yxaccount.getPass().equals(Reuse.sign(pass))) {
 				Yxlogin yxlogin = new Yxlogin();
 				yxlogin.setIp(Reuse.getremoteip(request));
 				yxlogin.setUa(Reuse.getuseragent(request));
@@ -108,9 +106,9 @@ public class Login extends HttpServlet {
 				aipdeny.setWrongpasstimes4increment(1l);
 				aipdeny.increment(null);
 				if (aipdeny.getWrongpasstimes() < Reuse.getlongvalueconfig("wrongpass.times.max")) {
-					throw new Exception("提示: 密码或格言不正确，再填错"
+					throw new Exception("提示: 密码不正确，你还可以尝试"
 							+ (Reuse.getlongvalueconfig("wrongpass.times.max") - aipdeny.getWrongpasstimes())
-							+ "次密码或格言后需等待" + Reuse.getsecondsmillisconfig("wrongpass.wait.seconds") / 60000
+							+ "次，如果依旧不能提供正确密码，则需等待" + Reuse.getsecondsmillisconfig("wrongpass.wait.seconds") / 60000
 							+ "分钟才能重新登录");
 				} else {
 					aipdeny.setWrongpasstimes4increment(-1*aipdeny.getWrongpasstimes());
@@ -118,7 +116,7 @@ public class Login extends HttpServlet {
 					aipdeny.setWrongpassip(ip);
 					aipdeny.setWrongpasstime(new Date());
 					aipdeny.modify(null);
-					throw new Exception("提示: 密码或格言不正确，由于尝试次数过多，已启动账号保护，请在"
+					throw new Exception("提示: 密码不正确，由于尝试次数过多，已启动账号保护，请在"
 							+ Reuse.yyyyMMddHHmmss(new Date(aipdeny.getWrongpasstime().getTime() + Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")))
 							+ "后重新登录");
 				}

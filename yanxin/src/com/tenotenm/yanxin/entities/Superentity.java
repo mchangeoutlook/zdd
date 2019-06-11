@@ -55,6 +55,10 @@ public abstract class Superentity {
 	}
 
 	public void createpaged(String key, String pagedindex, boolean createdata) throws Exception {
+		createpaged(key, pagedindex, 0, createdata);
+	}
+
+	public void createpaged(String key, String pagedindex, long pagenum, boolean createdata) throws Exception {
 		if (key==null) {
 			if (getKey()==null) {
 				key = Bigclient.newbigdatakey();
@@ -64,7 +68,7 @@ public abstract class Superentity {
 			}
 		}
 		String tablename =  this.getClass().getSimpleName();
-		Pagedindexclient.getinstance(Reuse.namespace_yanxin, pagedindex).addfilter(tablename+"-pkey").create(key, 0);
+		Pagedindexclient.getinstance(Reuse.namespace_yanxin, pagedindex).addfilter(tablename+"-pkey").create(key, pagenum);
 		if (createdata) {
 			create(key);
 		}
@@ -175,10 +179,14 @@ public abstract class Superentity {
 	}
 
 	public Vector<String> readpaged(String pagedindex) throws Exception {
-		String tablename =  this.getClass().getSimpleName();
-		return Pagedindexclient.getinstance(Reuse.namespace_yanxin, pagedindex).addfilter(tablename+"-pkey").read(0);
+		return readpaged(pagedindex, 0);
 	}
-	
+
+	public Vector<String> readpaged(String pagedindex, long pagenum) throws Exception {
+		String tablename =  this.getClass().getSimpleName();
+		return Pagedindexclient.getinstance(Reuse.namespace_yanxin, pagedindex).addfilter(tablename+"-pkey").read(pagenum);
+	}
+
 	protected int calcextravaluecapcity(String initvalue, int limitsize) {
 		try{
 			byte[] b = initvalue.getBytes("UTF-8");
