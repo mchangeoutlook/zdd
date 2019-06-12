@@ -67,10 +67,10 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("ipdeny.wait.seconds", "3600", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("freeuse.days", "30", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("account.reuse.in.days", "60", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("onepage.items", "50", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("everyday.everyip.newaccounts.max", "200", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("extend.expire.in.days", "30", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("extend.expire.days.max", "180", namespace, STATIC.REMOTE_CONFIG_CORE);
-		Fileconfigutil.create("days.togive.expire.in.days", "180", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("days.togive.max", "10000", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("wrongpass.times.max", "5", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("photo.datavanvasurl.max", "150000", namespace, STATIC.REMOTE_CONFIG_CORE);
@@ -82,10 +82,10 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("ipdeny.wait.seconds", "120", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("freeuse.days", "2", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("account.reuse.in.days", "1", namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("onepage.items", "50", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("everyday.everyip.newaccounts.max", "200", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("extend.expire.in.days", "1", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("extend.expire.days.max", "2", namespace, STATIC.REMOTE_CONFIG_CORE);
-		Fileconfigutil.create("days.togive.expire.in.days", "1", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("days.togive.max", "100", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("wrongpass.times.max", "3", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("photo.datavanvasurl.max", "150000", namespace, STATIC.REMOTE_CONFIG_CORE);
@@ -104,7 +104,7 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("agreement.item.5", "6. 账号一旦注册成功，视为你已经与 心之言（上海）科技有限公司 达成以上所有条款", namespace, STATIC.REMOTE_CONFIG_CORE);
 		Fileconfigutil.create("buyhint", "购买过期时间延长券，请前往：淘宝，搜索店铺：言心", namespace, STATIC.REMOTE_CONFIG_CORE);
 		
-		Fileconfigutil.create("admins", STATIC.splitenc("f90239205cf9820193a64524bc0d69e67a5a8b34","f90239205cf9820193a64524bc0d69e67a5a8b34"), namespace, STATIC.REMOTE_CONFIG_CORE);
+		Fileconfigutil.create("admins", STATIC.splitenc("4312f3c064d02201946f4de99406716e535b0bca","f90239205cf9820193a64524bc0d69e67a5a8b34"), namespace, STATIC.REMOTE_CONFIG_CORE);
 
 	}
 	

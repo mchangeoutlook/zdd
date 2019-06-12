@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.tenotenm.yanxin.entities.Yxaccount;
+import com.tenotenm.yanxin.entities.Yxlogin;
 import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 
@@ -22,6 +23,8 @@ public class Extendexpire extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			Yxlogin yxlogin = (Yxlogin) request.getAttribute(Yxlogin.class.getSimpleName());
+			
 			Yxaccount yxaccount = (Yxaccount)request.getAttribute(Yxaccount.class.getSimpleName());
 			long toincrease = 0;
 			try {
@@ -57,7 +60,7 @@ public class Extendexpire extends HttpServlet {
 				yxaccount.increment(null);
 				throw new Exception("提示: 你的库存天数不够");
 			}
-			
+			String oldvalue = Reuse.yyyyMMddHHmmss(target.getTimeexpire());
 			if (new Date().before(target.getTimeexpire())) {
 				target.setTimeexpire(new Date(target.getTimeexpire().getTime()+toincrease*24*60*60*1000));
 			} else {
@@ -73,6 +76,9 @@ public class Extendexpire extends HttpServlet {
 			} else {
 				ret.put("selforother", "self");
 			}
+			
+			Bizutil.log(yxlogin, yxaccount, target, "e", oldvalue, Reuse.yyyyMMddHHmmss(target.getTimeexpire()));
+			
 			ret.put("timeexpire", Reuse.yyyyMMddHHmmss(target.getTimeexpire()));
 			ret.put("timereuse", Reuse.yyyyMMddHHmmss(Bizutil.datedenyreuseaccount(target)));
 			ret.put("daystogive", String.valueOf(yxaccount.getDaystogive()));

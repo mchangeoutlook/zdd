@@ -32,6 +32,9 @@ public class Yxaccount extends Superentity{
 
 	private Long daystogive4increment=0l;
 
+	private Long lognum=0l;
+
+	private Long lognum4increment=0l;
 
 	protected void read_yxloginkey(String yxloginkey) {
 		this.yxloginkey=yxloginkey;
@@ -203,6 +206,16 @@ public class Yxaccount extends Superentity{
 		return daystogive4increment;
 	}
 	
+	protected void read_lognum(String lognum) {
+		this.lognum=Long.parseLong(lognum);
+	}
+	protected Long add4increment_lognum() {
+		if (lognum4increment==null) {
+			return null;
+		}
+		return lognum4increment;
+	}
+	
 	public String getKey() {
 		return key;
 	}
@@ -318,6 +331,21 @@ public class Yxaccount extends Superentity{
 		this.timeupdatedaystogive = timeupdatedaystogive;
 	}
 
+	public Long getLognum() {
+		return lognum;
+	}
+
+	public void setLognum(Long lognum) {
+		this.lognum = lognum;
+	}
+	
+	public Long getLognum4increment() {
+		return lognum4increment;
+	}
+	public void setLognum4increment(Long lognum4increment) {
+		this.lognum4increment = lognum4increment;
+	}
+	
 	public Long getDaystogive() {
 		return daystogive;
 	}

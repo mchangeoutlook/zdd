@@ -32,7 +32,7 @@ public class Readself extends HttpServlet {
 			
 			ret.put("daystogive", String.valueOf(yxaccount.getDaystogive()));
 			if (yxaccount.getDaystogive()>0&&yxaccount.getTimeupdatedaystogive()!=null) {
-				ret.put("timeexpiredaystogive", Reuse.yyyyMMddHHmmss(new Date(yxaccount.getTimeupdatedaystogive().getTime()+Reuse.getdaysmillisconfig("days.togive.expire.in.days"))));
+				ret.put("timeexpiredaystogive", Reuse.yyyyMMddHHmmss(new Date(yxaccount.getTimeupdatedaystogive().getTime()+Reuse.getdaysmillisconfig("account.reuse.in.days")-60000)));
 			}
 			ret.put("timecreate", Reuse.yyyyMMddHHmmss(yxaccount.getTimecreate()));
 			ret.put("timeexpire", Reuse.yyyyMMddHHmmss(yxaccount.getTimeexpire()));

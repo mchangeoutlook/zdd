@@ -9,6 +9,7 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.tenotenm.yanxin.entities.Actionlog;
 import com.tenotenm.yanxin.entities.Ipdeny;
 import com.tenotenm.yanxin.entities.Iplimit;
 import com.tenotenm.yanxin.entities.Onetimekey;
@@ -22,6 +23,26 @@ import com.zdd.bdc.client.util.STATIC;
 
 public class Bizutil {
 	
+	public static void log(Yxlogin yxlogin, Yxaccount from, Yxaccount to, String action, String oldvalue, String newvalue) throws Exception {
+		Actionlog alog = new Actionlog();
+		alog.setKey(Bigclient.newbigdatakey());
+		alog.setNewvalue(newvalue);
+		alog.setOldvalue(oldvalue);
+		alog.setUniqueaccountnamefrom(from.getUniquename());
+		alog.setUniqueaccountnameto(to.getUniquename());
+		alog.setYxloginkey(yxlogin.getKey());
+		alog.setAction(action);
+		from.setLognum4increment(1l);
+		from.increment(null);
+		long onepageitems = Reuse.getlongvalueconfig("onepage.items");
+		alog.createpaged(alog.getKey(), from.getUniquename(), (from.getLognum()-1)/onepageitems, true);
+		if (!from.getUniquename().equals(to.getUniquename())) {
+			to.setLognum4increment(1l);
+			to.increment(null);
+			alog.createpaged(alog.getKey(), to.getUniquename(), (to.getLognum()-1)/onepageitems, false);
+		}
+	}
+	
 	public static String giveorcleardaystogive(Yxaccount yxaccount, long toincrease) throws Exception {
 		synchronized (String.valueOf(Math.abs(yxaccount.getKey().hashCode() % 10000)).intern()) {
 			if (toincrease > 0) {
@@ -33,13 +54,13 @@ public class Bizutil {
 				yxaccount.modify(null);
 				return null;
 			} else {
-				if (yxaccount.getDaystogive()>0&&yxaccount.getTimeupdatedaystogive()!=null&&System.currentTimeMillis()-yxaccount.getTimeupdatedaystogive().getTime()>Reuse.getdaysmillisconfig("days.togive.expire.in.days")) {
+				if (yxaccount.getDaystogive()>0&&yxaccount.getTimeupdatedaystogive()!=null&&System.currentTimeMillis()-yxaccount.getTimeupdatedaystogive().getTime()>Reuse.getdaysmillisconfig("account.reuse.in.days")-60000) {
 					yxaccount.setDaystogive4increment(-1*yxaccount.getDaystogive());
 					yxaccount.increment(null);
 					long t = yxaccount.getTimeupdatedaystogive().getTime();
 					yxaccount.setTimeupdatedaystogive(new Date());
 					yxaccount.modify(null);
-					return Reuse.yyyyMMddHHmmss(new Date(t+Reuse.getdaysmillisconfig("days.togive.expire.in.days")));
+					return Reuse.yyyyMMddHHmmss(new Date(t+Reuse.getdaysmillisconfig("account.reuse.in.days")));
 				} else {
 					return null;
 				}
@@ -149,10 +170,10 @@ public class Bizutil {
 
 		}
 		if (timeback != null) {
-			throw new Exception("提示: 已启动IP保护，请"
+			throw new Exception("提示: 已启动IP保护，请于"
 					+ Reuse.yyyyMMddHHmmss(
 							new Date(timeback.getTime() + Reuse.getsecondsmillisconfig("ipdeny.wait.seconds")))
-					+ "后重新登录");
+					+ "之后重新登录");
 		}
 	}
 
@@ -301,7 +322,7 @@ public class Bizutil {
 	public static void checkaccountexpired(Yxaccount yxaccount) throws Exception {
 		if (!isadmin(yxaccount) && isaccountexpired(yxaccount)) {
 			throw new Exception(
-					"提示: 账号 " + yxaccount.getName() + " 已过期，请在" + Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))
+					"提示: 账号 " + yxaccount.getName() + " 已过期，请于" + Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))
 							+ "之前延长过期时间，否则该账号将被回收，回收后该账号的所有日记和相关数据都将无法找回");
 		}
 	}

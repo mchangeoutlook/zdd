@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.tenotenm.yanxin.entities.Yxaccount;
+import com.tenotenm.yanxin.entities.Yxlogin;
 import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 
@@ -22,6 +23,7 @@ public class Givedays extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			Yxlogin yxlogin = (Yxlogin) request.getAttribute(Yxlogin.class.getSimpleName());
 			
 			Yxaccount yxaccount = (Yxaccount)request.getAttribute(Yxaccount.class.getSimpleName());
 			Yxaccount target = new Yxaccount();
@@ -48,6 +50,7 @@ public class Givedays extends HttpServlet {
 			}catch(Exception e) {
 				throw new Exception("提示: 目标账号无效");
 			}
+			String oldvalue = String.valueOf(target.getDaystogive());
 			
 			Bizutil.checkaccountreused(target);
 			
@@ -66,6 +69,9 @@ public class Givedays extends HttpServlet {
 			
 			yxaccount.setTimeupdate(new Date());
 			yxaccount.modify(null);
+			
+			Bizutil.log(yxlogin, yxaccount, target, "g", oldvalue, String.valueOf(target.getDaystogive()));
+			
 			Map<String, String> ret = new Hashtable<String, String>();
 			ret.put("otherdaystogive", String.valueOf(target.getDaystogive()));
 			ret.put("daystogive", String.valueOf(yxaccount.getDaystogive()));

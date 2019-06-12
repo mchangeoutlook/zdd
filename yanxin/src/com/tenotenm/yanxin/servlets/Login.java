@@ -53,8 +53,8 @@ public class Login extends HttpServlet {
 			if (aipdeny!=null&&ip.equals(aipdeny.getWrongpassip()) && System.currentTimeMillis()
 					- aipdeny.getWrongpasstime().getTime() < Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")) {
 				throw new Exception(
-						"提示: 已启动账号保护，请在" + Reuse.yyyyMMddHHmmss(new Date(aipdeny.getWrongpasstime().getTime()
-								+ Reuse.getsecondsmillisconfig("wrongpass.wait.seconds"))) + "后再来");
+						"提示: 已启动账号保护，请于" + Reuse.yyyyMMddHHmmss(new Date(aipdeny.getWrongpasstime().getTime()
+								+ Reuse.getsecondsmillisconfig("wrongpass.wait.seconds"))) + "之后再来");
 			}
 
 			String pass = request.getParameter("pass");
@@ -116,9 +116,9 @@ public class Login extends HttpServlet {
 					aipdeny.setWrongpassip(ip);
 					aipdeny.setWrongpasstime(new Date());
 					aipdeny.modify(null);
-					throw new Exception("提示: 密码不正确，由于尝试次数过多，已启动账号保护，请在"
+					throw new Exception("提示: 密码不正确，由于尝试次数过多，已启动账号保护，请于"
 							+ Reuse.yyyyMMddHHmmss(new Date(aipdeny.getWrongpasstime().getTime() + Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")))
-							+ "后重新登录");
+							+ "之后重新登录");
 				}
 			}
 		} catch (Exception e) {

@@ -1222,14 +1222,49 @@
 			}
 			$("#changepassbtn").attr("firstpass","");
 			populatepasscells(msg_passhint,"changepasscells","changepassbtn");
-			$("#daystat").remove();
+			$("#daystat").children().remove();
 			if (data.daystat!=undefined){
-				$("#accountform").append("<table style='text-align:center;width:100%;' id='daystat'><tr><td>日期</td><td>总数</td><td>拉新</td><td>日活</td></tr></table>");
+				$("#daystat").append("<table style='text-align:center;width:100%;' id='daystatcontent'><tr><td>日期</td><td>总数</td><td>拉新</td><td>日活</td></tr></table>");
 				for (var i=0;i<data.daystat.length;i++){
-					$("#daystat").append("<tr><td>"+data.daystat[i].day+"</td><td>"+data.daystat[i].total+"</td><td>"+data.daystat[i].newcom+"</td><td>"+data.daystat[i].write+"</td></tr>");
+					$("#daystatcontent").append("<tr><td>"+data.daystat[i].day+"</td><td>"+data.daystat[i].total+"</td><td>"+data.daystat[i].newcom+"</td><td>"+data.daystat[i].write+"</td></tr>");
 				}
 			}
-			
+			$("#actionlog").children().remove();
+			doreadlog();
+		}
+		
+		function doreadlog(){
+			var pagenum = 0;
+			if ($("#readlogbtn").attr("pagenum")!=undefined){
+				pagenum = parseInt($("#readlogbtn").attr("pagenum"));
+			}
+			$("#readlogbtn").remove();
+			post("creused","readlog",{"pagenum":pagenum});
+		}
+		function afterreadlog(data){
+			if (data.totalpages==0){
+				$("#actionlog").children().remove();
+			} else {
+				$("#readlogbtn").remove();
+				for (var i=0;i<data.list.length;i++){
+					var actionlog ="的过期时间从"+data.list[i].oldvalue+"延长到"+data.list[i].newvalue;
+					if (data.list[i].action=="g"){
+						actionlog = "的库存天数从"+data.list[i].oldvalue+"增加到"+data.list[i].newvalue;
+					}
+					if (data.list[i].from!=undefined){
+						actionlog = "你把"+data.list[i].to+actionlog;
+					} else {
+						actionlog = "你"+actionlog;
+					}
+					$("#actionlog").append("<div style='width:100%;font-size:14px;border-bottom:1px #444 solid;text-align:left;'>"+data.list[i].time+" "+actionlog+"</div>");
+				}
+				if (data.pagenum==data.totalpages-1){
+					$("#actionlog").append("<div style='width:100%;font-size:14px;text-align:center;'>变更日志加载完毕</div>");
+				} else {
+					$("#actionlog").append("<input id='readlogbtn' actionid='readlog' class='click' pagenum='"+(data.pagenum+1)+"' type='button' value='加载更多变更日志'/>");
+				}
+				
+			}
 		}
 		
 		function docalendar(){
@@ -1468,15 +1503,15 @@
 		function afterextend(data){
 			footmsg("");
 			$("#"+data.selforother+"extend").val("");
-			$("#selfdaystogivenew").html(msg_daystogiveremain+data.daystogive);
-			$("#selfdaystogivenew").show();
-			$("#"+data.selforother+"expiretimenew").html(msg_newexpire+data.timeexpire);
-			$("#"+data.selforother+"expiretimenew").show();
+			$("#selfdaystogive").html(msg_daystogiveremain+data.daystogive);
+			$("#"+data.selforother+"expiretime").html(msg_newexpire+data.timeexpire);
 			$("#"+data.selforother+"reusetime").html(msg_timereused+data.timereuse);
 			if (parseInt(data.daystogive)<=0){
 				$("#daystogivespendform").hide();
 				$("#selfextendform").hide();
 			}
+			$("#actionlog").children().remove();
+			doreadlog();
 		}
 		
 		function dogive(){
@@ -1496,14 +1531,14 @@
 		function aftergive(data){
 			footmsg("");
 			$("#othergive").val("");
-			$("#otherdaystogivenew").html(msg_daystogiveadded+data.otherdaystogive);
-			$("#otherdaystogivenew").show();
-			$("#selfdaystogivenew").html(msg_daystogiveremain+data.daystogive);
-			$("#selfdaystogivenew").show();
+			$("#otherdaystogive").html(msg_daystogiveadded+data.otherdaystogive);
+			$("#selfdaystogive").html(msg_daystogiveremain+data.daystogive);
 			if (parseInt(data.daystogive)<=0){
 				$("#daystogivespendform").hide();
 				$("#selfextendform").hide();
 			}
+			$("#actionlog").children().remove();
+			doreadlog();
 		}
 
 		function initactions(){
@@ -1823,10 +1858,8 @@
 					<div id="selfexpiretime" class="centerhorizontal label"></div>
 					<div id="selfcreatetime" class="centerhorizontal label" style="font-size:16px;"></div>
 					<div class="centerhorizontal"><input id="extendbtn" onclick="post('freego','buyhint',{})" type="button" class="hideallaccountform" style="display:none;" value="延长过期时间"/></div>
-					<div id="selfexpiretimenew" class="centerhorizontal label highlighthint hideallaccountform" style="display:none;"></div>
 					<div id="selfextendhint" class="centerhorizontal label highlighthint hideallaccountform" style="display:none;"></div>
 					<div id="selfdaystogive" class="centerhorizontal label hideallaccountform" style="display:none;"></div>
-					<div id="selfdaystogivenew" class="centerhorizontal label highlighthint hideallaccountform" style="display:none;"></div>
 					<div id="selfextendform" class="centerhorizontal hideallaccountform" style="display:none;"><input id="selfextend" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="selfextendbtn" actionid="extend" class="click" type="button" selforother="self" value="延长自己的过期时间"/></div>
 
 					<div id="daystogivespendform" class="hideallaccountform" style="display:none;padding:4px;margin:4px;border:1px #ccc solid;border-radius:8px;">
@@ -1835,16 +1868,17 @@
 							<div id="otherreusetime" class="centerhorizontal label highlight"></div>
 							<div id="otherexpiretime" class="centerhorizontal label"></div>
 							<div id="othercreatetime" class="centerhorizontal label" style="font-size:16px;"></div>
-							<div id="otherexpiretimenew" class="centerhorizontal label highlighthint hideallotheraccountform" style="display:none;"></div>
 							<div id="otherextendhint" class="centerhorizontal label highlighthint hideallotheraccountform" style="display:none;"></div>
 							<div class="centerhorizontal"><input id="otherextend" class="hideallotheraccountform" style="display:none;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input actionid="extend" class="click" id="otherextendbtn" class="hideallotheraccountform" style="display:none;" selforother="other" type="button" value="延长过期时间"/></div>
 							<div id="otherdaystogive" class="centerhorizontal label"></div>
-							<div id="otherdaystogivenew" class="centerhorizontal label highlighthint hideallotheraccountform" style="display:none;"></div>
 							<div class="centerhorizontal"><input id="othergive" class="hideallotheraccountform" style="" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="othergivebtn" class="hideallotheraccountform click" actionid="give" type="button" value="增加库存天数"/></div>
 						</div>
 					</div>
 					<div id="changepasscells"></div>
 					<div class="centerhorizontal"><input id="changepassbtn" actionid="changepass" class="click" type="button" value="修改密码"/></div>
+					<div id="actionlog" class="centerhorizontal"></div>
+					<div id="daystat" class="centerhorizontal"></div>
+					
 			</div>
 			<div id="calendarform" class="centertranslateverticalscrollable hideallforms" style="display:none;">
 			</div>
