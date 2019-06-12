@@ -774,6 +774,16 @@
 			　　			eval("after"+actionid+"(result.data)");
 					} else {
 						footmsg(result.error);
+						if (this.url.indexOf("freego/login")!=-1){
+				　　			populatepasscells(msg_passhint,"loginpasscells","loginbtn");
+				　　		} else if (this.url.indexOf("freego/register")!=-1){
+				　　			$("#registerbtn").attr("firstpass","");
+							populatepasscells(msg_passhint,"registerpasscells","registerbtn");
+				　　		} else if (this.url.indexOf("creused/changepass")!=-1){
+				　　			$("#changepassbtn").attr("firstpass","");
+							populatepasscells(msg_passhint,"changepasscells","changepassbtn");
+				　　		}
+						
 						if (result.error.indexOf(msg_relogin)!=-1){
 							setcache("yanxinloginkey", null);
 							dologout();
@@ -1030,8 +1040,6 @@
 			if (getcache("yanxinloginkey")!=null){
 				loading(true);
 				post("creused","logout",{});
-			} else {
-				populatepasscells(msg_passhint,"loginpasscells","loginbtn");
 			}
 			setcache("yanxinloginkey", null);
 			if (getcache("yanxinname")!=null){
@@ -1051,12 +1059,12 @@
 			$(".hideallforms").hide();
 			$(".hideallbtns").hide();
 			$("#loginform").show();
+			populatepasscells(msg_passhint,"loginpasscells","loginbtn");
 			$("#newuserbtn").show();
 		}
 		
 		function afterlogout(data){
 			footmsg("");
-			populatepasscells(msg_passhint,"loginpasscells","loginbtn");
 			sessionStorage.removeItem("iswriting");
 		}
 		
@@ -1119,7 +1127,7 @@
 					footmsg("请设置密码");
 					initactions();
 				} else {
-					if ($("#registerbtn").attr("firstpass")==""){
+					if ($("#registerbtn").attr("firstpass")==undefined||$("#registerbtn").attr("firstpass")==""){
 						footmsg("");
 						$("#registerbtn").attr("firstpass",$("#registerbtn").attr("passvalue"));
 						populatepasscells(msg_repasshint,"registerpasscells","registerbtn");
@@ -1133,8 +1141,6 @@
 						} else {
 							loading(true);
 							post("freego","register",{"name":$("#registeruser").val(),"pass":$(this).attr("passvalue")});
-							$("#registerbtn").attr("firstpass","");
-							populatepasscells(msg_passhint,"registerpasscells","registerbtn");
 						}
 					}
 				}
@@ -1214,6 +1220,7 @@
 					$("#extendbtn").show();
 				}
 			}
+			$("#changepassbtn").attr("firstpass","");
 			populatepasscells(msg_passhint,"changepasscells","changepassbtn");
 			$("#daystat").remove();
 			if (data.daystat!=undefined){
@@ -1415,11 +1422,33 @@
 		}
 
 		function dochangepass(){
-			loading(true);
-			post("creused","changepass",{"pass":$("#changepass").val(),"repass":$("#changerepass").val()});
+			if($("#changepassbtn").attr("passvalue")==undefined||$("#changepassbtn").attr("passvalue")==""){
+				footmsg("请设置密码");
+				initactions();
+			} else {
+				if ($("#changepassbtn").attr("firstpass")==undefined||$("#changepassbtn").attr("firstpass")==""){
+					footmsg("");
+					$("#changepassbtn").attr("firstpass",$("#changepassbtn").attr("passvalue"));
+					populatepasscells(msg_repasshint,"changepasscells","changepassbtn");
+					initactions();
+				} else {
+					if ($("#changepassbtn").attr("firstpass")!=$("#changepassbtn").attr("passvalue")){
+						footmsg(msg_repasswrong);
+						$("#changepassbtn").attr("firstpass","");
+						populatepasscells(msg_passhint,"changepasscells","changepassbtn");
+						initactions();
+					} else {
+						loading(true);
+						post("creused","changepass",{"pass":$(this).attr("passvalue")});
+					}
+				}
+			}
+		
 		}
 		function afterchangepass(data){
 			footmsg(msg_passmodifysuccess);
+			$("#changepassbtn").attr("firstpass","");
+			populatepasscells(msg_passhint,"changepasscells","changepassbtn");
 		}
 
 		function doextend(){
@@ -1878,7 +1907,7 @@
 			
 			<div class="text">
 				<div class="centerhorizontal">
-					<img src="logo.png" style="opacity:0.6;width:8vh;height:8vh;">
+					<img src="logo.png" style="width:8vh;height:8vh;">
 					<div style="position:absolute;font-size:12px;top:0px;left: 50%;transform: translateX(4vh);">™️️</div>
 				</div>
 				<div class="centerhorizontal">言心</div>

@@ -91,7 +91,7 @@ public class Register extends HttpServlet {
 			Bizutil.iplimit(Reuse.getremoteip(request), true);
 			Reuse.respond(response,
 					"注册成功！你的账号过期时间为："+Reuse.yyyyMMddHHmmss(yxaccount.getTimeexpire()) + "，回收时间为："+Reuse.yyyyMMddHHmmss(Bizutil.datedenyreuseaccount(yxaccount))
-							+ "，请仔细阅读你的言心协议",
+							+ "，请仔细且完整地阅读你的言心协议",
 					null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);
