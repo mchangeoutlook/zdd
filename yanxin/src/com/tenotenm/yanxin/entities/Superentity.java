@@ -107,6 +107,9 @@ public abstract class Superentity {
 				if (o!=null) {
 					dc.add4increment(m.getName().substring(14), Long.parseLong(o.toString()));
 					read_4increments.add("read_"+m.getName().substring(14));
+					String attr = m.getName().substring(m.getName().indexOf("_")+1);
+					Method toclear = this.getClass().getDeclaredMethod("set"+attr.substring(0,1).toUpperCase()+attr.substring(1)+"4increment", Long.class);
+					toclear.invoke(this, 0l);
 				}
 			}
 			if (m.getName().startsWith("add4incrementtoday_")) {
@@ -114,6 +117,9 @@ public abstract class Superentity {
 				if (o!=null) {
 					dc.add4increment(m.getName().substring(19)+"_"+Reuse.yyyyMMdd(today), Long.parseLong(o.toString()));
 					read_4increments.add("readtoday_"+m.getName().substring(19));
+					String attr = m.getName().substring(m.getName().indexOf("_")+1);
+					Method toclear = this.getClass().getDeclaredMethod("set"+attr.substring(0,1).toUpperCase()+attr.substring(1)+"4increment", Long.class);
+					toclear.invoke(this, 0l);
 				}
 			}
 		}

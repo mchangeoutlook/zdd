@@ -22,7 +22,7 @@ public class Changepass extends HttpServlet {
 			Yxaccount yxaccount = (Yxaccount) request.getAttribute(Yxaccount.class.getSimpleName());
 			String pass = request.getParameter("pass");
 			if (pass == null) {
-				throw new Exception("提示: 请提供新密码");
+				throw new Exception(Reuse.msg_hint+"请提供新密码");
 			}
 			yxaccount.setPass(pass);
 			yxaccount.setTimeupdate(new Date());

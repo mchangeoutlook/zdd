@@ -30,12 +30,12 @@ public class Register extends HttpServlet {
 
 			String name = request.getParameter("name");
 			if (name == null || name.trim().isEmpty()) {
-				throw new Exception("提示: 请填写账号");
+				throw new Exception(Reuse.msg_hint+"请填写账号");
 			}
 			
 			String pass = request.getParameter("pass");
 			if (pass == null || pass.trim().isEmpty()) {
-				throw new Exception("提示: 请提供密码");
+				throw new Exception(Reuse.msg_hint+"请提供密码");
 			}
 			
 			Yxaccount yxaccount = new Yxaccount();
@@ -52,7 +52,7 @@ public class Register extends HttpServlet {
 				if (e.getMessage() != null && e.getMessage().contains(STATIC.DUPLICATE)) {
 					yxaccount.readunique(yxaccount.getUniquename());
 					if (Bizutil.isbeforereusedate(yxaccount)) {
-						throw new Exception("提示: 账号被占用，请换一个名称");
+						throw new Exception(Reuse.msg_hint+"账号被占用，请换一个名称");
 					}
 					if (!yxaccount.getYxloginkey().isEmpty()) {
 						Yxlogin yxlogin = new Yxlogin();

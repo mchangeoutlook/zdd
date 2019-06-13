@@ -180,7 +180,7 @@
 			}
 			.highlighthint{
 				color:#e0bb95;
-				font-size:16px;
+				font-size:14px;
 			}
 			.highlight{
 				color:#e0bb95;
@@ -735,9 +735,6 @@
 		var msg_journalsavesuccess="日记保存成功";
 		var msg_journalsaving = "正在保存日记，保存成功之前请不要离开此页面";
 		var msg_photosaving = "正在保存图片，保存成功之前请不要离开此页面";
-		var msg_daystogiveadded="库存天数增加为 ";
-		var msg_daystogiveremain="库存天数剩余 ";
-		var msg_newexpire="过期时间延长为 ";
 		var msg_timereused="回收时间 ";
 		var msg_timecreate="注册时间 ";
 		var msg_timeexpire="过期时间 ";
@@ -1198,6 +1195,12 @@
 			$("#selfexpiretime").html(msg_timeexpire+data.timeexpire);
 			$("#selfreusetime").html(msg_timereused+data.timereuse);
 			$("#selfcreatetime").html(msg_timecreate+data.timecreate);
+			if (data.timecleardaystogive!=undefined){
+				$("#selfdaystogivehint").html("库存天数将于 "+data.timecleardaystogive+" 之后清零");
+				$("#selfdaystogivehint").show();
+			} else {
+				$("#selfdaystogivehint").hide();
+			}
 			if (parseInt(data.daystogive)>0){
 				$("#selfdaystogive").html(msg_daystogive+data.daystogive);
 				$("#daystogivespendform").show();
@@ -1252,16 +1255,16 @@
 						actionlog = "的库存天数从"+data.list[i].oldvalue+"增加到"+data.list[i].newvalue;
 					}
 					if (data.list[i].from!=undefined){
-						actionlog = "你把"+data.list[i].to+actionlog;
+						actionlog = "你把 "+data.list[i].to+" "+actionlog;
 					} else {
 						actionlog = "你"+actionlog;
 					}
 					$("#actionlog").append("<div style='width:100%;font-size:14px;border-bottom:1px #444 solid;text-align:left;'>"+data.list[i].time+" "+actionlog+"</div>");
 				}
 				if (data.pagenum==data.totalpages-1){
-					$("#actionlog").append("<div style='width:100%;font-size:14px;text-align:center;'>变更日志加载完毕</div>");
+					$("#actionlog").append("<div style='width:100%;font-size:14px;text-align:center;'>变更记录加载完毕</div>");
 				} else {
-					$("#actionlog").append("<input id='readlogbtn' actionid='readlog' class='click' pagenum='"+(data.pagenum+1)+"' type='button' value='加载更多变更日志'/>");
+					$("#actionlog").append("<input id='readlogbtn' actionid='readlog' class='click' pagenum='"+(data.pagenum+1)+"' type='button' value='加载更多变更记录'/>");
 				}
 				
 			}
@@ -1503,8 +1506,8 @@
 		function afterextend(data){
 			footmsg("");
 			$("#"+data.selforother+"extend").val("");
-			$("#selfdaystogive").html(msg_daystogiveremain+data.daystogive);
-			$("#"+data.selforother+"expiretime").html(msg_newexpire+data.timeexpire);
+			$("#selfdaystogive").html(msg_daystogive+data.daystogive);
+			$("#"+data.selforother+"expiretime").html(msg_timeexpire+data.timeexpire);
 			$("#"+data.selforother+"reusetime").html(msg_timereused+data.timereuse);
 			if (parseInt(data.daystogive)<=0){
 				$("#daystogivespendform").hide();
@@ -1531,8 +1534,8 @@
 		function aftergive(data){
 			footmsg("");
 			$("#othergive").val("");
-			$("#otherdaystogive").html(msg_daystogiveadded+data.otherdaystogive);
-			$("#selfdaystogive").html(msg_daystogiveremain+data.daystogive);
+			$("#otherdaystogive").html(msg_daystogive+data.otherdaystogive);
+			$("#selfdaystogive").html(msg_daystogive+data.daystogive);
 			if (parseInt(data.daystogive)<=0){
 				$("#daystogivespendform").hide();
 				$("#selfextendform").hide();
@@ -1748,6 +1751,8 @@
 			$("#"+targetdivid).children().remove();
 			$("#"+targetbtnid).attr("first","");
 			$("#"+targetdivid).css("position","relative");
+			$("#"+targetdivid).css("margin-top","8px");
+			$("#"+targetdivid).css("margin-bottom","8px");
 			$("#"+targetdivid).css("width","100%");
 			$("#"+targetdivid).css("height",(height+20)+"px");
 			$("#"+targetdivid).css("text-align","align:center");
@@ -1854,20 +1859,21 @@
 			<div id="accountform" class="centertranslateverticalscrollable hideallforms" style="display:none;">
 					<div id="selfname" class="centerhorizontal label"></div>
 					<div class="centerhorizontal"><font class="highlightclick" onclick="post('freego','agreement',{})" >你的言心协议</font><input id="logoutbtn" actionid="logout" class="click" type="button" value="退出登录"/></div>
+					<div id="selfcreatetime" class="centerhorizontal label" style="font-size:16px;"></div>
 					<div id="selfreusetime" class="centerhorizontal label highlight"></div>
 					<div id="selfexpiretime" class="centerhorizontal label"></div>
-					<div id="selfcreatetime" class="centerhorizontal label" style="font-size:16px;"></div>
 					<div class="centerhorizontal"><input id="extendbtn" onclick="post('freego','buyhint',{})" type="button" class="hideallaccountform" style="display:none;" value="延长过期时间"/></div>
 					<div id="selfextendhint" class="centerhorizontal label highlighthint hideallaccountform" style="display:none;"></div>
-					<div id="selfdaystogive" class="centerhorizontal label hideallaccountform" style="display:none;"></div>
 					<div id="selfextendform" class="centerhorizontal hideallaccountform" style="display:none;"><input id="selfextend" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="selfextendbtn" actionid="extend" class="click" type="button" selforother="self" value="延长自己的过期时间"/></div>
-
+					<div id="selfdaystogive" class="centerhorizontal label hideallaccountform" style="display:none;"></div>
+					<div id="selfdaystogivehint" class="centerhorizontal highlighthint hideallaccountform" style="display:none;"></div>
+					
 					<div id="daystogivespendform" class="hideallaccountform" style="display:none;padding:4px;margin:4px;border:1px #ccc solid;border-radius:8px;">
 						<div class="centerhorizontal"><input id="findother" size="10" type="text" maxlength="20" placeholder="填写其它账号"/><input id="findotherbtn" actionid="readother" class="click" type="button" value="查询"/></div>
 						<div id="otherextendform" class="centerhorizontal hideallotheraccountform" style="display:none;">
+							<div id="othercreatetime" class="centerhorizontal label" style="font-size:16px;"></div>
 							<div id="otherreusetime" class="centerhorizontal label highlight"></div>
 							<div id="otherexpiretime" class="centerhorizontal label"></div>
-							<div id="othercreatetime" class="centerhorizontal label" style="font-size:16px;"></div>
 							<div id="otherextendhint" class="centerhorizontal label highlighthint hideallotheraccountform" style="display:none;"></div>
 							<div class="centerhorizontal"><input id="otherextend" class="hideallotheraccountform" style="display:none;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input actionid="extend" class="click" id="otherextendbtn" class="hideallotheraccountform" style="display:none;" selforother="other" type="button" value="延长过期时间"/></div>
 							<div id="otherdaystogive" class="centerhorizontal label"></div>

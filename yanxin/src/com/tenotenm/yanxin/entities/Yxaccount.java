@@ -28,6 +28,10 @@ public class Yxaccount extends Superentity{
 	
 	private Date timeupdatedaystogive=null;
 	
+	private Long locktoincreasedaystogive=0l;
+
+	private Long locktoincreasedaystogive4increment=0l;
+
 	private Long daystogive=0l;
 
 	private Long daystogive4increment=0l;
@@ -215,7 +219,17 @@ public class Yxaccount extends Superentity{
 		}
 		return lognum4increment;
 	}
-	
+
+	protected void read_locktoincreasedaystogive(String locktoincreasedaystogive) {
+		this.locktoincreasedaystogive=Long.parseLong(locktoincreasedaystogive);
+	}
+	protected Long add4increment_locktoincreasedaystogive() {
+		if (locktoincreasedaystogive4increment==null) {
+			return null;
+		}
+		return locktoincreasedaystogive4increment;
+	}
+
 	public String getKey() {
 		return key;
 	}
@@ -243,7 +257,7 @@ public class Yxaccount extends Superentity{
 	public void setName(String name) throws Exception {
 		name = name.trim();
 		if (name.length()<2||name.length()>20) {
-			throw new Exception("提示: 账号长度需在2到20之间");
+			throw new Exception(Reuse.msg_hint+"账号长度需在2到20之间");
 		}
 		this.name = name;
 	}
@@ -254,7 +268,7 @@ public class Yxaccount extends Superentity{
 
 	public void setPass(String pass) throws Exception {
 		if (pass.length()<4) {
-			throw new Exception("提示: 密码太简短了，请重新提供密码");
+			throw new Exception(Reuse.msg_hint+"密码太简短了，请重新提供密码");
 		}
 		boolean isallsamechar = true;
 		for (int i=0;i<pass.length();i++) {
@@ -264,7 +278,7 @@ public class Yxaccount extends Superentity{
 			}
 		}
 		if (isallsamechar) {
-			throw new Exception("提示: 密码太简单了，请重新提供密码");
+			throw new Exception(Reuse.msg_hint+"密码太简单了，请重新提供密码");
 		}
 		this.pass = Reuse.sign(pass);
 	}
@@ -338,14 +352,29 @@ public class Yxaccount extends Superentity{
 	public void setLognum(Long lognum) {
 		this.lognum = lognum;
 	}
-	
+
+	public Long getLocktoincreasedaystogive() {
+		return locktoincreasedaystogive;
+	}
+
+	public void setLocktoincreasedaystogive(Long locktoincreasedaystogive) {
+		this.locktoincreasedaystogive = locktoincreasedaystogive;
+	}
+
 	public Long getLognum4increment() {
 		return lognum4increment;
 	}
 	public void setLognum4increment(Long lognum4increment) {
 		this.lognum4increment = lognum4increment;
 	}
-	
+
+	public Long getLocktoincreasedaystogive4increment() {
+		return locktoincreasedaystogive4increment;
+	}
+	public void setLocktoincreasedaystogive4increment(Long locktoincreasedaystogive4increment) {
+		this.locktoincreasedaystogive4increment = locktoincreasedaystogive4increment;
+	}
+
 	public Long getDaystogive() {
 		return daystogive;
 	}

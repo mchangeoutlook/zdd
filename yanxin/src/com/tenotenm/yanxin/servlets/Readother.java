@@ -27,17 +27,17 @@ public class Readother extends HttpServlet {
 			target.setName(request.getParameter("targetname"));
 			if (!yxaccount.getUniquename().equals(target.getUniquename())) {
 				if (yxaccount.getDaystogive()<=0) {
-					throw new Exception("提示: 无权查询账号");
+					throw new Exception(Reuse.msg_hint+"无权查询账号");
 				}
 				try {
 					target.readunique(target.getUniquename());
 				}catch(Exception e) {
-					throw new Exception("提示: 该账号不存在");
+					throw new Exception(Reuse.msg_hint+"该账号不存在");
 				}
 				Bizutil.checkaccountreused(target);
 				
 			} else {
-				throw new Exception("提示: 你的账号信息已显示，无需再查询");
+				throw new Exception(Reuse.msg_hint+"你的账号信息已显示，无需再查询");
 			}
 			
 			Map<String, String> ret = new Hashtable<String, String>();

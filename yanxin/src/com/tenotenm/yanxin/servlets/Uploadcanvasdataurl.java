@@ -38,19 +38,19 @@ public class Uploadcanvasdataurl extends HttpServlet {
 			String photocanvasdataurl = request.getParameter("photocanvasdataurl");
 			String photosmallcanvasdataurl = request.getParameter("photosmallcanvasdataurl");
 			if (photocanvasdataurl == null) {
-				throw new Exception("提示: 缺少photocanvasdataurl");
+				throw new Exception(Reuse.msg_hint+"缺少photocanvasdataurl");
 			} else {
 				boolean vailddataurl=photocanvasdataurl.startsWith("data:image/")&&photocanvasdataurl.contains(";base64,");
 				if (!vailddataurl) {
-					throw new Exception("提示: 无效photocanvasdataurl");
+					throw new Exception(Reuse.msg_hint+"无效photocanvasdataurl");
 				}
 			}
 			if (photosmallcanvasdataurl == null) {
-				throw new Exception("提示: 缺少photosmallcanvasdataurl");
+				throw new Exception(Reuse.msg_hint+"缺少photosmallcanvasdataurl");
 			} else {
 				boolean vailddataurl=photosmallcanvasdataurl.startsWith("data:image/")&&photosmallcanvasdataurl.contains(";base64,");
 				if (!vailddataurl) {
-					throw new Exception("提示: 无效photosmallcanvasdataurl");
+					throw new Exception(Reuse.msg_hint+"无效photosmallcanvasdataurl");
 				}
 			}
 			String photokey = storephoto(photocanvasdataurl, photofolder, Reuse.getlongvalueconfig("photo.datavanvasurl.max"));

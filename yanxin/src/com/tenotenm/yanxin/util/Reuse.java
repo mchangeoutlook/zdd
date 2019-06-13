@@ -22,6 +22,8 @@ public class Reuse {
 	public static final String namespace_bigfilefrom = "bigfilefrom";
 	public static final String namespace_bigfileto = "bigfileto";
 	
+	public static final String msg_hint="提示: ";
+	
 	public static final String NOTFOUND = "YX_NOTFOUND";
 	
 	private static final String yyyyMMddHHmmss = "yyyy-MM-dd HH:mm:ss";
@@ -72,7 +74,7 @@ public class Reuse {
 				ret.put("state", "fail");
 				StringWriter errors = new StringWriter();
 				t.printStackTrace(new PrintWriter(errors));
-				if (t.getMessage()!=null&&t.getMessage().startsWith("提示: ")) {
+				if (t.getMessage()!=null&&t.getMessage().startsWith(msg_hint)) {
 					ret.put("error", t.getMessage());
 				} else {
 					ret.put("error", "系统繁忙，请稍后再来");

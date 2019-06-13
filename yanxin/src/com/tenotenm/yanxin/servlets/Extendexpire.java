@@ -33,23 +33,23 @@ public class Extendexpire extends HttpServlet {
 				//do nothing
 			}
 			if (toincrease<=0||toincrease>Reuse.getlongvalueconfig("extend.expire.days.max")) {
-				throw new Exception("提示: 延长天数必须在1到"+Reuse.getlongvalueconfig("extend.expire.days.max")+"之间");
+				throw new Exception(Reuse.msg_hint+"延长天数必须在1到"+Reuse.getlongvalueconfig("extend.expire.days.max")+"之间");
 			}
 			if (yxaccount.getDaystogive()<toincrease) {
-				throw new Exception("提示: 你的库存天数不足");
+				throw new Exception(Reuse.msg_hint+"你的库存天数不足");
 			}
 			Yxaccount target = new Yxaccount();
 			target.setName(request.getParameter("targetname"));
 			try {
 				target.readunique(target.getUniquename());
 			}catch(Exception e) {
-				throw new Exception("提示: 无效目标账号");
+				throw new Exception(Reuse.msg_hint+"无效目标账号");
 			}
 			
 			Bizutil.checkaccountreused(target);
 			
 			if (new Date().before(new Date(target.getTimeexpire().getTime()-Reuse.getlongvalueconfig("extend.expire.in.days")*24*60*60*1000))) {
-				throw new Exception("提示: 只能给"+Reuse.getlongvalueconfig("extend.expire.in.days")+"天内过期的账号延长过期时间");
+				throw new Exception(Reuse.msg_hint+"只能给"+Reuse.getlongvalueconfig("extend.expire.in.days")+"天内过期的账号延长过期时间");
 			}
 			
 			yxaccount.setDaystogive4increment(-1*toincrease);
@@ -58,7 +58,7 @@ public class Extendexpire extends HttpServlet {
 			if (yxaccount.getDaystogive()<0) {
 				yxaccount.setDaystogive4increment(toincrease);
 				yxaccount.increment(null);
-				throw new Exception("提示: 你的库存天数不够");
+				throw new Exception(Reuse.msg_hint+"你的库存天数不够");
 			}
 			String oldvalue = Reuse.yyyyMMddHHmmss(target.getTimeexpire());
 			if (new Date().before(target.getTimeexpire())) {

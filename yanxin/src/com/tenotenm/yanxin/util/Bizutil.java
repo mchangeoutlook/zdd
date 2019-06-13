@@ -28,44 +28,41 @@ public class Bizutil {
 		alog.setKey(Bigclient.newbigdatakey());
 		alog.setNewvalue(newvalue);
 		alog.setOldvalue(oldvalue);
-		alog.setUniqueaccountnamefrom(from.getUniquename());
+		if (from == null) {
+			alog.setUniqueaccountnamefrom("");
+		} else {
+			alog.setUniqueaccountnamefrom(from.getUniquename());
+		}
 		alog.setUniqueaccountnameto(to.getUniquename());
 		alog.setYxloginkey(yxlogin.getKey());
 		alog.setAction(action);
-		from.setLognum4increment(1l);
-		from.increment(null);
 		long onepageitems = Reuse.getlongvalueconfig("onepage.items");
-		alog.createpaged(alog.getKey(), from.getUniquename(), (from.getLognum()-1)/onepageitems, true);
-		if (!from.getUniquename().equals(to.getUniquename())) {
-			to.setLognum4increment(1l);
-			to.increment(null);
-			alog.createpaged(alog.getKey(), to.getUniquename(), (to.getLognum()-1)/onepageitems, false);
+		to.setLognum4increment(1l);
+		to.increment(null);
+		alog.createpaged(alog.getKey(), to.getUniquename(), (to.getLognum()-1)/onepageitems, true);
+		if (from!=null&&!from.getUniquename().equals(to.getUniquename())) {
+			from.setLognum4increment(1l);
+			from.increment(null);
+			alog.createpaged(alog.getKey(), from.getUniquename(), (from.getLognum()-1)/onepageitems, false);
 		}
 	}
 	
-	public static String giveorcleardaystogive(Yxaccount yxaccount, long toincrease) throws Exception {
-		synchronized (String.valueOf(Math.abs(yxaccount.getKey().hashCode() % 10000)).intern()) {
-			if (toincrease > 0) {
+	public static void givedays(Yxaccount yxaccount, long toincrease) throws Exception {
+		yxaccount.setLocktoincreasedaystogive4increment(1l);
+		yxaccount.increment(null);
+		try {
+			if (yxaccount.getLocktoincreasedaystogive()==1) {
 				yxaccount.setDaystogive4increment(toincrease);
 				yxaccount.increment(null);
-				
 				yxaccount.setTimeupdate(new Date());
-				yxaccount.setTimeupdatedaystogive(new Date());
+				yxaccount.setTimeupdatedaystogive(yxaccount.getTimeupdate());
 				yxaccount.modify(null);
-				return null;
 			} else {
-				if (yxaccount.getDaystogive()>0&&yxaccount.getTimeupdatedaystogive()!=null&&System.currentTimeMillis()-yxaccount.getTimeupdatedaystogive().getTime()>Reuse.getdaysmillisconfig("account.reuse.in.days")-60000) {
-					yxaccount.setDaystogive4increment(-1*yxaccount.getDaystogive());
-					yxaccount.increment(null);
-					long t = yxaccount.getTimeupdatedaystogive().getTime();
-					yxaccount.setTimeupdatedaystogive(new Date());
-					yxaccount.modify(null);
-					return Reuse.yyyyMMddHHmmss(new Date(t+Reuse.getdaysmillisconfig("account.reuse.in.days")));
-				} else {
-					return null;
-				}
+				throw new Exception(Reuse.msg_hint+"库存天数变更冲突，请稍后再试");
 			}
-			
+		}finally {
+			yxaccount.setLocktoincreasedaystogive4increment(-1l);
+			yxaccount.increment(null);
 		}
 	}
 	
@@ -170,7 +167,7 @@ public class Bizutil {
 
 		}
 		if (timeback != null) {
-			throw new Exception("提示: 已启动IP保护，请于"
+			throw new Exception(Reuse.msg_hint+"已启动IP保护，请于"
 					+ Reuse.yyyyMMddHHmmss(
 							new Date(timeback.getTime() + Reuse.getsecondsmillisconfig("ipdeny.wait.seconds")))
 					+ "之后重新登录");
@@ -181,7 +178,7 @@ public class Bizutil {
 		if (Reuse.getlongvalueconfig("everyday.everyip.newaccounts.max")<0) {
 			//no limit register on ip
 		} else if (Reuse.getlongvalueconfig("everyday.everyip.newaccounts.max")==0) {
-			throw new Exception("提示: 暂不开放注册");
+			throw new Exception(Reuse.msg_hint+"暂不开放注册");
 		} else {
 			Iplimit ipd = new Iplimit();
 			Vector<String> ipdkeys = ipd.readpaged(ip);
@@ -206,7 +203,7 @@ public class Bizutil {
 			}
 	
 			if (islimited) {
-				throw new Exception("提示: 已启动账号保护，请明天再来");
+				throw new Exception(Reuse.msg_hint+"已启动账号保护，请明天再来");
 			}
 		}
 	}
@@ -215,7 +212,7 @@ public class Bizutil {
 		Yanxin yxyanxin = new Yanxin();
 		yxyanxin.read(key);
 		if (!yxyanxin.getUniquekeyprefix().equals(yxaccount.getYxyanxinuniquekeyprefix())) {
-			throw new Exception("提示: 无权查看别人的日记");
+			throw new Exception(Reuse.msg_hint+"无权查看别人的日记");
 		}
 		return yxyanxin;
 	}
@@ -297,7 +294,7 @@ public class Bizutil {
 						.contains(yxaccount.getKey());
 	}
 
-	public static void refreshadminaccount(Yxaccount yxaccount) throws Exception {
+	public static void refreshadminaccount(Yxaccount yxaccount, Yxlogin yxlogin) throws Exception {
 		if (isadmin(yxaccount)) {
 			if (yxaccount.getDaystogive() < Reuse.getlongvalueconfig("days.togive.max")) {
 				yxaccount.setDaystogive4increment(
@@ -310,19 +307,32 @@ public class Bizutil {
 				yxaccount.setTimeupdate(new Date());
 				yxaccount.modify(yxaccount.getKey());
 			}
+		} else {
+			if (yxlogin!=null&&yxaccount.getDaystogive()>0) {
+				Date cleardaystogive = cleardaystogive(yxaccount);
+				if (cleardaystogive.before(new Date())) {
+					String oldvalue = String.valueOf(yxaccount.getDaystogive());
+					Bizutil.givedays(yxaccount, -1*yxaccount.getDaystogive());
+					Bizutil.log(yxlogin, null, yxaccount, "g", oldvalue, String.valueOf(yxaccount.getDaystogive()));
+				}
+			}
 		}
+	}
+	
+	public static Date cleardaystogive(Yxaccount yxaccount) {
+		return new Date(yxaccount.getTimeupdatedaystogive().getTime()+Reuse.getdaysmillisconfig("account.reuse.in.days")-60000);
 	}
 
 	public static void checkaccountreused(Yxaccount yxaccount) throws Exception {
 		if (isreusing(yxaccount)) {
-			throw new Exception("提示: 账号 " + yxaccount.getName() + " 未及时延长过期时间，已被回收");
+			throw new Exception(Reuse.msg_hint+"账号 " + yxaccount.getName() + " 未及时延长过期时间，已被回收");
 		}
 	}
 
 	public static void checkaccountexpired(Yxaccount yxaccount) throws Exception {
 		if (!isadmin(yxaccount) && isaccountexpired(yxaccount)) {
 			throw new Exception(
-					"提示: 账号 " + yxaccount.getName() + " 已过期，请于" + Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))
+					Reuse.msg_hint+"账号 " + yxaccount.getName() + " 已过期，请于" + Reuse.yyyyMMddHHmmss(datedenyreuseaccount(yxaccount))
 							+ "之前延长过期时间，否则该账号将被回收，回收后该账号的所有日记和相关数据都将无法找回");
 		}
 	}
@@ -355,32 +365,32 @@ public class Bizutil {
 		yxlogin.read(req.getParameter("loginkey"));
 
 		if (!ip.equals(yxlogin.getIp()) || !Reuse.getuseragent(req).equals(yxlogin.getUa())) {
-			throw new Exception("提示: 已启动IP保护，请重新登录");
+			throw new Exception(Reuse.msg_hint+"已启动IP保护，请重新登录");
 		}
 
 		if (yxlogin.getIslogout()) {
-			throw new Exception("提示: 已退出，请重新登录");
+			throw new Exception(Reuse.msg_hint+"已退出，请重新登录");
 		}
 		if (System.currentTimeMillis() - yxlogin.getTimeupdate().getTime() > Reuse
 				.getsecondsmillisconfig("session.expire.seconds")) {
-			throw new Exception("提示: 你离开太久了，为了你的账号安全，请重新登录");
+			throw new Exception(Reuse.msg_hint+"你离开太久了，为了你的账号安全，请重新登录");
 		}
 
 		Yxaccount yxaccount = new Yxaccount();
 		yxaccount.read(yxlogin.getYxaccountkey());
 
 		if (!yxaccount.getYxloginkey().equals(yxlogin.getKey())) {
-			throw new Exception("提示: 非法访问，请重新登录");
+			throw new Exception(Reuse.msg_hint+"非法访问，请重新登录");
 		}
 
 		if (Reuse.yyyyMMdd(new Date()).equals(Reuse.yyyyMMdd(yxlogin.getTimeupdate()))) {
 			yxlogin.setTimeupdate(new Date());
 			yxlogin.modify(yxlogin.getKey());
 		} else {
-			throw new Exception("提示: 迎接新的一天，请重新登录");
+			throw new Exception(Reuse.msg_hint+"迎接新的一天，请重新登录");
 		}
 
-		Bizutil.refreshadminaccount(yxaccount);
+		Bizutil.refreshadminaccount(yxaccount, yxlogin);
 
 		Bizutil.checkaccountreused(yxaccount);
 
@@ -392,7 +402,7 @@ public class Bizutil {
 		if (e.getMessage() != null && e.getMessage().contains(Reuse.NOTFOUND)) {
 			try {
 				Bizutil.ipdeny(Reuse.getremoteip(req), true);
-				throw new Exception("提示: 无效访问，请重新登录");
+				throw new Exception(Reuse.msg_hint+"无效访问，请重新登录");
 			} catch (Exception e1) {
 				Reuse.respond(res, null, e1);
 			}

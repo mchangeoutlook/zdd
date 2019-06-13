@@ -79,9 +79,8 @@ public class Readself extends HttpServlet {
 				}
 				ret.put("daystat", daystat);
 			} else {
-				String timecleardaystogive = Bizutil.giveorcleardaystogive(yxaccount, 0);
-				if (timecleardaystogive!=null) {
-					ret.put("timecleardaystogive", timecleardaystogive);
+				if (yxaccount.getDaystogive()>0) {
+					ret.put("timecleardaystogive", Reuse.yyyyMMddHHmmss(Bizutil.cleardaystogive(yxaccount)));
 				}
 			}
 			if (Bizutil.isaccountexpired(yxaccount)) {

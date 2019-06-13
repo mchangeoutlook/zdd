@@ -171,7 +171,7 @@ public class Yanxin extends Superentity{
 	public void setWeather(String weather) throws Exception {
 		this.weather = Secret.enc(weather);
 		if (this.weather.length()>100) {
-			throw new Exception("提示: 天气未保存，天气字数过多");
+			throw new Exception(Reuse.msg_hint+"天气未保存，天气字数过多");
 		}
 	}
 	public String getEmotion() {
@@ -180,7 +180,7 @@ public class Yanxin extends Superentity{
 	public void setEmotion(String emotion) throws Exception {
 		this.emotion = Secret.enc(emotion);
 		if (this.emotion.length()>100) {
-			throw new Exception("提示: 心情未保存，心情字数过多");
+			throw new Exception(Reuse.msg_hint+"心情未保存，心情字数过多");
 		}
 	}
 	public String getLocation() {
@@ -189,7 +189,7 @@ public class Yanxin extends Superentity{
 	public void setLocation(String location) throws Exception {
 		this.location = Secret.enc(location);
 		if (this.location.length()>200) {
-			throw new Exception("提示: 地点未保存，地点字数过多");
+			throw new Exception(Reuse.msg_hint+"地点未保存，地点字数过多");
 		}
 	}
 	public String getPhoto() {
@@ -197,7 +197,7 @@ public class Yanxin extends Superentity{
 	}
 	public void setPhoto(String photo) throws Exception {
 		if (photo.length()>51) {
-			throw new Exception("提示: 大图未保存，图片路径过长");
+			throw new Exception(Reuse.msg_hint+"大图未保存，图片路径过长");
 		}
 		this.photo = photo;
 	}
@@ -207,7 +207,7 @@ public class Yanxin extends Superentity{
 	}
 	public void setPhotosmall(String photosmall) throws Exception {
 		if (photosmall.length()>51) {
-			throw new Exception("提示: 小图未保存，图片路径过长");
+			throw new Exception(Reuse.msg_hint+"小图未保存，图片路径过长");
 		}
 		this.photosmall = photosmall;
 	}
@@ -218,7 +218,7 @@ public class Yanxin extends Superentity{
 	public void setContent(String content) throws Exception {
 		this.content = Secret.enc(content);
 		if (this.content.length()>6000) {
-			throw new Exception("提示: 日记未保存，日记字数过多");
+			throw new Exception(Reuse.msg_hint+"日记未保存，日记字数过多");
 		}
 	}
 	
