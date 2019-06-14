@@ -38,7 +38,7 @@ public class Login extends HttpServlet {
 				throw new Exception(Reuse.msg_hint+"账号不存在，请重新登录");
 			}
 
-			Bizutil.refreshadminaccount(yxaccount, null);
+			Bizutil.autoupdateaccount(yxaccount, null);
 
 			Bizutil.checkaccountreused(yxaccount);
 

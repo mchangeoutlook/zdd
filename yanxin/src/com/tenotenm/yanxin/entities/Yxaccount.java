@@ -18,6 +18,8 @@ public class Yxaccount extends Superentity{
 	
 	private String ip=null;
 	
+	private String extendallexpiremark=null;
+	
 	private String ua=null;
 	
 	private Date timecreate=new Date();
@@ -31,6 +33,10 @@ public class Yxaccount extends Superentity{
 	private Long locktoincreasedaystogive=0l;
 
 	private Long locktoincreasedaystogive4increment=0l;
+
+	private Long locktoextendexpire=0l;
+
+	private Long locktoextendexpire4increment=0l;
 
 	private Long daystogive=0l;
 
@@ -120,6 +126,22 @@ public class Yxaccount extends Superentity{
 		return ip;
 	}
 	
+	protected void read_extendallexpiremark(String extendallexpiremark) {
+		this.extendallexpiremark=extendallexpiremark;
+	}
+	protected Object[] add4create_extendallexpiremark() {
+		if (extendallexpiremark==null) {
+			return null;
+		}
+		return new Object[] {extendallexpiremark, 20};
+	}
+	protected String add4modify_extendallexpiremark() {
+		if (extendallexpiremark==null) {
+			return null;
+		}
+		return extendallexpiremark;
+	}
+
 	protected void read_ua(String ua) {
 		this.ua=ua;
 	}
@@ -230,6 +252,16 @@ public class Yxaccount extends Superentity{
 		return locktoincreasedaystogive4increment;
 	}
 
+	protected void read_locktoextendexpire(String locktoextendexpire) {
+		this.locktoextendexpire=Long.parseLong(locktoextendexpire);
+	}
+	protected Long add4increment_locktoextendexpire() {
+		if (locktoextendexpire4increment==null) {
+			return null;
+		}
+		return locktoextendexpire4increment;
+	}
+
 	public String getKey() {
 		return key;
 	}
@@ -298,6 +330,14 @@ public class Yxaccount extends Superentity{
 		this.ip = ip;
 	}
 
+	public String getExtendallexpiremark() {
+		return extendallexpiremark;
+	}
+
+	public void setExtendallexpiremark(String extendallexpiremark) {
+		this.extendallexpiremark = extendallexpiremark;
+	}
+
 	public String getUa() {
 		return ua;
 	}
@@ -318,6 +358,7 @@ public class Yxaccount extends Superentity{
 		this.timecreate = timecreate;
 		this.timeupdate = timecreate;
 		this.timeexpire = new Date(timecreate.getTime() + Reuse.getdaysmillisconfig("freeuse.days"));
+		this.extendallexpiremark="0";
 		this.timeupdatedaystogive = timecreate;
 	}
 
@@ -361,6 +402,14 @@ public class Yxaccount extends Superentity{
 		this.locktoincreasedaystogive = locktoincreasedaystogive;
 	}
 
+	public Long getLocktoextendexpire() {
+		return locktoextendexpire;
+	}
+
+	public void setLocktoextendexpire(Long locktoextendexpire) {
+		this.locktoextendexpire = locktoextendexpire;
+	}
+
 	public Long getLognum4increment() {
 		return lognum4increment;
 	}
@@ -373,6 +422,13 @@ public class Yxaccount extends Superentity{
 	}
 	public void setLocktoincreasedaystogive4increment(Long locktoincreasedaystogive4increment) {
 		this.locktoincreasedaystogive4increment = locktoincreasedaystogive4increment;
+	}
+
+	public Long getLocktoextendexpire4increment() {
+		return locktoextendexpire4increment;
+	}
+	public void setLocktoextendexpire4increment(Long locktoextendexpire4increment) {
+		this.locktoextendexpire4increment = locktoextendexpire4increment;
 	}
 
 	public Long getDaystogive() {

@@ -61,13 +61,9 @@ public class Extendexpire extends HttpServlet {
 				throw new Exception(Reuse.msg_hint+"你的库存天数不够");
 			}
 			String oldvalue = Reuse.yyyyMMddHHmmss(target.getTimeexpire());
-			if (new Date().before(target.getTimeexpire())) {
-				target.setTimeexpire(new Date(target.getTimeexpire().getTime()+toincrease*24*60*60*1000));
-			} else {
-				target.setTimeexpire(new Date(System.currentTimeMillis()+toincrease*24*60*60*1000));
-			}
-			target.setTimeupdate(new Date());
-			target.modify(null);
+			
+			Bizutil.extendexpire(target, toincrease);
+			
 			Map<String, String> ret = new Hashtable<String, String>();
 			if (!target.getKey().equals(yxaccount.getKey())) {
 				ret.put("selforother", "other");

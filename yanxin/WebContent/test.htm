@@ -715,18 +715,18 @@
 		</style>
 		<script src="jquery-3.3.1.min.js" ></script> 
 		<script type="text/javascript">
-		var datainterface = "http://localhost:8080/yanxin/";
-		var photointerface = "http://localhost:8080/yanxin/";
-		//var datainterface = "/";
-		//var photointerface = "/";
+		//var datainterface = "http://localhost:8080/yanxin/";
+		//var photointerface = "http://localhost:8080/yanxin/";
+		var datainterface = "/";
+		var photointerface = "/";
 
 		var msg_passhint="点击格子的次数和顺序组合成密码";
 		var msg_repasshint="重复一次刚才的点击次数和顺序";
 		var msg_repasswrong="两次密码不一致，请重新设置密码";
 		var msg_welcomlogin=" 欢迎回来";
-		var msg_loginandexpired=" 你的账号已经过期，请及时延长过期时间，否则账号将被回收，回收后该账号的所有日记和相关数据都将无法找回";
+		var msg_loginandexpired=" 你的账号已经过期，请于回收时间之前延长过期时间，否则账号将被回收，回收后该账号无法登录且所有相关数据无法找回";
 		var msg_loginandexpiringstart=" 你的账号即将在 ";
-		var msg_loginandexpiringend=" 后过期，请及时延长过期时间，否则账号将被回收，回收后该账号的所有日记和相关数据都将无法找回";
+		var msg_loginandexpiringend=" 后过期，请于回收时间之前延长过期时间，否则账号将被回收，回收后该账号无法登录且所有相关数据无法找回";
 		
 		var msg_passmodifysuccess="密码修改成功";
 		var msg_cameranotsupport="你的浏览器不支持调取摄像头，请退出登录，然后用其它浏览器重新登录再试";
@@ -1208,7 +1208,7 @@
 			}
 			if (data.isexpired=="t"){
 				footmsg("账号 " + data.name + " 已过期，请在" + data.timereuse
-						+ "之前延长过期时间，否则该账号将被回收，回收后该账号的所有日记和相关数据都将无法找回");
+						+ "之前延长过期时间，否则该账号将被回收，回收后该账号无法登录且所有相关数据无法找回");
 			}
 			if (data.extendselfaftertime!=undefined){
 				$("#selfextendhint").html(msg_extendhintstart+data.extendselfaftertime+msg_extendhintend);
@@ -1250,9 +1250,9 @@
 			} else {
 				$("#readlogbtn").remove();
 				for (var i=0;i<data.list.length;i++){
-					var actionlog ="的过期时间从"+data.list[i].oldvalue+"延长到"+data.list[i].newvalue;
+					var actionlog ="的过期时间从"+data.list[i].oldvalue+"变更为"+data.list[i].newvalue;
 					if (data.list[i].action=="g"){
-						actionlog = "的库存天数从"+data.list[i].oldvalue+"增加到"+data.list[i].newvalue;
+						actionlog = "的库存天数从"+data.list[i].oldvalue+"变更为"+data.list[i].newvalue;
 					}
 					if (data.list[i].from!=undefined){
 						actionlog = "你把 "+data.list[i].to+" "+actionlog;
