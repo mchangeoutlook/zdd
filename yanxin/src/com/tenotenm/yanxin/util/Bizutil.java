@@ -304,6 +304,10 @@ public class Bizutil {
 			}
 		}
 	}
+	
+	public static void main(String[] s) {
+		System.out.println(Reuse.sign("").length());
+	}
 
 	public static Yanxin readyanxin(Yxaccount yxaccount, Date day) throws Exception {
 		Yanxin yxyanxin = new Yanxin();

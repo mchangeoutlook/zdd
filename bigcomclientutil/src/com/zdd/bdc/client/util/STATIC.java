@@ -18,45 +18,49 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class STATIC {
-
+	
 	public static ExecutorService ES = Executors.newCachedThreadPool();
 	
-	public static final String PARENTFOLDER = Paths.get(".").toAbsolutePath().getParent().getParent().getFileName()
+	public static final String FOLDER_NAMESPACE = Paths.get(".").toAbsolutePath().getParent().getParent().getParent().getFileName()
 			.toString();
-
+	public static final String FOLDER_CONFIGFILE = Paths.get(".").toAbsolutePath().getParent().getFileName()
+			.toString().split("-")[1];
+	public static final String FOLDER_DATAPARENT = Paths.get(".").toAbsolutePath().getParent().getParent().getFileName()
+			.toString();
+	public static final String FOLDER_RUN = Paths.get(".").toAbsolutePath().getParent().toString();
+	
 	public static final Path LOCAL_DATAFOLDER = Paths.get(".").toAbsolutePath().getParent().getParent().resolve("data");
 
 	public static final Path LOCAL_CONFIGFOLDER = Paths.get("config");
-
-	public static final String NAMESPACE_CORE = "core";
-	public static final String REMOTE_CONFIG_CORE = "core";
-	public static final String REMOTE_CONFIG_BIGDATA = "bigdata";
-	public static final String REMOTE_CONFIG_BIGPAGEDINDEX = "bigpagedindex";
 	
-	public static final String REMOTE_CONFIG_BIGUNIQUEINDEX = "biguniqueindex";
+	public static final String NAMESPACE_CORE = "core";
+	public static final String REMOTE_CONFIGFILE_CORE = "core";
+	public static final String REMOTE_CONFIGFILE_BIGDATA = "bigdata";
+	public static final String REMOTE_CONFIGFILE_BIGUNIQUEINDEX = "unindex";
+	public static final String REMOTE_CONFIGFILE_DIG = "dig";
+
+	public static final String REMOTE_CONFIGKEY_SERVERGROUPSSUFFIX = ".servergroups";
+	public static final String REMOTE_CONFIGKEY_SERVERINDEXMIDDLE = ".serverindex.";
+
+	public static final String REMOTE_CONFIGFILE_PENDING = "pending";
+	public static final String REMOTE_CONFIGVAL_PENDING = "pending";
+
 	public static final String REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX = "scale.";
 	public static final String REMOTE_CONFIGKEY_BIGUNIQUEINDEX_ROOTRANGESUFFIX = ".rootrange";
 	public static final String REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX = ".capacitykeymax";
 	public static final String REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX = ".capacityvalue";
 
+	public static final String REMOTE_CONFIGKEY_CONFIGSERVERIP = "CONFIGSERVER_IP";
+	public static final String REMOTE_CONFIGKEY_CONFIGSERVERPORT = "CONFIGSERVER_PORT";
+	public static final String REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS = "updateconfigcache.intervalseconds";
+
 	public static final String DUPLICATE = "duplicate";
 	public static final String SHUTDOWN = "shutdown";
 	public static final String INVALIDKEY = "invalidkey";
+	public static final String INVALIDAPP = "invalidapp";
 	
 	public static final String DELETE_BIGFILE_SUFFIX = "_delete_";
-	
-	public static final String REMOTE_CONFIGKEY_CONFIGSERVERIP = "configserverip";
-	public static final String REMOTE_CONFIGKEY_CONFIGSERVERPORT = "configserverport";
-	public static final String REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS = "updateconfigcache.intervalseconds";
-	public static final String REMOTE_CONFIGKEY_MAXINDEXSERVERS = "maxindexservers";
-	public static final String REMOTE_CONFIGKEY_SESSIONEXPIRESECONDS = "sessionexpireseconds";
-	public static final String REMOTE_CONFIGKEY_ITEMSONEPAGE = "itemsonepage";
-
-	public static final String REMOTE_CONFIG_DIG = "dig";
-
-	public static final String REMOTE_CONFIG_PENDING = "pending";
-	public static final String REMOTE_CONFIGVAL_PENDING = "pending";
-
+		
 	public static final String PARAM_KEY_KEY = "key";
 	public static final String PARAM_NAMESPACE_KEY = "ns";
 	public static final String PARAM_INDEX_KEY = "index";
@@ -68,10 +72,11 @@ public class STATIC {
 	public static final String PARAM_COLUMNMAXVALUES_KEY = "cvmaxs";
 
 	public static final String PARAM_ADDITIONAL = "additional";
-	public static final String PARAM_CLIENTIPORT = "clientiport";
+	public static final String PARAM_CLIENTSPACEIPORTFOLDER = "clientspaceiportfolder";
+	public static final String PARAM_VAL_LACKSPACE = "lackspace";
+	public static final String PARAM_VAL_LACKINODE = "lackinode";
 
 	public static final String PARAM_DATA_KEY = "data";
-	public static final String PARAM_VERSION_KEY = "version";
 
 	public static final String PARAM_ACTION_KEY = "action";
 	public static final String PARAM_ACTION_READ = "read";
@@ -111,7 +116,6 @@ public class STATIC {
 	}
 	
 	public static final int keylength = 40;
-	public static final String VERSION_KEY = String.format("%0" + keylength + "d", 0);
 
 	public static final String FORMAT_KEY(String idcontainsmorethanequal9chars) {
 		Calendar cal = Calendar.getInstance();
@@ -120,7 +124,7 @@ public class STATIC {
 				.insert(13, String.valueOf(cal.get(Calendar.YEAR))).toString();
 	}
 
-	private static final String SPLIT_ENC = "#";
+	public static final String SPLIT_ENC = "#";
 
 	public static final String[] splitenc(String from) {
 		try {
@@ -174,12 +178,14 @@ public class STATIC {
 		}
 	}
 
+	public static final String SPLIT_IPORT = ":";
+
 	public static final String[] splitiport(String str) {
-		return str.split(":");
+		return str.split(SPLIT_IPORT);
 	}
 
 	public static final String splitiport(String ip, String port) {
-		return ip + ":" + port;
+		return ip + SPLIT_IPORT + port;
 	}
 
 	public static final String localip() {
@@ -224,16 +230,14 @@ public class STATIC {
 		}
 	}
 
+	public static final String SPLIT_FROMTO = "-";
+	
 	public static final String[] splitfromto(String str) {
-		return str.split("-");
+		return str.split(SPLIT_FROMTO);
 	}
 
 	public static final String splitfromto(String from, String to) {
-		return from + "-" + to;
-	}
-
-	public static final String distributebigpagedindexserveri(String namespace, Vector<String> filters, String index, int maxindexservers) {
-		return String.valueOf(Math.abs((STATIC.splitenc(filters) + index).hashCode()) % maxindexservers);
+		return from + SPLIT_FROMTO + to;
 	}
 	
 	public static final String stackstring(Throwable t) {

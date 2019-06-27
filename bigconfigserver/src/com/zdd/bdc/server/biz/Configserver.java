@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Date;
 import java.util.Map;
+import java.util.Vector;
 
 import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.client.util.Objectutil;
@@ -14,24 +15,12 @@ import com.zdd.bdc.server.util.Fileconfigutil;
 public class Configserver implements Theserverprocess {
 
 	static {
+		final Vector<String> configfiles = new Vector<String>();
 		if (Files.exists(STATIC.LOCAL_CONFIGFOLDER) && Files.isDirectory(STATIC.LOCAL_CONFIGFOLDER)) {
 			try {
 				Files.walk(STATIC.LOCAL_CONFIGFOLDER).filter(Files::isRegularFile).forEach(pathfile -> {
 					if (!pathfile.getFileName().toString().startsWith(".")) {
-						try {
-							String namespace = pathfile.getParent().getFileName().toString();
-							String file = pathfile.getFileName().toString();
-							if (file.equals(STATIC.REMOTE_CONFIG_BIGDATA)) {
-								Bigdataconfig.init(namespace);
-							} else if (file.equals(STATIC.REMOTE_CONFIG_BIGPAGEDINDEX)) {
-								Bigpagedindexconfig.init(namespace);
-							}
-						} catch (Exception e) {
-							System.out.println(new Date() + " ==== System exited when reading ["
-									+ pathfile.toAbsolutePath() + "] due to below exception:");
-							e.printStackTrace();
-							System.exit(1);
-						}
+						configfiles.add(pathfile.toString());
 					}
 				});
 			} catch (Exception e) {
@@ -41,13 +30,22 @@ public class Configserver implements Theserverprocess {
 				System.exit(1);
 			}
 		}
+		if (configfiles.isEmpty()) {
+			System.out.println(new Date() + " ==== System exited due to missing config files under folder ["+STATIC.LOCAL_CONFIGFOLDER.toString()+"]");
+			System.exit(1);
+		} else {
+			for (String configfile:configfiles) {
+				System.out.println(configfile);
+			}
+			System.out.println(new Date() + " discovered "+configfiles.size()+" config files under folder ["+STATIC.LOCAL_CONFIGFOLDER.toString()+"]");
+		}
 	}
 
 	public static String readconfig(String namespace, String file, String configkey) throws Exception {
-		if (file.equals(STATIC.REMOTE_CONFIG_BIGDATA)) {
+		if (file.equals(STATIC.REMOTE_CONFIGFILE_BIGDATA)) {
 			return Bigdataconfig.read(namespace, configkey);
-		} else if (file.equals(STATIC.REMOTE_CONFIG_BIGPAGEDINDEX)) {
-			return Bigpagedindexconfig.read(namespace, configkey);
+		} else if (file.equals(STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX)) {
+			return Bigunindexconfig.read(namespace, configkey);
 		} else {
 			return Fileconfigutil.readone(configkey, namespace, file);
 		}
@@ -62,13 +60,15 @@ public class Configserver implements Theserverprocess {
 	@Override
 	public byte[] request(byte[] param) throws Exception {
 		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(param);
-		if (params.get(STATIC.PARAM_CLIENTIPORT)!=null) {
-			String[] clientiport = STATIC.splitiport(params.get(STATIC.PARAM_CLIENTIPORT).toString());
-			if (clientiport!=null&&clientiport.length==2) {
-				if (STATIC.REMOTE_CONFIGVAL_PENDING.equals(readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING, 
-						STATIC.splitiport(clientiport[0], clientiport[1])))){
-					throw new Exception(STATIC.SHUTDOWN);
-				}
+		if (params.get(STATIC.PARAM_CLIENTSPACEIPORTFOLDER)!=null) {
+			String[] clientspaceiportfolder = STATIC.splitenc(params.get(STATIC.PARAM_CLIENTSPACEIPORTFOLDER).toString());
+			String serverspacehint = clientspaceiportfolder[0];
+			String ip = clientspaceiportfolder[1];
+			String port = clientspaceiportfolder[2];
+			String folder = clientspaceiportfolder[3];
+			if (STATIC.REMOTE_CONFIGVAL_PENDING.equals(readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING, 
+					STATIC.splitiport(ip, port)))){
+				throw new Exception(STATIC.SHUTDOWN);
 			}
 		}
 		if (params.get(STATIC.PARAM_DATA_KEY) != null) {

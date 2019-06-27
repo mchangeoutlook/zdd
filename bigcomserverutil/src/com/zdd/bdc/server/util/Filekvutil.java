@@ -11,7 +11,6 @@ import java.util.Vector;
 /*
  *The key is a specified length of chars.
  *The format of each line in index/data file: key(specified bytes)valuemaxlength(11bytes, if deleted, the first char is "-")value(valuemaxlength bytes)LineSeparator		
- *for paged index file, key is key, value is index
  *for data file, key is key, value is value.
  */
 public class Filekvutil {

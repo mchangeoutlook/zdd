@@ -1,50 +1,61 @@
 package com.zdd.bdc.client.biz;
 
+import java.util.Date;
 import java.util.UUID;
-import java.util.Vector;
 
 import com.zdd.bdc.client.util.STATIC;
 
 public class Bigclient {
 
 	// return [ip][port]
-	public static String[] distributebigdata(String namespace, String key) throws Exception {
-		String[] servers = null;
+	public static String[] distributebigdata(String namespace, String app, String key) throws Exception {
+		Date dateinkey = null;
 		try{
-			String configkey = STATIC.FORMAT_yMd(key);
-			servers = STATIC.splitenc(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGDATA).read(configkey));
+			dateinkey = STATIC.yMd_FORMAT(STATIC.FORMAT_yMd(key));
 		}catch(Exception e) {
-			//do nothing
-		}
-		if (servers==null) {
 			throw new Exception(STATIC.INVALIDKEY);
 		}
-		return STATIC.splitiport(servers[Math.abs(key.hashCode()) % servers.length]);
+		
+		String array_date_servernum = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(app+STATIC.REMOTE_CONFIGKEY_SERVERGROUPSSUFFIX);
+		String[] date_servernum = STATIC.splitenc(array_date_servernum);
+		if (date_servernum==null) {
+			throw new Exception(STATIC.INVALIDAPP);
+		}
+		
+		Date targetdate = null;
+		long targetservernum = 0;
+		for (int i=0;i<date_servernum.length;i++) {
+			String[] dateservernum = STATIC.splitenc(date_servernum[i]);
+			Date date = STATIC.yMd_FORMAT(dateservernum[0]);
+			long servernum = Long.parseLong(dateservernum[1]);
+			if (dateinkey.equals(date)) {
+				targetdate = date;
+				targetservernum = servernum;
+				break;
+			} else if (dateinkey.before(date)) {
+				if (i==0) {
+					throw new Exception(STATIC.INVALIDKEY);
+				}
+				break;
+			} else {
+				targetdate = date;
+				targetservernum = servernum;
+			}
+		}
+		
+		return STATIC.splitiport(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitenc(app,STATIC.yMd_FORMAT(targetdate))+STATIC.REMOTE_CONFIGKEY_SERVERINDEXMIDDLE+(Math.abs(key.hashCode()) % targetservernum)));
 	}
-
+	
 	public static String newbigdatakey() {
 		return STATIC.FORMAT_KEY(UUID.randomUUID().toString().replaceAll("-", ""));
 	}
 
 	// return [ip][port]
-	public static String[] distributebigpagedindex(String namespace, Vector<String> filters, String index) {
-		return STATIC.splitiport(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX)
-				.read(STATIC.distributebigpagedindexserveri(namespace, filters, index,Integer.parseInt(Configclient
-						.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGPAGEDINDEX).read(STATIC.REMOTE_CONFIGKEY_MAXINDEXSERVERS)))));
-	}
-	
-	// return [ip][port]
 	public static String[] distributebiguniqueindex(String namespace, String servergroups, String index) {
-		int uniqueindexservers = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX)
-				.read(servergroups));
-		String[] returnvalue = new String[2];
-		String[] ipport = STATIC.splitenc(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX)
-				.read(servergroups+(Math.abs(index.hashCode())%uniqueindexservers)));
-		returnvalue[0] = ipport[1];
-		returnvalue[1] = ipport[2];
-		return returnvalue;
+		long servergroupsservernum = Long.parseLong(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX)
+				.read(servergroups+STATIC.REMOTE_CONFIGKEY_SERVERGROUPSSUFFIX));
+		return STATIC.splitiport(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX)
+				.read(servergroups+STATIC.REMOTE_CONFIGKEY_SERVERINDEXMIDDLE+(Math.abs(index.hashCode())%servergroupsservernum)));
 	}
-	
-	
 
 }
