@@ -13,7 +13,7 @@ import com.zdd.bdc.server.util.Filedatautil;
 
 public class Dataserver implements Theserverprocess {
 
-	private int bigfilehash = 10000;
+	private int bigfilehash = 5000;
 
 	@Override
 	public void init(String ip, int port, int thebigfilehash, Map<String, Object> additionalserverconfig) {

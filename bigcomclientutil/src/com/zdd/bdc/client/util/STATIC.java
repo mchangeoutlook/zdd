@@ -24,7 +24,7 @@ public class STATIC {
 	public static final String FOLDER_NAMESPACE = Paths.get(".").toAbsolutePath().getParent().getParent().getParent().getFileName()
 			.toString();
 	public static final String FOLDER_CONFIGFILE = Paths.get(".").toAbsolutePath().getParent().getFileName()
-			.toString().split("-")[1];
+			.toString().split("-")[0];
 	public static final String FOLDER_DATAPARENT = Paths.get(".").toAbsolutePath().getParent().getParent().getFileName()
 			.toString();
 	public static final String FOLDER_RUN = Paths.get(".").toAbsolutePath().getParent().toString();
@@ -60,6 +60,8 @@ public class STATIC {
 	public static final String INVALIDAPP = "invalidapp";
 	
 	public static final String DELETE_BIGFILE_SUFFIX = "_delete_";
+	public static final String READ_BIGFILE_SUFFIX = "_read_";
+	public static final String WRITE_BIGFILE_SUFFIX = "_write_";
 		
 	public static final String PARAM_KEY_KEY = "key";
 	public static final String PARAM_NAMESPACE_KEY = "ns";

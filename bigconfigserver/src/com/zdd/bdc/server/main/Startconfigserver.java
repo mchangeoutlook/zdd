@@ -8,13 +8,6 @@ import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.biz.Configserver;
 import com.zdd.bdc.server.ex.Theserver;
 
-
-/**
- * @author mido
- * how to run: 
- * nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigconfigserver.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startconfigserver > log.runbigconfigserver &
- */
-
 public class Startconfigserver {
 	public static void main(String[] s) throws Exception {
 		
@@ -22,7 +15,7 @@ public class Startconfigserver {
 		
 		final String ip = STATIC.localip();
 		
-		final String port = Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE, STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT);
+		final String port = Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE, STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT);
 		
 		new Thread(new Runnable() {
 
@@ -39,7 +32,7 @@ public class Startconfigserver {
 			
 		}).start();
 		
-		while(!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_PENDING, STATIC.splitiport(ip, Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIG_CORE, STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT))))) {
+		while(!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING, STATIC.splitiport(ip, Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE, STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT))))) {
 			Thread.sleep(30000);
 		}
 		pending.append(STATIC.REMOTE_CONFIGVAL_PENDING);

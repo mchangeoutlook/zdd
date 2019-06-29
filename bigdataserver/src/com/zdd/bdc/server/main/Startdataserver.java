@@ -8,26 +8,20 @@ import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.biz.Dataserver;
 import com.zdd.bdc.server.ex.Theserver;
 
-/**
- * @author mido
- * how to run: 
- * nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigdataserver.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonserverlibs/bigexserver.jar:../../commonclientlibs/bigexclient.jar com.zdd.bdc.server.main.Startdataserver unicorn > log.runbigdataserver &
- */
-
 public class Startdataserver {
 	public static void main(String[] s) throws Exception {
 		final String ip = Configclient.ip;
-		final String port = Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitenc(STATIC.PARENTFOLDER, ip));
+		final String port = Configclient.getinstance(STATIC.FOLDER_NAMESPACE, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitenc(STATIC.FOLDER_DATAPARENT, ip));
 		Configclient.port = Integer.parseInt(port);
 		
-		System.out.println(new Date()+" ==== starting in folder ["+STATIC.PARENTFOLDER + "]");
+		System.out.println(new Date()+" ==== starting in folder ["+STATIC.FOLDER_DATAPARENT + "]");
 		
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				try {
-					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitiport(ip, port)));
+					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitiport(ip, port)));
 					Theserver.startblocking(Executors.newCachedThreadPool(), ip,
 							Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, Configclient.shutdownifpending,
 							bigfilehash,

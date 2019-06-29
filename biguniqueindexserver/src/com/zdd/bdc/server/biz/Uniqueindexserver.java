@@ -28,27 +28,42 @@ public class Uniqueindexserver implements Theserverprocess {
 				String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
 				Object filters = params.get(STATIC.PARAM_FILTERS_KEY);
 				String servergroups = (String)params.get(STATIC.PARAM_ADDITIONAL);
-				String[] rootrangestr = STATIC.splitfromto(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_ROOTRANGESUFFIX));
+				String[] rootrangestr = STATIC.splitfromto(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_ROOTRANGESUFFIX));
 				int[] rootrange = new int[2];
 				rootrange[0] = Integer.parseInt(rootrangestr[0]);
 				rootrange[1] = Integer.parseInt(rootrangestr[1]);
-				int distributions = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(servergroups));
-				int capacitykeymax = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX));
-				int capacityvalue = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX));
-				Fileuniqueutil.create(namespace, (String)filters, STATIC.tobytes(index), STATIC.tobytes(key), rootrange, capacitykeymax, capacityvalue, distributions);
+				int distributions = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups));
+				int capacitykeymax = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX));
+				int capacityvalue = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX));
+				Fileuniqueutil.create(namespace, (String)filters, STATIC.tobytes(index), STATIC.tobytes(key), rootrange, capacitykeymax, capacityvalue, distributions, false);
+				return null;
+			} else if (STATIC.PARAM_ACTION_MODIFY.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
+				String index = params.get(STATIC.PARAM_INDEX_KEY).toString();
+				String key = params.get(STATIC.PARAM_KEY_KEY).toString();
+				String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
+				Object filters = params.get(STATIC.PARAM_FILTERS_KEY);
+				String servergroups = (String)params.get(STATIC.PARAM_ADDITIONAL);
+				String[] rootrangestr = STATIC.splitfromto(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_ROOTRANGESUFFIX));
+				int[] rootrange = new int[2];
+				rootrange[0] = Integer.parseInt(rootrangestr[0]);
+				rootrange[1] = Integer.parseInt(rootrangestr[1]);
+				int distributions = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups));
+				int capacitykeymax = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX));
+				int capacityvalue = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX));
+				Fileuniqueutil.create(namespace, (String)filters, STATIC.tobytes(index), STATIC.tobytes(key), rootrange, capacitykeymax, capacityvalue, distributions, true);
 				return null;
 			} else if (STATIC.PARAM_ACTION_READ.equals(params.get(STATIC.PARAM_ACTION_KEY).toString())) {
 				String index = params.get(STATIC.PARAM_INDEX_KEY).toString();
 				String namespace = params.get(STATIC.PARAM_NAMESPACE_KEY).toString();
 				Object filters = params.get(STATIC.PARAM_FILTERS_KEY);
 				String servergroups = (String)params.get(STATIC.PARAM_ADDITIONAL);
-				String[] rootrangestr = STATIC.splitfromto(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_ROOTRANGESUFFIX));
+				String[] rootrangestr = STATIC.splitfromto(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_ROOTRANGESUFFIX));
 				int[] rootrange = new int[2];
 				rootrange[0] = Integer.parseInt(rootrangestr[0]);
 				rootrange[1] = Integer.parseInt(rootrangestr[1]);
-				int distributions = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(servergroups));
-				int capacitykeymax = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX));
-				int capacityvalue = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX));
+				int distributions = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups));
+				int capacitykeymax = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX));
+				int capacityvalue = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX));
 				return Objectutil.convert(STATIC.tostring(Fileuniqueutil.read(namespace, (String)filters, STATIC.tobytes(index), rootrange, capacitykeymax, capacityvalue, distributions)));
 			} else {
 				throw new Exception("notsupport-" + params.get(STATIC.PARAM_ACTION_KEY));
@@ -91,8 +106,8 @@ public class Uniqueindexserver implements Theserverprocess {
 			if (namespacefilterorleaf.length==2) {
 				return 32;
 			} else {
-				int capacitykeymax = Integer.parseInt(Configclient.getinstance(namespacefilterorleaf[0], STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(Configclient.getinstance(namespacefilterorleaf[0], STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(namespacefilterorleaf[1])+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX));
-				int capacityvalue = Integer.parseInt(Configclient.getinstance(namespacefilterorleaf[0], STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(Configclient.getinstance(namespacefilterorleaf[0], STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(namespacefilterorleaf[1])+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX));
+				int capacitykeymax = Integer.parseInt(Configclient.getinstance(namespacefilterorleaf[0], STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(Configclient.getinstance(namespacefilterorleaf[0], STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(namespacefilterorleaf[1])+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX));
+				int capacityvalue = Integer.parseInt(Configclient.getinstance(namespacefilterorleaf[0], STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(Configclient.getinstance(namespacefilterorleaf[0], STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(namespacefilterorleaf[1])+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX));
 				return capacitykeymax+capacityvalue;
 			}
 		}

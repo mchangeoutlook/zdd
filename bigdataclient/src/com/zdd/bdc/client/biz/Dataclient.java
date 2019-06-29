@@ -53,7 +53,7 @@ public class Dataclient {
 		return this;
 	}
 
-	public String create() throws Exception {
+	public String create(String app) throws Exception {
 		if (cvs.isEmpty() || cvmaxs.isEmpty()) {
 			throw new Exception("(.key).add4create.create");
 		}
@@ -68,7 +68,7 @@ public class Dataclient {
 			params.put(STATIC.PARAM_TABLE_KEY, tb);
 			params.put(STATIC.PARAM_COLUMNVALUES_KEY, cvs);
 			params.put(STATIC.PARAM_COLUMNMAXVALUES_KEY, cvmaxs);
-			String[] iport = Bigclient.distributebigdata(ns, key);
+			String[] iport = Bigclient.distributebigdata(ns, app, key);
 			Theclient.request(iport[0], 
 					Integer.parseInt(iport[1]), Objectutil.convert(params), null, null);
 			return key;
@@ -77,7 +77,7 @@ public class Dataclient {
 		}
 	}
 
-	public void delete() throws Exception {
+	public void delete(String app) throws Exception {
 		if (key == null || cols.isEmpty()) {
 			throw new Exception(".key.add.delete");
 		}
@@ -88,7 +88,7 @@ public class Dataclient {
 			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
 			params.put(STATIC.PARAM_TABLE_KEY, tb);
 			params.put(STATIC.PARAM_COLUMNS_KEY, cols);
-			String[] iport = Bigclient.distributebigdata(ns, key);
+			String[] iport = Bigclient.distributebigdata(ns, app, key);
 			Objectutil.convert(Theclient.request(iport[0], 
 					Integer.parseInt(iport[1]), Objectutil.convert(params), null, null));
 		} finally {
@@ -97,7 +97,7 @@ public class Dataclient {
 	}
 	
 
-	public void modify() throws Exception {
+	public void modify(String app) throws Exception {
 		if (key == null || cvs.isEmpty()) {
 			throw new Exception(".key.add4modify.modify");
 		}
@@ -108,7 +108,7 @@ public class Dataclient {
 			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
 			params.put(STATIC.PARAM_TABLE_KEY, tb);
 			params.put(STATIC.PARAM_COLUMNVALUES_KEY, cvs);
-			String[] iport = Bigclient.distributebigdata(ns, key);
+			String[] iport = Bigclient.distributebigdata(ns, app, key);
 			Theclient.request(iport[0], 
 					Integer.parseInt(iport[1]), Objectutil.convert(params), null, null);
 		} finally {
@@ -117,7 +117,7 @@ public class Dataclient {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, String> read() throws Exception {
+	public Map<String, String> read(String app) throws Exception {
 		if (key == null || cols.isEmpty()) {
 			throw new Exception(".key.add.read");
 		}
@@ -128,7 +128,7 @@ public class Dataclient {
 			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
 			params.put(STATIC.PARAM_TABLE_KEY, tb);
 			params.put(STATIC.PARAM_COLUMNS_KEY, cols);
-			String[] iport = Bigclient.distributebigdata(ns, key);
+			String[] iport = Bigclient.distributebigdata(ns, app, key);
 			return (Map<String, String>) Objectutil
 					.convert(Theclient.request(iport[0], 
 							Integer.parseInt(iport[1]), Objectutil.convert(params), null, null));
@@ -138,7 +138,7 @@ public class Dataclient {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, Long> increment() throws Exception {
+	public Map<String, Long> increment(String app) throws Exception {
 		if (key == null || cas.isEmpty()) {
 			throw new Exception(".key.add4increment.increment");
 		}
@@ -149,7 +149,7 @@ public class Dataclient {
 			params.put(STATIC.PARAM_NAMESPACE_KEY, ns);
 			params.put(STATIC.PARAM_TABLE_KEY, tb);
 			params.put(STATIC.PARAM_COLUMNAMOUNTS_KEY, cas);
-			String[] iport = Bigclient.distributebigdata(ns, key);
+			String[] iport = Bigclient.distributebigdata(ns, app, key);
 			
 			return (Map<String, Long>) Objectutil
 					.convert(Theclient.request(iport[0], 
