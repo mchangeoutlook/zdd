@@ -47,6 +47,9 @@ public class Readother extends HttpServlet {
 			ret.put("timecreate", Reuse.yyyyMMddHHmmss(target.getTimecreate()));
 			ret.put("timereuse", Reuse.yyyyMMddHHmmss(Bizutil.datedenyreuseaccount(target)));
 			ret.put("name", target.getUniquename());
+			if (target.getDaystogive()>0) {
+				ret.put("timecleardaystogive", Reuse.yyyyMMddHHmmss(Bizutil.cleardaystogive(target)));
+			}
 			if (Bizutil.isadmin(yxaccount)) {
 				ret.put("otheraccountkey", target.getKey());
 			}

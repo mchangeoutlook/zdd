@@ -1448,6 +1448,13 @@
 			$("#othergive").show();
 			$("#othergivebtn").show();
 			$("#otherextendform").show();
+			if (data.timecleardaystogive!=undefined){
+				$("#otherdaystogivehint").html("库存天数将于 "+data.timecleardaystogive+" 之后清零");
+				$("#otherdaystogivehint").show();
+			} else {
+				$("#otherdaystogivehint").hide();
+			}
+			
 			if (data.extendotheraftertime!=undefined){
 				$("#otherextendhint").html(msg_extendhintstart+data.extendotheraftertime+msg_extendhintend);
 				$("#otherextendhint").show();
@@ -1742,31 +1749,31 @@
 			["z","x","c","v","b","n","m","#","$","%"]
 			];
 		function populatepasscells(hint, targetdivid,targetbtnid){
-			var horizontalcellnum=10;
-			var verticalcellnum=4;
-			var width=320;
-			var height=128;
-			var cellwidth = width/horizontalcellnum;
-			var cellheight = height/verticalcellnum;
+			var width="calc(100vw - 30px)";
+			var height="24vh";
+			var cellwidth = "calc(10vw - 3px)";
+			var cellheight = "6vh";
+			var cellinnerwidth = "calc(10vw - 5px)";
+			var cellinnerheight = "calc(6vh - 2px)";
 			$("#"+targetdivid).children().remove();
 			$("#"+targetbtnid).attr("first","");
 			$("#"+targetdivid).css("position","relative");
 			$("#"+targetdivid).css("margin-top","8px");
 			$("#"+targetdivid).css("margin-bottom","8px");
 			$("#"+targetdivid).css("width","100%");
-			$("#"+targetdivid).css("height",(height+20)+"px");
+			$("#"+targetdivid).css("height","calc(24vh + 20px)");
 			$("#"+targetdivid).css("text-align","align:center");
-			var container = $("<div style='position:absolute;top:20px;left:50%;overflow:hidden;transform:translateX(-50%);width:"+width+"px;height:"+height+"px;'></div>");
+			var container = $("<div style='position:absolute;top:20px;left:50%;overflow:hidden;transform:translateX(-50%);width:"+width+";height:"+height+";'></div>");
 			$("#"+targetdivid).append("<div style='position:relative;text-align:center;line-height:20px;font-size:16px;'>"+hint+"</div>");
 			$("#"+targetdivid).append(container);
-			for (var v=0;v<verticalcellnum;v++){
-				for (var h=0;h<horizontalcellnum;h++){
-					container.append("<div class='clickpasscell' cellvalue='"+cellvaluematrix[v][h]+"' style='position:relative;float:left;width:"+cellwidth+"px;height:"+cellheight+"px;overflow:hidden;'>"+
-					"<div style='position:absolute;background-color:#ccc;top:0px;left:0px;border-radius:8px;width:"+(cellwidth-2)+"px;height:"+(cellheight-2)+"px;margin:1px;'></div>"+
+			for (var v=0;v<4;v++){
+				for (var h=0;h<10;h++){
+					container.append("<div class='clickpasscell' cellvalue='"+cellvaluematrix[v][h]+"' style='position:relative;float:left;width:"+cellwidth+";height:"+cellheight+";overflow:hidden;'>"+
+					"<div style='position:absolute;background-color:#ccc;top:0px;left:0px;border-radius:8px;width:"+cellinnerwidth+";height:"+cellinnerheight+";margin:1px;'></div>"+
 					"</div>");
 				}
 			}
-			container.append("<div class='passcells' style='position:absolute;background-color:#000;top:0px;left:0px;width:"+width+"px;height:"+height+"px;'></div>");
+			container.append("<div class='passcells' style='position:absolute;background-color:#000;top:0px;left:0px;width:"+width+";height:"+height+";'></div>");
 			$("#"+targetbtnid).attr("passvalue","");
 			$(".clickpasscell").click(function(){
 				if ($(this).children().is(":visible")){
@@ -1877,7 +1884,8 @@
 							<div id="otherextendhint" class="centerhorizontal label highlighthint hideallotheraccountform" style="display:none;"></div>
 							<div class="centerhorizontal"><input id="otherextend" class="hideallotheraccountform" style="display:none;" size="5" type="text" maxlength="5" placeholder="填写天数"/><input actionid="extend" class="click" id="otherextendbtn" class="hideallotheraccountform" style="display:none;" selforother="other" type="button" value="延长过期时间"/></div>
 							<div id="otherdaystogive" class="centerhorizontal label"></div>
-							<div class="centerhorizontal"><input id="othergive" class="hideallotheraccountform" style="" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="othergivebtn" class="hideallotheraccountform click" actionid="give" type="button" value="增加库存天数"/></div>
+							<div id="otherdaystogivehint" class="centerhorizontal highlighthint hideallaccountform" style="display:none;"></div>
+					<div class="centerhorizontal"><input id="othergive" class="hideallotheraccountform" style="" size="5" type="text" maxlength="5" placeholder="填写天数"/><input id="othergivebtn" class="hideallotheraccountform click" actionid="give" type="button" value="增加库存天数"/></div>
 						</div>
 					</div>
 					<div id="changepasscells"></div>
