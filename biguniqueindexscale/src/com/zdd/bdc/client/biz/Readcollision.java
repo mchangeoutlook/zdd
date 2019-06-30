@@ -1,4 +1,4 @@
-package com.zdd.bdc.server.biz;
+package com.zdd.bdc.client.biz;
 
 import java.util.Arrays;
 import java.util.Date;

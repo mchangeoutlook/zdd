@@ -1,4 +1,4 @@
-package com.zdd.bdc.server.biz;
+package com.zdd.bdc.client.biz;
 
 import com.zdd.bdc.client.biz.Uniqueindexclient;
 import com.zdd.bdc.client.ex.Theclientprocess;

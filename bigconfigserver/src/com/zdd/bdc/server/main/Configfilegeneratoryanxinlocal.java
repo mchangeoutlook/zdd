@@ -23,9 +23,8 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("command.space", "df", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
 		Fileconfigutil.create("command.mem", "free", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
 		
-		Fileconfigutil.create("notify.receiver", "80", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
-		Fileconfigutil.create("notify.sender", "80", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
-		Fileconfigutil.create("notify.sender.pass", "80", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
+		Fileconfigutil.create("notify.receiver", "443370165@qq.com", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
+		Fileconfigutil.create("notify.sender", "monitor@xinzyan.com", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
 	}
 	
 	private static void genyanxinbigdata() throws Exception {

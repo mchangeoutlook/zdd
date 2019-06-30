@@ -1,10 +1,10 @@
-package com.zdd.bdc.server.main;
+package com.zdd.bdc.client.main;
 
 import java.util.Date;
 import com.zdd.bdc.client.biz.Configclient;
+import com.zdd.bdc.client.biz.Readroot;
 import com.zdd.bdc.client.biz.Uniqueindexclient;
 import com.zdd.bdc.client.util.STATIC;
-import com.zdd.bdc.server.biz.Readroot;
 
 public class Startuniqueindexscale {
 	public static void main(String[] s) throws Exception {

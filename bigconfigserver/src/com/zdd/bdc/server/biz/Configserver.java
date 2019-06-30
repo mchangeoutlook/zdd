@@ -73,7 +73,6 @@ public class Configserver implements Theserverprocess {
 			}
 			if (serverspacehint!=null&&!serverspacehint.trim().isEmpty()) {
 				Monitor.qqemail(Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE, "notify.sender"), 
-						Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE, "notify.sender.pass"), 
 						Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE, "notify.receiver"), "client stat", 
 						folder+ip+port+"<br>"+serverspacehint.replaceAll(System.lineSeparator(), "<br>"));
 			}
