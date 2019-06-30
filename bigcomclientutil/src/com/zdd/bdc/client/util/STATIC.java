@@ -40,6 +40,7 @@ public class STATIC {
 	public static final String REMOTE_CONFIGFILE_DIG = "dig";
 
 	public static final String REMOTE_CONFIGKEY_SERVERGROUPSSUFFIX = ".servergroups";
+	public static final String REMOTE_CONFIGKEY_SERVERPORTSUFFIX = ".serverport";
 	public static final String REMOTE_CONFIGKEY_SERVERINDEXMIDDLE = ".serverindex.";
 
 	public static final String REMOTE_CONFIGFILE_PENDING = "pending";

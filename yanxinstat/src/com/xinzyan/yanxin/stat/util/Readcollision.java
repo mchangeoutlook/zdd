@@ -19,7 +19,7 @@ public class Readcollision implements Theclientprocess{
 		filter = thefilter;
 		this.yesterday = yesterday;
 		this.statkey = statkey;
-		servergroups = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+filter);
+		servergroups = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(filter);
 		capacityvalue = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX));
 	}
 	@Override

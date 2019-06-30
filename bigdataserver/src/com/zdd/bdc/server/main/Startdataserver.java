@@ -11,7 +11,7 @@ import com.zdd.bdc.server.ex.Theserver;
 public class Startdataserver {
 	public static void main(String[] s) throws Exception {
 		final String ip = Configclient.ip;
-		final String port = Configclient.getinstance(STATIC.FOLDER_NAMESPACE, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitenc(STATIC.FOLDER_DATAPARENT, ip));
+		final String port = Configclient.getinstance(STATIC.FOLDER_NAMESPACE, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitenc(STATIC.FOLDER_DATAPARENT, ip)+STATIC.REMOTE_CONFIGKEY_SERVERPORTSUFFIX);
 		Configclient.port = Integer.parseInt(port);
 		
 		System.out.println(new Date()+" ==== starting in folder ["+STATIC.FOLDER_DATAPARENT + "]");
@@ -21,7 +21,7 @@ public class Startdataserver {
 			@Override
 			public void run() {
 				try {
-					int bigfilehash = Integer.parseInt(Configclient.getinstance(STATIC.FOLDER_NAMESPACE, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitiport(ip, port)));
+					int bigfilehash = Integer.parseInt(Configclient.getinstance(STATIC.FOLDER_NAMESPACE, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitiport(ip, port)+STATIC.REMOTE_CONFIGKEY_SERVERPORTSUFFIX));
 					Theserver.startblocking(Executors.newCachedThreadPool(), ip,
 							Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, Configclient.shutdownifpending,
 							bigfilehash,

@@ -71,12 +71,15 @@ public class Bigunindexconfig {
 		} else if (key.contains(STATIC.REMOTE_CONFIGKEY_SERVERINDEXMIDDLE)) {
 			String[] parts = key.split(STATIC.REMOTE_CONFIGKEY_SERVERINDEXMIDDLE);
 			return readiport(namespace, parts[0], Integer.parseInt(parts[1]));
-		} else {
+		} else if (key.endsWith(STATIC.REMOTE_CONFIGKEY_SERVERPORTSUFFIX)){
+			key=key.substring(0, key.lastIndexOf(STATIC.REMOTE_CONFIGKEY_SERVERPORTSUFFIX));
 			String cachekey = STATIC.splitenc(namespace, key);
 			if (portcache.get(cachekey) == null) {
 				initportcache(namespace, cachekey);
 			}
 			return portcache.get(cachekey);
+		} else {
+			return Fileconfigutil.readone(key, namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
 		}
 	}
 }

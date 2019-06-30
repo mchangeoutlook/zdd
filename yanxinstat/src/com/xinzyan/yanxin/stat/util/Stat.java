@@ -45,30 +45,30 @@ public class Stat {
 		int uniqueservers = Integer
 				.parseInt(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX)
 						.read(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX)
-								.read("Yxaccount-ukey")));
+								.read("Yxaccount-ukey")+STATIC.REMOTE_CONFIGKEY_SERVERGROUPSSUFFIX));
 		for (int j = 0; j < uniqueservers; j++) {
 			final int server = j;
 			new Thread(new Runnable() {
 
 				@Override
 				public void run() {
-					String[] folderipport = STATIC.splitenc(
+					String[] ipport = STATIC.splitiport(
 							Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX)
 									.read(Configclient
 											.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX)
-											.read("Yxaccount-ukey") + server));
+											.read("Yxaccount-ukey") +STATIC.REMOTE_CONFIGKEY_SERVERINDEXMIDDLE+  server));
 					System.out.println(new Date() + " ==== starting stat [" + Reuse.namespace_yanxin
-							+ "][Yxaccount-ukey] on [" + folderipport[1] + "][" + folderipport[2] + "]");
+							+ "][Yxaccount-ukey] on [" + ipport[0] + "][" + ipport[1] + "]");
 					try {
-						Uniqueindexclient.getinstance(Reuse.namespace_yanxin, null).readallroots(folderipport[1],
-								Integer.parseInt(folderipport[2]), "Yxaccount-ukey",
-								new Readroot(Reuse.namespace_yanxin, "Yxaccount-ukey", yesterday, statkey, folderipport[1],
-										Integer.parseInt(folderipport[2])));
+						Uniqueindexclient.getinstance(Reuse.namespace_yanxin, null).readallroots(ipport[0],
+								Integer.parseInt(ipport[1]), "Yxaccount-ukey",
+								new Readroot(Reuse.namespace_yanxin, "Yxaccount-ukey", yesterday, statkey, ipport[0],
+										Integer.parseInt(ipport[1])));
 						System.out.println(new Date() + " ==== success! done stat [" + Reuse.namespace_yanxin + "]["
-								+ "Yxaccount-ukey" + "] on [" + folderipport[1] + "][" + folderipport[2] + "]");
+								+ "Yxaccount-ukey" + "] on [" + ipport[0] + "][" + ipport[1] + "]");
 					} catch (Exception e) {
 						System.out.println(new Date() + " ==== fail! terminated stat [" + Reuse.namespace_yanxin + "]["
-								+ "Yxaccount-ukey" + "] on [" + folderipport[1] + "][" + folderipport[2] + "] due to below exception:");
+								+ "Yxaccount-ukey" + "] on [" + ipport[0] + "][" + ipport[1] + "] due to below exception:");
 						e.printStackTrace();
 					}
 				}

@@ -36,12 +36,17 @@ public class Configfilegeneratoryanxinlocal {
 		String appdata = "data";
 		String appfile = "file";
 		
-		Fileconfigutil.create(appdata+STATIC.REMOTE_CONFIGKEY_SERVERGROUPSSUFFIX, STATIC.splitenc("20190118",""), namespace,
+		Fileconfigutil.create(appdata+STATIC.REMOTE_CONFIGKEY_SERVERGROUPSSUFFIX, STATIC.splitenc("20190118","20190701"), namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGDATA);
 		
 		Fileconfigutil.create(STATIC.splitenc(appdata, "20190118"), STATIC.splitenc("bigdata0", "5000", "127.0.0.1", "9998"), namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGDATA);
 		Fileconfigutil.create(STATIC.splitenc(appdata, "20190118"), STATIC.splitenc("bigdata1", "5000", "127.0.0.1", "9997"), namespace,
+				STATIC.REMOTE_CONFIGFILE_BIGDATA);
+		
+		Fileconfigutil.create(STATIC.splitenc(appdata, "20190701"), STATIC.splitenc("bigdata2", "5000", "127.0.0.1", "9988"), namespace,
+				STATIC.REMOTE_CONFIGFILE_BIGDATA);
+		Fileconfigutil.create(STATIC.splitenc(appdata, "20190701"), STATIC.splitenc("bigdata3", "5000", "127.0.0.1", "9987"), namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGDATA);
 		
 		Fileconfigutil.create(appfile+STATIC.REMOTE_CONFIGKEY_SERVERGROUPSSUFFIX, STATIC.splitenc("20190118",""), namespace,
@@ -179,7 +184,7 @@ public class Configfilegeneratoryanxinlocal {
 	}
 		
 	private static void genpending() throws Exception {
-	Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9998"), "pending", STATIC.NAMESPACE_CORE,
+	Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9998"), "", STATIC.NAMESPACE_CORE,
 			 STATIC.REMOTE_CONFIGFILE_PENDING);
 	}
 

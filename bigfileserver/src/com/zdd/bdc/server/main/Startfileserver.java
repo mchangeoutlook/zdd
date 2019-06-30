@@ -13,7 +13,7 @@ public class Startfileserver {
 		
 		final String ip = Configclient.ip;
 
-		final String port = Configclient.getinstance(STATIC.FOLDER_NAMESPACE, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitenc(STATIC.FOLDER_DATAPARENT, ip));
+		final String port = Configclient.getinstance(STATIC.FOLDER_NAMESPACE, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitenc(STATIC.FOLDER_DATAPARENT, ip)+STATIC.REMOTE_CONFIGKEY_SERVERPORTSUFFIX);
 		
 		Configclient.port = Integer.parseInt(port);
 		

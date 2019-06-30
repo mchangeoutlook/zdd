@@ -127,7 +127,7 @@ public class Configclient {
 						.get(STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT).trim().isEmpty()) {
 			System.out.println("ERROR: " + new Date() + " ==== System exit due to missing ["
 					+ STATIC.REMOTE_CONFIGKEY_CONFIGSERVERIP + "][" + STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT
-					+ " in neither env variable nor core config file.");
+					+ "] in neither env variable nor core config file.");
 			System.exit(1);
 		}
 		System.out.println(new Date() + " ==== loaded local config cache [" + nsfilekeyvalue + "] from folder ["

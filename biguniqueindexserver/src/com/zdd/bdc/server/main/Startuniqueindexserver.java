@@ -13,7 +13,7 @@ public class Startuniqueindexserver {
 		
 		final String ip = Configclient.ip;
 		
-		final String port = Configclient.getinstance(STATIC.FOLDER_NAMESPACE, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(STATIC.splitenc(STATIC.FOLDER_DATAPARENT, ip));
+		final String port = Configclient.getinstance(STATIC.FOLDER_NAMESPACE, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(STATIC.splitenc(STATIC.FOLDER_DATAPARENT, ip)+STATIC.REMOTE_CONFIGKEY_SERVERPORTSUFFIX);
 		Configclient.port = Integer.parseInt(port);
 		
 		System.out.println(new Date()+" ==== starting in folder ["+STATIC.FOLDER_DATAPARENT + "]");

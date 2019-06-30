@@ -34,7 +34,7 @@ public class Bigdataconfig {
 				servernumcache.put(servernumcachekey, date_servernum);
 			}
 			String servernum = servernumcache.get(servernumcachekey);
-			dateservernum.add(STATIC.splitenc(date, servernum));
+			dateservernum.add(servernum);
 		}
 		return STATIC.splitenc(dateservernum);
 	}
@@ -75,12 +75,15 @@ public class Bigdataconfig {
 			String[] parts = key.split(STATIC.REMOTE_CONFIGKEY_SERVERINDEXMIDDLE);
 			String[] app_date = STATIC.splitenc(parts[0]);
 			return readiport(namespace, app_date[0], app_date[1], Integer.parseInt(parts[1]));
-		} else {
+		} else if (key.endsWith(STATIC.REMOTE_CONFIGKEY_SERVERPORTSUFFIX)){
+			key=key.substring(0, key.lastIndexOf(STATIC.REMOTE_CONFIGKEY_SERVERPORTSUFFIX));
 			String cachekey = STATIC.splitenc(namespace, key);
 			if (portandbigfilehashcache.get(cachekey)==null) {
 				initportandbigfilehashcache(namespace, cachekey);
 			}
 			return portandbigfilehashcache.get(cachekey);
+		} else {
+			return Fileconfigutil.readone(key, namespace, STATIC.REMOTE_CONFIGFILE_BIGDATA);
 		}
 	}
 }
