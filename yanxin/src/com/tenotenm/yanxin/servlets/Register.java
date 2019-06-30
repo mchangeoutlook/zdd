@@ -73,7 +73,7 @@ public class Register extends HttpServlet {
 					}
 					try {
 						Accountipdeny aipdeny = new Accountipdeny();
-						String aipdenykey = aipdeny.readpaged(yxaccount.getUniquename()+"-"+ip).get(0);
+						String aipdenykey = aipdeny.readpaged(Reuse.sign(yxaccount.getUniquename()+"-"+ip));
 						aipdeny.read(aipdenykey);
 						aipdeny.setWrongpasstimes4increment(-1*aipdeny.getWrongpasstimes());
 						aipdeny.increment(null);

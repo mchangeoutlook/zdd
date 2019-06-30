@@ -12,6 +12,11 @@ public class Ipdeny extends Superentity{
 	
 	private Date timedeny=new Date();
 	
+
+	public String filter() {
+		return Reuse.filter_paged;
+	}
+	
 	protected void read_ip(String ip) {
 		this.ip=ip;
 	}

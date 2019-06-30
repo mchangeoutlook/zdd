@@ -18,7 +18,7 @@ public class Buyhint extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			Reuse.respond(response, Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("buyhint"), null);
+			Reuse.respond(response, Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_CORE).read("buyhint"), null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);
 		}

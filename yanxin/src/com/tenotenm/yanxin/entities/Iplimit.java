@@ -1,5 +1,7 @@
 package com.tenotenm.yanxin.entities;
 
+import com.tenotenm.yanxin.util.Reuse;
+
 public class Iplimit extends Superentity{
 	
 	private String key=null;
@@ -9,6 +11,11 @@ public class Iplimit extends Superentity{
 	private Long newaccounts=null;
 	
 	private Long newaccounts4increment=null;
+	
+
+	public String filter() {
+		return Reuse.filter_paged;
+	}
 	
 	protected void read_ip(String ip) {
 		this.ip=ip;

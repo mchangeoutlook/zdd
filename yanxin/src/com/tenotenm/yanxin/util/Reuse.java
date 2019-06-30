@@ -19,8 +19,10 @@ import com.zdd.bdc.client.util.STATIC;
 public class Reuse {
 	
 	public static final String namespace_yanxin = "yanxin";
-	public static final String namespace_bigfilefrom = "bigfilefrom";
-	public static final String namespace_bigfileto = "bigfileto";
+	
+	public static final String app_data = "data";
+	public static final String app_file = "file";
+	public static final String filter_paged = "pagedkey";
 	
 	public static final String msg_hint="提示: ";
 	
@@ -110,17 +112,17 @@ public class Reuse {
 	}
 	
 	public static long getdaysmillisconfig(String configkey) {
-		return Long.parseLong(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE)
+		return Long.parseLong(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_CORE)
 				.read(configkey)) * 24 * 60 * 60 * 1000;
 	}
 	
 	public static long getsecondsmillisconfig(String configkey) {
-		return Long.parseLong(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE)
+		return Long.parseLong(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_CORE)
 				.read(configkey)) * 1000;
 	}
 
 	public static long getlongvalueconfig(String configkey) {
-		return Long.parseLong(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE)
+		return Long.parseLong(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_CORE)
 				.read(configkey));
 	}
 	

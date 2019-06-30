@@ -72,7 +72,7 @@ public class Upload extends HttpServlet {
 							    }
 							    Files.write(Paths.get(photokey), Secret.enc(output.toByteArray()), StandardOpenOption.CREATE, StandardOpenOption.SYNC) ;
 							    
-								Fileclient.getinstance(photofolder).write(Reuse.namespace_bigfileto, photokey,
+								Fileclient.getinstance(photofolder).write(Reuse.namespace_yanxin, Reuse.app_file, photokey,
 									Files.newInputStream(Paths.get(photokey)));
 							}finally {
 								if (Files.exists(Paths.get(photokey))) {

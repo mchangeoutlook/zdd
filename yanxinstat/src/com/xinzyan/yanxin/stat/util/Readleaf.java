@@ -24,8 +24,8 @@ public class Readleaf implements Theclientprocess{
 		filter = thefilter;
 		ip = theip;
 		port = theport;
-		servergroups = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+filter);
-		capacityvalue = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX));
+		servergroups = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+filter);
+		capacityvalue = Integer.parseInt(Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(servergroups+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX));
 		this.yesterday = yesterday;
 		this.statkey = statkey;
 		readcollision =new Readcollision(namespace, filter, yesterday, statkey);

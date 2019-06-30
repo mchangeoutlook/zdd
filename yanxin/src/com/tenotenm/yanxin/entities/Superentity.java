@@ -8,13 +8,16 @@ import java.util.Vector;
 import com.tenotenm.yanxin.util.Reuse;
 import com.zdd.bdc.client.biz.Bigclient;
 import com.zdd.bdc.client.biz.Dataclient;
-import com.zdd.bdc.client.biz.Pagedindexclient;
 import com.zdd.bdc.client.biz.Uniqueindexclient;
 
 public abstract class Superentity {
 	
 	public abstract void setKey(String key);
 	public abstract String getKey();
+	
+	public String filter() {
+		return this.getClass().getSimpleName()+"-ukey";
+	}
 	
 	public void create(String key) throws Exception {
 		if (key==null) {
@@ -36,7 +39,7 @@ public abstract class Superentity {
 				}
 			}
 		}
-		dc.create();
+		dc.create(Reuse.app_data);
 		setKey(key);
 	}
 	
@@ -49,16 +52,19 @@ public abstract class Superentity {
 				key = getKey();
 			}
 		}
-		String tablename =  this.getClass().getSimpleName();
-		Uniqueindexclient.getinstance(Reuse.namespace_yanxin, uniqueindex).createunique(tablename+"-ukey", key);
+		Uniqueindexclient.getinstance(Reuse.namespace_yanxin, uniqueindex).createunique(filter(), key);
 		create(key);
 	}
 
 	public void createpaged(String key, String pagedindex, boolean createdata) throws Exception {
-		createpaged(key, pagedindex, 0, createdata);
+		createpaged(0, key, pagedindex, createdata);
 	}
 
-	public void createpaged(String key, String pagedindex, long pagenum, boolean createdata) throws Exception {
+	public void modifypaged(String newkey, String pagedindex) throws Exception {
+		Uniqueindexclient.getinstance(Reuse.namespace_yanxin, pagedindex+"-0").modifyunique(filter(), newkey);
+	}
+	
+	public void createpaged(long itemseq, String key, String pagedindex,  boolean createdata) throws Exception {
 		if (key==null) {
 			if (getKey()==null) {
 				key = Bigclient.newbigdatakey();
@@ -67,8 +73,7 @@ public abstract class Superentity {
 				key = getKey();
 			}
 		}
-		String tablename =  this.getClass().getSimpleName();
-		Pagedindexclient.getinstance(Reuse.namespace_yanxin, pagedindex).addfilter(tablename+"-pkey").create(key, pagenum);
+		Uniqueindexclient.getinstance(Reuse.namespace_yanxin, pagedindex+"-"+itemseq).createunique(filter(), key);
 		if (createdata) {
 			create(key);
 		}
@@ -89,7 +94,7 @@ public abstract class Superentity {
 				}
 			}
 		}
-		dc.modify();
+		dc.modify(Reuse.app_data);
 	}
 
 	public void increment(String key) throws Exception {
@@ -123,7 +128,7 @@ public abstract class Superentity {
 				}
 			}
 		}
-		Map<String, Long> data = dc.increment();
+		Map<String, Long> data = dc.increment(Reuse.app_data);
 		for (Method m:M) {
 			if (read_4increments.contains(m.getName())) {
 				if (m.getName().startsWith("read_")) {
@@ -156,7 +161,7 @@ public abstract class Superentity {
 				dc.add(m.getName().substring(10)+"_"+Reuse.yyyyMMdd(today));
 			}
 		}
-		Map<String, String> data = dc.read();
+		Map<String, String> data = dc.read(Reuse.app_data);
 		if (data==null||data.isEmpty()) {
 			throw new Exception(Reuse.NOTFOUND);
 		}
@@ -176,21 +181,30 @@ public abstract class Superentity {
 	}
 	
 	public void readunique(String uniqueindex) throws Exception {
-		String tablename =  this.getClass().getSimpleName();
-		String key = Uniqueindexclient.getinstance(Reuse.namespace_yanxin, uniqueindex).readunique(tablename+"-ukey");
+		String key = Uniqueindexclient.getinstance(Reuse.namespace_yanxin, uniqueindex).readunique(filter());
 		if (key==null||key.trim().isEmpty()) {
 			throw new Exception(Reuse.NOTFOUND);
 		}
 		read(key);
 	}
 
-	public Vector<String> readpaged(String pagedindex) throws Exception {
-		return readpaged(pagedindex, 0);
+	public String readpaged(String pagedindex) throws Exception {
+		return Uniqueindexclient.getinstance(Reuse.namespace_yanxin, pagedindex+"-0").readunique(filter());
 	}
 
 	public Vector<String> readpaged(String pagedindex, long pagenum) throws Exception {
-		String tablename =  this.getClass().getSimpleName();
-		return Pagedindexclient.getinstance(Reuse.namespace_yanxin, pagedindex).addfilter(tablename+"-pkey").read(pagenum);
+		Vector<String> ret = new Vector<String>();
+		long onepageitems = Reuse.getlongvalueconfig("onepage.items");
+		long start = pagenum*onepageitems;
+		for (long i=start;i<start+onepageitems;i++) {
+			String r = Uniqueindexclient.getinstance(Reuse.namespace_yanxin, pagedindex+"-"+i).readunique(filter());
+			if (r!=null&&!r.trim().isEmpty()) {
+				ret.add(r);
+			} else {
+				break;
+			}
+		}
+		return ret;
 	}
 
 	protected int calcextravaluecapcity(String initvalue, int limitsize) {

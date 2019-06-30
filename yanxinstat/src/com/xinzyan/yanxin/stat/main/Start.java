@@ -2,18 +2,14 @@ package com.xinzyan.yanxin.stat.main;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.Vector;
 
 import com.tenotenm.yanxin.util.Reuse;
 import com.xinzyan.yanxin.stat.util.Stat;
 import com.zdd.bdc.client.biz.Bigclient;
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.biz.Dataclient;
-import com.zdd.bdc.client.biz.Pagedindexclient;
+import com.zdd.bdc.client.biz.Uniqueindexclient;
 
-/**
- * @author mido how to run: nohup /root/jdk9/bin/java -cp ../commonclientlibs/bigdataclient.jar:../commonclientlibs/yanxinstat.jar:../commonclientlibs/yanxin.jar:../commonclientlibs/biguniqueindexclient.jar:../commonclientlibs/bigexclient.jar:../commonclientlibs/bigconfigclient.jar:../commonclientlibs/bigcomclientutil.jar:../commonclientlibs/bigpagedindexclient.jar com.xinzyan.yanxin.stat.main.Start > log.runyanxinstat &
- */
 public class Start {
 
 	public static void main(String[] s) {
@@ -24,13 +20,10 @@ public class Start {
 				while (Configclient.running()) {
 					try {
 						String yesterday = Reuse.yyyyMMdd(new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000));
-						Vector<String> statkeys = Pagedindexclient
-								.getinstance(Reuse.namespace_yanxin, "stat-" + yesterday).addfilter("stat").read(0);
-						String statkey = null;
+						String statkey = Uniqueindexclient.getinstance(Reuse.namespace_yanxin, "stat-" + yesterday).readunique(Reuse.filter_paged);
 						boolean needgothrough = false;
-						if (statkeys != null && !statkeys.isEmpty()) {
-							statkey = statkeys.get(0);
-							Map<String, String> s = Dataclient.getinstance(Reuse.namespace_yanxin, "stat").key(statkey).add("total").read();
+						if (statkey != null && !statkey.trim().isEmpty()) {
+							Map<String, String> s = Dataclient.getinstance(Reuse.namespace_yanxin, "stat").key(statkey).add("total").read(Reuse.app_data);
 							if (s==null||s.isEmpty()||s.get("total")==null||s.get("total").equals("0")) {
 								needgothrough = true;
 							}
@@ -40,8 +33,7 @@ public class Start {
 						if (needgothrough) {
 							if (statkey==null) {
 								statkey = Bigclient.newbigdatakey();
-								Pagedindexclient.getinstance(Reuse.namespace_yanxin, "stat-" + yesterday)
-								.addfilter("stat").create(statkey, 0);
+								Uniqueindexclient.getinstance(Reuse.namespace_yanxin, "stat-" + yesterday).createunique(Reuse.filter_paged, statkey);
 							}	
 							Stat.gothrough(yesterday, statkey);
 						}

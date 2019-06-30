@@ -14,10 +14,9 @@ public class Configfilegeneratoryanxinlocal {
 			Files.write(configfile, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC,
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
-
-		Fileconfigutil.create("configserverip", "127.0.0.1", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
+		Fileconfigutil.create("CONFIGSERVER_IP", "127.0.0.1", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
 		Fileconfigutil.create("updateconfigcache.intervalseconds", "30", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
-		Fileconfigutil.create("configserverport", "9999", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
+		Fileconfigutil.create("CONFIGSERVER_PORT", "9999", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
 
 		Fileconfigutil.create("command.inode", "df -i", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
 		Fileconfigutil.create("command.space", "df", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
@@ -180,7 +179,7 @@ public class Configfilegeneratoryanxinlocal {
 	}
 		
 	private static void genpending() throws Exception {
-	Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9992"), "pending", STATIC.NAMESPACE_CORE,
+	Fileconfigutil.create(STATIC.splitiport("127.0.0.1","9998"), "pending", STATIC.NAMESPACE_CORE,
 			 STATIC.REMOTE_CONFIGFILE_PENDING);
 	}
 

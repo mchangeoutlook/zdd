@@ -44,7 +44,7 @@ public class Login extends HttpServlet {
 
 			Accountipdeny aipdeny = new Accountipdeny();
 			try {
-				String aipdenykey = aipdeny.readpaged(yxaccount.getUniquename()+"-"+ip).get(0);
+				String aipdenykey = aipdeny.readpaged(Reuse.sign(yxaccount.getUniquename()+"-"+ip));
 				aipdeny.read(aipdenykey);
 			}catch(Exception e) {
 				aipdeny=null;
@@ -101,7 +101,7 @@ public class Login extends HttpServlet {
 					aipdeny = new Accountipdeny();
 					aipdeny.setWrongpassip(ip);
 					aipdeny.setWrongpasstime(new Date(System.currentTimeMillis()-Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")));
-					aipdeny.createpaged(null, yxaccount.getUniquename()+"-"+ip,true);
+					aipdeny.createpaged(null, Reuse.sign(yxaccount.getUniquename()+"-"+ip),true);
 				}
 				aipdeny.setWrongpasstimes4increment(1l);
 				aipdeny.increment(null);

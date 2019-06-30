@@ -17,7 +17,7 @@ import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 import com.zdd.bdc.client.biz.Dataclient;
-import com.zdd.bdc.client.biz.Pagedindexclient;
+import com.zdd.bdc.client.biz.Uniqueindexclient;
 
 @SuppressWarnings("serial")
 @WebServlet("/creused/readself")
@@ -53,10 +53,9 @@ public class Readself extends HttpServlet {
 				Vector<Map<String, String>> daystat = new Vector<Map<String, String>>();
 				for (int i=0;i<statdays;i++) {
 					c.add(Calendar.DATE, -1);
-					Vector<String> statkeys = Pagedindexclient.getinstance(Reuse.namespace_yanxin, "stat-" + Reuse.yyyyMMdd(c.getTime()))
-					.addfilter("stat").read(0);
-					if (statkeys!=null&&!statkeys.isEmpty()) {
-						Map<String, String> sr = Dataclient.getinstance(Reuse.namespace_yanxin, "stat").key(statkeys.get(0)).add("total").add("new").add("write").read();
+					String statkey = Uniqueindexclient.getinstance(Reuse.namespace_yanxin, "stat-" + Reuse.yyyyMMdd(c.getTime())).readunique(Reuse.filter_paged);
+					if (statkey!=null&&!statkey.trim().isEmpty()) {
+						Map<String, String> sr = Dataclient.getinstance(Reuse.namespace_yanxin, "stat").key(statkey).add("total").add("new").add("write").read(Reuse.app_data);
 						Map<String, String> s = new Hashtable<String, String>();
 						s.put("day", Reuse.yyyyMMdd(c.getTime()));
 						if (sr.get("total")!=null) {

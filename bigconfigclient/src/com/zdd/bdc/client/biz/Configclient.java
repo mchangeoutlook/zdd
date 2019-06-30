@@ -258,7 +258,7 @@ public class Configclient {
 
 			@Override
 			public void run() {
-				System.out.println(new Date() + " ==== started inode and space monitor.");
+				System.out.println(new Date() + " ==== started inode, space and memory monitor.");
 				while (running()) {
 					
 					clientstat = "";
@@ -315,7 +315,7 @@ public class Configclient {
 						}
 					}
 				}
-				System.out.println(new Date() + " ==== exited inode and space monitor.");
+				System.out.println(new Date() + " ==== exited inode, space and memory monitor.");
 			}
 			
 		}).start();

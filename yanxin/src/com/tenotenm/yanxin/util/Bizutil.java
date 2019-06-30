@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,9 +12,9 @@ import com.tenotenm.yanxin.entities.Actionlog;
 import com.tenotenm.yanxin.entities.Ipdeny;
 import com.tenotenm.yanxin.entities.Iplimit;
 import com.tenotenm.yanxin.entities.Onetimekey;
+import com.tenotenm.yanxin.entities.Yanxin;
 import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.entities.Yxlogin;
-import com.tenotenm.yanxin.entities.Yanxin;
 import com.zdd.bdc.client.biz.Bigclient;
 import com.zdd.bdc.client.biz.Configclient;
 import com.zdd.bdc.client.biz.Fileclient;
@@ -37,14 +36,13 @@ public class Bizutil {
 		alog.setUniqueaccountnameto(to.getUniquename());
 		alog.setYxloginkey(yxlogin.getKey());
 		alog.setAction(action);
-		long onepageitems = Reuse.getlongvalueconfig("onepage.items");
 		to.setLognum4increment(1l);
 		to.increment(null);
-		alog.createpaged(alog.getKey(), to.getUniquename(), (to.getLognum() - 1) / onepageitems, true);
+		alog.createpaged(to.getLognum() - 1, alog.getKey(), "actl-"+to.getKey(), true);
 		if (from != null && !from.getUniquename().equals(to.getUniquename())) {
 			from.setLognum4increment(1l);
 			from.increment(null);
-			alog.createpaged(alog.getKey(), from.getUniquename(), (from.getLognum() - 1) / onepageitems, false);
+			alog.createpaged(from.getLognum() - 1, alog.getKey(), "actl-"+from.getKey(), false);
 		}
 	}
 
@@ -112,14 +110,14 @@ public class Bizutil {
 					if (yx.getPhoto() != null && !yx.getPhoto().isEmpty()) {
 						String[] folderkey = yx.getPhoto().split("/");
 						if (folderkey.length == 2) {
-							Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_bigfileto, folderkey[1]);
+							Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_yanxin, Reuse.app_file, folderkey[1]);
 						}
 					}
 					if (yx.getPhotosmall() != null && !yx.getPhotosmall().isEmpty()
 							&& !yx.getPhotosmall().equals(yx.getPhoto())) {
 						String[] folderkey = yx.getPhotosmall().split("/");
 						if (folderkey.length == 2) {
-							Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_bigfileto, folderkey[1]);
+							Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_yanxin, Reuse.app_file, folderkey[1]);
 						}
 					}
 					yx.setPhoto(photofolder + "/" + photokey);
@@ -134,14 +132,14 @@ public class Bizutil {
 			if (yx.getPhoto() != null && !yx.getPhoto().isEmpty()) {
 				String[] folderkey = yx.getPhoto().split("/");
 				if (folderkey.length == 2) {
-					Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_bigfileto, folderkey[1]);
+					Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_yanxin, Reuse.app_file, folderkey[1]);
 				}
 			}
 			if (yx.getPhotosmall() != null && !yx.getPhotosmall().isEmpty()
 					&& !yx.getPhotosmall().equals(yx.getPhoto())) {
 				String[] folderkey = yx.getPhotosmall().split("/");
 				if (folderkey.length == 2) {
-					Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_bigfileto, folderkey[1]);
+					Fileclient.getinstance(folderkey[0]).delete(Reuse.namespace_yanxin, Reuse.app_file, folderkey[1]);
 				}
 			}
 			yx.setPhoto(photofolder + "/" + photokey);
@@ -176,15 +174,15 @@ public class Bizutil {
 			throw new Exception(Reuse.msg_hint + "系统繁忙，请稍后再来");
 		}
 		Ipdeny ipd = new Ipdeny();
-		Vector<String> ipdkeys = ipd.readpaged(ip);
+		String ipdkey = ipd.readpaged("ipd-"+ip);
 		Date timeback = null;
-		if (ipdkeys.isEmpty()) {
+		if (ipdkey==null||ipdkey.trim().isEmpty()) {
 			if (todeny) {
 				ipd.setIp(ip);
-				ipd.createpaged(null, ip, true);
+				ipd.createpaged(null, "ipd-"+ip, true);
 			}
 		} else {
-			ipd.read(ipdkeys.get(0));
+			ipd.read(ipdkey);
 
 			if (System.currentTimeMillis() - ipd.getTimedeny().getTime() < Reuse
 					.getsecondsmillisconfig("ipdeny.wait.seconds")) {
@@ -210,25 +208,25 @@ public class Bizutil {
 		} else if (Reuse.getlongvalueconfig("everyday.everyip.newaccounts.max") == 0) {
 			throw new Exception(Reuse.msg_hint + "暂不开放注册");
 		} else {
-			Iplimit ipd = new Iplimit();
-			Vector<String> ipdkeys = ipd.readpaged(ip);
+			Iplimit ipl = new Iplimit();
+			String iplkey = ipl.readpaged("ipl-"+ip);
 			boolean islimited = false;
-			if (ipdkeys.isEmpty()) {
+			if (iplkey==null||iplkey.trim().isEmpty()) {
 				if (toincrementnewaccountstoday) {
-					ipd.setIp(ip);
-					ipd.createpaged(null, ip, true);
-					ipd.setNewaccounts4increment(1l);
-					ipd.increment(ipd.getKey());
+					ipl.setIp(ip);
+					ipl.createpaged(null, "ipl-"+ip, true);
+					ipl.setNewaccounts4increment(1l);
+					ipl.increment(null);
 				}
 			} else {
-				ipd.read(ipdkeys.get(0));
-				if (ipd.getNewaccounts() != null
-						&& ipd.getNewaccounts() >= Reuse.getlongvalueconfig("everyday.everyip.newaccounts.max")) {
+				ipl.read(iplkey);
+				if (ipl.getNewaccounts() != null
+						&& ipl.getNewaccounts() >= Reuse.getlongvalueconfig("everyday.everyip.newaccounts.max")) {
 					islimited = true;
 				}
 				if (!islimited && toincrementnewaccountstoday) {
-					ipd.setNewaccounts4increment(1l);
-					ipd.increment(ipd.getKey());
+					ipl.setNewaccounts4increment(1l);
+					ipl.increment(null);
 				}
 			}
 
@@ -298,18 +296,14 @@ public class Bizutil {
 			return onetimekey;
 		} else {
 			Onetimekey ok = new Onetimekey();
-			Vector<String> yanxinkeys = ok.readpaged(onetimekey);
-			if (yanxinkeys != null && yanxinkeys.size() == 1) {
-				ok.createpaged(onetimekey, onetimekey, false);
-				return yanxinkeys.get(0);
+			String existyanxinkey = ok.readpaged(onetimekey);
+			if (existyanxinkey != null && !existyanxinkey.trim().isEmpty()) {
+				ok.modifypaged(Bigclient.newbigdatakey(), onetimekey);
+				return existyanxinkey;
 			} else {
 				return null;
 			}
 		}
-	}
-	
-	public static void main(String[] s) {
-		System.out.println(Reuse.sign("").length());
 	}
 
 	public static Yanxin readyanxin(Yxaccount yxaccount, Date day) throws Exception {
@@ -324,7 +318,7 @@ public class Bizutil {
 
 	public static boolean isadmin(Yxaccount yxaccount) {
 		return yxaccount.getKey() != null && !yxaccount.getKey().trim().isEmpty()
-				&& Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("admins")
+				&& Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_CORE).read("admins")
 						.contains(yxaccount.getKey());
 	}
 
@@ -351,12 +345,12 @@ public class Bizutil {
 						Bizutil.log(yxlogin, null, yxaccount, "g", oldvalue, String.valueOf(yxaccount.getDaystogive()));
 					}
 				}
-				if (!Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE)
+				if (!Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_CORE)
 						.read("extend.all.expire.times.days").startsWith(yxaccount.getExtendallexpiremark()+".")) {
 					long toextenddays = 0;
 					String extendedmark = "";
 					try {
-						String[] mark_days = Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE)
+						String[] mark_days = Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_CORE)
 								.read("extend.all.expire.times.days").split("\\.");
 						toextenddays = Long.parseLong(mark_days[1]);
 						extendedmark = mark_days[0];

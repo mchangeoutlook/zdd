@@ -36,15 +36,15 @@ public class Stat {
 			if (yx!=null) {
 				d.add4increment("write", 1);
 			}
-			d.increment();
+			d.increment(Reuse.app_data);
 		}
 	}
 	
 	public static void gothrough(String yesterday, String statkey) throws Exception {
 
 		int uniqueservers = Integer
-				.parseInt(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX)
-						.read(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX)
+				.parseInt(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX)
+						.read(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX)
 								.read("Yxaccount-ukey")));
 		for (int j = 0; j < uniqueservers; j++) {
 			final int server = j;
@@ -53,9 +53,9 @@ public class Stat {
 				@Override
 				public void run() {
 					String[] folderipport = STATIC.splitenc(
-							Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX)
+							Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX)
 									.read(Configclient
-											.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_BIGUNIQUEINDEX)
+											.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX)
 											.read("Yxaccount-ukey") + server));
 					System.out.println(new Date() + " ==== starting stat [" + Reuse.namespace_yanxin
 							+ "][Yxaccount-ukey] on [" + folderipport[1] + "][" + folderipport[2] + "]");

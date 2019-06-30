@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.tenotenm.yanxin.entities.Yanxin;
 import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Downloading;
+import com.tenotenm.yanxin.util.Reuse;
 import com.tenotenm.yanxin.util.Secret;
 import com.zdd.bdc.client.biz.Fileclient;
 import com.zdd.bdc.client.util.STATIC;
@@ -49,7 +50,7 @@ public class Download extends HttpServlet {
 					Downloading d = new Downloading();
 					byte[] enc = null;
 					try {
-						Fileclient.getinstance(thefolderonserver).read("bigfilefrom", filekey, d);
+						Fileclient.getinstance(thefolderonserver).read(Reuse.namespace_yanxin, Reuse.app_file, filekey, d);
 						enc = Files.readAllBytes(Paths.get(d.localtempfile));
 					}finally {
 						if (Files.exists(Paths.get(d.localtempfile))) {

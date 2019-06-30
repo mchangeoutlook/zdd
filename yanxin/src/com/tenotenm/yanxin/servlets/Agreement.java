@@ -24,13 +24,13 @@ public class Agreement extends HttpServlet {
 			throws ServletException, IOException {
 		try {
 			Map<String, Object> ret = new Hashtable<String, Object>();
-			ret.put("title", Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("agreement.title"));
-			int itemnum = Integer.parseInt(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("agreement.items"));
+			ret.put("title", Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_CORE).read("agreement.title"));
+			int itemnum = Integer.parseInt(Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_CORE).read("agreement.items"));
 			Vector<String> items = new Vector<String>(itemnum);
 			for (int i=0;i<itemnum;i++) {
 				items.add(MessageFormat.format(
-					Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("agreement.item."+i),
-					Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIG_CORE).read("forgetpass")));
+					Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_CORE).read("agreement.item."+i),
+					Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_CORE).read("forgetpass")));
 			}
 			ret.put("items", items);
 			Reuse.respond(response, ret, null);

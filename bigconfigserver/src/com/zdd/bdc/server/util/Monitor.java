@@ -35,7 +35,7 @@ public class Monitor {
 				while (!STATIC.REMOTE_CONFIGVAL_PENDING.equals(pending.toString())) {
 					try {
 						Thread.sleep(2 * Integer.parseInt(Configserver.readconfig(STATIC.NAMESPACE_CORE,
-								STATIC.REMOTE_CONFIGFILE_CORE, "updateconfigcache.intervalseconds")));
+								STATIC.REMOTE_CONFIGFILE_CORE, STATIC.REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS)));
 					} catch (Exception e) {
 						// do nothing
 					}
@@ -45,25 +45,26 @@ public class Monitor {
 								.convert(Objectutil.convert(folderiport_time));
 						for (String key : temp.keySet()) {
 							if (System.currentTimeMillis() - temp.get(key) > 2
-									* Integer.parseInt(Configserver.readconfig(STATIC.NAMESPACE_CORE,
-											STATIC.REMOTE_CONFIGFILE_CORE, "updateconfigcache.intervalseconds"))) {
+									* 1000 * Integer.parseInt(Configserver.readconfig(STATIC.NAMESPACE_CORE,
+											STATIC.REMOTE_CONFIGFILE_CORE, STATIC.REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS))) {
 								folderiport_time.remove(key);
 								qqemail(Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE,
 										"notify.sender"),
 										Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE,
 												"notify.receiver"),
-										"down surspect", key);
+										"down suspect", key);
 							}
 						}
 					} catch (Exception e) {
 						// do nothing
 					}
 				}
+				System.out.println(new Date() + " ==== Monitor exits.");
 			}
 
 		}).start();
 
-		System.out.println(new Date() + " ==== Monitor exits.");
+		
 	}
 
 	public static void qqemail(String sender, String receiver, String title, String content) {

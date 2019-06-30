@@ -23,6 +23,10 @@ public class Actionlog extends Superentity{
 	private String newvalue=null;
 	
 
+	public String filter() {
+		return Reuse.filter_paged;
+	}
+	
 	public String getKey() {
 		return key;
 	}

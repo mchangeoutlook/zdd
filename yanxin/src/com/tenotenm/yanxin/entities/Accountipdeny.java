@@ -13,7 +13,10 @@ public class Accountipdeny extends Superentity{
 	private long wrongpasstimes=0l;
 	private Long wrongpasstimes4increment=0l;
 	
-
+	public String filter() {
+		return Reuse.filter_paged;
+	}
+	
 	protected void read_wrongpassip(String wrongpassip) {
 		this.wrongpassip=wrongpassip;
 	}

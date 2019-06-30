@@ -33,7 +33,7 @@ public class Readlog extends HttpServlet {
 			long onepageitems = Reuse.getlongvalueconfig("onepage.items");
 			
 			Actionlog alog = new Actionlog();
-			Vector<String> alogkeys = alog.readpaged(yxaccount.getUniquename(), (yxaccount.getLognum()-1)/onepageitems-pagenum);
+			Vector<String> alogkeys = alog.readpaged("actl-"+yxaccount.getKey(), (yxaccount.getLognum()-1)/onepageitems-pagenum);
 			
 			Map<String, Object> ret = new Hashtable<String, Object>(2); 
 			Vector<Map<String, String>> list = new Vector<Map<String, String>>(alogkeys.size());

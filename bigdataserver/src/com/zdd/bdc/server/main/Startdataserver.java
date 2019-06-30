@@ -21,7 +21,7 @@ public class Startdataserver {
 			@Override
 			public void run() {
 				try {
-					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitiport(ip, port)));
+					int bigfilehash = Integer.parseInt(Configclient.getinstance(STATIC.FOLDER_NAMESPACE, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitiport(ip, port)));
 					Theserver.startblocking(Executors.newCachedThreadPool(), ip,
 							Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, Configclient.shutdownifpending,
 							bigfilehash,

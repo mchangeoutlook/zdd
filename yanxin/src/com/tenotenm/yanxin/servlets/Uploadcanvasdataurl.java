@@ -94,7 +94,7 @@ public class Uploadcanvasdataurl extends HttpServlet {
 			String filekey = Bigclient.newbigdatakey();
 			try {
 				Files.write(Paths.get(filekey), Secret.enc(decodedData), StandardOpenOption.CREATE, StandardOpenOption.SYNC);
-				Fileclient.getinstance(filefolder).write(Reuse.namespace_bigfileto, filekey,
+				Fileclient.getinstance(filefolder).write(Reuse.namespace_yanxin, Reuse.app_file, filekey,
 						Files.newInputStream(Paths.get(filekey)));
 				return filekey;
 			}finally {
