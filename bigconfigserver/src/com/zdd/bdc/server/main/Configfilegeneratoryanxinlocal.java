@@ -18,6 +18,14 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create("configserverip", "127.0.0.1", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
 		Fileconfigutil.create("updateconfigcache.intervalseconds", "30", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
 		Fileconfigutil.create("configserverport", "9999", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
+
+		Fileconfigutil.create("command.inode", "df -i", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
+		Fileconfigutil.create("command.space", "df", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
+		Fileconfigutil.create("command.mem", "free", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
+		
+		Fileconfigutil.create("notify.receiver", "80", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
+		Fileconfigutil.create("notify.sender", "80", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
+		Fileconfigutil.create("notify.sender.pass", "80", STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE);
 	}
 	
 	private static void genyanxinbigdata() throws Exception {

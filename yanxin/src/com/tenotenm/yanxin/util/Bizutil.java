@@ -172,6 +172,9 @@ public class Bizutil {
 	}
 
 	public static void ipdeny(String ip, boolean todeny) throws Exception {
+		if (Float.parseFloat(String.valueOf(Runtime.getRuntime().totalMemory()))/Float.parseFloat(String.valueOf(Runtime.getRuntime().maxMemory()))>0.8) {
+			throw new Exception(Reuse.msg_hint + "系统繁忙，请稍后再来");
+		}
 		Ipdeny ipd = new Ipdeny();
 		Vector<String> ipdkeys = ipd.readpaged(ip);
 		Date timeback = null;

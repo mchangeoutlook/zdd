@@ -1,5 +1,8 @@
 package com.zdd.bdc.client.biz;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -19,7 +22,7 @@ public class Configclient {
 
 	public static String ip = STATIC.localip();
 	public static int port = Integer.valueOf(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
-	public static String space = "";
+	public static String clientstat = "";
 	public static StringBuffer shutdownifpending = new StringBuffer();
 
 	public static boolean running() {
@@ -131,6 +134,8 @@ public class Configclient {
 				+ STATIC.LOCAL_CONFIGFOLDER.toFile().getAbsolutePath() + "] under [" + nsfilekeyvalue.size()
 				+ "] namespaces");
 
+		
+		
 		new Thread(new Runnable() {
 
 			@SuppressWarnings("unchecked")
@@ -248,8 +253,116 @@ public class Configclient {
 			}
 
 		}).start();
+		
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				System.out.println(new Date() + " ==== started inode and space monitor.");
+				while (running()) {
+					
+					clientstat = "";
+					if (Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE).read("command.inode")!=null) {
+						try {
+							String ret = exec(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE).read("command.inode"));
+							if (ret!=null) {
+								clientstat+=System.lineSeparator()+ret;
+							}
+						}catch(Exception e) {
+							//do nothing
+						}
+					}
+					if (Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE).read("command.space")!=null) {
+						try {
+							String ret = exec(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE).read("command.space"));
+							if (ret!=null) {
+								clientstat+=System.lineSeparator()+ret;
+							}
+						}catch(Exception e) {
+							//do nothing
+						}
+					}
+					if (Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE).read("command.mem")!=null) {
+						try {
+							String ret = exec(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE).read("command.mem"));
+							if (ret!=null) {
+								clientstat+=System.lineSeparator()+ret;
+							}
+						}catch(Exception e) {
+							//do nothing
+						}
+					}
+					
+					int wait = 0;
+					try {
+						wait = new Random().nextInt(Integer
+								.parseInt(Configclient.getinstance(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE)
+										.read(STATIC.REMOTE_CONFIGKEY_UPDATECONFIGCACHEINTERVALS)));
+					} catch (Exception e) {
+						// do nothing
+					}
+					if (wait == 0) {
+						wait = 1;
+					}
+					for (int i=0;i<100;i++) {
+						try{
+							Thread.sleep(wait * 1000);
+						} catch (InterruptedException e) {
+							// do nothing
+						}
+						if (!running()) {
+							break;
+						}
+					}
+				}
+				System.out.println(new Date() + " ==== exited inode and space monitor.");
+			}
+			
+		}).start();
 	}
 
+	private static String exec(String command) {
+		BufferedInputStream bis = null;
+		BufferedReader br = null;
+		Process process = null;
+		try {
+            process = Runtime.getRuntime().exec(command);
+            bis = new BufferedInputStream(
+                    process.getInputStream());
+            br = new BufferedReader(new InputStreamReader(bis));
+            String line;
+            StringBuffer sb = new StringBuffer();
+            while ((line = br.readLine()) != null) {
+                sb.append(line+System.lineSeparator());
+            }
+            return sb.toString();
+        } catch (Exception e) {
+        		return null;
+        } finally {
+        		if (process != null) {
+        			try {
+	        			process.destroyForcibly();
+	        		}catch(Exception e) {
+	    				//do nothing
+	    			}
+        		}
+        		if (bis!=null) {
+        			try {
+        				bis.close();
+        			}catch(Exception e) {
+        				//do nothing
+        			}
+        		}
+        		if (br!=null) {
+        			try {
+        				br.close();
+        			}catch(Exception e) {
+        				//do nothing
+        			}
+        		}
+        }
+	}
+	
 	private String ns = null;
 	private String file = null;
 
@@ -282,8 +395,9 @@ public class Configclient {
 	private static byte[] requestconfigserver(String thisip, int thisport, Map<String, Object> params)
 			throws Exception {
 		if (thisip != null) {
-			params.put(STATIC.PARAM_CLIENTSPACEIPORTFOLDER,
-					STATIC.splitenc(space, thisip, String.valueOf(thisport), STATIC.FOLDER_RUN));
+			params.put(STATIC.PARAM_CLIENTSTATIPORTFOLDER,
+					STATIC.splitenc(clientstat, thisip, String.valueOf(thisport), STATIC.FOLDER_RUN));
+			clientstat="";
 		}
 		return Theclient.request(
 				nsfilekeyvalue.get(STATIC.NAMESPACE_CORE).get(STATIC.REMOTE_CONFIGFILE_CORE)

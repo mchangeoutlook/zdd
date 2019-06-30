@@ -77,7 +77,7 @@ public class Reuse {
 				if (t.getMessage()!=null&&t.getMessage().startsWith(msg_hint)) {
 					ret.put("error", t.getMessage());
 				} else {
-					ret.put("error", "系统繁忙，请稍后再来");
+					ret.put("error", "系统错误，请联系官方技术客服");
 				}
 				ret.put("detail", errors.toString());
 			}

@@ -7,6 +7,7 @@ import com.zdd.bdc.client.ex.Theclient;
 import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.biz.Configserver;
 import com.zdd.bdc.server.ex.Theserver;
+import com.zdd.bdc.server.util.Monitor;
 
 public class Startconfigserver {
 	public static void main(String[] s) throws Exception {
@@ -31,6 +32,8 @@ public class Startconfigserver {
 			}
 			
 		}).start();
+		
+		Monitor.start(pending);
 		
 		while(!STATIC.REMOTE_CONFIGVAL_PENDING.equals(Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_PENDING, STATIC.splitiport(ip, Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE, STATIC.REMOTE_CONFIGKEY_CONFIGSERVERPORT))))) {
 			Thread.sleep(30000);

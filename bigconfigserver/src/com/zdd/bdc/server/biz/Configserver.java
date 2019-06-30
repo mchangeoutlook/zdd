@@ -11,6 +11,7 @@ import com.zdd.bdc.client.util.Objectutil;
 import com.zdd.bdc.server.ex.Inputprocess;
 import com.zdd.bdc.server.ex.Theserverprocess;
 import com.zdd.bdc.server.util.Fileconfigutil;
+import com.zdd.bdc.server.util.Monitor;
 
 public class Configserver implements Theserverprocess {
 
@@ -37,10 +38,10 @@ public class Configserver implements Theserverprocess {
 			for (String configfile:configfiles) {
 				System.out.println(configfile);
 			}
-			System.out.println(new Date() + " discovered "+configfiles.size()+" config files under folder ["+STATIC.LOCAL_CONFIGFOLDER.toString()+"]");
+			System.out.println(new Date() + " ==== discovered "+configfiles.size()+" config files under folder ["+STATIC.LOCAL_CONFIGFOLDER.toString()+"]");
 		}
 	}
-
+	
 	public static String readconfig(String namespace, String file, String configkey) throws Exception {
 		if (file.equals(STATIC.REMOTE_CONFIGFILE_BIGDATA)) {
 			return Bigdataconfig.read(namespace, configkey);
@@ -60,8 +61,8 @@ public class Configserver implements Theserverprocess {
 	@Override
 	public byte[] request(byte[] param) throws Exception {
 		Map<String, Object> params = (Map<String, Object>) Objectutil.convert(param);
-		if (params.get(STATIC.PARAM_CLIENTSPACEIPORTFOLDER)!=null) {
-			String[] clientspaceiportfolder = STATIC.splitenc(params.get(STATIC.PARAM_CLIENTSPACEIPORTFOLDER).toString());
+		if (params.get(STATIC.PARAM_CLIENTSTATIPORTFOLDER)!=null) {
+			String[] clientspaceiportfolder = STATIC.splitenc(params.get(STATIC.PARAM_CLIENTSTATIPORTFOLDER).toString());
 			String serverspacehint = clientspaceiportfolder[0];
 			String ip = clientspaceiportfolder[1];
 			String port = clientspaceiportfolder[2];
@@ -70,6 +71,13 @@ public class Configserver implements Theserverprocess {
 					STATIC.splitiport(ip, port)))){
 				throw new Exception(STATIC.SHUTDOWN);
 			}
+			if (serverspacehint!=null&&!serverspacehint.trim().isEmpty()) {
+				Monitor.qqemail(Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE, "notify.sender"), 
+						Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE, "notify.sender.pass"), 
+						Configserver.readconfig(STATIC.NAMESPACE_CORE, STATIC.REMOTE_CONFIGFILE_CORE, "notify.receiver"), "client stat", 
+						folder+ip+port+"<br>"+serverspacehint.replaceAll(System.lineSeparator(), "<br>"));
+			}
+			Monitor.updateclientime(folder+ip+port);
 		}
 		if (params.get(STATIC.PARAM_DATA_KEY) != null) {
 			Map<String, Map<String, Map<String, String>>> returnvalue = (Map<String, Map<String, Map<String, String>>>) params.get(STATIC.PARAM_DATA_KEY);

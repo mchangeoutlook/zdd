@@ -74,9 +74,7 @@ public class STATIC {
 	public static final String PARAM_COLUMNMAXVALUES_KEY = "cvmaxs";
 
 	public static final String PARAM_ADDITIONAL = "additional";
-	public static final String PARAM_CLIENTSPACEIPORTFOLDER = "clientspaceiportfolder";
-	public static final String PARAM_VAL_LACKSPACE = "lackspace";
-	public static final String PARAM_VAL_LACKINODE = "lackinode";
+	public static final String PARAM_CLIENTSTATIPORTFOLDER = "clientstatiportfolder";
 
 	public static final String PARAM_DATA_KEY = "data";
 
