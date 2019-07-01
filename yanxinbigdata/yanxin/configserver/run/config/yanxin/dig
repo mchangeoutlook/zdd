@@ -1,0 +1,24 @@
+#Properties of dig
+#Mon Jul 01 14:18:31 CST 2019
+dig0.app=data
+dig0.sort=testable1\#sort1\#
+dig0.filter=testable1\#filter11\#
+dig0.interval=W31220
+dig2.period=20190610-20190710
+dig1.sort=yxaccount\#daystogive\#
+active=dig2\#\#
+dig1.filter=testable\#filter1\#testable\#filter2\#
+dig0.index=testable1\#index1\#
+dig1.app=data
+dig1.interval=D1412
+dig2.interval=D1506
+dig0.sequence=ascending
+dig1.index=testable\#index\#
+dig2.sort=yxaccount\#daystogive\#
+dig2.filter=
+dig2.index=testfixedindex
+dig0.period=20180910-20181210
+dig1.period=20190610-20190720
+dig1.sequence=descending
+dig2.sequence=descending
+dig2.app=data
