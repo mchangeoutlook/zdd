@@ -1,0 +1,10 @@
+#Properties of core
+#Mon Jul 01 11:28:40 CST 2019
+CONFIGSERVER_IP=127.0.0.1
+command.mem=free
+command.inode=df -i
+CONFIGSERVER_PORT=9999
+updateconfigcache.intervalseconds=30
+command.space=df
+notify.receiver=443370165@qq.com
+notify.sender=monitor@xinzyan.com

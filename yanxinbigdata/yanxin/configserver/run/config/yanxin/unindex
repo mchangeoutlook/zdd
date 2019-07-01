@@ -1,0 +1,24 @@
+#Properties of unindex
+#Mon Jul 01 11:28:40 CST 2019
+sgpaged0=$multivalues\:$
+sgpaged1.capacitykeymax=60
+sgyanxin0.capacityvalue=40
+sgyanxin0.capacitykeymax=60
+sgpaged1.rootrange=8-16
+sgpaged0.capacityvalue=40
+pagedkey=sgpaged1
+sgpaged0.rootrange=8-16
+sgyanxin0=$multivalues\:$
+scale.pagedkey=sgpaged1
+sgpaged0.capacitykeymax=60
+sgaccount1.capacityvalue=40
+scale.Yanxin-ukey=sgyanxin0
+sgyanxin0.rootrange=8-16
+sgpaged1.capacityvalue=40
+sgaccount1.capacitykeymax=60
+scale.Yxaccount-ukey=sgaccount1
+Yxaccount-ukey=sgaccount1
+sgaccount1=$multivalues\:$
+sgaccount1.rootrange=8-16
+sgpaged1=$multivalues\:$
+Yanxin-ukey=sgyanxin0
