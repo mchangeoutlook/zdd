@@ -35,7 +35,7 @@ public class Dataserver implements Theserverprocess {
 				try {
 					Filedatautil.create(key, cvs.get(column), cvmaxs.get(column), namespace, table, column, bigfilehash);
 				}catch(Exception e) {
-					if (!e.getMessage().contains(STATIC.DUPLICATE)) {
+					if (e.getMessage()!=null&&!e.getMessage().contains(STATIC.DUPLICATE)) {
 						throw e;
 					} else {
 						duplicate = e;

@@ -124,17 +124,31 @@ public class Configfilegeneratoryanxinlocal {
 					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 
-		String servergroupsaccount = "sgaccount0";
-		Fileconfigutil.create(servergroupsaccount+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_ROOTRANGESUFFIX, STATIC.splitfromto("8","16"), namespace,
+		String servergroupsaccountscale = "sgaccount1";
+		Fileconfigutil.create(servergroupsaccountscale+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_ROOTRANGESUFFIX, STATIC.splitfromto("8","16"), namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
-		Fileconfigutil.create(servergroupsaccount+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX, "60", namespace,
+		Fileconfigutil.create(servergroupsaccountscale+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX, "60", namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
-		Fileconfigutil.create(servergroupsaccount+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX, "40", namespace,
+		Fileconfigutil.create(servergroupsaccountscale+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX, "40", namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
 		
-		Fileconfigutil.create(servergroupsaccount, STATIC.splitenc("accounts0","127.0.0.1", "9994"), namespace,
+		Fileconfigutil.create(servergroupsaccountscale, STATIC.splitenc("accounts2","127.0.0.1", "9986"), namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
-		Fileconfigutil.create(servergroupsaccount, STATIC.splitenc("accounts1","127.0.0.1", "9993"), namespace,
+		Fileconfigutil.create(servergroupsaccountscale, STATIC.splitenc("accounts3","127.0.0.1", "9985"), namespace,
+				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
+
+		
+		String servergroupspagedscale = "sgpaged1";
+		Fileconfigutil.create(servergroupspagedscale+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_ROOTRANGESUFFIX, STATIC.splitfromto("8","16"), namespace,
+				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
+		Fileconfigutil.create(servergroupspagedscale+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYKEYMAXSUFFIX, "60", namespace,
+				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
+		Fileconfigutil.create(servergroupspagedscale+STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_CAPACITYVALUESUFFIX, "40", namespace,
+				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
+		
+		Fileconfigutil.create(servergroupspagedscale, STATIC.splitenc("paged2","127.0.0.1", "9994"), namespace,
+				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
+		Fileconfigutil.create(servergroupspagedscale, STATIC.splitenc("paged3","127.0.0.1", "9993"), namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
 
 		String servergroupsyanxin = "sgyanxin0";
@@ -163,10 +177,10 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create(servergroupspaged, STATIC.splitenc("paged1","127.0.0.1", "9989"), namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
 
-		Fileconfigutil.create("Yxaccount-ukey", servergroupsaccount, namespace,
+		Fileconfigutil.create("Yxaccount-ukey", servergroupsaccountscale, namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
 		
-		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"Yxaccount-ukey", servergroupsaccount, namespace,
+		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"Yxaccount-ukey", servergroupsaccountscale, namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
 
 		Fileconfigutil.create("Yanxin-ukey", servergroupsyanxin, namespace,
@@ -175,10 +189,10 @@ public class Configfilegeneratoryanxinlocal {
 		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"Yanxin-ukey", servergroupsyanxin, namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
 
-		Fileconfigutil.create("pagedkey", servergroupspaged, namespace,
+		Fileconfigutil.create("pagedkey", servergroupspagedscale, namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
 		
-		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"pagedkey", servergroupspaged, namespace,
+		Fileconfigutil.create(STATIC.REMOTE_CONFIGKEY_BIGUNIQUEINDEX_SCALEPREFIX+"pagedkey", servergroupspagedscale, namespace,
 				STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX);
 
 	}

@@ -60,8 +60,8 @@ public abstract class Superentity {
 		createpaged(0, key, pagedindex, createdata);
 	}
 
-	public void modifypaged(String newkey, String pagedindex) throws Exception {
-		Uniqueindexclient.getinstance(Reuse.namespace_yanxin, pagedindex+"-0").modifyunique(filter(), newkey);
+	public void modifyunique(String newkey, String index) throws Exception {
+		Uniqueindexclient.getinstance(Reuse.namespace_yanxin, index).modifyunique(filter(), newkey);
 	}
 	
 	public void createpaged(long itemseq, String key, String pagedindex,  boolean createdata) throws Exception {

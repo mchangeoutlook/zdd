@@ -67,6 +67,10 @@ public class Download extends HttpServlet {
 				res.sendRedirect("/protectphoto.htm");
 			}
 		} catch (Exception e) {
+			if (e.getMessage()!=null&&e.getMessage().contains(Reuse.NOTFOUND)) {
+				res.sendRedirect("/protectphoto.htm");
+				return;
+			}
 			if (e.getMessage()==null||e.getMessage()!=null&&!e.getMessage().contains(STATIC.INVALIDKEY)&&!e.getMessage().contains("NoSuchFileException")) {
 				throw new IOException(e);
 			}

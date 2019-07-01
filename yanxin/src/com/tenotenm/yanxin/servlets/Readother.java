@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.tenotenm.yanxin.entities.Yxaccount;
+import com.tenotenm.yanxin.entities.Yxlogin;
 import com.tenotenm.yanxin.util.Bizutil;
 import com.tenotenm.yanxin.util.Reuse;
 
@@ -22,6 +23,7 @@ public class Readother extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			Yxlogin yxlogin = (Yxlogin) request.getAttribute(Yxlogin.class.getSimpleName());
 			Yxaccount yxaccount = (Yxaccount)request.getAttribute(Yxaccount.class.getSimpleName());
 			Yxaccount target = new Yxaccount();
 			target.setName(request.getParameter("targetname"));
@@ -34,8 +36,11 @@ public class Readother extends HttpServlet {
 				}catch(Exception e) {
 					throw new Exception(Reuse.msg_hint+"该账号不存在");
 				}
+				if (Bizutil.isadmin(target)) {
+					throw new Exception(Reuse.msg_hint+"无权查询该账号");
+				}
 				Bizutil.checkaccountreused(target);
-				
+				Bizutil.cleardaystogive(target, yxlogin);
 			} else {
 				throw new Exception(Reuse.msg_hint+"你的账号信息已显示，无需再查询");
 			}
@@ -53,9 +58,9 @@ public class Readother extends HttpServlet {
 			if (Bizutil.isadmin(yxaccount)) {
 				ret.put("otheraccountkey", target.getKey());
 			}
-			boolean canextend = new Date().after(new Date(target.getTimeexpire().getTime()-Reuse.getlongvalueconfig("extend.expire.in.days")*24*60*60*1000));
+			boolean canextend = new Date().after(Bizutil.canextenddate(target));
 			if (!canextend) {
-				ret.put("extendotheraftertime", Reuse.yyyyMMddHHmmss(new Date(target.getTimeexpire().getTime()-Reuse.getlongvalueconfig("extend.expire.in.days")*24*60*60*1000)));
+				ret.put("extendotheraftertime", Reuse.yyyyMMddHHmmss(Bizutil.canextenddate(target)));
 			}
 			
 			Reuse.respond(response, ret, null);

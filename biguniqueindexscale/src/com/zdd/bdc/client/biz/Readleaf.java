@@ -42,7 +42,7 @@ public class Readleaf implements Theclientprocess{
 				try {
 					Uniqueindexclient.getinstance(namespace, index).createunique(servergroups, filter, key);
 				}catch(Exception e) {
-					if (!e.getMessage().contains(STATIC.DUPLICATE)) {
+					if (e.getMessage()!=null&&!e.getMessage().contains(STATIC.DUPLICATE)) {
 						System.out.println(new Date()+" === fail to process leaf value ["+leafvalue+"]");
 						throw e;
 					}

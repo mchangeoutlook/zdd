@@ -298,7 +298,7 @@ public class Bizutil {
 			Onetimekey ok = new Onetimekey();
 			String existyanxinkey = ok.readpaged(onetimekey);
 			if (existyanxinkey != null && !existyanxinkey.trim().isEmpty()) {
-				ok.modifypaged(Bigclient.newbigdatakey(), onetimekey);
+				ok.modifyunique(Bigclient.newbigdatakey(), onetimekey+"-0");
 				return existyanxinkey;
 			} else {
 				return null;
@@ -322,6 +322,21 @@ public class Bizutil {
 						.contains(yxaccount.getKey());
 	}
 
+	public static void cleardaystogive(Yxaccount yxaccount, Yxlogin yxlogin) throws Exception {
+		if (yxaccount.getDaystogive() > 0) {
+			Date cleardaystogive = cleardaystogive(yxaccount);
+			if (cleardaystogive.before(new Date())) {
+				String oldvalue = String.valueOf(yxaccount.getDaystogive());
+				Bizutil.givedays(yxaccount, -1 * yxaccount.getDaystogive());
+				Bizutil.log(yxlogin, null, yxaccount, "g", oldvalue, String.valueOf(yxaccount.getDaystogive()));
+			}
+		}
+	}
+	
+	public static Date canextenddate(Yxaccount yxaccount) {
+		return new Date(yxaccount.getTimeexpire().getTime()-Reuse.getlongvalueconfig("extend.expire.in.days")*24*60*60*1000);
+	}
+	
 	public static void autoupdateaccount(Yxaccount yxaccount, Yxlogin yxlogin) throws Exception {
 		if (isadmin(yxaccount)) {
 			if (yxaccount.getDaystogive() < Reuse.getlongvalueconfig("days.togive.max")) {
@@ -329,22 +344,15 @@ public class Bizutil {
 						Reuse.getlongvalueconfig("days.togive.max") - yxaccount.getDaystogive());
 				yxaccount.increment(yxaccount.getKey());
 			}
-			if (yxaccount.getTimeexpire().before(new Date())) {
-				Date timeexpire = new Date(new Date().getTime() + Reuse.getdaysmillisconfig("freeuse.days"));
+			if (canextenddate(yxaccount).before(new Date())) {
+				Date timeexpire = new Date(yxaccount.getTimeexpire().getTime() + Reuse.getdaysmillisconfig("freeuse.days"));
 				yxaccount.setTimeexpire(timeexpire);
 				yxaccount.setTimeupdate(new Date());
 				yxaccount.modify(yxaccount.getKey());
 			}
 		} else {
 			if (yxlogin != null) {
-				if (yxaccount.getDaystogive() > 0) {
-					Date cleardaystogive = cleardaystogive(yxaccount);
-					if (cleardaystogive.before(new Date())) {
-						String oldvalue = String.valueOf(yxaccount.getDaystogive());
-						Bizutil.givedays(yxaccount, -1 * yxaccount.getDaystogive());
-						Bizutil.log(yxlogin, null, yxaccount, "g", oldvalue, String.valueOf(yxaccount.getDaystogive()));
-					}
-				}
+				cleardaystogive(yxaccount, yxlogin);
 				if (!Configclient.getinstance(Reuse.namespace_yanxin, STATIC.REMOTE_CONFIGFILE_CORE)
 						.read("extend.all.expire.times.days").startsWith(yxaccount.getExtendallexpiremark()+".")) {
 					long toextenddays = 0;

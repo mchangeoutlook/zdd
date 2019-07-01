@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.tenotenm.yanxin.entities.Accountipdeny;
 import com.tenotenm.yanxin.entities.Yxaccount;
 import com.tenotenm.yanxin.entities.Yxlogin;
 import com.tenotenm.yanxin.util.Bizutil;
@@ -50,40 +49,18 @@ public class Register extends HttpServlet {
 				yxaccount.createunique(null, yxaccount.getUniquename());
 			} catch (Exception e) {
 				if (e.getMessage() != null && e.getMessage().contains(STATIC.DUPLICATE)) {
-					yxaccount.readunique(yxaccount.getUniquename());
-					if (Bizutil.isbeforereusedate(yxaccount)) {
+					Yxaccount exist = new Yxaccount();
+					exist.readunique(yxaccount.getUniquename());
+					if (Bizutil.isbeforereusedate(exist)) {
 						throw new Exception(Reuse.msg_hint+"账号被占用，请换一个名称");
 					}
-					if (!yxaccount.getYxloginkey().isEmpty()) {
+					if (!exist.getYxloginkey().isEmpty()) {
 						Yxlogin yxlogin = new Yxlogin();
-						yxlogin.read(yxaccount.getYxloginkey());
+						yxlogin.read(exist.getYxloginkey());
 						Bizutil.logout(yxlogin);
 					}
-					yxaccount.setIp(Reuse.getremoteip(request));
-					yxaccount.setName(name);
-					yxaccount.setPass(pass);
-					yxaccount.setTimecreate(new Date());
-					yxaccount.setUa(Reuse.getuseragent(request));
-					yxaccount.setYxloginkey("");
-					yxaccount.setYxyanxinuniquekeyprefix(Bigclient.newbigdatakey());
-					yxaccount.modify(null);
-					if (yxaccount.getDaystogive()>0) {
-						yxaccount.setDaystogive4increment(-1*yxaccount.getDaystogive());
-						yxaccount.increment(null);
-					}
-					try {
-						Accountipdeny aipdeny = new Accountipdeny();
-						String aipdenykey = aipdeny.readpaged(Reuse.sign(yxaccount.getUniquename()+"-"+ip));
-						aipdeny.read(aipdenykey);
-						aipdeny.setWrongpasstimes4increment(-1*aipdeny.getWrongpasstimes());
-						aipdeny.increment(null);
-						aipdeny.setWrongpasstime(new Date(yxaccount.getTimecreate().getTime() - Reuse.getsecondsmillisconfig("wrongpass.wait.seconds")));
-						aipdeny.setWrongpassip(ip);
-						aipdeny.modify(null);
-					}catch(Exception ex) {
-						//do nothing
-					}
-					
+					yxaccount.create(null);
+					yxaccount.modifyunique(yxaccount.getKey(), yxaccount.getUniquename());
 				} else {
 					throw e;
 				}

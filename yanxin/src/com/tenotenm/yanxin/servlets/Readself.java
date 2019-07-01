@@ -35,9 +35,9 @@ public class Readself extends HttpServlet {
 			ret.put("timeexpire", Reuse.yyyyMMddHHmmss(yxaccount.getTimeexpire()));
 			ret.put("timereuse", Reuse.yyyyMMddHHmmss(Bizutil.datedenyreuseaccount(yxaccount)));
 			ret.put("name", yxaccount.getName());
-			boolean canextend = new Date().after(new Date(yxaccount.getTimeexpire().getTime()-Reuse.getlongvalueconfig("extend.expire.in.days")*24*60*60*1000));
+			boolean canextend = new Date().after(Bizutil.canextenddate(yxaccount));
 			if (!canextend) {
-				ret.put("extendselfaftertime", Reuse.yyyyMMddHHmmss(new Date(yxaccount.getTimeexpire().getTime()-Reuse.getlongvalueconfig("extend.expire.in.days")*24*60*60*1000)));
+				ret.put("extendselfaftertime", Reuse.yyyyMMddHHmmss(Bizutil.canextenddate(yxaccount)));
 			}
 			if (yxaccount.getDaystogive()>0&&canextend) {
 				ret.put("accountkey", yxaccount.getKey());

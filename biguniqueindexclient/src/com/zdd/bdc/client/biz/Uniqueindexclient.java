@@ -47,7 +47,7 @@ public class Uniqueindexclient {
 			try {
 				createunique(scale, filter, key);
 			}catch(Exception e) {
-				if (e.getMessage().contains(STATIC.DUPLICATE)) {
+				if (e.getMessage()!=null&&e.getMessage().contains(STATIC.DUPLICATE)) {
 					modifyunique(scale, filter, key);
 				}
 			}

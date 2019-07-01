@@ -21,23 +21,23 @@ public class Startuniqueindexscale {
 				} else {
 					int uniqueservers = Integer.parseInt(
 							Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(Configclient
-									.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(filter)));
+									.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(filter)+STATIC.REMOTE_CONFIGKEY_SERVERGROUPSSUFFIX));
 					for (int j = 0; j < uniqueservers; j++) {
 						final int server = j;
 						new Thread(new Runnable() {
 
 							@Override
 							public void run() {
-								String[] folderipport = STATIC.splitenc(Configclient
+								String[] ipport = STATIC.splitiport(Configclient
 										.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(Configclient
-												.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(filter) + server));
-								System.out.println(new Date() + " ==== starting [" + namespace + "][" + filter + "] on ["+folderipport[1]+"]["+folderipport[2]+"]");
+												.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_BIGUNIQUEINDEX).read(filter) +STATIC.REMOTE_CONFIGKEY_SERVERINDEXMIDDLE+ server));
+								System.out.println(new Date() + " ==== starting [" + namespace + "][" + filter + "] on ["+ipport[0]+"]["+ipport[1]+"]");
 								try {
-									Uniqueindexclient.getinstance(namespace, null).readallroots(folderipport[1],
-											Integer.parseInt(folderipport[2]), filter, new Readroot(namespace, filter,folderipport[1], Integer.parseInt(folderipport[2]) ));
-									System.out.println(new Date() + " ==== done [" + namespace + "][" + filter + "] on ["+folderipport[1]+"]["+folderipport[2]+"]");
+									Uniqueindexclient.getinstance(namespace, null).readallroots(ipport[0],
+											Integer.parseInt(ipport[1]), filter, new Readroot(namespace, filter,ipport[0], Integer.parseInt(ipport[1]) ));
+									System.out.println(new Date() + " ==== done [" + namespace + "][" + filter + "] on ["+ipport[0]+"]["+ipport[1]+"]");
 								} catch (Exception e) {
-									System.out.println(new Date() + " ==== terminated [" + namespace + "][" + filter + "] on ["+folderipport[1]+"]["+folderipport[2]+"]");
+									System.out.println(new Date() + " ==== terminated [" + namespace + "][" + filter + "] on ["+ipport[0]+"]["+ipport[1]+"]");
 									e.printStackTrace();
 								}
 							}

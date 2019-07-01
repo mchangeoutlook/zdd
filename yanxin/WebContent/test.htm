@@ -781,7 +781,7 @@
 							populatepasscells(msg_passhint,"changepasscells","changepassbtn");
 				　　		}
 						
-						if (result.error.indexOf(msg_relogin)!=-1){
+						if (result.error.indexOf(msg_relogin)!=-1||result.error.indexOf("已被回收")!=-1){
 							setcache("yanxinloginkey", null);
 							dologout();
 						}
@@ -1543,6 +1543,12 @@
 			$("#othergive").val("");
 			$("#otherdaystogive").html(msg_daystogive+data.otherdaystogive);
 			$("#selfdaystogive").html(msg_daystogive+data.daystogive);
+			if (data.timecleardaystogive!=undefined){
+				$("#otherdaystogivehint").html("库存天数将于 "+data.timecleardaystogive+" 之后清零");
+				$("#otherdaystogivehint").show();
+			} else {
+				$("#otherdaystogivehint").hide();
+			}
 			if (parseInt(data.daystogive)<=0){
 				$("#daystogivespendform").hide();
 				$("#selfextendform").hide();

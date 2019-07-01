@@ -50,6 +50,9 @@ public class Givedays extends HttpServlet {
 			}catch(Exception e) {
 				throw new Exception(Reuse.msg_hint+"目标账号无效");
 			}
+			
+			Bizutil.cleardaystogive(target, yxlogin);
+			
 			String oldvalue = String.valueOf(target.getDaystogive());
 			
 			Bizutil.checkaccountreused(target);
@@ -79,6 +82,7 @@ public class Givedays extends HttpServlet {
 			Map<String, String> ret = new Hashtable<String, String>();
 			ret.put("otherdaystogive", String.valueOf(target.getDaystogive()));
 			ret.put("daystogive", String.valueOf(yxaccount.getDaystogive()));
+			ret.put("timecleardaystogive", Reuse.yyyyMMddHHmmss(Bizutil.cleardaystogive(target)));
 			Reuse.respond(response, ret, null);
 		} catch (Exception e) {
 			Reuse.respond(response, null, e);
