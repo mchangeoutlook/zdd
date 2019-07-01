@@ -47,8 +47,8 @@ public class Sortdistribute {
 			String[] ka = STATIC.splitenc(keyamount);
 			distributearray.put(STATIC.splitiport(fromip, String.valueOf(fromport)),
 					new Sortelement(fromip, fromport, ka[0], Long.parseLong(ka[1])));
-			position++;
 		}
+		position++;
 		clearnumofnotifies(false);
 
 		notifyAll();

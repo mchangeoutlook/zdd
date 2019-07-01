@@ -202,11 +202,62 @@ public class Configfilegeneratoryanxinlocal {
 			 STATIC.REMOTE_CONFIGFILE_PENDING);
 	}
 
+
+	private static void genyanxindig() throws Exception {
+		String namespace = "yanxin";
+		Path configfile = Fileconfigutil.file(namespace, STATIC.REMOTE_CONFIGFILE_DIG, true);
+		if (Files.exists(configfile)) {
+			Files.write(configfile, new byte[0], StandardOpenOption.CREATE, StandardOpenOption.SYNC,
+					StandardOpenOption.TRUNCATE_EXISTING);
+		}
+
+		Fileconfigutil.create("active", STATIC.splitenc("dig2",""), namespace, STATIC.REMOTE_CONFIGFILE_DIG);
+		
+		Fileconfigutil.create("dig0.app", "data", namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig0.sort", STATIC.splitenc("testable1", "sort1"), namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig0.sequence", STATIC.SORT_SEQUENCE(true), namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig0.interval", "W31220", namespace, STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig0.period", STATIC.splitfromto("20180910","20181210"), namespace, STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig0.index", STATIC.splitenc("testable1", "index1"), namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig0.filter", STATIC.splitenc( "testable1", "filter11"), namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+		
+		Fileconfigutil.create("dig1.app", "data", namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig1.sort", STATIC.splitenc( "yxaccount", "daystogive"), namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig1.sequence", STATIC.SORT_SEQUENCE(false), namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig1.interval", "D1412", namespace, STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig1.period", STATIC.splitfromto("20190610","20190720"), namespace, STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig1.index", STATIC.splitenc("testable", "index"), namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig1.filter", STATIC.splitenc("testable", "filter1", "testable", "filter2"), namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+
+		Fileconfigutil.create("dig2.app", "data", namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig2.sort", STATIC.splitenc("yxaccount", "daystogive"), namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig2.sequence", STATIC.SORT_SEQUENCE(false), namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig2.interval", "D1420", namespace, STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig2.period", STATIC.splitfromto("20190610","20190710"), namespace, STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig2.index", "testfixedindex", namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+		Fileconfigutil.create("dig2.filter", "", namespace,
+				STATIC.REMOTE_CONFIGFILE_DIG);
+}
 	public static void main(String[] s) throws Exception {
 		gencore();
 		genyanxinbiguniqueindex();
 		genyanxinbigdata();
 		genyanxincore();
 		genpending();
+		genyanxindig();
 	}
 }

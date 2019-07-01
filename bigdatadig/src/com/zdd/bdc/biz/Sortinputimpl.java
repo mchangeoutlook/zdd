@@ -36,7 +36,7 @@ public class Sortinputimpl extends Sortinput {
 	@Override
 	protected boolean prepareisasc() {
 		return STATIC.SORT_SEQUENCE(
-				Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG).read(digname + ".sequence"));
+				Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_DIG).read(digname + ".sequence"));
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class Sortinputimpl extends Sortinput {
 
 	@Override
 	protected Path preparesortingfolder() throws Exception {
-		return Paths.get(STATIC.REMOTE_CONFIG_DIG).resolve(digname).resolve(namespace).resolve(table).resolve(col)
+		return Paths.get(STATIC.REMOTE_CONFIGFILE_DIG).resolve(digname).resolve(namespace).resolve(table).resolve(col)
 				.resolve(filters).resolve(version);
 	}
 

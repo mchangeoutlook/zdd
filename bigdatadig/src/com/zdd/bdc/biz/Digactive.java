@@ -74,18 +74,18 @@ public class Digactive extends Thread {
 
 	private static void active(String ip, String port, String namespace, int bigfilehash, String weekinterval, String dayinterval) {
 		String[] digs = null;
-		String active = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG).read("active");
+		String active = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_DIG).read("active");
 		digs = STATIC.splitenc(active);
 		if (digs != null) {
 			Date now = new Date();
 			for (String digname : digs) {
-				String sort = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
+				String sort = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_DIG)
 						.read(digname + ".sort");
 				String[] tbcol = STATIC.splitenc(sort);
 				if (tbcol != null) {
 					Path folder = Filedatautil.folder(namespace, tbcol[0], tbcol[1]);
 					if (folder != null && Files.exists(folder) && Files.isDirectory(folder)) {
-						String interval = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIG_DIG)
+						String interval = Configclient.getinstance(namespace, STATIC.REMOTE_CONFIGFILE_DIG)
 								.read(digname + ".interval");
 						if (interval == null || !interval.startsWith("W") && !interval.startsWith("D")
 								|| interval.startsWith("D") && interval.length() != 5

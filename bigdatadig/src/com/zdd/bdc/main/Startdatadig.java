@@ -11,10 +11,6 @@ import com.zdd.bdc.client.util.STATIC;
 import com.zdd.bdc.server.ex.Theserver;
 import com.zdd.bdc.sort.distribute.Sortserver;
 
-/**
- * @author mido how to run: nohup /data/jdk-9.0.4/bin/java -cp ../../serverlibs/bigdatadig.jar:../../serverlibs/bigdataserver.jar:../../commonserverlibs/bigsort.jar:../../commonclientlibs/bigcomclientutil.jar:../../commonserverlibs/bigcomserverutil.jar:../../commonclientlibs/bigexclient.jar:../../commonclientlibs/bigconfigclient.jar:../../commonclientlibs/bigpagedindexclient.jar:../../commonclientlibs/bigdataclient.jar:../../commonserverlibs/bigexserver.jar com.zdd.bdc.main.Startdatadig unicorn > log.runbigdatadig &
- */
-
 public class Startdatadig {
 	
 	public static String sortserverport(String dataserverport) {
@@ -25,13 +21,13 @@ public class Startdatadig {
 		
 		final String ip = Configclient.ip;
 
-		String dataserverport = Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitenc(STATIC.PARENTFOLDER, ip));
+		String dataserverport = Configclient.getinstance(STATIC.FOLDER_NAMESPACE, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitenc(STATIC.FOLDER_DATAPARENT, ip)+STATIC.REMOTE_CONFIGKEY_SERVERPORTSUFFIX);
 		
 		final String port = sortserverport(dataserverport);
 		
 		Configclient.port = Integer.parseInt(port);
 		
-		System.out.println(new Date()+" ==== starting in folder ["+STATIC.PARENTFOLDER + "]");
+		System.out.println(new Date()+" ==== starting in folder ["+STATIC.FOLDER_DATAPARENT + "]");
 		
 		new Thread(new Runnable() {
 
@@ -41,7 +37,7 @@ public class Startdatadig {
 					Map<String, Object> additionalserverconfig = new Hashtable<String, Object>();
 					additionalserverconfig.put(Sortserver.sortcheckclasskey,"com.zdd.bdc.biz.Sortcheckimpl");
 					
-					int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitiport(ip, dataserverport)));
+					int bigfilehash = Integer.parseInt(Configclient.getinstance(STATIC.FOLDER_NAMESPACE, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitiport(ip, dataserverport)+STATIC.REMOTE_CONFIGKEY_SERVERPORTSUFFIX));
 					
 					Theserver.startblocking(Executors.newCachedThreadPool(), ip, Integer.parseInt(port), STATIC.REMOTE_CONFIGVAL_PENDING, Configclient.shutdownifpending, bigfilehash, Sortserver.class, additionalserverconfig);
 				} catch (Exception e) {
@@ -53,9 +49,9 @@ public class Startdatadig {
 
 		}).start();
 		
-		int bigfilehash = Integer.parseInt(Configclient.getinstance(s[0], STATIC.REMOTE_CONFIG_BIGDATA).read(STATIC.splitiport(ip, dataserverport)));
+		int bigfilehash = Integer.parseInt(Configclient.getinstance(STATIC.FOLDER_NAMESPACE, STATIC.REMOTE_CONFIGFILE_BIGDATA).read(STATIC.splitiport(ip, dataserverport)+STATIC.REMOTE_CONFIGKEY_SERVERPORTSUFFIX));
 		
-		new Digactive(ip, port, s[0], bigfilehash).start();
+		new Digactive(ip, port, STATIC.FOLDER_NAMESPACE, bigfilehash).start();
 		
 	}
 
