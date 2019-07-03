@@ -928,16 +928,16 @@
 		}
 		function douploadcanvas(){
 			footmsg(msg_photosaving);
-			var video = document.getElementById('video');
+			var video = document.getElementById('camvideo');
 			video.pause();
 			if (drawphotosmall(video, true)&&drawphoto(video, true)){
+				stopcam();
 				var canvasphoto = document.getElementById("photo");
 				var canvasphotosmall = document.getElementById("photosmall");
 				try{
 					post("cexpired","uploadcanvas",{"photocanvasdataurl":canvasphoto.toDataURL("image/jpeg",0.6),
 													"photosmallcanvasdataurl":canvasphotosmall.toDataURL("image/jpeg",1)});
 				}catch(err){
-					stopcam();
 					$("#imghint").html(msg_snapuploadfail);
 					$("#imghint").fadeIn(500);
 				}
@@ -948,8 +948,20 @@
 			}
 			
 		}
+		function stopcam(){
+			var video = document.getElementById('camvideo');
+			try{
+				stream = video.srcObject;
+				tracks = stream.getTracks();
+				tracks.forEach(function(track) {
+				   track.stop();
+				});
+			}catch(err){
+			 	//do nothing
+			}
+			$("#camvideo").hide();
+		}
 		function afteruploadcanvas(data){
-			stopcam();
 			var hint = "";
 			if (data.newdaycomingminutes!=undefined){
 				hint = "，"+data.newdaycomingminutes;
@@ -1566,7 +1578,6 @@
 			});
 			$("#newfilebtn").show();
 			loading(false);
-			stopcam();
 		}
 		function loading(show){
 			if (show){
@@ -1665,75 +1676,41 @@
 			}
 		}
 		function showupload(){
+			stopcam();
 			$(".hideallyximgwrites").hide();
 			$("#newfilebtn").show();
 			$("#dayimgwrite").show();
-			stopcam();
 			$("#toggle").animate({"left":"-1%"},500);
 		}
 		function showfrontcam(){
+			stopcam();
 			$("#toggle").animate({"left":"33%"},500);
 			showcam(false);
 		}
 		function showbackcam(){
+			stopcam();
 			$("#toggle").animate({"left":"67%"},500);
 			showcam(true);
 		}
-
-		function stopcam(){
-			var video = document.getElementById('video');
-			try{
-				stream = video.srcObject;
-				tracks = stream.getTracks();
-				tracks.forEach(function(track) {
-				   track.stop();
-				});
-			}catch(err){
-			 	//do nothing
-			}
-			try{
-				video.srcObject=null;
-			}catch(err){
-				//do nothing
-			}
-		}
+		
 		function showcam(isrear){
 			$(".hideallyximgwrites").hide();
+			video = document.getElementById('camvideo');
+		    video.setAttribute('autoplay', '');
+		    video.setAttribute('muted', '');
+		    video.setAttribute('playsinline', '');
+		    
+		    var facingmode = "user";
+			if (isrear){
+				facingmode = "environment";
+			}
+			var constraints = { audio: false, video: { facingMode: facingmode, width: 400, height: 400 } };
 			try{
-				stopcam();
-				if (navigator.mediaDevices === undefined) {
-					navigator.mediaDevices = {};
-				}
-				if (navigator.mediaDevices.getUserMedia === undefined) {
-					navigator.mediaDevices.getUserMedia = function(constr) {
-					   	var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-					    if (!getUserMedia) {
-					    		return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
-					    }
-					    return new Promise(function(resolve, reject) {
-					      	getUserMedia.call(navigator, constr, resolve, reject);
-					    });
-				  	}
-				}
-				var facingmode = "user";
-				if (isrear){
-					facingmode = "environment";
-				}
-				var constraints = { audio: false, video: { facingMode: facingmode, width: 400, height: 400 } };
-				navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-					var video = document.querySelector('video');
-					if ("srcObject" in video) {
-					 	video.srcObject = stream;
-					} else {
-					    video.src = window.URL.createObjectURL(stream);
-					}
-					video.onloadedmetadata = function(e) {
-					 	video.play();
-					 	$("#video").fadeIn(500);
-					 	$("#snap").fadeIn(500);
-					};
-				}).catch(function(err) {
-					stopcam();
+			    navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
+			        video.srcObject = stream;
+			        $("#camvideo").fadeIn(500);
+				 	$("#snap").fadeIn(500);
+			    }).catch(function(err) {
 					if ((err+"").indexOf("NotAllowedError")!=-1){
 						$("#imghint").html(msg_camerareject);
 						$("#imghint").show();
@@ -1743,11 +1720,11 @@
 					}
 				});
 			}catch(err){
-				stopcam();
 				$("#imghint").html(msg_cameranotsupport);
 				$("#imghint").show();
 			}
 		}
+		
 		var cellvaluematrix = [
 			["1","2","3","4","5","6","7","8","9","0"],
 			["q","w","e","r","t","y","u","i","o","p"],
@@ -1798,7 +1775,7 @@
 			<div id="yanxinwriteform" class="hideallforms" style="position:absolute;background-color:#444;display:none;top:0px;left:0px;right:0px;bottom:0px;">
 				<div class="yximgwrite">
 					<div id="imghint" class="hideallyximgwrites" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);width:80%;text-align:left;"></div>
-					<video id="video" class="hideallyximgwrites" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);display:none;" autoplay></video>
+					<video id="camvideo" class="hideallyximgwrites" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);display:none;"></video>
 					<canvas id="photo" class="hideallyximgwrites" style="position:absolute;display:none;"></canvas>
 					<canvas id="photosmall" class="hideallyximgwrites" style="position:absolute;display:none;"></canvas>
 					<img id="dayimgwrite" class="hideallyximgwrites" src="" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);max-width: 100%;max-height: 100%;"/>
