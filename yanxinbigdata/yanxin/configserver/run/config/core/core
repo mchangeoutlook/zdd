@@ -1,5 +1,5 @@
 #Properties of core
-#Mon Jul 01 11:28:40 CST 2019
+#Mon Jul 01 14:18:31 CST 2019
 CONFIGSERVER_IP=127.0.0.1
 command.mem=free
 command.inode=df -i
