@@ -154,7 +154,14 @@ public class Bizutil {
 		long millistotomorrow = 24 * 60 * 60 * 1000 - (yxlogin.getTimeupdate().getTime()
 				- Reuse.yyyyMMdd(Reuse.yyyyMMdd(yxlogin.getTimeupdate())).getTime());
 		if (millistotomorrow < 60 * 60000) {
-			return "健康的身体需要充足的睡眠，请尽快结束今天的日记，" + (int) (millistotomorrow / 60000)
+			int in = (int) (millistotomorrow / 60000);
+			String instr = "";
+			if (in==0) {
+				instr = "不到 1 ";
+			} else {
+				instr = in+" ";
+			}
+			return "健康的身体需要充足的睡眠，请尽快结束今天的日记，" + instr
 					+ "分钟后你将不能继续修改今天的日记，零点后你需要重新登录并开启第二天的日记";
 		} else {
 			return null;
