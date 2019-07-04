@@ -10,8 +10,8 @@
 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 		<meta name="mobileoptimized" content="0"/>
 		<link rel="shortcut icon" href="logo.png" type="image/x-icon" />
-		<title>言心 你的心灵日记 陪伴有故事的你</title>
-		<meta name="description" content="言心 你的心灵日记 陪伴有故事的你" />
+		<title>心之言 你的心灵日记 陪伴有故事的你</title>
+		<meta name="description" content="心之言 你的心灵日记 陪伴有故事的你" />
   		<meta name="Keywords" content="日记，写日记，线上日记，手机日记" />
   		<style type="text/css">
   			input[type="button"]{
@@ -320,9 +320,8 @@
 				position:absolute;
 				text-align:center;
 				font-size:16px;
-				width:180px;
 				top:50%;
-				left:100%;
+				right:-50%;
 				animation: texting 3.5s ease 0s forwards;
   			}
   			@keyframes texting
@@ -1823,7 +1822,7 @@
 					<img src="logo.png" style="width:8vh;height:8vh;">
 					<div style="position:absolute;font-size:12px;top:0px;left: 50%;transform: translateX(4vh);">™️️</div>
 				</div>
-				<div class="centerhorizontal label">登录你的言心日记</div>
+				<div class="centerhorizontal label">登录你的心之言日记</div>
 				<div  class="centerhorizontal"><input id="loginuser" size="20" type="text" maxlength="20" placeholder="填写账号"/></div>
 				<div id="loginpasscells"></div>
 				<div  class="centerhorizontal">
@@ -1837,18 +1836,18 @@
 					<img src="logo.png" style="width:8vh;height:8vh;">
 					<div style="position:absolute;font-size:12px;top:0px;left: 50%;transform: translateX(4vh);">™️️</div>
 				</div>
-				<div class="centerhorizontallabel label">注册你的言心账号</div>
+				<div class="centerhorizontallabel label">注册你的心之言账号</div>
 				<div  class="centerhorizontal"><input id="registeruser" size="20" type="text" maxlength="20" placeholder="填写账号，可写中文"/></div>
 				<div id="registerpasscells"></div>
 				<div  class="centerhorizontal">
 					<input id="registerbtn" actionid="register" class="click" type="button" value="注册"/>
-					<div class="highlightclick" onclick="post('freego','agreement',{})">你的言心协议</div>
+					<div class="highlightclick" onclick="post('freego','agreement',{})">你的心之言协议</div>
 				</div>
 				
 			</div>
 			<div id="accountform" class="centertranslateverticalscrollable hideallforms" style="display:none;">
 					<div id="selfname" class="centerhorizontal label"></div>
-					<div class="centerhorizontal"><font class="highlightclick" onclick="post('freego','agreement',{})" >你的言心协议</font><input id="logoutbtn" actionid="logout" class="click" type="button" value="退出登录"/></div>
+					<div class="centerhorizontal"><font class="highlightclick" onclick="post('freego','agreement',{})" >你的心之言协议</font><input id="logoutbtn" actionid="logout" class="click" type="button" value="退出登录"/></div>
 					<div id="selfcreatetime" class="centerhorizontal label" style="font-size:16px;"></div>
 					<div id="selfreusetime" class="centerhorizontal label highlight"></div>
 					<div id="selfexpiretime" class="centerhorizontal label"></div>
@@ -1892,7 +1891,8 @@
 		</div>
 		<div class="openingclose" style="position:absolute;background-color:#000;border-radius:8px;opacity:0.8;top:0px;left:0px;right:0px;bottom:0px;"></div>
 		<div class="opening openingclose">
-			<input id="openingclosebtn" style="position:absolute;left:25%;bottom:0px;transform:translateX(-50%)" type="button" value="跳过"/>
+			<input style="position:absolute;left:50%;transform:translateX(-50%);top:0px;" id="openingclosebtn" type="button" value="跳过"/>
+			<div style="position:absolute;bottom:0px;width:100%;font-size:14px;text-align:center;">心之言（上海）科技有限公司<br>©️ 2019 - 所有账号被回收</div>
 			<div style="position:absolute;top:178px;left:87px;">
 				<div style="position:absolute;border:1px white solid;border-radius:4px 4px;background-color:black;width:20px;height:4px;"></div>
 				<div style="position:absolute;border:1px white solid;background-color:black;width:4px;height:23px;left:2px;top:5px;"></div>
@@ -1941,15 +1941,12 @@
 					<img src="logo.png" style="width:8vh;height:8vh;">
 					<div style="position:absolute;font-size:12px;top:0px;left: 50%;transform: translateX(4vh);">™️️</div>
 				</div>
-				<div class="centerhorizontal">言心</div>
+				<div class="centerhorizontal">心之言</div>
 				<div class="centerhorizontal">你的心灵日记</div>
 				<div class="centerhorizontal">陪伴有故事的你</div>
 				<div class="centerhorizontal">&nbsp;</div>
-				<div class="centerhorizontal" style="font-size:12px;">心之言（上海）科技有限公司</div>
-				<div class="centerhorizontal" style="font-size:12px;">出品</div>
-				<div class="centerhorizontal" style="font-size:12px;">©️ 自 2019年 至 所有账号被回收</div>
-				<div class="centerhorizontal" style="font-size:12px;">yanxin.10o10m.com</div>
-				<div class="centerhorizontal" style="font-size:12px;">域名速记：10个圈10个美</div>
+				<div class="centerhorizontal" style="font-size:14px;">xinzyan.com</div>
+				<div class="centerhorizontal" style="font-size:12px;">速记：xin(心) z(hi之) yan(言)</div>
 			</div>
 		</div>
 	<div style="position:absolute;bottom:0px;left:0;right:0px;text-align:center;color:red;font-size:14px;">这是测试版，请勿使用，正式版，即将到来，敬请期待</div>
